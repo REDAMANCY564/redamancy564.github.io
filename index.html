@@ -4,18 +4,88 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Simon Cui</title>
-  <style>
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center;
-           font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-           background: #fafaf7; color: #222; padding: 0 16px; }
-    h1 { font-weight: 600; margin: 0 0 8px; }
-    p { margin: 0; color: #666; }
-  </style>
+  <meta name="description" content="Simon Cui: Food Science PhD candidate working on flavor chemistry and machine learning.">
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-  <main>
-    <h1>Hello, I'm Simon</h1>
-    <p>Site under construction.</p>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="./" id="brand-name">Simon Cui</a>
+      <button class="lang-toggle" id="lang-toggle" type="button">
+        <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1 id="name">Simon Cui</h1>
+      <p class="muted" id="tagline"></p>
+    </section>
+
+    <section class="section">
+      <h2 data-i18n="home.projects">Projects</h2>
+      <a class="card" href="odor-predictor/">
+        <h3 data-i18n="home.odor.title">Predicting Smell from Molecular Structure</h3>
+        <p class="muted" data-i18n="home.odor.desc"></p>
+        <div class="tags" data-i18n="home.odor.tags"></div>
+        <span class="cta"><span data-i18n="home.view">View project</span> →</span>
+      </a>
+    </section>
+
+    <section class="section">
+      <h2 data-i18n="home.contact">Contact</h2>
+      <ul class="contact-list" id="contact"></ul>
+    </section>
   </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n="footer.updating">This website is continuously updated.</p>
+    </div>
+  </footer>
+
+  <script src="assets/i18n.js"></script>
+  <script>
+    (async function () {
+      let profile = {};
+      try {
+        profile = await (await fetch("assets/profile.json")).json();
+      } catch (e) {
+        console.error("Could not load profile.json", e);
+      }
+      await I18N.ready;
+
+      function li(labelKey, html) {
+        return '<li><span class="label">' + I18N.t(labelKey) + '</span> ' + html + '</li>';
+      }
+      function esc(s) {
+        return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      }
+
+      function render() {
+        const name = I18N.pick(profile.name) || "Simon Cui";
+        document.getElementById("name").textContent = I18N.lang === "zh" ? name + " Simon Cui" : name;
+        document.getElementById("brand-name").textContent = name;
+        document.getElementById("tagline").textContent = I18N.pick(profile.tagline) || "";
+        document.title = I18N.t("home.page_title");
+
+        const items = [];
+        if (profile.email) {
+          items.push(li("home.email", '<a href="mailto:' + esc(profile.email) + '">' + esc(profile.email) + '</a>'));
+        }
+        if (profile.linkedin) {
+          items.push(li("home.linkedin", '<a href="' + esc(profile.linkedin) + '" target="_blank" rel="noopener">' + esc(profile.linkedin.replace(/^https?:\/\/(www\.)?/, "")) + '</a>'));
+        }
+        if (profile.cv_pdf) {
+          items.push('<li><a href="' + esc(profile.cv_pdf) + '" download>' + I18N.t("home.cv") + '</a></li>');
+        }
+        document.getElementById("contact").innerHTML = items.join("");
+      }
+
+      render();
+      I18N.onChange(render);
+    })();
+  </script>
 </body>
 </html>

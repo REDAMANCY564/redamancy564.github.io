@@ -1,0 +1,14 @@
+{
+  "nav.home": "Home",
+  "home.page_title": "Simon Cui",
+  "home.projects": "Projects",
+  "home.contact": "Contact",
+  "home.email": "Email",
+  "home.linkedin": "LinkedIn",
+  "home.cv": "Download CV (PDF)",
+  "home.odor.title": "Predicting Smell from Molecular Structure",
+  "home.odor.desc": "A graph neural network that predicts odor descriptors of flavor molecules, running entirely in your browser.",
+  "home.odor.tags": "Graph neural network · RDKit · ONNX",
+  "home.view": "View project",
+  "footer.updating": "This website is continuously updated."
+}

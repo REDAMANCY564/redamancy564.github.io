@@ -1,0 +1,14 @@
+{
+  "nav.home": "主页",
+  "home.page_title": "崔京伟 Simon Cui",
+  "home.projects": "项目",
+  "home.contact": "联系方式",
+  "home.email": "邮箱",
+  "home.linkedin": "LinkedIn",
+  "home.cv": "下载简历（PDF）",
+  "home.odor.title": "从分子结构预测气味",
+  "home.odor.desc": "用图神经网络预测风味分子的气味描述词，模型直接在浏览器中运行。",
+  "home.odor.tags": "图神经网络 · RDKit · ONNX",
+  "home.view": "查看项目",
+  "footer.updating": "本网站持续更新。"
+}
