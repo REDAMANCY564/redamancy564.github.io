@@ -57,6 +57,13 @@
                font-size: .9rem; overflow-x: auto; }
     .formula p { margin: 0 0 4px; white-space: nowrap; }
     h3.sub-h { margin-top: 20px; }
+    .grid-2 > * { min-width: 0; }   /* let wide tables scroll inside their card instead of widening the page */
+    .pre-table { min-width: 700px; }
+    .pre-table td { white-space: normal; vertical-align: top; }
+    .pre-table td:nth-child(1) { min-width: 8em; }
+    .pre-table td:nth-child(4) { min-width: 9em; }
+    .pre-table td:nth-child(5) { min-width: 9em; }
+    .pre-table td:nth-child(6) { min-width: 9em; }
     .results-table td:first-child { white-space: normal; min-width: 15em; }
     .results-table td { white-space: normal; }
     .results-table td.num { white-space: nowrap; }
@@ -84,6 +91,7 @@
       <h2 data-i18n="demo.title">Try it</h2>
       <label class="field" for="preset" data-i18n="demo.select">Choose an example</label>
       <select id="preset"></select>
+      <div id="bo-area">
       <p class="small muted base-meta" id="base-meta"></p>
 
       <h3 class="sub-h" data-i18n="base.title">Base composition and odor thresholds</h3>
@@ -170,6 +178,110 @@
           </div>
           <p class="small muted" id="recipe-note" style="margin-top:8px"></p>
         </div>
+      </div>
+      </div>
+
+      <!-- Example 5: reference-food mode (gap analysis, precursor directions) -->
+      <div id="ref-area" hidden>
+        <p class="small muted base-meta" id="ref-meta"></p>
+        <div class="note warn" style="margin-top:12px">
+          <p style="margin:0 0 6px"><b data-i18n="ref.notice_title"></b></p>
+          <ul class="plain small">
+            <li data-i18n-html="ref.notice.1"></li>
+            <li data-i18n-html="ref.notice.2"></li>
+            <li data-i18n-html="ref.notice.3"></li>
+            <li data-i18n-html="ref.notice.4"></li>
+          </ul>
+        </div>
+
+        <h3 class="sub-h" data-i18n="ref.input_title"></h3>
+        <p class="small muted" data-i18n="ref.input_intro"></p>
+        <div class="thr-tools">
+          <label class="small"><span data-i18n="ref.cutoff"></span>
+            <select id="ref-cutoff" style="width:auto;padding:4px 8px;font-size:.875rem">
+              <option value="10">OAV ≥ 10</option>
+              <option value="5">OAV ≥ 5</option>
+            </select>
+          </label>
+        </div>
+        <div class="grid-2" style="margin-top:8px">
+          <div class="card" id="ref-side-hm"></div>
+          <div class="card" id="ref-side-if"></div>
+        </div>
+
+        <h3 class="sub-h" data-i18n="ref.upper_title"></h3>
+        <div class="grid-2">
+          <div class="card">
+            <h3 data-i18n="ref.radar_title"></h3>
+            <div class="chart-box"><canvas id="ref-radar" aria-label="Odor profiles of the two inputs"></canvas></div>
+            <p class="chart-cap" data-i18n="ref.radar_cap"></p>
+          </div>
+          <div class="card">
+            <h3 data-i18n="ref.gap_title"></h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th data-i18n="col.compound">Compound</th>
+                    <th class="num"><span data-i18n="ref.col.oav_hm"></span></th>
+                    <th class="num"><span data-i18n="ref.col.oav_if"></span></th>
+                    <th class="num"><span data-i18n="ref.col.gap"></span></th>
+                    <th data-i18n="ref.col.higher"></th>
+                  </tr>
+                </thead>
+                <tbody id="ref-gap-body"></tbody>
+              </table>
+            </div>
+            <p class="small muted" id="ref-gap-note" style="margin-top:8px"></p>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3 data-i18n="ref.dir_title"></h3>
+          <ul class="plain small" id="ref-dirs"></ul>
+          <div class="note" style="margin-top:12px" data-i18n-html="ref.no_amount"></div>
+        </div>
+
+        <h3 class="sub-h" data-i18n="ref.lower_title"></h3>
+        <p class="small muted" data-i18n="ref.lower_intro"></p>
+        <div class="table-wrap">
+          <table class="pre-table">
+            <thead>
+              <tr>
+                <th data-i18n="ref.pcol.compound"></th>
+                <th data-i18n="ref.pcol.odor"></th>
+                <th data-i18n="ref.pcol.precursor"></th>
+                <th data-i18n="ref.pcol.pathway"></th>
+                <th data-i18n="ref.pcol.status"></th>
+                <th data-i18n="ref.pcol.refs"></th>
+              </tr>
+            </thead>
+            <tbody id="ref-pre-body"></tbody>
+          </table>
+        </div>
+        <p class="small muted" style="margin-top:8px" id="ref-reg-notes"></p>
+
+        <details class="thr-more" id="ref-sim">
+          <summary data-i18n="ref.sim_title"></summary>
+          <div class="note warn" style="margin-top:8px" data-i18n-html="ref.sim_warning"></div>
+          <div class="controls">
+            <button type="button" class="btn secondary" id="ref-sim-run" data-i18n="ref.sim_run"></button>
+            <span class="step-info" id="ref-sim-info"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th data-i18n="col.compound">Compound</th>
+                  <th class="num"><span data-i18n="col.added">Added</span><span class="sub">µg/kg</span></th>
+                  <th class="num" data-i18n="col.added_oav">Added OAV</th>
+                  <th class="num" data-i18n="col.oav_after">OAV after</th>
+                </tr>
+              </thead>
+              <tbody id="ref-sim-body"></tbody>
+            </table>
+          </div>
+          <p class="small muted" id="ref-sim-note" style="margin-top:8px"></p>
+        </details>
       </div>
     </section>
 
@@ -268,6 +380,7 @@
       <p><b data-i18n="footer.bases">Base compositions:</b></p>
       <ul class="plain" id="footer-bases"></ul>
       <p style="margin-top:8px" data-i18n-html="footer.thr"></p>
+      <p data-i18n-html="footer.ref5"></p>
       <p data-i18n-html="footer.code"></p>
     </div>
   </footer>
@@ -276,6 +389,7 @@
   <script src="../assets/i18n.js" data-page-dict="i18n/"></script>
   <script src="mixture.js"></script>
   <script src="bo.js"></script>
+  <script src="reference.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

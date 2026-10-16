@@ -1,0 +1,314 @@
+{
+ "note": "Key odorant -> precursor table for example 5 (user-reviewed 2026-10-16; precursors updated from the primary literature the user supplied). Every row cites where the statement is found. Regulatory text marked verify=true comes from secondary transcriptions of GB 10765-2021 and must be checked against the official text.",
+ "references": {
+  "zhang2022": {
+   "citation": "Zhang H, Zhang Y, Wang L, Song H, Li Z. Detection of odor difference between human milk and infant formula by sensory-directed analysis. Food Chem 2022, 382, 132348.",
+   "doi": "10.1016/j.foodchem.2022.132348",
+   "short": "Zhang et al. 2022"
+  },
+  "ullrich1987": {
+   "citation": "Ullrich F, Grosch W. Identification of the most intense volatile flavour compounds formed during autoxidation of linoleic acid. Z Lebensm Unters Forsch 1987, 184, 277-282.",
+   "doi": "10.1007/BF01027663",
+   "short": "Ullrich & Grosch 1987"
+  },
+  "frankel1983": {
+   "citation": "Frankel EN. Volatile lipid oxidation products. Prog Lipid Res 1983, 22, 1-33.",
+   "doi": "10.1016/0163-7827(83)90002-4",
+   "short": "Frankel 1983"
+  },
+  "li2023": {
+   "citation": "Li Y, Wang H, Li R, Liu G, Zhong K, Gao L, Zhu B, Jin A, et al. Monitoring volatile changes in infant formula during long-term storage at room temperature. Curr Res Food Sci 2023, 7, 100645.",
+   "doi": "10.1016/j.crfs.2023.100645",
+   "short": "Li et al. 2023"
+  }
+ },
+ "regulations": {
+  "gb2760": {
+   "zh": "GB 2760-2024 表 B.1：婴幼儿配方食品（食品分类号 13.01）不得添加食品用香料、香精；脚注规定，使用范围涵盖 0~6 月龄婴幼儿配方食品的不得添加任何食用香料。",
+   "en": "GB 2760-2024 Table B.1: flavorings may not be added to infant formula foods (food category 13.01); its footnote states that no flavoring at all may be added to formula whose range covers infants aged 0 to 6 months.",
+   "verify": false
+  },
+  "gb10765_fortifier": {
+   "zh": "GB 10765-2021 第 3.9.1 条：食品添加剂和营养强化剂的使用应符合 GB 2760 和 GB 14880 的规定。",
+   "en": "GB 10765-2021, clause 3.9.1: food additives and nutrient fortifiers must comply with GB 2760 and GB 14880.",
+   "verify": true
+  }
+ },
+ "precursors": {
+  "linoleic_acid": {
+   "zh": "亚油酸（C18:2 n-6）",
+   "en": "linoleic acid (C18:2 n-6)",
+   "status_zh": "允许，且为婴儿配方食品的必需成分，含量须在规定范围内（0.07~0.33 g/100 kJ；亚油酸与 α-亚麻酸之比 5:1~15:1）",
+   "status_en": "Permitted; it is a mandatory component of infant formula and must stay within the specified range (0.07 to 0.33 g/100 kJ; linoleic to alpha-linolenic acid ratio 5:1 to 15:1)",
+   "basis": "GB 10765-2021 表 1 / Table 1",
+   "verify": true,
+   "short_zh": "允许；必需成分，有含量范围",
+   "short_en": "Permitted; mandatory, with a specified range"
+  },
+  "oleic_acid": {
+   "zh": "油酸（C18:1 n-9）",
+   "en": "oleic acid (C18:1 n-9)",
+   "status_zh": "允许；标准中无单独限量，随食用油脂原料带入，原料须符合相应的食品安全标准",
+   "status_en": "Permitted; no specific limit in the standard. It comes with the edible oil raw materials, which must comply with the corresponding food safety standards",
+   "basis": "GB 10765-2021 第 3.1.1 条 / clause 3.1.1",
+   "verify": true,
+   "short_zh": "允许；无单独限量",
+   "short_en": "Permitted; no specific limit"
+  }
+ },
+ "rows": [
+  {
+   "compound": "(E,E)-2,4-decadienal",
+   "odor_zh": "脂肪",
+   "odor_en": "fatty",
+   "precursors": [
+    "linoleic_acid"
+   ],
+   "pathway_zh": "脂质自氧化（亚油酸 9-氢过氧化物分解）",
+   "pathway_en": "Lipid autoxidation (decomposition of the linoleate 9-hydroperoxide)",
+   "refs": [
+    [
+     "ullrich1987",
+     "Table 2, p. 280"
+    ],
+    [
+     "frankel1983",
+     "Table 2, p. 12"
+    ],
+    [
+     "zhang2022",
+     "p. 8"
+    ]
+   ]
+  },
+  {
+   "compound": "hexanal",
+   "odor_zh": "青草",
+   "odor_en": "grassy",
+   "precursors": [
+    "linoleic_acid"
+   ],
+   "pathway_zh": "脂质自氧化（亚油酸 13-氢过氧化物分解）",
+   "pathway_en": "Lipid autoxidation (decomposition of the linoleate 13-hydroperoxide)",
+   "refs": [
+    [
+     "ullrich1987",
+     "Table 2, p. 280"
+    ],
+    [
+     "frankel1983",
+     "Table 2, p. 12"
+    ],
+    [
+     "zhang2022",
+     "p. 8"
+    ]
+   ]
+  },
+  {
+   "compound": "(E)-2-octenal",
+   "odor_zh": "脂肪",
+   "odor_en": "fatty",
+   "precursors": [
+    "linoleic_acid"
+   ],
+   "pathway_zh": "脂质自氧化",
+   "pathway_en": "Lipid autoxidation",
+   "refs": [
+    [
+     "ullrich1987",
+     "Table 2, p. 280"
+    ],
+    [
+     "frankel1983",
+     "Table 2, p. 12"
+    ],
+    [
+     "zhang2022",
+     "p. 8"
+    ]
+   ]
+  },
+  {
+   "compound": "1-octen-3-one",
+   "odor_zh": "蘑菇",
+   "odor_en": "mushroom",
+   "precursors": [
+    "linoleic_acid"
+   ],
+   "pathway_zh": "脂质自氧化；也可由 1-辛烯-3-醇进一步氧化或热处理中脂肪酸深度降解生成",
+   "pathway_en": "Lipid autoxidation; also from further oxidation of 1-octen-3-ol or deep degradation of fatty acids during heat treatment",
+   "refs": [
+    [
+     "ullrich1987",
+     "Table 2 and p. 280"
+    ],
+    [
+     "zhang2022",
+     "p. 8"
+    ]
+   ]
+  },
+  {
+   "compound": "1-octen-3-ol",
+   "odor_zh": "蘑菇",
+   "odor_en": "mushroom",
+   "precursors": [
+    "linoleic_acid"
+   ],
+   "pathway_zh": "脂质自氧化（亚油酸 10-氢过氧化物分解）",
+   "pathway_en": "Lipid autoxidation (decomposition of the linoleate 10-hydroperoxide)",
+   "refs": [
+    [
+     "ullrich1987",
+     "Table 2, p. 280"
+    ],
+    [
+     "frankel1983",
+     "p. 15"
+    ],
+    [
+     "zhang2022",
+     "p. 8"
+    ]
+   ]
+  },
+  {
+   "compound": "heptanal",
+   "odor_zh": "脂肪",
+   "odor_en": "fatty",
+   "precursors": [
+    "linoleic_acid"
+   ],
+   "pathway_zh": "脂质自氧化",
+   "pathway_en": "Lipid autoxidation",
+   "refs": [
+    [
+     "frankel1983",
+     "Table 2, p. 12"
+    ],
+    [
+     "zhang2022",
+     "p. 8"
+    ]
+   ]
+  },
+  {
+   "compound": "octanal",
+   "odor_zh": "脂肪",
+   "odor_en": "fatty",
+   "precursors": [
+    "oleic_acid"
+   ],
+   "pathway_zh": "脂质自氧化（油酸 11-氢过氧化物分解）",
+   "pathway_en": "Lipid autoxidation (decomposition of the oleate 11-hydroperoxide)",
+   "refs": [
+    [
+     "frankel1983",
+     "Table 1, p. 9"
+    ],
+    [
+     "zhang2022",
+     "p. 8"
+    ]
+   ]
+  },
+  {
+   "compound": "nonanal",
+   "odor_zh": "脂肪",
+   "odor_en": "fatty",
+   "precursors": [
+    "oleic_acid",
+    "linoleic_acid"
+   ],
+   "pathway_zh": "脂质自氧化（主要为油酸 9-、10-氢过氧化物分解）",
+   "pathway_en": "Lipid autoxidation (mainly decomposition of the oleate 9- and 10-hydroperoxides)",
+   "refs": [
+    [
+     "frankel1983",
+     "Table 1, p. 9; Table 2, p. 12"
+    ],
+    [
+     "zhang2022",
+     "p. 8"
+    ]
+   ]
+  },
+  {
+   "compound": "(E)-2-nonenal",
+   "odor_zh": "黄瓜",
+   "odor_en": "cucumber",
+   "precursors": [
+    "linoleic_acid"
+   ],
+   "pathway_zh": "脂质自氧化",
+   "pathway_en": "Lipid autoxidation",
+   "refs": [
+    [
+     "ullrich1987",
+     "Table 2, p. 280"
+    ],
+    [
+     "zhang2022",
+     "p. 8"
+    ]
+   ]
+  },
+  {
+   "compound": "(E)-2-decenal",
+   "odor_zh": "脂肪",
+   "odor_en": "fatty",
+   "precursors": [
+    "oleic_acid"
+   ],
+   "pathway_zh": "脂质自氧化（油酸 9-氢过氧化物分解）",
+   "pathway_en": "Lipid autoxidation (decomposition of the oleate 9-hydroperoxide)",
+   "refs": [
+    [
+     "frankel1983",
+     "Table 1, p. 9"
+    ]
+   ]
+  },
+  {
+   "compound": "(E)-2-heptenal",
+   "odor_zh": "皂味",
+   "odor_en": "soapy",
+   "precursors": [
+    "linoleic_acid"
+   ],
+   "pathway_zh": "脂质氧化（亚油酸 12-氢过氧化物分解）",
+   "pathway_en": "Lipid oxidation (decomposition of the linoleate 12-hydroperoxide)",
+   "refs": [
+    [
+     "ullrich1987",
+     "Table 2, p. 280"
+    ],
+    [
+     "frankel1983",
+     "p. 15"
+    ]
+   ]
+  },
+  {
+   "compound": "2-pentylfuran",
+   "odor_zh": "清新",
+   "odor_en": "fresh",
+   "precursors": [
+    "linoleic_acid"
+   ],
+   "pathway_zh": "脂质氧化（亚油酸 9-氢过氧化物经环过氧化物生成）；另有文献认为可能来自美拉德反应",
+   "pathway_en": "Lipid oxidation (from the linoleate 9-hydroperoxide via a cyclic peroxide); another study suggests it may also come from the Maillard reaction",
+   "refs": [
+    [
+     "frankel1983",
+     "Table 2, p. 12; p. 25"
+    ],
+    [
+     "li2023",
+     "Results"
+    ]
+   ]
+  }
+ ]
+}

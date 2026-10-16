@@ -1,0 +1,1547 @@
+{
+ "profile_dims": [
+  "dairy",
+  "creamy",
+  "sweet",
+  "sour",
+  "fatty",
+  "oily",
+  "green",
+  "mushroom",
+  "metallic",
+  "fishy",
+  "floral",
+  "cooked"
+ ],
+ "label_prevalence": [
+  0.02517,
+  0.03868,
+  0.29206,
+  0.01474,
+  0.12219,
+  0.07941,
+  0.29574,
+  0.02026,
+  0.02743,
+  0.01596,
+  0.22493,
+  0.0176
+ ],
+ "compounds": {
+  "(E)-2-decenal": {
+   "name_en": "(E)-2-decenal",
+   "name_zh": "(E)-2-癸烯醛",
+   "smiles": "CCCCCCC/C=C/C=O",
+   "cid": 5283345,
+   "cas": "3913-81-3",
+   "threshold_mg_kg": 0.000346,
+   "threshold_source": "Buttery et al. (geometric mean of 0.0003-0.0004 mg/kg)",
+   "threshold_range_mg_kg": [
+    0.0003,
+    0.25
+   ],
+   "probs": [
+    0.0582,
+    0.0311,
+    0.1443,
+    0.0024,
+    0.7447,
+    0.181,
+    0.4473,
+    0.0465,
+    0.0662,
+    0.0549,
+    0.1672,
+    0.0084
+   ],
+   "lift": [
+    2.3103,
+    0.8039,
+    0.4939,
+    0.1631,
+    6.0944,
+    2.2796,
+    1.5125,
+    2.2933,
+    2.4154,
+    3.4384,
+    0.7433,
+    0.4757
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": false
+  },
+  "(E)-2-heptenal": {
+   "name_en": "(E)-2-heptenal",
+   "name_zh": "(E)-2-庚烯醛",
+   "smiles": "CCCC/C=C/C=O",
+   "cid": 5283316,
+   "cas": "18829-55-5",
+   "threshold_mg_kg": 0.013,
+   "threshold_source": "Buttery et al.",
+   "threshold_range_mg_kg": [
+    0.013,
+    0.051
+   ],
+   "probs": [
+    0.1121,
+    0.0616,
+    0.1409,
+    0.0121,
+    0.7554,
+    0.2123,
+    0.8349,
+    0.0725,
+    0.0738,
+    0.1235,
+    0.0586,
+    0.0015
+   ],
+   "lift": [
+    4.4517,
+    1.5918,
+    0.4826,
+    0.8236,
+    6.1823,
+    2.6729,
+    2.823,
+    3.576,
+    2.6902,
+    7.7362,
+    0.2607,
+    0.086
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": true
+  },
+  "(E)-2-hexenal": {
+   "name_en": "(E)-2-hexenal",
+   "name_zh": "(E)-2-己烯醛",
+   "smiles": "CCC/C=C/C=O",
+   "cid": 5281168,
+   "cas": "6728-26-3",
+   "threshold_mg_kg": 0.11,
+   "threshold_source": "Czerny et al. (2008)",
+   "threshold_range_mg_kg": [
+    0.01,
+    1.0
+   ],
+   "probs": [
+    0.0888,
+    0.0658,
+    0.1628,
+    0.0187,
+    0.6421,
+    0.1746,
+    0.8552,
+    0.0741,
+    0.1085,
+    0.1238,
+    0.0364,
+    0.0016
+   ],
+   "lift": [
+    3.5255,
+    1.702,
+    0.5574,
+    1.271,
+    5.2549,
+    2.1984,
+    2.8919,
+    3.6581,
+    3.9555,
+    7.7524,
+    0.1618,
+    0.0912
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": false
+  },
+  "(E)-2-nonenal": {
+   "name_en": "(E)-2-nonenal",
+   "name_zh": "(E)-2-壬烯醛",
+   "smiles": "CCCCCC/C=C/C=O",
+   "cid": 5283335,
+   "cas": "18829-56-6",
+   "threshold_mg_kg": 0.00019,
+   "threshold_source": "Czerny et al. (2008)",
+   "threshold_range_mg_kg": [
+    8e-05,
+    0.00069
+   ],
+   "probs": [
+    0.0765,
+    0.0384,
+    0.1415,
+    0.0043,
+    0.7718,
+    0.2024,
+    0.5886,
+    0.0566,
+    0.0647,
+    0.077,
+    0.1356,
+    0.0051
+   ],
+   "lift": [
+    3.0391,
+    0.9919,
+    0.4844,
+    0.2938,
+    6.3162,
+    2.549,
+    1.9902,
+    2.7948,
+    2.3591,
+    4.8211,
+    0.6029,
+    0.2893
+   ],
+   "in_human_milk_table": false,
+   "in_formula_table": true
+  },
+  "(E)-2-octenal": {
+   "name_en": "(E)-2-octenal",
+   "name_zh": "(E)-2-辛烯醛",
+   "smiles": "CCCCC/C=C/C=O",
+   "cid": 5283324,
+   "cas": "2548-87-0",
+   "threshold_mg_kg": 0.003,
+   "threshold_source": "Buttery et al.",
+   "threshold_range_mg_kg": [
+    0.00034,
+    0.02
+   ],
+   "probs": [
+    0.0973,
+    0.0472,
+    0.1324,
+    0.0069,
+    0.7843,
+    0.214,
+    0.7403,
+    0.063,
+    0.0608,
+    0.0939,
+    0.0903,
+    0.0023
+   ],
+   "lift": [
+    3.8638,
+    1.2207,
+    0.4533,
+    0.4712,
+    6.4188,
+    2.6948,
+    2.5032,
+    3.1098,
+    2.2185,
+    5.8822,
+    0.4016,
+    0.132
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": true
+  },
+  "(E)-2-pentenal": {
+   "name_en": "(E)-2-pentenal",
+   "name_zh": "(E)-2-戊烯醛",
+   "smiles": "CC/C=C/C=O",
+   "cid": 5364752,
+   "cas": "1576-87-0",
+   "threshold_mg_kg": 1.5,
+   "threshold_source": "Buttery et al.",
+   "threshold_range_mg_kg": [
+    0.31,
+    1.5
+   ],
+   "probs": [
+    0.0449,
+    0.0513,
+    0.1896,
+    0.0209,
+    0.3251,
+    0.0887,
+    0.7494,
+    0.0348,
+    0.0997,
+    0.0596,
+    0.0213,
+    0.0019
+   ],
+   "lift": [
+    1.7836,
+    1.326,
+    0.6492,
+    1.4184,
+    2.6606,
+    1.1173,
+    2.5341,
+    1.7159,
+    3.6365,
+    3.7304,
+    0.0945,
+    0.1058
+   ],
+   "in_human_milk_table": false,
+   "in_formula_table": true
+  },
+  "(E,E)-2,4-decadienal": {
+   "name_en": "(E,E)-2,4-decadienal",
+   "name_zh": "(E,E)-2,4-癸二烯醛",
+   "smiles": "CCCCC/C=C/C=C/C=O",
+   "cid": 5283349,
+   "cas": "25152-84-5",
+   "threshold_mg_kg": 2.7e-05,
+   "threshold_source": "Czerny et al. (2008)",
+   "threshold_range_mg_kg": [
+    2.7e-05,
+    0.01
+   ],
+   "probs": [
+    0.065,
+    0.0356,
+    0.1073,
+    0.0013,
+    0.8032,
+    0.1849,
+    0.6559,
+    0.0451,
+    0.0622,
+    0.1007,
+    0.0561,
+    0.0009
+   ],
+   "lift": [
+    2.5834,
+    0.9214,
+    0.3673,
+    0.0862,
+    6.5739,
+    2.3287,
+    2.2178,
+    2.227,
+    2.2663,
+    6.3085,
+    0.2494,
+    0.0495
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": true
+  },
+  "1-octen-3-ol": {
+   "name_en": "1-octen-3-ol",
+   "name_zh": "1-辛烯-3-醇",
+   "smiles": "CCCCCC(C=C)O",
+   "cid": 18827,
+   "cas": "3391-86-4",
+   "threshold_mg_kg": 0.001183,
+   "threshold_source": "Buttery et al. (geometric mean of 0.001-0.0014 mg/kg)",
+   "threshold_range_mg_kg": [
+    5e-06,
+    0.1
+   ],
+   "probs": [
+    0.1928,
+    0.0979,
+    0.2471,
+    0.0611,
+    0.398,
+    0.2943,
+    0.5032,
+    0.5536,
+    0.1208,
+    0.3312,
+    0.1836,
+    0.0139
+   ],
+   "lift": [
+    7.6601,
+    2.5302,
+    0.8462,
+    4.1441,
+    3.2577,
+    3.7058,
+    1.7013,
+    27.3238,
+    4.4055,
+    20.7476,
+    0.8164,
+    0.7919
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": true
+  },
+  "1-octen-3-one": {
+   "name_en": "1-octen-3-one",
+   "name_zh": "1-辛烯-3-酮",
+   "smiles": "CCCCCC(=O)C=C",
+   "cid": 61346,
+   "cas": "4312-99-6",
+   "threshold_mg_kg": 1.6e-05,
+   "threshold_source": "Czerny et al. (2008)",
+   "threshold_range_mg_kg": [
+    3e-06,
+    0.01
+   ],
+   "probs": [
+    0.1911,
+    0.1639,
+    0.2332,
+    0.0335,
+    0.3338,
+    0.2113,
+    0.3801,
+    0.351,
+    0.1792,
+    0.1753,
+    0.1348,
+    0.0305
+   ],
+   "lift": [
+    7.5926,
+    4.238,
+    0.7983,
+    2.27,
+    2.732,
+    2.6602,
+    1.2852,
+    17.3239,
+    6.5324,
+    10.9782,
+    0.5995,
+    1.7308
+   ],
+   "in_human_milk_table": false,
+   "in_formula_table": true
+  },
+  "2-furanmethanol": {
+   "name_en": "2-furanmethanol",
+   "name_zh": "2-呋喃甲醇（糠醇）",
+   "smiles": "C1=COC(=C1)CO",
+   "cid": 7361,
+   "cas": "98-00-0",
+   "threshold_mg_kg": 1.949359,
+   "threshold_source": "Buttery et al. (geometric mean of 1.9-2.0 mg/kg)",
+   "threshold_range_mg_kg": [
+    1.9,
+    4.5005
+   ],
+   "probs": [
+    0.0524,
+    0.1216,
+    0.6856,
+    0.0394,
+    0.0234,
+    0.0369,
+    0.0841,
+    0.0522,
+    0.0183,
+    0.0014,
+    0.1032,
+    0.0076
+   ],
+   "lift": [
+    2.0821,
+    3.1441,
+    2.3474,
+    2.6737,
+    0.1913,
+    0.4645,
+    0.2844,
+    2.5752,
+    0.6665,
+    0.0896,
+    0.459,
+    0.4307
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": false
+  },
+  "2-pentylfuran": {
+   "name_en": "2-pentylfuran",
+   "name_zh": "2-戊基呋喃",
+   "smiles": "CCCCCC1=CC=CO1",
+   "cid": 19602,
+   "cas": "3777-69-3",
+   "threshold_mg_kg": 0.006,
+   "threshold_source": "Buttery et al.",
+   "threshold_range_mg_kg": [
+    0.0058,
+    0.0145
+   ],
+   "probs": [
+    0.0788,
+    0.0567,
+    0.2815,
+    0.004,
+    0.3068,
+    0.1508,
+    0.5362,
+    0.1491,
+    0.3428,
+    0.0474,
+    0.1266,
+    0.0311
+   ],
+   "lift": [
+    3.1308,
+    1.4665,
+    0.9639,
+    0.2724,
+    2.511,
+    1.8995,
+    1.8131,
+    7.3585,
+    12.4983,
+    2.9688,
+    0.5628,
+    1.7651
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": false
+  },
+  "3-octanone": {
+   "name_en": "3-octanone",
+   "name_zh": "3-辛酮",
+   "smiles": "CCCCCC(=O)CC",
+   "cid": 246728,
+   "cas": "106-68-3",
+   "threshold_mg_kg": 0.028,
+   "threshold_source": "Buttery et al.",
+   "threshold_range_mg_kg": [
+    0.021,
+    0.07
+   ],
+   "probs": [
+    0.2312,
+    0.2098,
+    0.3294,
+    0.0806,
+    0.4442,
+    0.334,
+    0.4437,
+    0.273,
+    0.1152,
+    0.0781,
+    0.2244,
+    0.0082
+   ],
+   "lift": [
+    9.1838,
+    5.424,
+    1.1278,
+    5.4714,
+    3.6352,
+    4.2058,
+    1.5002,
+    13.472,
+    4.2014,
+    4.8947,
+    0.9977,
+    0.4641
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": false
+  },
+  "benzaldehyde": {
+   "name_en": "benzaldehyde",
+   "name_zh": "苯甲醛",
+   "smiles": "C1=CC=C(C=C1)C=O",
+   "cid": 240,
+   "cas": "100-52-7",
+   "threshold_mg_kg": 0.35,
+   "threshold_source": "Buttery et al.",
+   "threshold_range_mg_kg": [
+    0.024,
+    4.6
+   ],
+   "probs": [
+    0.0233,
+    0.0451,
+    0.635,
+    0.0738,
+    0.0828,
+    0.0531,
+    0.2441,
+    0.0905,
+    0.0824,
+    0.0103,
+    0.5171,
+    0.0247
+   ],
+   "lift": [
+    0.925,
+    1.1647,
+    2.1743,
+    5.0102,
+    0.6775,
+    0.6683,
+    0.8253,
+    4.4673,
+    3.0062,
+    0.6465,
+    2.2991,
+    1.4019
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": false
+  },
+  "dimethyl disulfide": {
+   "name_en": "dimethyl disulfide",
+   "name_zh": "二甲基二硫醚",
+   "smiles": "CSSC",
+   "cid": 12232,
+   "cas": "624-92-0",
+   "threshold_mg_kg": 0.012,
+   "threshold_source": "Buttery et al.",
+   "threshold_range_mg_kg": [
+    0.00016,
+    0.09
+   ],
+   "probs": [
+    0.0895,
+    0.2912,
+    0.0596,
+    0.0002,
+    0.0254,
+    0.0356,
+    0.1165,
+    0.3631,
+    0.1004,
+    0.0268,
+    0.0003,
+    0.2781
+   ],
+   "lift": [
+    3.5566,
+    7.5287,
+    0.204,
+    0.0152,
+    0.2078,
+    0.4489,
+    0.3938,
+    17.921,
+    3.6621,
+    1.6813,
+    0.0015,
+    15.8016
+   ],
+   "in_human_milk_table": false,
+   "in_formula_table": true
+  },
+  "eucalyptol": {
+   "name_en": "eucalyptol",
+   "name_zh": "桉叶油素",
+   "smiles": "CC1(C2CCC(O1)(CC2)C)C",
+   "cid": 2758,
+   "cas": "470-82-6",
+   "threshold_mg_kg": 0.0011,
+   "threshold_source": "Czerny et al. (2008)",
+   "threshold_range_mg_kg": [
+    0.0011,
+    1.0
+   ],
+   "probs": [
+    0.0018,
+    0.0057,
+    0.2654,
+    0.0069,
+    0.0282,
+    0.0671,
+    0.299,
+    0.0001,
+    0.0191,
+    0.0012,
+    0.1365,
+    0.0001
+   ],
+   "lift": [
+    0.0705,
+    0.1484,
+    0.9088,
+    0.4709,
+    0.2309,
+    0.8449,
+    1.0111,
+    0.0027,
+    0.697,
+    0.0755,
+    0.6068,
+    0.0037
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": false
+  },
+  "furfural": {
+   "name_en": "furfural",
+   "name_zh": "糠醛",
+   "smiles": "C1=COC(=C1)C=O",
+   "cid": 7362,
+   "cas": "98-01-1",
+   "threshold_mg_kg": 23.0,
+   "threshold_source": "Buttery et al.",
+   "threshold_range_mg_kg": [
+    0.282,
+    150.0
+   ],
+   "probs": [
+    0.1067,
+    0.1448,
+    0.6273,
+    0.0606,
+    0.0534,
+    0.0269,
+    0.1117,
+    0.0348,
+    0.0354,
+    0.0038,
+    0.0654,
+    0.0335
+   ],
+   "lift": [
+    4.24,
+    3.743,
+    2.1479,
+    4.1146,
+    0.4371,
+    0.3383,
+    0.3776,
+    1.7186,
+    1.2919,
+    0.2371,
+    0.2907,
+    1.9053
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": false
+  },
+  "heptanal": {
+   "name_en": "heptanal",
+   "name_zh": "庚醛",
+   "smiles": "CCCCCCC=O",
+   "cid": 8130,
+   "cas": "111-71-7",
+   "threshold_mg_kg": 0.003,
+   "threshold_source": "Buttery et al.",
+   "threshold_range_mg_kg": [
+    0.00025,
+    0.55
+   ],
+   "probs": [
+    0.0959,
+    0.0543,
+    0.2184,
+    0.0402,
+    0.6563,
+    0.2443,
+    0.6711,
+    0.0977,
+    0.0563,
+    0.0758,
+    0.2886,
+    0.0159
+   ],
+   "lift": [
+    3.8092,
+    1.4045,
+    0.7477,
+    2.728,
+    5.3711,
+    3.076,
+    2.2693,
+    4.823,
+    2.0535,
+    4.7511,
+    1.2832,
+    0.9056
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": true
+  },
+  "hexanal": {
+   "name_en": "hexanal",
+   "name_zh": "己醛",
+   "smiles": "CCCCCC=O",
+   "cid": 6184,
+   "cas": "66-25-1",
+   "threshold_mg_kg": 0.0024,
+   "threshold_source": "Czerny et al. (2008)",
+   "threshold_range_mg_kg": [
+    0.00032,
+    0.75
+   ],
+   "probs": [
+    0.1191,
+    0.0697,
+    0.2141,
+    0.0558,
+    0.6013,
+    0.2507,
+    0.7994,
+    0.1033,
+    0.069,
+    0.0848,
+    0.1307,
+    0.0097
+   ],
+   "lift": [
+    4.7294,
+    1.8024,
+    0.7332,
+    3.79,
+    4.9216,
+    3.157,
+    2.7031,
+    5.0997,
+    2.5162,
+    5.3131,
+    0.5812,
+    0.5533
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": true
+  },
+  "linalool": {
+   "name_en": "linalool",
+   "name_zh": "芳樟醇",
+   "smiles": "CC(=CCCC(C)(C=C)O)C",
+   "cid": 6549,
+   "cas": "78-70-6",
+   "threshold_mg_kg": 0.006,
+   "threshold_source": "Buttery et al.",
+   "threshold_range_mg_kg": [
+    1e-05,
+    1.082
+   ],
+   "probs": [
+    0.0097,
+    0.0372,
+    0.3998,
+    0.0072,
+    0.0698,
+    0.1372,
+    0.3618,
+    0.0652,
+    0.0289,
+    0.0203,
+    0.6617,
+    0.0046
+   ],
+   "lift": [
+    0.384,
+    0.9625,
+    1.3689,
+    0.4909,
+    0.5716,
+    1.7283,
+    1.2233,
+    3.2193,
+    1.0537,
+    1.274,
+    2.9417,
+    0.2634
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": false
+  },
+  "nonanal": {
+   "name_en": "nonanal",
+   "name_zh": "壬醛",
+   "smiles": "CCCCCCCCC=O",
+   "cid": 31289,
+   "cas": "124-19-6",
+   "threshold_mg_kg": 0.0028,
+   "threshold_source": "Czerny et al. (2008)",
+   "threshold_range_mg_kg": [
+    0.00032,
+    0.26
+   ],
+   "probs": [
+    0.0623,
+    0.0408,
+    0.2122,
+    0.0104,
+    0.6367,
+    0.2169,
+    0.361,
+    0.0526,
+    0.0476,
+    0.0439,
+    0.3545,
+    0.0236
+   ],
+   "lift": [
+    2.4762,
+    1.0542,
+    0.7265,
+    0.7086,
+    5.2113,
+    2.7313,
+    1.2206,
+    2.5956,
+    1.7345,
+    2.747,
+    1.5762,
+    1.3416
+   ],
+   "in_human_milk_table": false,
+   "in_formula_table": true
+  },
+  "octanal": {
+   "name_en": "octanal",
+   "name_zh": "辛醛",
+   "smiles": "CCCCCCCC=O",
+   "cid": 454,
+   "cas": "124-13-0",
+   "threshold_mg_kg": 0.0034,
+   "threshold_source": "Czerny et al. (2008)",
+   "threshold_range_mg_kg": [
+    0.00032,
+    0.248
+   ],
+   "probs": [
+    0.0718,
+    0.0421,
+    0.221,
+    0.0206,
+    0.652,
+    0.2201,
+    0.5121,
+    0.0698,
+    0.0503,
+    0.0486,
+    0.3667,
+    0.0206
+   ],
+   "lift": [
+    2.8526,
+    1.0881,
+    0.7566,
+    1.4011,
+    5.3362,
+    2.7717,
+    1.7314,
+    3.4436,
+    1.833,
+    3.0427,
+    1.6302,
+    1.1685
+   ],
+   "in_human_milk_table": true,
+   "in_formula_table": true
+  }
+ },
+ "excluded_no_threshold": [
+  "(E,E)-2,4-heptadienal",
+  "(E,E)-2,4-octadienal",
+  "decanal"
+ ],
+ "shared": [
+  "(E)-2-heptenal",
+  "(E)-2-octenal",
+  "(E,E)-2,4-decadienal",
+  "1-octen-3-ol",
+  "heptanal",
+  "hexanal",
+  "octanal"
+ ],
+ "defaults": {
+  "human_milk": "A2",
+  "infant_formula": "2"
+ },
+ "key_oav": 10,
+ "human_milk": {
+  "description": "Fresh mature human milk, 6 donors (Beijing, aged 24-34, non-smoking, no medication, light diet), infants aged 2-17 months; foremilk and hindmilk combined, 90-130 mL expressed 1-2 h after lunch; kept at 0-4 C without freezing and analyzed within 1 h.",
+  "samples": [
+   {
+    "id": "A1",
+    "conc_ug_kg": {
+     "(E)-2-octenal": 44.93,
+     "hexanal": 100.41,
+     "(E,E)-2,4-decadienal": 11.11,
+     "octanal": 2.963,
+     "heptanal": 29.94,
+     "benzaldehyde": 6.54,
+     "furfural": 21.19,
+     "(E)-2-heptenal": 8.344,
+     "(E)-2-hexenal": 10.81,
+     "2-furanmethanol": 227.91,
+     "2-pentylfuran": 9.34,
+     "eucalyptol": 2.47
+    },
+    "sd_ug_kg": {
+     "(E)-2-octenal": 3.52,
+     "hexanal": 24.95,
+     "(E,E)-2,4-decadienal": 0.09,
+     "octanal": 0.59,
+     "heptanal": 2.54,
+     "benzaldehyde": 5.53,
+     "furfural": 2.21,
+     "(E)-2-heptenal": 0.21,
+     "(E)-2-hexenal": 0.8,
+     "2-furanmethanol": 25.15,
+     "2-pentylfuran": 1.07,
+     "eucalyptol": 0.21
+    },
+    "not_detected": [
+     "(E)-2-decenal",
+     "linalool",
+     "1-octen-3-ol",
+     "3-octanone"
+    ],
+    "profile": [
+     0.1151,
+     0.0418,
+     0.0193,
+     0.0485,
+     0.1901,
+     0.0891,
+     0.0792,
+     0.118,
+     0.0852,
+     0.1838,
+     0.0181,
+     0.0119
+    ]
+   },
+   {
+    "id": "A2",
+    "conc_ug_kg": {
+     "(E)-2-octenal": 23.51,
+     "hexanal": 666.32,
+     "(E)-2-decenal": 2.83,
+     "(E,E)-2,4-decadienal": 36.77,
+     "octanal": 17.57,
+     "heptanal": 32.46,
+     "benzaldehyde": 31.65,
+     "furfural": 164.91,
+     "(E)-2-heptenal": 21.73,
+     "linalool": 7.46,
+     "1-octen-3-ol": 13.23,
+     "2-furanmethanol": 3516.3,
+     "3-octanone": 5.83
+    },
+    "sd_ug_kg": {
+     "(E)-2-octenal": 1.31,
+     "hexanal": 66.92,
+     "(E)-2-decenal": 0.17,
+     "(E,E)-2,4-decadienal": 3.78,
+     "octanal": 2.73,
+     "heptanal": 3.22,
+     "benzaldehyde": 0.09,
+     "furfural": 45.31,
+     "(E)-2-heptenal": 2.77,
+     "linalool": 2.32,
+     "1-octen-3-ol": 1.1,
+     "2-furanmethanol": 319.86,
+     "3-octanone": 0.23
+    },
+    "not_detected": [
+     "(E)-2-hexenal",
+     "2-pentylfuran",
+     "eucalyptol"
+    ],
+    "profile": [
+     0.1117,
+     0.0418,
+     0.0187,
+     0.0525,
+     0.1593,
+     0.0806,
+     0.0639,
+     0.1702,
+     0.0722,
+     0.1967,
+     0.0193,
+     0.0132
+    ]
+   },
+   {
+    "id": "A3",
+    "conc_ug_kg": {
+     "(E)-2-octenal": 159.9,
+     "hexanal": 269.1,
+     "(E)-2-decenal": 0.24,
+     "(E,E)-2,4-decadienal": 33.84,
+     "octanal": 2.59,
+     "benzaldehyde": 17.28,
+     "furfural": 6.23,
+     "(E)-2-heptenal": 10.08,
+     "(E)-2-hexenal": 7.48,
+     "linalool": 8.59,
+     "1-octen-3-ol": 27.81,
+     "2-furanmethanol": 141.95,
+     "3-octanone": 5.45,
+     "2-pentylfuran": 27.83
+    },
+    "sd_ug_kg": {
+     "(E)-2-octenal": 14.09,
+     "hexanal": 9.8,
+     "(E)-2-decenal": 0.09,
+     "(E,E)-2,4-decadienal": 3.81,
+     "octanal": 0.42,
+     "benzaldehyde": 4.22,
+     "furfural": 0.06,
+     "(E)-2-heptenal": 0.23,
+     "(E)-2-hexenal": 0.49,
+     "linalool": 1.53,
+     "1-octen-3-ol": 4.23,
+     "2-furanmethanol": 41.57,
+     "3-octanone": 0.17,
+     "2-pentylfuran": 6.31
+    },
+    "not_detected": [
+     "heptanal",
+     "eucalyptol"
+    ],
+    "profile": [
+     0.109,
+     0.039,
+     0.016,
+     0.0436,
+     0.1407,
+     0.0735,
+     0.0603,
+     0.1932,
+     0.09,
+     0.2098,
+     0.0136,
+     0.0112
+    ]
+   },
+   {
+    "id": "A4",
+    "conc_ug_kg": {
+     "hexanal": 39.61,
+     "octanal": 2.247,
+     "benzaldehyde": 1.09,
+     "furfural": 14.86,
+     "linalool": 11.56,
+     "1-octen-3-ol": 7.43,
+     "2-furanmethanol": 34.06,
+     "2-pentylfuran": 4.63,
+     "eucalyptol": 4.08
+    },
+    "sd_ug_kg": {
+     "hexanal": 9.36,
+     "octanal": 0.067,
+     "benzaldehyde": 0.26,
+     "furfural": 5.1,
+     "linalool": 0.43,
+     "1-octen-3-ol": 0.203,
+     "2-furanmethanol": 9.02,
+     "2-pentylfuran": 0.2,
+     "eucalyptol": 0.46
+    },
+    "not_detected": [
+     "(E)-2-octenal",
+     "(E)-2-decenal",
+     "(E,E)-2,4-decadienal",
+     "heptanal",
+     "(E)-2-heptenal",
+     "(E)-2-hexenal",
+     "3-octanone"
+    ],
+    "profile": [
+     0.1062,
+     0.0404,
+     0.0219,
+     0.0736,
+     0.0785,
+     0.0687,
+     0.0492,
+     0.2556,
+     0.0643,
+     0.207,
+     0.0225,
+     0.0122
+    ]
+   },
+   {
+    "id": "A5",
+    "conc_ug_kg": {
+     "hexanal": 64.57,
+     "octanal": 1.69,
+     "heptanal": 5.15,
+     "benzaldehyde": 9.23,
+     "furfural": 276.33,
+     "linalool": 14.45,
+     "1-octen-3-ol": 10.91,
+     "2-furanmethanol": 638.84,
+     "2-pentylfuran": 7.46
+    },
+    "sd_ug_kg": {
+     "hexanal": 10.91,
+     "octanal": 0.85,
+     "heptanal": 1.14,
+     "benzaldehyde": 1.56,
+     "furfural": 44.83,
+     "linalool": 0.17,
+     "1-octen-3-ol": 0.64,
+     "2-furanmethanol": 328.1,
+     "2-pentylfuran": 0.42
+    },
+    "not_detected": [
+     "(E)-2-octenal",
+     "(E)-2-decenal",
+     "(E,E)-2,4-decadienal",
+     "(E)-2-heptenal",
+     "(E)-2-hexenal",
+     "3-octanone",
+     "eucalyptol"
+    ],
+    "profile": [
+     0.1078,
+     0.0407,
+     0.0185,
+     0.0715,
+     0.0828,
+     0.0671,
+     0.0465,
+     0.2554,
+     0.069,
+     0.2052,
+     0.0215,
+     0.0142
+    ]
+   },
+   {
+    "id": "A6",
+    "conc_ug_kg": {
+     "hexanal": 48.46,
+     "(E)-2-decenal": 0.72,
+     "(E,E)-2,4-decadienal": 12.62,
+     "octanal": 1.9,
+     "benzaldehyde": 2.11,
+     "linalool": 2.36,
+     "1-octen-3-ol": 6.03,
+     "2-furanmethanol": 670.1
+    },
+    "sd_ug_kg": {
+     "hexanal": 2.52,
+     "(E)-2-decenal": 0.37,
+     "(E,E)-2,4-decadienal": 5.48,
+     "octanal": 0.56,
+     "benzaldehyde": 0.41,
+     "linalool": 0.08,
+     "1-octen-3-ol": 0.24,
+     "2-furanmethanol": 259.2
+    },
+    "not_detected": [
+     "(E)-2-octenal",
+     "heptanal",
+     "furfural",
+     "(E)-2-heptenal",
+     "(E)-2-hexenal",
+     "3-octanone",
+     "2-pentylfuran",
+     "eucalyptol"
+    ],
+    "profile": [
+     0.1073,
+     0.0383,
+     0.015,
+     0.0455,
+     0.1575,
+     0.0764,
+     0.0621,
+     0.1822,
+     0.0738,
+     0.2207,
+     0.0125,
+     0.0087
+    ]
+   }
+  ]
+ },
+ "infant_formula": {
+  "description": "Stage 1 (0-6 months) cow-milk-based infant formula powders, 6 brands bought in Beijing, analyzed immediately after opening. Brand names are not reproduced; samples follow the column order of Table 3. Concentrations in Table 3 are per kg of powder (user decision, 2026-10-16); the paper reconstitutes about 4.3 g powder in 30 mL water (about 1:8), so values are divided by 8 to express them per kg of reconstituted formula.",
+  "divisor": 8,
+  "samples": [
+   {
+    "id": "1",
+    "conc_ug_kg": {
+     "(E)-2-octenal": 23.20875,
+     "(E,E)-2,4-decadienal": 0.51875,
+     "hexanal": 27.935,
+     "octanal": 1.58875,
+     "nonanal": 3.54625,
+     "heptanal": 1.5625,
+     "(E)-2-nonenal": 0.18875,
+     "(E)-2-pentenal": 0.635,
+     "1-octen-3-one": 2.49875,
+     "1-octen-3-ol": 1.78,
+     "dimethyl disulfide": 0.0425
+    },
+    "sd_ug_kg": {
+     "(E)-2-octenal": 3.5925,
+     "(E,E)-2,4-decadienal": 0.23375,
+     "hexanal": 0.75625,
+     "octanal": 0.485,
+     "nonanal": 0.9175,
+     "heptanal": 0.11125,
+     "(E)-2-nonenal": 0.03625,
+     "(E)-2-pentenal": 0.1,
+     "1-octen-3-one": 0.255,
+     "1-octen-3-ol": 0.35125,
+     "dimethyl disulfide": 0.0025
+    },
+    "not_detected": [
+     "(E)-2-heptenal"
+    ],
+    "profile": [
+     0.1236,
+     0.0578,
+     0.0149,
+     0.0426,
+     0.109,
+     0.0638,
+     0.0461,
+     0.2228,
+     0.094,
+     0.1935,
+     0.012,
+     0.0199
+    ]
+   },
+   {
+    "id": "2",
+    "conc_ug_kg": {
+     "(E)-2-octenal": 495.43625,
+     "(E,E)-2,4-decadienal": 23.10875,
+     "hexanal": 297.9875,
+     "octanal": 24.9425,
+     "nonanal": 16.8975,
+     "heptanal": 25.77125,
+     "(E)-2-nonenal": 0.17,
+     "(E)-2-heptenal": 51.08125,
+     "(E)-2-pentenal": 5.1875,
+     "1-octen-3-one": 12.8175,
+     "1-octen-3-ol": 24.135,
+     "dimethyl disulfide": 0.0825
+    },
+    "sd_ug_kg": {
+     "(E)-2-octenal": 39.755,
+     "(E,E)-2,4-decadienal": 1.92625,
+     "hexanal": 29.65875,
+     "octanal": 0.735,
+     "nonanal": 1.0725,
+     "heptanal": 2.41,
+     "(E)-2-nonenal": 0.0075,
+     "(E)-2-heptenal": 4.13125,
+     "(E)-2-pentenal": 0.9,
+     "1-octen-3-one": 1.82875,
+     "1-octen-3-ol": 1.715,
+     "dimethyl disulfide": 0.0025
+    },
+    "not_detected": [],
+    "profile": [
+     0.1179,
+     0.0495,
+     0.0159,
+     0.0447,
+     0.1259,
+     0.0703,
+     0.0513,
+     0.209,
+     0.0824,
+     0.1982,
+     0.0165,
+     0.0182
+    ]
+   },
+   {
+    "id": "3",
+    "conc_ug_kg": {
+     "(E)-2-octenal": 209.075,
+     "(E,E)-2,4-decadienal": 175.7875,
+     "hexanal": 123.59,
+     "octanal": 8.4425,
+     "nonanal": 4.1075,
+     "heptanal": 8.1475,
+     "(E)-2-nonenal": 1.41875,
+     "(E)-2-heptenal": 17.8725,
+     "(E)-2-pentenal": 1.4975,
+     "1-octen-3-one": 1.7825,
+     "1-octen-3-ol": 3.6925,
+     "dimethyl disulfide": 0.04875
+    },
+    "sd_ug_kg": {
+     "(E)-2-octenal": 55.18,
+     "(E,E)-2,4-decadienal": 34.52125,
+     "hexanal": 25.8575,
+     "octanal": 2.12375,
+     "nonanal": 2.3925,
+     "heptanal": 1.5325,
+     "(E)-2-nonenal": 0.32,
+     "(E)-2-heptenal": 3.5425,
+     "(E)-2-pentenal": 0.25375,
+     "1-octen-3-one": 0.52125,
+     "1-octen-3-ol": 0.34875,
+     "dimethyl disulfide": 0.00375
+    },
+    "not_detected": [],
+    "profile": [
+     0.118,
+     0.0489,
+     0.0157,
+     0.0385,
+     0.1489,
+     0.0743,
+     0.0584,
+     0.1827,
+     0.0857,
+     0.1989,
+     0.0147,
+     0.0154
+    ]
+   },
+   {
+    "id": "4",
+    "conc_ug_kg": {
+     "(E)-2-octenal": 207.60375,
+     "(E,E)-2,4-decadienal": 47.805,
+     "hexanal": 119.5325,
+     "octanal": 8.25125,
+     "nonanal": 1.74625,
+     "heptanal": 8.3975,
+     "(E)-2-nonenal": 1.17125,
+     "(E)-2-heptenal": 16.09125,
+     "(E)-2-pentenal": 1.7225,
+     "1-octen-3-one": 4.57,
+     "1-octen-3-ol": 4.46375
+    },
+    "sd_ug_kg": {
+     "(E)-2-octenal": 12.24125,
+     "(E,E)-2,4-decadienal": 0.83375,
+     "hexanal": 9.23875,
+     "octanal": 0.98125,
+     "nonanal": 0.6875,
+     "heptanal": 0.1625,
+     "(E)-2-nonenal": 0.1025,
+     "(E)-2-heptenal": 0.1225,
+     "(E)-2-pentenal": 0.12125,
+     "1-octen-3-one": 1.0875,
+     "1-octen-3-ol": 0.31625
+    },
+    "not_detected": [
+     "dimethyl disulfide"
+    ],
+    "profile": [
+     0.119,
+     0.0505,
+     0.0154,
+     0.0402,
+     0.1371,
+     0.0713,
+     0.0548,
+     0.196,
+     0.0867,
+     0.1986,
+     0.0141,
+     0.0163
+    ]
+   },
+   {
+    "id": "5",
+    "conc_ug_kg": {
+     "(E)-2-octenal": 179.945,
+     "(E,E)-2,4-decadienal": 2.09125,
+     "hexanal": 18.095,
+     "octanal": 0.72375,
+     "nonanal": 1.38375,
+     "heptanal": 0.71625,
+     "(E)-2-nonenal": 0.51375,
+     "(E)-2-heptenal": 1.73375,
+     "(E)-2-pentenal": 0.25875,
+     "1-octen-3-one": 0.47,
+     "1-octen-3-ol": 0.32
+    },
+    "sd_ug_kg": {
+     "(E)-2-octenal": 10.8675,
+     "(E,E)-2,4-decadienal": 0.15375,
+     "hexanal": 2.45625,
+     "octanal": 0.3025,
+     "nonanal": 0.87375,
+     "heptanal": 0.19875,
+     "(E)-2-nonenal": 0.04,
+     "(E)-2-heptenal": 0.09375,
+     "(E)-2-pentenal": 0.035,
+     "1-octen-3-one": 0.095,
+     "1-octen-3-ol": 0.05625
+    },
+    "not_detected": [
+     "dimethyl disulfide"
+    ],
+    "profile": [
+     0.1228,
+     0.0526,
+     0.0153,
+     0.0337,
+     0.1511,
+     0.0735,
+     0.0596,
+     0.1769,
+     0.0911,
+     0.1959,
+     0.0123,
+     0.0151
+    ]
+   },
+   {
+    "id": "6",
+    "conc_ug_kg": {
+     "(E)-2-octenal": 40.25125,
+     "hexanal": 146.87,
+     "octanal": 1.82875,
+     "nonanal": 1.9375,
+     "heptanal": 4.83625,
+     "(E)-2-nonenal": 0.43125,
+     "(E)-2-heptenal": 0.57375,
+     "(E)-2-pentenal": 0.1575,
+     "1-octen-3-one": 8.8925,
+     "1-octen-3-ol": 0.27125,
+     "dimethyl disulfide": 1.08625
+    },
+    "sd_ug_kg": {
+     "(E)-2-octenal": 2.0975,
+     "hexanal": 5.32125,
+     "octanal": 0.2675,
+     "nonanal": 0.5725,
+     "heptanal": 0.03875,
+     "(E)-2-nonenal": 0.00625,
+     "(E)-2-heptenal": 0.0125,
+     "(E)-2-pentenal": 0.00375,
+     "1-octen-3-one": 0.07125,
+     "1-octen-3-ol": 0.0125,
+     "dimethyl disulfide": 0.08125
+    },
+    "not_detected": [
+     "(E,E)-2,4-decadienal"
+    ],
+    "profile": [
+     0.1292,
+     0.0614,
+     0.0158,
+     0.0517,
+     0.0979,
+     0.0638,
+     0.045,
+     0.2262,
+     0.0953,
+     0.1781,
+     0.0132,
+     0.0225
+    ]
+   }
+  ]
+ },
+ "source": {
+  "citation": "Zhang H, Zhang Y, Wang L, Song H, Li Z. Detection of odor difference between human milk and infant formula by sensory-directed analysis. Food Chem 2022, 382, 132348.",
+  "doi": "10.1016/j.foodchem.2022.132348",
+  "tables": "Table 2 (human milk), Table 3 (infant formula)",
+  "method": "HS-SPME, GC x GC-O-MS, external standard calibration (standards in n-hexane) with 2-methyl-3-heptanone as internal standard; mean of 3 replicates",
+  "note": "Each table lists only compounds with FD >= 4 in that matrix; a compound missing from a table was not quantified there (not necessarily absent). '-' in the tables (null here) = not detected."
+ }
+}

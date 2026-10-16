@@ -2,8 +2,9 @@
 
 For every preset: base profile, target, and the score/cos/n_added/profile of a set of recipes
 (edge cases around the 'not added' cutoff and OAV = 1, plus random recipes), with the default
-thresholds and with a set of user-modified thresholds. tests/parity.html recomputes all of them
-with flavor-improver/mixture.js and requires agreement within the tolerance.
+thresholds and with a set of user-modified thresholds. Also the profile of every sample of example 5
+(data/reference.json, full compositions) computed with prepare_reference.profile. tests/parity.html
+recomputes all of them with flavor-improver/mixture.js and requires agreement within the tolerance.
 """
 import json
 import sys
@@ -14,6 +15,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from mixture import DATA, Problem, normalize  # noqa: E402
+from prepare_reference import profile as reference_profile  # noqa: E402
 
 OUT = DATA.parent / "tests" / "parity_fixtures.json"
 
@@ -54,9 +56,14 @@ def main():
                               "profile": ev["profile"].tolist()})
             cases.append({"preset": p["id"], "thresholds": label, "base_profile": prob.base_profile.tolist(),
                           "target": prob.target.tolist(), "evals": evals})
+    ref = json.loads((DATA / "reference.json").read_text(encoding="utf-8"))
+    ref_cases = [{"side": side, "sample": s["id"], "conc": s["conc_ug_kg"],
+                  "profile": reference_profile(s["conc_ug_kg"], ref["compounds"])[0].tolist()}
+                 for side in ("human_milk", "infant_formula") for s in ref[side]["samples"]]
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text(json.dumps({"tolerance": 1e-9, "candidates": Problem(presets[0]["base"]).candidates,
-                               "modified_thresholds_ug_kg": modified, "cases": cases}), encoding="utf-8")
+                               "modified_thresholds_ug_kg": modified, "cases": cases,
+                               "reference_cases": ref_cases}), encoding="utf-8")
     print(f"Wrote {OUT} ({sum(len(c['evals']) for c in cases)} recipes)")
 
 

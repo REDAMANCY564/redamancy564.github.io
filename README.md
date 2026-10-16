@@ -36,6 +36,16 @@ python knowledge/build_kb.py         # 生成 flavor-kb/data/*.json
 - **网页**：默认阈值下播放预计算的优化过程（Python / BoTorch）；访客修改阈值后，可在浏览器中重新运行简化版贝叶斯优化（`bo.js`）。
 - **一致性测试**：https://redamancy564.github.io/flavor-improver/tests/parity.html ，检查 `mixture.js` 与 Python 的混合规则、目标函数完全一致。浏览器版算法的表现见 `tests/bo_check.html`（运行约需几十秒）。**修改 `mixture.py` 或数据后，必须重新生成测试数据并确认全部 PASS。**
 
+**示例 5：婴儿配方奶粉与母乳的风味差距分析（参照食品模式）**：数据来自 Zhang et al. 2022（*Food Chem* 382:132348，表 2、表 3，录入后已与 PDF 逐格核对），奶粉浓度按奶粉计并除以 8 换算为冲调后；两侧都以论文中的单个样本为起点，访客可修改浓度、增删物质。只分析 OAV ≥ 10（可选 ≥ 5）的关键风味物质，输出轮廓对比、差距排序和前体方向（`flavor-improver/reference.js`），不给出添加量；另有标明“仅为方法演示、不适用于婴儿配方食品”的添加量模拟。前体对照表在 `flavor-improver/data/precursors.json`，每行注明文献位置；GB 10765-2021 的条款内容须对照官方原文核实。
+```powershell
+cd training
+.\.venv\Scripts\Activate.ps1
+pip install pymupdf                                                    # 仅提取 PDF 文本时需要
+python flavor_improver/extract_vangemert.py "<van Gemert PDF>" vg.txt  # 提取阈值汇编文本（PDF 有版权，不上传）
+python flavor_improver/prepare_reference.py vg.txt --final             # 生成 flavor-improver/data/reference.json
+python flavor_improver/make_parity_fixtures.py                         # 更新一致性测试数据（含示例 5）
+```
+
 **重新运行优化实验**（CPU 即可，约 1 小时）：
 ```powershell
 cd training
@@ -115,7 +125,8 @@ odor-predictor/         项目页
 flavor-improver/        项目 2：乳品风味改良
   index.html, app.js    页面与交互逻辑
   mixture.js, bo.js     浏览器端评价函数（须与 training/flavor_improver/mixture.py 一致）与贝叶斯优化
-  data/                 palette、bases、presets、mixture_spec、bo_traces、bo_metrics
+  reference.js          示例 5：参照食品模式（差距分析、前体方向）
+  data/                 palette、bases、presets、mixture_spec、bo_traces、bo_metrics、reference（示例 5）、precursors（前体对照表）
   tests/                parity.html（一致性）、bo_check.html（浏览器版算法表现）
 flavor-kb/              风味知识库
 training/               训练代码（原始数据不上传）

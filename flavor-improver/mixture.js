@@ -24,14 +24,15 @@
   /*
    * palette: palette.json; base: one entry of bases.json; direction: {dim: -1|0|1};
    * spec: mixture_spec.json; thresholdsUg: {compound: threshold in ug/kg} (defaults from palette if omitted).
+   * Reference-food mode (example 5): pass candidates (compound names) and target (a profile) explicitly.
    */
   class Problem {
-    constructor({ palette, base, direction, spec, thresholdsUg }) {
+    constructor({ palette, base, direction, spec, thresholdsUg, candidates, target }) {
       const comps = palette.compounds;
       this.spec = spec;
       this.dims = palette.profile_dims;
       this.base = base;
-      this.candidates = Object.keys(comps).filter(n => comps[n].role === "palette");
+      this.candidates = candidates || Object.keys(comps).filter(n => comps[n].role === "palette");
       this.names = Array.from(new Set([...Object.keys(base.composition_ug_kg), ...this.candidates])).sort(pyCompare);
       this.thr = this.names.map(n => (thresholdsUg && thresholdsUg[n] != null ? thresholdsUg[n] : comps[n].threshold_mg_kg * 1000));
       this.lift = this.names.map(n => comps[n].lift);
@@ -39,8 +40,12 @@
       this.candIdx = this.candidates.map(n => this.names.indexOf(n));
       this.dim = this.candidates.length;
       this.baseProfile = this.profile(this.baseConc);
-      const d = this.dims.map(k => Number((direction || {})[k] || 0));
-      this.target = normalize(this.baseProfile.map((v, i) => Math.max(0, v + spec.alpha * d[i])));
+      if (target) {
+        this.target = target.slice();
+      } else {
+        const d = this.dims.map(k => Number((direction || {})[k] || 0));
+        this.target = normalize(this.baseProfile.map((v, i) => Math.max(0, v + spec.alpha * d[i])));
+      }
     }
 
     addedOav(x) {

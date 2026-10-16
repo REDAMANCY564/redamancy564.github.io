@@ -16,7 +16,7 @@
     <section class="hero">
       <h1>Browser / Python parity test</h1>
       <p class="muted">Recomputes base profiles, targets and 30 recipes per preset with mixture.js, with the default
-        thresholds and with a modified threshold set, and compares them with values from
+        thresholds and with a modified threshold set, and the 12 sample profiles of example 5, and compares them with values from
         training/flavor_improver/make_parity_fixtures.py.</p>
       <div id="summary" data-status="running">Running...</div>
     </section>
@@ -58,7 +58,18 @@
             `<tr><td>${c.preset}</td><td>${c.thresholds}</td><td class="num">${c.evals.length}</td><td class="num">${dProf.toExponential(2)}</td>` +
             `<td class="num">${dScore.toExponential(2)}</td><td class="num">${nMis}</td><td class="${pass ? "pass" : "fail"}">${pass ? "PASS" : "FAIL"}${candOk ? "" : " (candidate order)"}</td></tr>`);
         }
-        summary.textContent = (allPass ? "ALL PASS" : "FAILED") + ` (${total} recipes, tolerance ${tol})`;
+        // Example 5: sample profiles of data/reference.json (full compositions)
+        const ref = await get("../data/reference.json");
+        for (const c of fx.reference_cases || []) {
+          const prob = new Mixture.Problem({ palette: { profile_dims: ref.profile_dims, compounds: ref.compounds },
+            base: { composition_ug_kg: c.conc }, spec, candidates: [], target: [] });
+          const d = maxAbs(prob.baseProfile, c.profile), pass = d <= tol;
+          allPass = allPass && pass; total++;
+          document.getElementById("rows").insertAdjacentHTML("beforeend",
+            `<tr><td>example 5: ${c.side} ${c.sample}</td><td>reference</td><td class="num">1</td><td class="num">${d.toExponential(2)}</td>` +
+            `<td class="num">-</td><td class="num">-</td><td class="${pass ? "pass" : "fail"}">${pass ? "PASS" : "FAIL"}</td></tr>`);
+        }
+        summary.textContent = (allPass ? "ALL PASS" : "FAILED") + ` (${total} recipes/profiles, tolerance ${tol})`;
         summary.className = allPass ? "pass" : "fail";
         summary.dataset.status = allPass ? "pass" : "fail";
       } catch (e) {

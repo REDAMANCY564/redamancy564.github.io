@@ -19,9 +19,10 @@
   const getJson = url => fetch(url).then(r => { if (!r.ok) throw new Error("Failed to load " + url); return r.json(); });
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-  const [palette, bases, presets, spec, traces, metrics, jsCheck] = await Promise.all([
+  const [palette, bases, presets, spec, traces, metrics, jsCheck, refData, precursors] = await Promise.all([
     "data/palette.json", "data/bases.json", "data/presets.json", "data/mixture_spec.json",
-    "data/bo_traces.json", "data/bo_metrics.json", "data/bo_js_check.json"].map(getJson));
+    "data/bo_traces.json", "data/bo_metrics.json", "data/bo_js_check.json",
+    "data/reference.json", "data/precursors.json"].map(getJson));
   await I18N.ready;
   const t = (k, v) => I18N.t(k, v);
 
@@ -32,7 +33,9 @@
 
   // ---- state ----
   const thrOverride = {};              // compound -> ug/kg (only modified ones)
+  const REF_ID = "ref";               // example 5 (reference-food mode, reference.js)
   let preset = presets[0];
+  let refMode = false;
   let problem = null;
   let player = { mode: "pre", steps: [], compare: null, pos: -1, timer: null, playing: false, done: false };
   let liveRunning = false;
@@ -61,12 +64,17 @@
 
   // ---- preset select ----
   function renderPresetOptions() {
-    $("preset").innerHTML = presets.map(p => `<option value="${p.id}">${esc(baseName(baseById[p.base]))}</option>`).join("");
-    $("preset").value = preset.id;
+    $("preset").innerHTML = presets.map(p => `<option value="${p.id}">${esc(baseName(baseById[p.base]))}</option>`).join("") +
+      `<option value="${REF_ID}">${esc(t("ref.option"))}</option>`;
+    $("preset").value = refMode ? REF_ID : preset.id;
   }
   $("preset").addEventListener("change", e => {
-    preset = presets.find(p => p.id === e.target.value);
     stopPlayer();
+    refMode = e.target.value === REF_ID;
+    $("bo-area").hidden = refMode;
+    $("ref-area").hidden = !refMode;
+    if (refMode) { RefMode.render(); return; }
+    preset = presets.find(p => p.id === e.target.value);
     renderAll();
   });
 
@@ -123,7 +131,8 @@
 
   document.addEventListener("change", e => {
     const el = e.target;
-    if (!el.matches || !el.matches("input.thr")) return;
+    // example 5 inputs carry data-side; they are handled (and may already be re-rendered) by reference.js
+    if (!el.matches || !el.matches("input.thr") || el.dataset.side !== undefined) return;
     const n = el.dataset.c;
     const v = Number(el.value);
     if (!(v > 0) || !isFinite(v)) {
@@ -400,7 +409,9 @@
   makeCharts();
   renderAll();
   renderResults();
+  RefMode.init({ ref: refData, pre: precursors, spec, t, esc, fmt, pick: o => I18N.pick(o) });
   I18N.onChange(() => {
+    if (refMode) RefMode.render();
     renderPresetOptions();
     renderBaseMeta();
     renderThresholdTables();
