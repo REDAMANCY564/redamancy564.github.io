@@ -46,7 +46,16 @@
    "creamy",
    "pungent",
    "sweet"
-  ]
+  ],
+  "threshold_water": {
+   "rep_ug_kg": 1.0,
+   "type": "detection",
+   "rep_source": "Czerny et al. (2008)",
+   "range_ug_kg": [
+    0.05,
+    2300.0
+   ]
+  }
  },
  {
   "id": "acetoin",
@@ -96,7 +105,16 @@
    "fatty",
    "milky",
    "sweet"
-  ]
+  ],
+  "threshold_water": {
+   "rep_ug_kg": 800.0,
+   "type": "detection",
+   "rep_source": "Buttery et al.",
+   "range_ug_kg": [
+    14.0,
+    10000.0
+   ]
+  }
  },
  {
   "id": "butyric-acid",
@@ -146,7 +164,16 @@
    "fruity",
    "sharp",
    "sour"
-  ]
+  ],
+  "threshold_water": {
+   "rep_ug_kg": 2400.0,
+   "type": "detection",
+   "rep_source": "Czerny et al. (2008)",
+   "range_ug_kg": [
+    50.0,
+    40000.0
+   ]
+  }
  },
  {
   "id": "2-heptanone",
@@ -202,7 +229,16 @@
    "spicy",
    "sweet",
    "woody"
-  ]
+  ],
+  "threshold_water": {
+   "rep_ug_kg": 140.0,
+   "type": "detection",
+   "rep_source": "Buttery et al.",
+   "range_ug_kg": [
+    1.0,
+    4600.0
+   ]
+  }
  },
  {
   "id": "delta-decalactone",
@@ -259,7 +295,16 @@
    "oily",
    "peach",
    "sweet"
-  ]
+  ],
+  "threshold_water": {
+   "rep_ug_kg": 31.0,
+   "type": "detection",
+   "rep_source": "Czerny et al. (2008)",
+   "range_ug_kg": [
+    2.5,
+    410.0
+   ]
+  }
  },
  {
   "id": "gamma-dodecalactone",
@@ -312,7 +357,16 @@
    "peach",
    "sweet",
    "woody"
-  ]
+  ],
+  "threshold_water": {
+   "rep_ug_kg": 0.43,
+   "type": "detection",
+   "rep_source": "Czerny et al. (2008)",
+   "range_ug_kg": [
+    0.43,
+    7.0
+   ]
+  }
  },
  {
   "id": "vanillin",
@@ -360,7 +414,16 @@
    "creamy",
    "sweet",
    "vanilla"
-  ]
+  ],
+  "threshold_water": {
+   "rep_ug_kg": 53.0,
+   "type": "detection",
+   "rep_source": "Czerny et al. (2008)",
+   "range_ug_kg": [
+    25.0,
+    66700.0
+   ]
+  }
  },
  {
   "id": "methional",
@@ -415,7 +478,16 @@
    "savory",
    "tomato",
    "vegetable"
-  ]
+  ],
+  "threshold_water": {
+   "rep_ug_kg": 0.43,
+   "type": "detection",
+   "rep_source": "Czerny et al. (2008)",
+   "range_ug_kg": [
+    0.2,
+    1.8
+   ]
+  }
  },
  {
   "id": "furaneol",
@@ -467,7 +539,16 @@
    "savory",
    "strawberry",
    "sweet"
-  ]
+  ],
+  "threshold_water": {
+   "rep_ug_kg": 40.0,
+   "type": "detection",
+   "rep_source": "Czerny et al. (2008)",
+   "range_ug_kg": [
+    0.03,
+    1700.0
+   ]
+  }
  },
  {
   "id": "2-acetyl-1-pyrroline",
@@ -510,6 +591,15 @@
    }
   ],
   "dataset_split": null,
-  "true_labels": null
+  "true_labels": null,
+  "threshold_water": {
+   "rep_ug_kg": 0.053,
+   "type": "detection",
+   "rep_source": "Czerny et al. (2008)",
+   "range_ug_kg": [
+    0.053,
+    0.12
+   ]
+  }
  }
 ]

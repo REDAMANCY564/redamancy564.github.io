@@ -18,6 +18,23 @@
     .chip { font-size: .85rem; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); }
     .chip.hit { background: var(--accent); border-color: var(--accent); color: #fff; }
 
+    .search { margin-bottom: 20px; }
+    .search-row { display: flex; gap: 8px; max-width: 560px; }
+    .search-row input { flex: 1 1 auto; min-width: 0; max-width: none; }
+    .btn { font: inherit; font-weight: 600; padding: 8px 18px; border-radius: 8px; border: 0;
+           background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
+    .btn:disabled { opacity: .6; cursor: progress; }
+    .examples { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+    .chip-btn { font: inherit; font-size: .85rem; padding: 2px 10px; border-radius: 999px; cursor: pointer;
+                border: 1px solid var(--border); background: var(--surface); color: var(--accent); max-width: 100%;
+                overflow: hidden; text-overflow: ellipsis; }
+    .chip-btn:hover { border-color: var(--accent); }
+    .search-status { min-height: 1.5em; margin: 8px 0 0; color: var(--muted); }
+    .search-status.error { color: #b42318; }
+    .threshold { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); font-size: .9rem; }
+    .threshold .thr-title { font-weight: 600; margin-bottom: 2px; }
+    .threshold .thr-value { font-size: 1.05rem; }
+
     .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 8px 0 20px; }
     .flow .step { flex: 1 1 150px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; }
     .flow .step .ico { display: block; height: 44px; margin: 0 auto 6px; }
@@ -56,7 +73,23 @@
     <!-- Demo -->
     <section class="section" id="demo">
       <h2 data-i18n="demo.title">Try it</h2>
-      <label class="field" for="preset" data-i18n="demo.select">Choose a flavor molecule</label>
+      <form id="search-form" class="search" novalidate>
+        <label class="field" for="search-input" data-i18n="search.label">Search any molecule</label>
+        <div class="search-row">
+          <input id="search-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+                 data-i18n-attr="placeholder:search.placeholder">
+          <button type="submit" id="search-btn" class="btn" data-i18n="search.button">Predict</button>
+        </div>
+        <div class="examples small">
+          <span class="muted" data-i18n="search.examples">Examples:</span>
+          <button type="button" class="chip-btn" data-q="linalool">linalool</button>
+          <button type="button" class="chip-btn" data-q="5989-27-5">5989-27-5</button>
+          <button type="button" class="chip-btn mono" data-q="CCOC(=O)CC(C)C">CCOC(=O)CC(C)C</button>
+        </div>
+        <p class="small search-status" id="search-status" aria-live="polite"></p>
+      </form>
+
+      <label class="field" for="preset" data-i18n="demo.select">Or pick a preset molecule</label>
       <select id="preset"></select>
 
       <div class="demo-grid">
@@ -65,6 +98,7 @@
           <p class="mol-smiles mono" id="mol-smiles"></p>
           <div class="mol-svg" id="mol-svg"></div>
           <a class="small" id="mol-pubchem" target="_blank" rel="noopener" data-i18n="demo.pubchem">View on PubChem</a>
+          <div class="threshold" id="mol-threshold" hidden></div>
         </div>
         <div class="card">
           <h3 data-i18n="demo.chart_title">Top 8 predicted odor descriptors</h3>
@@ -144,11 +178,7 @@
     <section class="section" id="limits">
       <h2 data-i18n="limits.title">Limitations</h2>
       <ul class="plain">
-        <li data-i18n-html="limits.1"></li>
-        <li data-i18n-html="limits.2"></li>
-        <li data-i18n-html="limits.3"></li>
         <li data-i18n-html="limits.4"></li>
-        <li data-i18n-html="limits.5"></li>
         <li data-i18n-html="limits.6"></li>
       </ul>
     </section>
@@ -157,6 +187,7 @@
   <footer class="site-footer">
     <div class="container">
       <p data-i18n-html="footer.data"></p>
+      <p data-i18n-html="footer.thr"></p>
       <p data-i18n-html="footer.ref"></p>
       <p data-i18n-html="footer.code"></p>
       <p data-i18n="footer.updating"></p>
@@ -165,6 +196,8 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.wasm.min.js"></script>
+  <script src="engine.js"></script>
   <script src="../assets/i18n.js" data-page-dict="i18n/"></script>
   <script src="app.js"></script>
 </body>

@@ -6,6 +6,10 @@ __pycache__/
 # Raw data: not redistributed in this public repo
 training/data/
 
+# Copyrighted reference PDFs (e.g. van Gemert odour threshold compilation): never publish
+*.pdf
+!assets/cv.pdf
+
 # Model checkpoints (only the exported ONNX file is published)
 *.pt
 *.pth

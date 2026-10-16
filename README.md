@@ -5,6 +5,10 @@
 
 用图神经网络（GNN）从分子结构预测风味分子的气味描述词。模型导出为 ONNX，网页为纯 HTML/CSS/JS，托管在 GitHub Pages，不需要服务器。
 
+- **搜索任意分子**：输入英文名称、CAS 号或 SMILES。名称和 CAS 号通过 PubChem 转为结构，然后在访客的浏览器中实时计算特征并运行模型。网址可带参数直接分享，例如 `odor-predictor/?q=linalool`。
+- **一致性测试**：https://redamancy564.github.io/odor-predictor/tests/parity.html ，检查浏览器端（`odor-predictor/engine.js`）的特征和预测与 Python 完全一致（50 个随机测试分子 + 10 个预设分子 + 15 个边界结构）。**修改特征或重新训练后，必须先打开这个页面确认全部 PASS 再上线。**
+- **气味阈值**：仅 10 个预设分子显示水中阈值文献值（van Gemert 2011 汇编；数据在 `training/odor_thresholds.json`）。该书有版权，PDF 已加入 `.gitignore`，不会上传。
+
 ---
 
 ## 如何更新网站（最常用）
@@ -61,7 +65,8 @@ odor-predictor/         项目页
   i18n/                 页面中英文案
   model/                odor_gnn.onnx、labels.json、feature_spec.json
   data/                 presets.json（预设分子预测）、metrics.json（评估结果）
-  tests/                一致性测试数据（供第二版浏览器实时推理使用）
+  engine.js             浏览器端特征提取 + ONNX 推理（须与 training/featurize.py 一致）
+  tests/                一致性测试页 parity.html 及测试数据
 training/               训练代码（原始数据不上传）
 PLAN.md                 开发计划
 ```
@@ -102,7 +107,6 @@ python make_site_assets.py  # 生成 labels.json、presets.json、一致性测�
 
 ## 后续迭代清单
 
-- 网页第二版：SMILES 输入 + 浏览器实时推理（onnxruntime-web），一致性测试 50/50 通过后启用
 - 模型：加入键类型特征；改用更强的 GNN（如 MPNN）；与 OpenPOM 结果对比
 - 展示：气味空间二维可视化（UMAP），可点击浏览分子
 - 领域：加入乳品风味相关分子子集分析

@@ -1,0 +1,17 @@
+{
+  "_source": "L.J. van Gemert (2011). Odour Thresholds: Compilations of Odour Threshold Values in Air, Water and Other Media, 2nd ed. Oliemans Punter & Partners BV, Utrecht. Part II (water), values in mg/kg as printed. Manually transcribed 2026-10-16.",
+  "_method": "representative = detection threshold from Czerny et al. (2008) when listed, otherwise Buttery et al.; range = min and max of all values listed for the compound (detection, recognition and unspecified).",
+  "medium": "water",
+  "compounds": {
+    "diacetyl":             {"rep_mg_kg": 0.001,    "rep_source": "Czerny et al. (2008)",      "range_mg_kg": [0.00005, 2.3]},
+    "acetoin":              {"rep_mg_kg": 0.8,      "rep_source": "Buttery et al.",            "range_mg_kg": [0.014, 10]},
+    "butyric-acid":         {"rep_mg_kg": 2.4,      "rep_source": "Czerny et al. (2008)",      "range_mg_kg": [0.05, 40]},
+    "2-heptanone":          {"rep_mg_kg": 0.14,     "rep_source": "Buttery et al.",            "range_mg_kg": [0.001, 4.6]},
+    "delta-decalactone":    {"rep_mg_kg": 0.031,    "rep_source": "Czerny et al. (2008)",      "range_mg_kg": [0.0025, 0.41]},
+    "gamma-dodecalactone":  {"rep_mg_kg": 0.00043,  "rep_source": "Czerny et al. (2008)",      "range_mg_kg": [0.00043, 0.007]},
+    "vanillin":             {"rep_mg_kg": 0.053,    "rep_source": "Czerny et al. (2008)",      "range_mg_kg": [0.025, 66.7]},
+    "methional":            {"rep_mg_kg": 0.00043,  "rep_source": "Czerny et al. (2008)",      "range_mg_kg": [0.0002, 0.0018]},
+    "furaneol":             {"rep_mg_kg": 0.04,     "rep_source": "Czerny et al. (2008)",      "range_mg_kg": [0.00003, 1.7]},
+    "2-acetyl-1-pyrroline": {"rep_mg_kg": 0.000053, "rep_source": "Czerny et al. (2008)",      "range_mg_kg": [0.000053, 0.00012]}
+  }
+}

@@ -40,6 +40,21 @@ PRESETS = [
 ]
 
 
+# Structures that stress the featurizer: [nH], charges, N-oxide, heteroaromatics, halogens, P, H count > 4 clip
+EDGE_CASES = [
+    "c1cc[nH]c1", "c1ccc2[nH]ccc2c1", "C[N+](=O)[O-]", "[O-][n+]1ccccc1", "c1ccncc1", "c1ccsc1",
+    "ClC(Cl)(Cl)Br", "Ic1ccccc1F", "COP(=O)(OC)OC", "C[N+](C)(C)C", "CC(=O)[O-]", "C1CC1",
+    "CC12CCC(CC1)C(C)(C)O2", "O=C1OC(=O)c2ccccc21", "Cc1ncc(C)nc1C",
+]
+
+
+def to_ug_per_kg(entry):
+    """Convert one threshold entry from mg/kg to ug/kg (x1000), rounded to 4 significant digits."""
+    conv = lambda v: float(f"{v * 1000:.4g}")
+    return {"rep_ug_kg": conv(entry["rep_mg_kg"]), "type": "detection", "rep_source": entry["rep_source"],
+            "range_ug_kg": [conv(v) for v in entry["range_mg_kg"]]}
+
+
 def write_json(path, obj, indent=None):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(obj, ensure_ascii=False, indent=indent), encoding="utf-8")
@@ -62,7 +77,9 @@ def main():
     write_json(SITE / "model" / "labels.json",
                [{"id": l, "en": en[l], "zh": zh[l]} for l in labels], indent=1)
 
-    # presets.json
+    # presets.json (with literature odor thresholds in water, converted mg/kg -> ug/kg)
+    thr = json.loads((Path(__file__).parent / "odor_thresholds.json").read_text(encoding="utf-8"))
+    assert set(thr["compounds"]) == {p[0] for p in PRESETS}, "threshold table must cover all presets"
     index = {s: i for i, s in enumerate(smiles)}
     presets = []
     for pid, en, zh_name, smi, cid in PRESETS:
@@ -75,16 +92,18 @@ def main():
             "top": [{"label": labels[j], "prob": round(float(probs[j]), 4)} for j in top],
             "dataset_split": None if i is None else str(split[i]),
             "true_labels": None if i is None else [labels[j] for j in np.flatnonzero(Y[i])],
+            "threshold_water": to_ug_per_kg(thr["compounds"][pid]),
         })
         where = "not in dataset" if i is None else f"in {split[i]}"
         print(f"  {en:22s} {where:14s} top3: " + ", ".join(
             f"{labels[j]} {probs[j]:.2f}" for j in top[:3]))
     write_json(SITE / "data" / "presets.json", presets, indent=1)
 
-    # parity_fixtures.json: store only the real-atom block to keep the file small
+    # parity_fixtures.json: 50 random test molecules + presets + edge cases for the JS featurizer.
+    # Store only the real-atom block to keep the file small.
     test_idx = np.flatnonzero(split == "test")
     pick = np.random.default_rng(SEED).choice(test_idx, size=N_PARITY, replace=False)
-    pick_smiles = [smiles[i] for i in pick]
+    pick_smiles = [smiles[i] for i in pick] + [p[3] for p in PRESETS] + EDGE_CASES
     X, A, M = featurize_many(pick_smiles)
     probs = run(X, A, M)
     fixtures = []
