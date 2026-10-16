@@ -1,0 +1,17 @@
+# Python virtual environment
+.venv/
+__pycache__/
+*.pyc
+
+# Raw data: not redistributed in this public repo
+training/data/
+
+# Model checkpoints (only the exported ONNX file is published)
+*.pt
+*.pth
+
+# OS / editor files
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/

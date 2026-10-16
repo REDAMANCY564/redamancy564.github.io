@@ -1,0 +1,11 @@
+# PyTorch for RTX 50 series (Blackwell) needs a CUDA 12.8+ build. Install it first:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+# Then install the rest:
+#   pip install -r requirements.txt
+rdkit
+pandas
+numpy
+scikit-learn
+onnx
+onnxruntime
+tqdm
