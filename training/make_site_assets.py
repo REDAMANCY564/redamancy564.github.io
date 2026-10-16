@@ -56,9 +56,11 @@ def main():
     # labels.json
     tr = pd.read_csv(Path(__file__).parent / "label_translations.csv", keep_default_na=False)
     zh = dict(zip(tr["en"], tr["zh"]))
+    en = dict(zip(tr["en"], tr["en_display"]))  # display spelling; "id" keeps the dataset name
     missing = [l for l in labels if not zh.get(l)]
     assert not missing, f"Missing translations: {missing}"
-    write_json(SITE / "model" / "labels.json", [{"id": l, "en": l, "zh": zh[l]} for l in labels], indent=1)
+    write_json(SITE / "model" / "labels.json",
+               [{"id": l, "en": en[l], "zh": zh[l]} for l in labels], indent=1)
 
     # presets.json
     index = {s: i for i, s in enumerate(smiles)}

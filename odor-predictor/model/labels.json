@@ -52,7 +52,7 @@
  {
   "id": "balsamic",
   "en": "balsamic",
-  "zh": "香脂"
+  "zh": "膏香"
  },
  {
   "id": "banana",
@@ -67,7 +67,7 @@
  {
   "id": "bergamot",
   "en": "bergamot",
-  "zh": "佛手柑"
+  "zh": "香柠檬"
  },
  {
   "id": "berry",
@@ -227,7 +227,7 @@
  {
   "id": "earthy",
   "en": "earthy",
-  "zh": "土壤"
+  "zh": "土香"
  },
  {
   "id": "ethereal",
@@ -336,7 +336,7 @@
  },
  {
   "id": "jasmin",
-  "en": "jasmin",
+  "en": "jasmine",
   "zh": "茉莉"
  },
  {
@@ -352,7 +352,7 @@
  {
   "id": "lactonic",
   "en": "lactonic",
-  "zh": "内酯"
+  "zh": "内酯香"
  },
  {
   "id": "lavender",
@@ -466,7 +466,7 @@
  },
  {
   "id": "orangeflower",
-  "en": "orangeflower",
+  "en": "orange flower",
   "zh": "橙花"
  },
  {
@@ -557,7 +557,7 @@
  {
   "id": "rummy",
   "en": "rummy",
-  "zh": "朗姆酒"
+  "zh": "朗姆酒香"
  },
  {
   "id": "sandalwood",
@@ -682,7 +682,7 @@
  {
   "id": "winey",
   "en": "winey",
-  "zh": "葡萄酒"
+  "zh": "葡萄酒样"
  },
  {
   "id": "woody",
