@@ -1,0 +1,515 @@
+[
+ {
+  "id": "diacetyl",
+  "name_en": "Diacetyl",
+  "name_zh": "双乙酰",
+  "smiles": "CC(=O)C(C)=O",
+  "pubchem_cid": 650,
+  "top": [
+   {
+    "label": "caramellic",
+    "prob": 0.7159
+   },
+   {
+    "label": "sweet",
+    "prob": 0.6081
+   },
+   {
+    "label": "ethereal",
+    "prob": 0.54
+   },
+   {
+    "label": "buttery",
+    "prob": 0.4945
+   },
+   {
+    "label": "fruity",
+    "prob": 0.4582
+   },
+   {
+    "label": "burnt",
+    "prob": 0.3795
+   },
+   {
+    "label": "rummy",
+    "prob": 0.3111
+   },
+   {
+    "label": "pungent",
+    "prob": 0.2974
+   }
+  ],
+  "dataset_split": "train",
+  "true_labels": [
+   "buttery",
+   "caramellic",
+   "creamy",
+   "pungent",
+   "sweet"
+  ]
+ },
+ {
+  "id": "acetoin",
+  "name_en": "Acetoin",
+  "name_zh": "乙偶姻",
+  "smiles": "CC(O)C(C)=O",
+  "pubchem_cid": 179,
+  "top": [
+   {
+    "label": "buttery",
+    "prob": 0.6397
+   },
+   {
+    "label": "fruity",
+    "prob": 0.5321
+   },
+   {
+    "label": "sweet",
+    "prob": 0.4543
+   },
+   {
+    "label": "caramellic",
+    "prob": 0.4457
+   },
+   {
+    "label": "dairy",
+    "prob": 0.3673
+   },
+   {
+    "label": "pungent",
+    "prob": 0.3242
+   },
+   {
+    "label": "creamy",
+    "prob": 0.3086
+   },
+   {
+    "label": "ethereal",
+    "prob": 0.2995
+   }
+  ],
+  "dataset_split": "train",
+  "true_labels": [
+   "buttery",
+   "creamy",
+   "dairy",
+   "fatty",
+   "milky",
+   "sweet"
+  ]
+ },
+ {
+  "id": "butyric-acid",
+  "name_en": "Butyric acid",
+  "name_zh": "丁酸",
+  "smiles": "CCCC(=O)O",
+  "pubchem_cid": 264,
+  "top": [
+   {
+    "label": "cheesy",
+    "prob": 0.6548
+   },
+   {
+    "label": "fruity",
+    "prob": 0.6467
+   },
+   {
+    "label": "buttery",
+    "prob": 0.5175
+   },
+   {
+    "label": "sour",
+    "prob": 0.4824
+   },
+   {
+    "label": "sharp",
+    "prob": 0.4035
+   },
+   {
+    "label": "sweaty",
+    "prob": 0.4027
+   },
+   {
+    "label": "caramellic",
+    "prob": 0.3757
+   },
+   {
+    "label": "dairy",
+    "prob": 0.3331
+   }
+  ],
+  "dataset_split": "train",
+  "true_labels": [
+   "buttery",
+   "cheesy",
+   "dairy",
+   "fruity",
+   "sharp",
+   "sour"
+  ]
+ },
+ {
+  "id": "2-heptanone",
+  "name_en": "2-Heptanone",
+  "name_zh": "2-庚酮",
+  "smiles": "CCCCCC(C)=O",
+  "pubchem_cid": 8051,
+  "top": [
+   {
+    "label": "fruity",
+    "prob": 0.6955
+   },
+   {
+    "label": "ketonic",
+    "prob": 0.5929
+   },
+   {
+    "label": "green",
+    "prob": 0.4826
+   },
+   {
+    "label": "herbal",
+    "prob": 0.4387
+   },
+   {
+    "label": "fatty",
+    "prob": 0.4242
+   },
+   {
+    "label": "cheesy",
+    "prob": 0.4048
+   },
+   {
+    "label": "floral",
+    "prob": 0.3771
+   },
+   {
+    "label": "sweet",
+    "prob": 0.3672
+   }
+  ],
+  "dataset_split": "train",
+  "true_labels": [
+   "banana",
+   "cheesy",
+   "cinnamon",
+   "coconut",
+   "creamy",
+   "fruity",
+   "green",
+   "herbal",
+   "ketonic",
+   "spicy",
+   "sweet",
+   "woody"
+  ]
+ },
+ {
+  "id": "delta-decalactone",
+  "name_en": "delta-Decalactone",
+  "name_zh": "δ-癸内酯",
+  "smiles": "CCCCCC1CCCC(=O)O1",
+  "pubchem_cid": 12810,
+  "top": [
+   {
+    "label": "coconut",
+    "prob": 0.6941
+   },
+   {
+    "label": "fatty",
+    "prob": 0.5877
+   },
+   {
+    "label": "lactonic",
+    "prob": 0.5759
+   },
+   {
+    "label": "fruity",
+    "prob": 0.5343
+   },
+   {
+    "label": "creamy",
+    "prob": 0.4937
+   },
+   {
+    "label": "peach",
+    "prob": 0.4762
+   },
+   {
+    "label": "jasmin",
+    "prob": 0.4511
+   },
+   {
+    "label": "waxy",
+    "prob": 0.4286
+   }
+  ],
+  "dataset_split": "valid",
+  "true_labels": [
+   "buttery",
+   "coconut",
+   "creamy",
+   "dairy",
+   "fatty",
+   "fresh",
+   "fruity",
+   "lactonic",
+   "milky",
+   "nutty",
+   "oily",
+   "peach",
+   "sweet"
+  ]
+ },
+ {
+  "id": "gamma-dodecalactone",
+  "name_en": "gamma-Dodecalactone",
+  "name_zh": "γ-十二内酯",
+  "smiles": "CCCCCCCCC1CCC(=O)O1",
+  "pubchem_cid": 16821,
+  "top": [
+   {
+    "label": "fatty",
+    "prob": 0.672
+   },
+   {
+    "label": "waxy",
+    "prob": 0.555
+   },
+   {
+    "label": "coconut",
+    "prob": 0.5021
+   },
+   {
+    "label": "creamy",
+    "prob": 0.4707
+   },
+   {
+    "label": "peach",
+    "prob": 0.4668
+   },
+   {
+    "label": "fruity",
+    "prob": 0.3749
+   },
+   {
+    "label": "lactonic",
+    "prob": 0.3607
+   },
+   {
+    "label": "dairy",
+    "prob": 0.3168
+   }
+  ],
+  "dataset_split": "train",
+  "true_labels": [
+   "aldehydic",
+   "fatty",
+   "floral",
+   "fruity",
+   "metallic",
+   "milky",
+   "peach",
+   "sweet",
+   "woody"
+  ]
+ },
+ {
+  "id": "vanillin",
+  "name_en": "Vanillin",
+  "name_zh": "香兰素",
+  "smiles": "COc1cc(C=O)ccc1O",
+  "pubchem_cid": 1183,
+  "top": [
+   {
+    "label": "vanilla",
+    "prob": 0.7753
+   },
+   {
+    "label": "sweet",
+    "prob": 0.7042
+   },
+   {
+    "label": "spicy",
+    "prob": 0.5079
+   },
+   {
+    "label": "phenolic",
+    "prob": 0.4164
+   },
+   {
+    "label": "powdery",
+    "prob": 0.2591
+   },
+   {
+    "label": "balsamic",
+    "prob": 0.2495
+   },
+   {
+    "label": "floral",
+    "prob": 0.2403
+   },
+   {
+    "label": "creamy",
+    "prob": 0.2313
+   }
+  ],
+  "dataset_split": "train",
+  "true_labels": [
+   "chocolate",
+   "creamy",
+   "sweet",
+   "vanilla"
+  ]
+ },
+ {
+  "id": "methional",
+  "name_en": "Methional",
+  "name_zh": "甲硫基丙醛",
+  "smiles": "CSCCC=O",
+  "pubchem_cid": 18635,
+  "top": [
+   {
+    "label": "sulfurous",
+    "prob": 0.6808
+   },
+   {
+    "label": "onion",
+    "prob": 0.5036
+   },
+   {
+    "label": "tomato",
+    "prob": 0.4494
+   },
+   {
+    "label": "cabbage",
+    "prob": 0.4181
+   },
+   {
+    "label": "vegetable",
+    "prob": 0.418
+   },
+   {
+    "label": "potato",
+    "prob": 0.3866
+   },
+   {
+    "label": "meaty",
+    "prob": 0.3746
+   },
+   {
+    "label": "garlic",
+    "prob": 0.3558
+   }
+  ],
+  "dataset_split": "train",
+  "true_labels": [
+   "cheesy",
+   "creamy",
+   "earthy",
+   "meaty",
+   "musty",
+   "oily",
+   "onion",
+   "potato",
+   "savory",
+   "tomato",
+   "vegetable"
+  ]
+ },
+ {
+  "id": "furaneol",
+  "name_en": "Furaneol",
+  "name_zh": "呋喃酮",
+  "smiles": "CC1=C(O)C(=O)C(C)O1",
+  "pubchem_cid": 19309,
+  "top": [
+   {
+    "label": "caramellic",
+    "prob": 0.8504
+   },
+   {
+    "label": "sweet",
+    "prob": 0.5912
+   },
+   {
+    "label": "burnt",
+    "prob": 0.4866
+   },
+   {
+    "label": "buttery",
+    "prob": 0.3215
+   },
+   {
+    "label": "roasted",
+    "prob": 0.2491
+   },
+   {
+    "label": "nutty",
+    "prob": 0.2427
+   },
+   {
+    "label": "fruity",
+    "prob": 0.1663
+   },
+   {
+    "label": "creamy",
+    "prob": 0.1563
+   }
+  ],
+  "dataset_split": "train",
+  "true_labels": [
+   "burnt",
+   "caramellic",
+   "fruity",
+   "pineapple",
+   "roasted",
+   "savory",
+   "strawberry",
+   "sweet"
+  ]
+ },
+ {
+  "id": "2-acetyl-1-pyrroline",
+  "name_en": "2-Acetyl-1-pyrroline",
+  "name_zh": "2-乙酰基-1-吡咯啉",
+  "smiles": "CC(=O)C1=NCCC1",
+  "pubchem_cid": 522834,
+  "top": [
+   {
+    "label": "nutty",
+    "prob": 0.5763
+   },
+   {
+    "label": "popcorn",
+    "prob": 0.5144
+   },
+   {
+    "label": "roasted",
+    "prob": 0.4206
+   },
+   {
+    "label": "sweet",
+    "prob": 0.3768
+   },
+   {
+    "label": "caramellic",
+    "prob": 0.321
+   },
+   {
+    "label": "burnt",
+    "prob": 0.3096
+   },
+   {
+    "label": "musty",
+    "prob": 0.2116
+   },
+   {
+    "label": "meaty",
+    "prob": 0.176
+   }
+  ],
+  "dataset_split": null,
+  "true_labels": null
+ }
+]

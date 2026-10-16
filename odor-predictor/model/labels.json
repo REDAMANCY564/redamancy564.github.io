@@ -1,0 +1,692 @@
+[
+ {
+  "id": "alcoholic",
+  "en": "alcoholic",
+  "zh": "酒精样"
+ },
+ {
+  "id": "aldehydic",
+  "en": "aldehydic",
+  "zh": "醛香"
+ },
+ {
+  "id": "alliaceous",
+  "en": "alliaceous",
+  "zh": "葱蒜样"
+ },
+ {
+  "id": "almond",
+  "en": "almond",
+  "zh": "杏仁"
+ },
+ {
+  "id": "amber",
+  "en": "amber",
+  "zh": "琥珀香"
+ },
+ {
+  "id": "animal",
+  "en": "animal",
+  "zh": "动物香"
+ },
+ {
+  "id": "anisic",
+  "en": "anisic",
+  "zh": "茴香"
+ },
+ {
+  "id": "apple",
+  "en": "apple",
+  "zh": "苹果"
+ },
+ {
+  "id": "apricot",
+  "en": "apricot",
+  "zh": "杏"
+ },
+ {
+  "id": "aromatic",
+  "en": "aromatic",
+  "zh": "芳香"
+ },
+ {
+  "id": "balsamic",
+  "en": "balsamic",
+  "zh": "香脂"
+ },
+ {
+  "id": "banana",
+  "en": "banana",
+  "zh": "香蕉"
+ },
+ {
+  "id": "beefy",
+  "en": "beefy",
+  "zh": "牛肉"
+ },
+ {
+  "id": "bergamot",
+  "en": "bergamot",
+  "zh": "佛手柑"
+ },
+ {
+  "id": "berry",
+  "en": "berry",
+  "zh": "浆果"
+ },
+ {
+  "id": "bitter",
+  "en": "bitter",
+  "zh": "苦"
+ },
+ {
+  "id": "black currant",
+  "en": "black currant",
+  "zh": "黑醋栗"
+ },
+ {
+  "id": "brandy",
+  "en": "brandy",
+  "zh": "白兰地"
+ },
+ {
+  "id": "burnt",
+  "en": "burnt",
+  "zh": "焦糊"
+ },
+ {
+  "id": "buttery",
+  "en": "buttery",
+  "zh": "黄油"
+ },
+ {
+  "id": "cabbage",
+  "en": "cabbage",
+  "zh": "卷心菜"
+ },
+ {
+  "id": "camphoreous",
+  "en": "camphoreous",
+  "zh": "樟脑"
+ },
+ {
+  "id": "caramellic",
+  "en": "caramellic",
+  "zh": "焦糖"
+ },
+ {
+  "id": "cedar",
+  "en": "cedar",
+  "zh": "雪松"
+ },
+ {
+  "id": "celery",
+  "en": "celery",
+  "zh": "芹菜"
+ },
+ {
+  "id": "chamomile",
+  "en": "chamomile",
+  "zh": "洋甘菊"
+ },
+ {
+  "id": "cheesy",
+  "en": "cheesy",
+  "zh": "奶酪"
+ },
+ {
+  "id": "cherry",
+  "en": "cherry",
+  "zh": "樱桃"
+ },
+ {
+  "id": "chocolate",
+  "en": "chocolate",
+  "zh": "巧克力"
+ },
+ {
+  "id": "cinnamon",
+  "en": "cinnamon",
+  "zh": "肉桂"
+ },
+ {
+  "id": "citrus",
+  "en": "citrus",
+  "zh": "柑橘"
+ },
+ {
+  "id": "clean",
+  "en": "clean",
+  "zh": "洁净"
+ },
+ {
+  "id": "clove",
+  "en": "clove",
+  "zh": "丁香"
+ },
+ {
+  "id": "cocoa",
+  "en": "cocoa",
+  "zh": "可可"
+ },
+ {
+  "id": "coconut",
+  "en": "coconut",
+  "zh": "椰子"
+ },
+ {
+  "id": "coffee",
+  "en": "coffee",
+  "zh": "咖啡"
+ },
+ {
+  "id": "cognac",
+  "en": "cognac",
+  "zh": "干邑"
+ },
+ {
+  "id": "cooked",
+  "en": "cooked",
+  "zh": "熟煮"
+ },
+ {
+  "id": "cooling",
+  "en": "cooling",
+  "zh": "清凉"
+ },
+ {
+  "id": "cortex",
+  "en": "cortex",
+  "zh": "树皮"
+ },
+ {
+  "id": "coumarinic",
+  "en": "coumarinic",
+  "zh": "香豆素"
+ },
+ {
+  "id": "creamy",
+  "en": "creamy",
+  "zh": "奶油"
+ },
+ {
+  "id": "cucumber",
+  "en": "cucumber",
+  "zh": "黄瓜"
+ },
+ {
+  "id": "dairy",
+  "en": "dairy",
+  "zh": "乳品"
+ },
+ {
+  "id": "dry",
+  "en": "dry",
+  "zh": "干燥"
+ },
+ {
+  "id": "earthy",
+  "en": "earthy",
+  "zh": "土壤"
+ },
+ {
+  "id": "ethereal",
+  "en": "ethereal",
+  "zh": "醚样"
+ },
+ {
+  "id": "fatty",
+  "en": "fatty",
+  "zh": "脂肪"
+ },
+ {
+  "id": "fermented",
+  "en": "fermented",
+  "zh": "发酵"
+ },
+ {
+  "id": "fishy",
+  "en": "fishy",
+  "zh": "鱼腥"
+ },
+ {
+  "id": "floral",
+  "en": "floral",
+  "zh": "花香"
+ },
+ {
+  "id": "fresh",
+  "en": "fresh",
+  "zh": "清新"
+ },
+ {
+  "id": "fruit skin",
+  "en": "fruit skin",
+  "zh": "果皮"
+ },
+ {
+  "id": "fruity",
+  "en": "fruity",
+  "zh": "果香"
+ },
+ {
+  "id": "garlic",
+  "en": "garlic",
+  "zh": "大蒜"
+ },
+ {
+  "id": "gassy",
+  "en": "gassy",
+  "zh": "燃气样"
+ },
+ {
+  "id": "geranium",
+  "en": "geranium",
+  "zh": "天竺葵"
+ },
+ {
+  "id": "grape",
+  "en": "grape",
+  "zh": "葡萄"
+ },
+ {
+  "id": "grapefruit",
+  "en": "grapefruit",
+  "zh": "西柚"
+ },
+ {
+  "id": "grassy",
+  "en": "grassy",
+  "zh": "青草"
+ },
+ {
+  "id": "green",
+  "en": "green",
+  "zh": "青香"
+ },
+ {
+  "id": "hawthorn",
+  "en": "hawthorn",
+  "zh": "山楂花"
+ },
+ {
+  "id": "hay",
+  "en": "hay",
+  "zh": "干草"
+ },
+ {
+  "id": "hazelnut",
+  "en": "hazelnut",
+  "zh": "榛子"
+ },
+ {
+  "id": "herbal",
+  "en": "herbal",
+  "zh": "草本"
+ },
+ {
+  "id": "honey",
+  "en": "honey",
+  "zh": "蜂蜜"
+ },
+ {
+  "id": "hyacinth",
+  "en": "hyacinth",
+  "zh": "风信子"
+ },
+ {
+  "id": "jasmin",
+  "en": "jasmin",
+  "zh": "茉莉"
+ },
+ {
+  "id": "juicy",
+  "en": "juicy",
+  "zh": "多汁"
+ },
+ {
+  "id": "ketonic",
+  "en": "ketonic",
+  "zh": "酮样"
+ },
+ {
+  "id": "lactonic",
+  "en": "lactonic",
+  "zh": "内酯"
+ },
+ {
+  "id": "lavender",
+  "en": "lavender",
+  "zh": "薰衣草"
+ },
+ {
+  "id": "leafy",
+  "en": "leafy",
+  "zh": "叶香"
+ },
+ {
+  "id": "leathery",
+  "en": "leathery",
+  "zh": "皮革"
+ },
+ {
+  "id": "lemon",
+  "en": "lemon",
+  "zh": "柠檬"
+ },
+ {
+  "id": "lily",
+  "en": "lily",
+  "zh": "百合"
+ },
+ {
+  "id": "malty",
+  "en": "malty",
+  "zh": "麦芽"
+ },
+ {
+  "id": "meaty",
+  "en": "meaty",
+  "zh": "肉香"
+ },
+ {
+  "id": "medicinal",
+  "en": "medicinal",
+  "zh": "药味"
+ },
+ {
+  "id": "melon",
+  "en": "melon",
+  "zh": "甜瓜"
+ },
+ {
+  "id": "metallic",
+  "en": "metallic",
+  "zh": "金属"
+ },
+ {
+  "id": "milky",
+  "en": "milky",
+  "zh": "奶香"
+ },
+ {
+  "id": "mint",
+  "en": "mint",
+  "zh": "薄荷"
+ },
+ {
+  "id": "muguet",
+  "en": "muguet",
+  "zh": "铃兰"
+ },
+ {
+  "id": "mushroom",
+  "en": "mushroom",
+  "zh": "蘑菇"
+ },
+ {
+  "id": "musk",
+  "en": "musk",
+  "zh": "麝香"
+ },
+ {
+  "id": "musty",
+  "en": "musty",
+  "zh": "霉味"
+ },
+ {
+  "id": "natural",
+  "en": "natural",
+  "zh": "天然"
+ },
+ {
+  "id": "nutty",
+  "en": "nutty",
+  "zh": "坚果"
+ },
+ {
+  "id": "odorless",
+  "en": "odorless",
+  "zh": "无气味"
+ },
+ {
+  "id": "oily",
+  "en": "oily",
+  "zh": "油样"
+ },
+ {
+  "id": "onion",
+  "en": "onion",
+  "zh": "洋葱"
+ },
+ {
+  "id": "orange",
+  "en": "orange",
+  "zh": "橙子"
+ },
+ {
+  "id": "orangeflower",
+  "en": "orangeflower",
+  "zh": "橙花"
+ },
+ {
+  "id": "orris",
+  "en": "orris",
+  "zh": "鸢尾根"
+ },
+ {
+  "id": "ozone",
+  "en": "ozone",
+  "zh": "臭氧"
+ },
+ {
+  "id": "peach",
+  "en": "peach",
+  "zh": "桃"
+ },
+ {
+  "id": "pear",
+  "en": "pear",
+  "zh": "梨"
+ },
+ {
+  "id": "phenolic",
+  "en": "phenolic",
+  "zh": "酚样"
+ },
+ {
+  "id": "pine",
+  "en": "pine",
+  "zh": "松木"
+ },
+ {
+  "id": "pineapple",
+  "en": "pineapple",
+  "zh": "菠萝"
+ },
+ {
+  "id": "plum",
+  "en": "plum",
+  "zh": "李子"
+ },
+ {
+  "id": "popcorn",
+  "en": "popcorn",
+  "zh": "爆米花"
+ },
+ {
+  "id": "potato",
+  "en": "potato",
+  "zh": "马铃薯"
+ },
+ {
+  "id": "powdery",
+  "en": "powdery",
+  "zh": "粉香"
+ },
+ {
+  "id": "pungent",
+  "en": "pungent",
+  "zh": "刺激性"
+ },
+ {
+  "id": "radish",
+  "en": "radish",
+  "zh": "萝卜"
+ },
+ {
+  "id": "raspberry",
+  "en": "raspberry",
+  "zh": "树莓"
+ },
+ {
+  "id": "ripe",
+  "en": "ripe",
+  "zh": "熟果"
+ },
+ {
+  "id": "roasted",
+  "en": "roasted",
+  "zh": "烘烤"
+ },
+ {
+  "id": "rose",
+  "en": "rose",
+  "zh": "玫瑰"
+ },
+ {
+  "id": "rummy",
+  "en": "rummy",
+  "zh": "朗姆酒"
+ },
+ {
+  "id": "sandalwood",
+  "en": "sandalwood",
+  "zh": "檀香"
+ },
+ {
+  "id": "savory",
+  "en": "savory",
+  "zh": "咸鲜"
+ },
+ {
+  "id": "sharp",
+  "en": "sharp",
+  "zh": "尖锐"
+ },
+ {
+  "id": "smoky",
+  "en": "smoky",
+  "zh": "烟熏"
+ },
+ {
+  "id": "soapy",
+  "en": "soapy",
+  "zh": "皂样"
+ },
+ {
+  "id": "solvent",
+  "en": "solvent",
+  "zh": "溶剂"
+ },
+ {
+  "id": "sour",
+  "en": "sour",
+  "zh": "酸"
+ },
+ {
+  "id": "spicy",
+  "en": "spicy",
+  "zh": "辛香"
+ },
+ {
+  "id": "strawberry",
+  "en": "strawberry",
+  "zh": "草莓"
+ },
+ {
+  "id": "sulfurous",
+  "en": "sulfurous",
+  "zh": "硫味"
+ },
+ {
+  "id": "sweaty",
+  "en": "sweaty",
+  "zh": "汗臭"
+ },
+ {
+  "id": "sweet",
+  "en": "sweet",
+  "zh": "甜香"
+ },
+ {
+  "id": "tea",
+  "en": "tea",
+  "zh": "茶"
+ },
+ {
+  "id": "terpenic",
+  "en": "terpenic",
+  "zh": "萜烯"
+ },
+ {
+  "id": "tobacco",
+  "en": "tobacco",
+  "zh": "烟草"
+ },
+ {
+  "id": "tomato",
+  "en": "tomato",
+  "zh": "番茄"
+ },
+ {
+  "id": "tropical",
+  "en": "tropical",
+  "zh": "热带水果"
+ },
+ {
+  "id": "vanilla",
+  "en": "vanilla",
+  "zh": "香草"
+ },
+ {
+  "id": "vegetable",
+  "en": "vegetable",
+  "zh": "蔬菜"
+ },
+ {
+  "id": "vetiver",
+  "en": "vetiver",
+  "zh": "香根草"
+ },
+ {
+  "id": "violet",
+  "en": "violet",
+  "zh": "紫罗兰"
+ },
+ {
+  "id": "warm",
+  "en": "warm",
+  "zh": "温暖"
+ },
+ {
+  "id": "waxy",
+  "en": "waxy",
+  "zh": "蜡香"
+ },
+ {
+  "id": "weedy",
+  "en": "weedy",
+  "zh": "杂草"
+ },
+ {
+  "id": "winey",
+  "en": "winey",
+  "zh": "葡萄酒"
+ },
+ {
+  "id": "woody",
+  "en": "woody",
+  "zh": "木香"
+ }
+]

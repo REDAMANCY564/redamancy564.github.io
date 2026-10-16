@@ -65,5 +65,14 @@
     "X": "[B, 64, F] float32",
     "A": "[B, 64, 64] float32",
     "mask": "[B, 64] float32"
-  }
+  },
+  "model_file": "odor_gnn.onnx",
+  "onnx_opset": 17,
+  "model_output": {
+    "name": "probs",
+    "shape": "[B, num_labels]",
+    "sigmoid_applied": true,
+    "label_order": "same as labels.json"
+  },
+  "num_labels": 138
 }
