@@ -46,20 +46,33 @@
     return box;
   }
 
+  let litCounter = 0;
+
   /**
-   * Tier 2 literature block. names: compound names (or a food name); foods: [{name}] options.
+   * Tier 2 literature block. names: compound names (or a food name).
+   * foods: [{name}] suggestions for a free-text food filter (null = no food filter).
    * Returns a DOM node that fills itself asynchronously; API failure only affects this block.
    */
   function literature(names, foods) {
     const wrap = el("div", { class: "kb-lit" });
     const head = el("div", { class: "kb-lit-head" }, [el("h4", { text: I18N.t("lit.title") }), tag("t2")]);
     wrap.append(head);
-    let select = null;
-    if (foods && foods.length) {
-      select = el("select", { class: "kb-lit-food", "aria-label": I18N.t("lit.food_label") },
-        [el("option", { value: "", text: I18N.t("lit.any_food") })].concat(
-          foods.map((f, i) => el("option", { value: String(i), text: f.name }))));
-      wrap.append(el("label", { class: "small kb-lit-label" }, [I18N.t("lit.food_label") + " ", select]));
+    let foodInput = null;
+    if (foods) {
+      // Free-text food filter with suggestions (key-odorant foods first, then every food in the KB)
+      const listId = "kb-food-list-" + (++litCounter);
+      foodInput = el("input", { type: "text", class: "kb-lit-input", list: listId, autocomplete: "off",
+        autocapitalize: "off", spellcheck: "false", placeholder: I18N.t("lit.food_placeholder"),
+        "aria-label": I18N.t("lit.food_label") });
+      const datalist = el("datalist", { id: listId }, foods.map(f => el("option", { value: f.name })));
+      const apply = el("button", { type: "button", class: "kb-lit-apply", text: I18N.t("lit.apply") });
+      const form = el("form", { class: "kb-lit-form", novalidate: "" }, [
+        el("label", { class: "small kb-row-title", for: null, text: I18N.t("lit.food_label") }),
+        el("div", { class: "kb-lit-row" }, [foodInput, apply]), datalist]);
+      form.addEventListener("submit", e => { e.preventDefault(); run(); });
+      apply.addEventListener("click", run);
+      foodInput.addEventListener("change", run);
+      wrap.append(form);
     }
     const sortSel = el("select", { class: "kb-lit-food", "aria-label": I18N.t("lit.sort_label") }, [
       el("option", { value: "date", text: I18N.t("lit.sort_date") }),
@@ -70,9 +83,13 @@
     wrap.append(body, el("p", { class: "small muted kb-lit-note", text: I18N.t("lit.note") }));
 
     let seq = 0;
+    let lastKey = null;
     async function run() {
+      const food = foodInput && foodInput.value.trim() ? foodInput.value.trim() : null;
+      const key = (food || "") + "|" + sortSel.value;
+      if (key === lastKey) return;  // "change" and button can both fire for the same input
+      lastKey = key;
       const my = ++seq;
-      const food = select && select.value !== "" ? foods[Number(select.value)].name : null;
       body.textContent = I18N.t("lit.loading");
       try {
         const r = await FlavorKB.literature(names, food, { sort: sortSel.value });
@@ -91,7 +108,6 @@
         body.append(el("p", { class: "kb-error", text: I18N.t("lit.failed") }));
       }
     }
-    if (select) select.addEventListener("change", run);
     sortSel.addEventListener("change", run);
     run();
     return wrap;
@@ -113,10 +129,24 @@
     return wrap;
   }
 
-  /** Foods to offer in a literature food selector: key-odorant foods first, then a few detected. */
+  /**
+   * Food suggestions for the literature filter: foods where the compound is a key odorant, then
+   * foods where it was detected, then every other food in the knowledge base (names de-duplicated).
+   * c may be null (molecule not in the knowledge base).
+   */
   function litFoods(kb, c) {
-    const ids = (c.kfo || []).concat((c.det || []).slice(0, 10));
-    return [...new Set(ids)].map(f => ({ name: kb.foods[f].name }));
+    const ids = c ? (c.kfo || []).concat(c.det || []) : [];
+    const ordered = ids.concat(Object.keys(kb.foods).sort((a, b) => kb.foods[a].name.localeCompare(kb.foods[b].name)));
+    const seen = new Set();
+    const out = [];
+    for (const id of ordered) {
+      const name = kb.foods[id].name;
+      const k = name.toLowerCase();
+      if (seen.has(k)) continue;
+      seen.add(k);
+      out.push({ name });
+    }
+    return out;
   }
 
   window.FlavorKBUI = { el, tag, link, chips, literature, sourcesSummary, litFoods };

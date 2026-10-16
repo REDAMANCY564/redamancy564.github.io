@@ -207,7 +207,7 @@
         box.append(FlavorKBUI.literature(FlavorKB.compoundNames(kb.compounds[id]), FlavorKBUI.litFoods(kb, kb.compounds[id])));
       } else {
         box.append(FlavorKBUI.el("p", { text: I18N.t("kb.not_in_kb") }));
-        if (fallbackName) box.append(FlavorKBUI.literature([fallbackName], null));
+        if (fallbackName) box.append(FlavorKBUI.literature([fallbackName], FlavorKBUI.litFoods(kb, null)));
       }
     } catch (e) {
       if (my !== kbSeq) return;

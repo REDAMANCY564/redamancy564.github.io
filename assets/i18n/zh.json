@@ -12,8 +12,7 @@
   "home.view": "查看项目",
   "footer.updating": "本网站持续更新。",
   "lit.title": "相关文献",
-  "lit.food_label": "限定食品：",
-  "lit.any_food": "不限食品",
+  "lit.food_label": "限定食品（可选）",
   "lit.loading": "正在检索 Europe PMC...",
   "lit.count": "共找到 {n} 篇，显示前 {k} 篇。",
   "lit.more": "在 Europe PMC 查看全部",
@@ -39,5 +38,7 @@
   "home.kb.tags": "Dunkel 2014 · FlavorDB · Europe PMC",
   "lit.sort_label": "排序：",
   "lit.sort_date": "最新发表",
-  "lit.sort_cited": "引用最多"
+  "lit.sort_cited": "引用最多",
+  "lit.apply": "检索",
+  "lit.food_placeholder": "例如 yogurt，留空则不限食品"
 }

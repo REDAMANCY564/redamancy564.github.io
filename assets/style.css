@@ -116,6 +116,11 @@ ul.plain li { margin-bottom: 6px; }
 .kb-lit { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
 .kb-lit-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .kb-lit-head h4 { margin: 0; font-size: 1rem; }
+.kb-lit-form { margin: 8px 0; }
+.kb-lit-row { display: flex; gap: 6px; max-width: 460px; margin-top: 4px; }
+.kb-lit-input { flex: 1 1 auto; min-width: 0; max-width: none; padding: 5px 8px; font-size: .875rem; }
+.kb-lit-apply { font: inherit; font-size: .875rem; font-weight: 600; padding: 4px 12px; border-radius: 8px; border: 0;
+                background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
 .kb-lit-label { display: block; margin: 8px 0; }
 .kb-lit-label select { width: auto; max-width: 100%; padding: 4px 8px; font-size: .875rem; }
 .kb-lit-list { padding-left: 1.4em; margin: 6px 0 8px; }

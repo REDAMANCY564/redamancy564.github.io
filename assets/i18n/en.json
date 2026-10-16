@@ -12,8 +12,7 @@
   "home.view": "View project",
   "footer.updating": "This website is continuously updated.",
   "lit.title": "Related papers",
-  "lit.food_label": "Food:",
-  "lit.any_food": "Any food",
+  "lit.food_label": "Food (optional)",
   "lit.loading": "Searching Europe PMC...",
   "lit.count": "{n} papers found, top {k} shown.",
   "lit.more": "See all on Europe PMC",
@@ -39,5 +38,7 @@
   "home.kb.tags": "Dunkel 2014 · FlavorDB · Europe PMC",
   "lit.sort_label": "Sort:",
   "lit.sort_date": "Newest",
-  "lit.sort_cited": "Most cited"
+  "lit.sort_cited": "Most cited",
+  "lit.apply": "Search",
+  "lit.food_placeholder": "e.g. yogurt; leave empty for any food"
 }
