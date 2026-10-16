@@ -1,0 +1,69 @@
+{
+  "max_atoms": 64,
+  "num_features": 26,
+  "atom_features": [
+    {
+      "name": "element",
+      "values": [
+        "C",
+        "N",
+        "O",
+        "S",
+        "F",
+        "Cl",
+        "Br",
+        "I",
+        "P"
+      ],
+      "other_bucket": true
+    },
+    {
+      "name": "heavy_degree",
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "clip": "above max -> max"
+    },
+    {
+      "name": "total_num_hs",
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "clip": "above max -> max"
+    },
+    {
+      "name": "formal_charge",
+      "values": [
+        -1,
+        0,
+        1
+      ],
+      "other_value_maps_to": 0
+    },
+    {
+      "name": "is_aromatic",
+      "binary": true
+    },
+    {
+      "name": "is_in_ring",
+      "binary": true
+    }
+  ],
+  "adjacency": "bonded=1 (bond type ignored) + self loops; D^-1/2 (A+I) D^-1/2; padded rows/cols 0",
+  "mask": "1 for real atoms, 0 for padding",
+  "atom_order": "RDKit atom index of the parsed (non-stereo) SMILES, hydrogens implicit",
+  "model_inputs": {
+    "X": "[B, 64, F] float32",
+    "A": "[B, 64, 64] float32",
+    "mask": "[B, 64] float32"
+  }
+}
