@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parity test | Flavor Improver</title>
+  <link rel="stylesheet" href="../../assets/style.css">
+  <style>
+    .pass { color: #1a7f37; font-weight: 700; }
+    .fail { color: #c0392b; font-weight: 700; }
+    #summary { font-size: 1.25rem; margin: 16px 0; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1>Browser / Python parity test</h1>
+      <p class="muted">Recomputes base profiles, targets and 30 recipes per preset with mixture.js, with the default
+        thresholds and with a modified threshold set, and compares them with values from
+        training/flavor_improver/make_parity_fixtures.py.</p>
+      <div id="summary" data-status="running">Running...</div>
+    </section>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>preset</th><th>thresholds</th><th class="num">recipes</th><th class="num">max |Δprofile|</th><th class="num">max |Δscore|</th><th class="num">n_added mismatches</th><th>result</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </main>
+  <script src="../mixture.js"></script>
+  <script>
+    (async function () {
+      const get = u => fetch(u).then(r => { if (!r.ok) throw new Error(u); return r.json(); });
+      const summary = document.getElementById("summary");
+      try {
+        const [palette, bases, presets, spec, fx] = await Promise.all(
+          ["../data/palette.json", "../data/bases.json", "../data/presets.json", "../data/mixture_spec.json", "parity_fixtures.json"].map(get));
+        const tol = fx.tolerance;
+        let allPass = true, total = 0;
+        const maxAbs = (a, b) => a.reduce((m, v, i) => Math.max(m, Math.abs(v - b[i])), 0);
+        for (const c of fx.cases) {
+          const p = presets.find(q => q.id === c.preset);
+          const base = bases.find(b => b.id === p.base);
+          const prob = new Mixture.Problem({ palette, base, direction: p.direction, spec,
+            thresholdsUg: c.thresholds === "modified" ? fx.modified_thresholds_ug_kg : null });
+          const candOk = JSON.stringify(prob.candidates) === JSON.stringify(fx.candidates);
+          let dProf = Math.max(maxAbs(prob.baseProfile, c.base_profile), maxAbs(prob.target, c.target)), dScore = 0, nMis = 0;
+          for (const e of c.evals) {
+            const ev = prob.evaluate(e.x);
+            dProf = Math.max(dProf, maxAbs(ev.profile, e.profile));
+            dScore = Math.max(dScore, Math.abs(ev.score - e.score), Math.abs(ev.cos - e.cos));
+            if (ev.nAdded !== e.n_added) nMis++;
+          }
+          total += c.evals.length;
+          const pass = candOk && dProf <= tol && dScore <= tol && nMis === 0;
+          allPass = allPass && pass;
+          document.getElementById("rows").insertAdjacentHTML("beforeend",
+            `<tr><td>${c.preset}</td><td>${c.thresholds}</td><td class="num">${c.evals.length}</td><td class="num">${dProf.toExponential(2)}</td>` +
+            `<td class="num">${dScore.toExponential(2)}</td><td class="num">${nMis}</td><td class="${pass ? "pass" : "fail"}">${pass ? "PASS" : "FAIL"}${candOk ? "" : " (candidate order)"}</td></tr>`);
+        }
+        summary.textContent = (allPass ? "ALL PASS" : "FAILED") + ` (${total} recipes, tolerance ${tol})`;
+        summary.className = allPass ? "pass" : "fail";
+        summary.dataset.status = allPass ? "pass" : "fail";
+      } catch (e) {
+        summary.textContent = "ERROR: " + e.message; summary.className = "fail"; summary.dataset.status = "fail";
+      }
+    })();
+  </script>
+</body>
+</html>

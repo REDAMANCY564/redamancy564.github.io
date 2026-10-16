@@ -1,0 +1,88 @@
+{
+  "_about": "Base food compositions transcribed from published quantitative studies (units ug/kg as reported). Every value comes from the cited table; nothing is estimated. Compounds without an accepted water threshold are kept here for transparency but excluded from the model (see prepare_data.py).",
+  "bases": [
+    {
+      "id": "yogurt_high_acid",
+      "name_en": "Long shelf-life yoghurt (high-acidity milk)",
+      "name_zh": "常温酸奶（高酸度原料奶批次）",
+      "sample": "Batch H",
+      "unit": "ug/kg",
+      "source": {
+        "citation": "Wang J, Zhang D, Li J, Zou T, Wen R, Hou Y, Song H, Li H, Ma H, Shi J. Aroma profiling of long shelf-life yoghurt from milk with varying acidity: insights from sensory evaluation and instrumental analysis. Food Chem X 2025.",
+        "doi": "10.1016/j.fochx.2025.102215", "pmcid": "PMC11814515", "license": "CC BY-NC",
+        "table": "Table 1", "method": "GC-MS, standard addition"
+      },
+      "note": "Acetaldehyde was not quantified in this study.",
+      "compounds": {
+        "diacetyl": 826.52, "2,3-pentanedione": 45.67, "hexanal": 10.23, "2-heptanone": 107.75,
+        "2-pentylfuran": 3.08, "styrene": 1.58, "acetoin": 15530.88, "octanal": 19.06, "acetic acid": 402.29,
+        "nonanal": 160.95, "furfural": 169.58, "benzaldehyde": 2.69, "decanal": 23.10, "butanoic acid": 6668.71,
+        "2-undecanone": 138.25, "hexanoic acid": 3454.08
+      }
+    },
+    {
+      "id": "milk_pasteurized",
+      "name_en": "Pasteurized milk",
+      "name_zh": "巴氏杀菌奶",
+      "sample": "PAST",
+      "unit": "ug/kg",
+      "source": {
+        "citation": "Xu K, Han H, Wang X, Zhang X, Yang X, Lu X, Han Z, Wang S, Wang Y, et al. Elucidation of key aroma-active compounds and sensory profiles in raw and thermally sterilized milks: perspective from molecular sensory science. Food Chem X 2026.",
+        "doi": "10.1016/j.fochx.2026.103696", "pmcid": "PMC12950439", "license": "CC BY-NC",
+        "table": "Table 3 (SIDA) where available, otherwise Table 2 (external standard)",
+        "method": "SIDA for 8 compounds; external standard for the others"
+      },
+      "method_by_compound": {"hexanal": "SIDA", "octanal": "SIDA", "nonanal": "SIDA", "1-octen-3-ol": "SIDA",
+                             "benzaldehyde": "SIDA", "butanoic acid": "SIDA", "octanoic acid": "SIDA", "decanoic acid": "SIDA"},
+      "note": "For compounds measured by both methods the two values differ by up to ~9x (e.g. butanoic acid in raw milk); SIDA values are used where available.",
+      "compounds": {
+        "hexanal": 13.00, "octanal": 2.36, "nonanal": 5.61, "1-octen-3-ol": 3.29, "benzaldehyde": 34.19,
+        "butanoic acid": 245.29, "octanoic acid": 1119.83, "decanoic acid": 263.01,
+        "1-butanol": 81.84, "3,7-dimethyl-1-octanol": 1.87, "(E)-2-octenal": 9.42, "acetic acid": 116.21,
+        "undecanoic acid": 106.93, "delta-hexalactone": 351.53, "gamma-nonalactone": 12.86, "pantolactone": 9.76,
+        "delta-decalactone": 137.90, "gamma-dodecalactone": 40.15, "delta-dodecalactone": 844.16,
+        "diacetyl": 9.70, "2(5H)-furanone": 30.48, "2-pentadecanone": 1.51, "2,4-di-tert-butylphenol": 12.61
+      }
+    },
+    {
+      "id": "gouda_4w",
+      "name_en": "Young Gouda cheese, 4 weeks ripened (pasteurized milk)",
+      "name_zh": "年轻豪达奶酪（巴氏奶制，成熟 4 周）",
+      "sample": "PM-G, 4 weeks, batch 1",
+      "unit": "ug/kg dry matter",
+      "source": {
+        "citation": "Duensing PW, Hinrichs J, Schieberle P. Formation of key aroma compounds during 30 weeks of ripening in Gouda-type cheese produced from pasteurized and raw milk. J Agric Food Chem 2024.",
+        "doi": "10.1021/acs.jafc.4c01814", "pmcid": "PMC11100003", "license": "CC BY",
+        "table": "Table 1", "method": "SIDA (stable isotope dilution assays)"
+      },
+      "note": "Concentrations are on a dry-matter basis; the paper does not report the water content needed to convert them. Replaces the plant-based yoghurt example (user decision): the only available quantitative study (Nijdam et al. 2025) quantified three compounds and none of the plant-derived odorants.",
+      "compounds": {
+        "butanoic acid": 13915, "hexanoic acid": 9782, "pentanoic acid": 147, "ethyl butanoate": 17,
+        "ethyl hexanoate": 4, "delta-dodecalactone": 3096, "delta-decalactone": 2484, "diacetyl": 3668,
+        "3-methylbutanal": 223, "3-methyl-1-butanol": 151, "3-methylbutanoic acid": 8012,
+        "2-methylbutanoic acid": 1254, "acetic acid": 934606, "2-methylpropanoic acid": 6007,
+        "2-phenylethanol": 203, "phenylacetic acid": 677
+      }
+    },
+    {
+      "id": "gouda_30w",
+      "name_en": "Gouda cheese, 30 weeks ripened (pasteurized milk)",
+      "name_zh": "豪达奶酪（巴氏奶制，成熟 30 周）",
+      "sample": "PM-G, 30 weeks, batch 1",
+      "unit": "ug/kg dry matter",
+      "source": {
+        "citation": "Duensing PW, Hinrichs J, Schieberle P. Formation of key aroma compounds during 30 weeks of ripening in Gouda-type cheese produced from pasteurized and raw milk. J Agric Food Chem 2024.",
+        "doi": "10.1021/acs.jafc.4c01814", "pmcid": "PMC11100003", "license": "CC BY",
+        "table": "Table 1", "method": "SIDA (stable isotope dilution assays)"
+      },
+      "note": "Concentrations are on a dry-matter basis; the paper does not report the water content needed to convert them.",
+      "compounds": {
+        "butanoic acid": 86811, "hexanoic acid": 14931, "pentanoic acid": 572, "ethyl butanoate": 51,
+        "ethyl hexanoate": 23, "delta-dodecalactone": 3762, "delta-decalactone": 2372, "diacetyl": 1856,
+        "3-methylbutanal": 136, "3-methyl-1-butanol": 251, "3-methylbutanoic acid": 37548,
+        "2-methylbutanoic acid": 5836, "acetic acid": 1236805, "2-methylpropanoic acid": 16201,
+        "2-phenylethanol": 318, "phenylacetic acid": 1899
+      }
+    }
+  ]
+}

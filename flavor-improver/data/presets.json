@@ -1,0 +1,45 @@
+[
+ {
+  "id": "yogurt",
+  "base": "yogurt_high_acid",
+  "direction": {
+   "milky": 1,
+   "sweet": 1,
+   "buttery": 1,
+   "sour": -1
+  },
+  "rationale_en": "In the source study the low-acidity batch scored highest for milky, sweet and buttery notes, the high-acidity batch for sour and fermented notes.",
+  "rationale_zh": "原研究中低酸度批次的奶香、甜香、黄油评分最高，高酸度批次的酸味和发酵味更重。"
+ },
+ {
+  "id": "milk",
+  "base": "milk_pasteurized",
+  "direction": {
+   "creamy": 1,
+   "fatty": 1,
+   "milky": 1
+  },
+  "rationale_en": "Richer, creamier milk aroma.",
+  "rationale_zh": "让牛奶的香气更浓郁、更有奶油感。"
+ },
+ {
+  "id": "young_gouda",
+  "base": "gouda_4w",
+  "direction": {
+   "cheesy": 1,
+   "buttery": 1
+  },
+  "rationale_en": "Move a young cheese towards a fuller cheesy, buttery aroma.",
+  "rationale_zh": "让年轻奶酪的奶酪感、黄油感更饱满。"
+ },
+ {
+  "id": "mature_gouda",
+  "base": "gouda_30w",
+  "direction": {
+   "buttery": 1,
+   "sour": -1
+  },
+  "rationale_en": "More buttery, less sour.",
+  "rationale_zh": "增强黄油感，减弱酸感。"
+ }
+]

@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flavor Improver | Simon Cui</title>
+  <meta name="description" content="A demonstration of Bayesian optimization for dairy flavor improvement, with a virtual evaluation function.">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .btn { font: inherit; font-weight: 600; padding: 8px 18px; border-radius: 8px; border: 1px solid var(--accent);
+           background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
+    .btn.secondary { background: var(--surface); color: var(--accent); }
+    .btn:disabled { opacity: .55; cursor: not-allowed; }
+    .btn-sm { font: inherit; font-size: .8rem; padding: 1px 8px; border-radius: 6px; border: 1px solid var(--border);
+              background: var(--surface); color: var(--accent); cursor: pointer; }
+    .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 16px 0 8px; }
+    .controls label { font-size: .9rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+    .controls select { width: auto; padding: 5px 8px; font-size: .9rem; }
+    .step-info { font-variant-numeric: tabular-nums; font-size: .95rem; }
+    .step-info b { color: var(--accent); }
+
+    .base-meta { margin: 10px 0 0; }
+    .grid-2 { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 16px; }
+    @media (min-width: 760px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+    .chart-box { position: relative; height: 340px; }
+    .chart-box.line { height: 260px; }
+    .chart-cap { font-size: .85rem; color: var(--muted); margin: 8px 0 0; }
+
+    .dirs { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+    .dir { font-size: .85rem; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); }
+    .dir.up { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+    .dir.down { border-color: #8a5a00; color: #8a5a00; font-weight: 600; }
+
+    input.thr { font: inherit; font-size: .875rem; width: 7.5em; padding: 3px 6px; border: 1px solid var(--border);
+                border-radius: 6px; text-align: right; font-variant-numeric: tabular-nums; background: var(--surface); }
+    input.thr:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+    tr.modified input.thr { border-color: #8a5a00; background: var(--warn-soft); }
+    td .sub { display: block; font-size: .78rem; color: var(--muted); white-space: nowrap; }
+    th .sub { display: block; font-weight: 400; font-size: .78rem; }
+    .thr-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0; }
+    details.thr-more { margin-top: 12px; }
+    details.thr-more summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+    .mode-note { margin-top: 12px; }
+
+    .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 8px 0 20px; }
+    .flow .step { flex: 1 1 120px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; }
+    .flow .step b { display: block; }
+    .flow .step span { font-size: .85rem; color: var(--muted); }
+    .flow .arrow { align-self: center; color: var(--accent); font-size: 1.4rem; }
+    .flow .loop { flex-basis: 100%; text-align: center; font-size: .85rem; color: var(--muted); }
+    @media (max-width: 699px) {
+      .flow { flex-direction: column; }
+      .flow .step { flex-basis: auto; }
+      .flow .arrow { transform: rotate(90deg); }
+    }
+    .formula { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+               font-size: .9rem; overflow-x: auto; }
+    .formula p { margin: 0 0 4px; white-space: nowrap; }
+    h3.sub-h { margin-top: 20px; }
+    .results-table td:first-child { white-space: normal; min-width: 15em; }
+    .results-table td { white-space: normal; }
+    .results-table td.num { white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../">← <span data-i18n="nav.home">Home</span></a>
+      <button class="lang-toggle" id="lang-toggle" type="button">
+        <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1 data-i18n="hero.title">Improving dairy flavor with Bayesian optimization</h1>
+      <p data-i18n="hero.intro"></p>
+      <div class="note warn" data-i18n-html="hero.disclaimer"></div>
+    </section>
+
+    <!-- Demo -->
+    <section class="section" id="demo">
+      <h2 data-i18n="demo.title">Try it</h2>
+      <label class="field" for="preset" data-i18n="demo.select">Choose an example</label>
+      <select id="preset"></select>
+      <p class="small muted base-meta" id="base-meta"></p>
+
+      <h3 class="sub-h" data-i18n="base.title">Base composition and odor thresholds</h3>
+      <p class="small muted" data-i18n="base.intro"></p>
+      <div class="thr-tools">
+        <button type="button" class="btn-sm" id="thr-reset-all" data-i18n="thr.reset_all">Reset all thresholds</button>
+        <span class="small muted" id="thr-count"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="col.compound">Compound</th>
+              <th class="num"><span data-i18n="col.conc">Concentration</span><span class="sub" id="conc-unit"></span></th>
+              <th class="num"><span data-i18n="col.threshold">Threshold</span><span class="sub">µg/kg</span></th>
+              <th class="num">OAV</th>
+              <th data-i18n="col.source">Source</th>
+              <th class="num"><span data-i18n="col.range">Literature range</span><span class="sub">µg/kg</span></th>
+            </tr>
+          </thead>
+          <tbody id="base-body"></tbody>
+        </table>
+      </div>
+      <details class="thr-more">
+        <summary data-i18n="thr.palette_title">Candidate additives (18) and their thresholds</summary>
+        <p class="small muted" style="margin-top:8px" data-i18n="thr.palette_intro"></p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-i18n="col.compound">Compound</th>
+                <th class="num"><span data-i18n="col.threshold">Threshold</span><span class="sub">µg/kg</span></th>
+                <th data-i18n="col.source">Source</th>
+                <th class="num"><span data-i18n="col.range">Literature range</span><span class="sub">µg/kg</span></th>
+                <th class="num"><span data-i18n="col.max_add">Max. addition</span><span class="sub">µg/kg</span></th>
+              </tr>
+            </thead>
+            <tbody id="palette-body"></tbody>
+          </table>
+        </div>
+      </details>
+
+      <h3 class="sub-h" data-i18n="dir.title">Direction of improvement</h3>
+      <p class="small muted" id="dir-rationale"></p>
+      <div class="dirs" id="dirs"></div>
+
+      <div class="controls">
+        <button type="button" class="btn" id="btn-run" data-i18n="ctl.start">Start optimization</button>
+        <button type="button" class="btn secondary" id="btn-skip" data-i18n="ctl.skip">Skip to result</button>
+        <label><span data-i18n="ctl.speed">Speed</span>
+          <select id="speed">
+            <option value="600" data-i18n="ctl.slow">Slow</option>
+            <option value="200" selected data-i18n="ctl.normal">Normal</option>
+            <option value="40" data-i18n="ctl.fast">Fast</option>
+          </select>
+        </label>
+        <span class="step-info" id="step-info" aria-live="polite"></span>
+      </div>
+      <div class="note warn mode-note" id="mode-note" hidden></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3 data-i18n="chart.radar_title">Odor profile</h3>
+          <div class="chart-box"><canvas id="radar" aria-label="Odor profile radar chart"></canvas></div>
+          <p class="chart-cap" data-i18n="chart.radar_cap"></p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="chart.line_title">Best score so far</h3>
+          <div class="chart-box line"><canvas id="line" aria-label="Best score by number of trials"></canvas></div>
+          <p class="chart-cap" id="line-cap"></p>
+          <h3 style="margin-top:16px" data-i18n="recipe.title">Suggested additions (best so far)</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th data-i18n="col.compound">Compound</th>
+                  <th class="num"><span data-i18n="col.added">Added</span><span class="sub" id="add-unit"></span></th>
+                  <th class="num"><span data-i18n="col.added_oav">Added OAV</span></th>
+                  <th class="num"><span data-i18n="col.oav_after">OAV after</span></th>
+                </tr>
+              </thead>
+              <tbody id="recipe-body"></tbody>
+            </table>
+          </div>
+          <p class="small muted" id="recipe-note" style="margin-top:8px"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Method -->
+    <section class="section" id="method">
+      <h2 data-i18n="method.title">How it works</h2>
+      <div class="flow">
+        <div class="step"><b data-i18n="flow.1.title"></b><span data-i18n="flow.1.sub"></span></div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="step"><b data-i18n="flow.2.title"></b><span data-i18n="flow.2.sub"></span></div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="step"><b data-i18n="flow.3.title"></b><span data-i18n="flow.3.sub"></span></div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="step"><b data-i18n="flow.4.title"></b><span data-i18n="flow.4.sub"></span></div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="step"><b data-i18n="flow.5.title"></b><span data-i18n="flow.5.sub"></span></div>
+        <div class="loop" data-i18n="flow.loop"></div>
+      </div>
+      <p data-i18n-html="method.gp"></p>
+      <p data-i18n-html="method.acq"></p>
+      <h3 class="sub-h" data-i18n="method.eval_title">The virtual evaluation function</h3>
+      <div class="formula">
+        <p data-i18n-html="formula.1"></p>
+        <p data-i18n-html="formula.2"></p>
+        <p data-i18n-html="formula.3"></p>
+        <p data-i18n-html="formula.4"></p>
+        <p data-i18n-html="formula.5"></p>
+      </div>
+      <p style="margin-top:12px" data-i18n-html="method.params"></p>
+      <p data-i18n-html="method.lift"></p>
+      <div class="note" data-i18n-html="method.no_decrease"></div>
+    </section>
+
+    <!-- Results -->
+    <section class="section" id="results">
+      <h2 data-i18n="results.title">Does Bayesian optimization help?</h2>
+      <p data-i18n="results.intro"></p>
+      <div class="table-wrap">
+        <table class="results-table">
+          <thead id="res-head"></thead>
+          <tbody id="res-body"></tbody>
+        </table>
+      </div>
+      <p class="small muted" style="margin-top:8px" data-i18n="results.table_note"></p>
+      <p data-i18n-html="results.takeaway"></p>
+
+      <h3 class="sub-h" data-i18n="known.title">Known-answer test</h3>
+      <p data-i18n="known.intro"></p>
+      <div class="table-wrap">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th data-i18n="known.col.case">Case</th>
+              <th data-i18n="known.col.true">Compounds actually added</th>
+              <th class="num" data-i18n="known.col.cos">Profile match</th>
+              <th class="num" data-i18n="known.col.exact">Exact recovery</th>
+              <th class="num" data-i18n="known.col.jaccard">Overlap</th>
+            </tr>
+          </thead>
+          <tbody id="known-body"></tbody>
+        </table>
+      </div>
+      <p class="small muted" style="margin-top:8px" data-i18n="known.note"></p>
+      <p data-i18n-html="known.takeaway"></p>
+
+      <h3 class="sub-h" data-i18n="jsbo.title">The optimizer in your browser</h3>
+      <p id="jsbo-text"></p>
+
+      <h3 class="sub-h" data-i18n="history.title">Parameter changes during development</h3>
+      <ul class="plain">
+        <li data-i18n-html="history.1"></li>
+        <li data-i18n-html="history.2"></li>
+      </ul>
+    </section>
+
+    <!-- Limitations -->
+    <section class="section" id="limits">
+      <h2 data-i18n="limits.title">Limitations</h2>
+      <ul class="plain">
+        <li data-i18n-html="limits.1"></li>
+        <li data-i18n-html="limits.2"></li>
+        <li data-i18n-html="limits.3"></li>
+        <li data-i18n-html="limits.4"></li>
+        <li data-i18n-html="limits.5"></li>
+        <li data-i18n-html="limits.6"></li>
+        <li data-i18n-html="limits.7"></li>
+        <li data-i18n-html="limits.8"></li>
+      </ul>
+      <p class="small muted" style="margin-top:12px" data-i18n="limits.future"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n-html="footer.p1"></p>
+      <p><b data-i18n="footer.bases">Base compositions:</b></p>
+      <ul class="plain" id="footer-bases"></ul>
+      <p style="margin-top:8px" data-i18n-html="footer.thr"></p>
+      <p data-i18n-html="footer.code"></p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
+  <script src="../assets/i18n.js" data-page-dict="i18n/"></script>
+  <script src="mixture.js"></script>
+  <script src="bo.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

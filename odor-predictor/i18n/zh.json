@@ -73,5 +73,6 @@
   "footer.data": "<b>数据来源：</b>The Good Scents Company；Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href=\"https://arxiv.org/abs/1910.10685\" target=\"_blank\" rel=\"noopener\">arXiv:1910.10685</a>，CC BY-NC 协议）；由 <a href=\"https://github.com/BioMachineLearning/openpom\" target=\"_blank\" rel=\"noopener\">OpenPOM</a>（Barsainyan et al., 2023）整理合并。仅用于非商业用途，本站不转载原始数据。",
   "footer.thr": "<b>气味阈值：</b>L.J. van Gemert, Odour Thresholds: Compilations of Odour Threshold Values in Air, Water and Other Media, 2nd ed., Oliemans Punter &amp; Partners, 2011。代表值优先取自其中收录的 Czerny et al., <i>Eur. Food Res. Technol.</i> 228, 265-273 (2008)。",
   "footer.ref": "<b>相关文献：</b>Lee et al., A principal odor map unifies diverse tasks in human olfactory perception, <i>Science</i> 381, 999-1006 (2023). <a href=\"https://doi.org/10.1126/science.ade4401\" target=\"_blank\" rel=\"noopener\">doi:10.1126/science.ade4401</a>",
+  "footer.fi": "<b>应用：</b>本模型的预测被用于<a href=\"../flavor-improver/\">项目 2：用贝叶斯优化改良乳品风味</a>。",
   "footer.code": "<b>代码：</b><a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>"
 }

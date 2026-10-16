@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Browser BO check | Flavor Improver</title>
+  <link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1>Browser BO vs random sparse search</h1>
+      <p class="muted">bo.js (60 evaluations) against random sparse search (60 evaluations), default thresholds, 10 seeds per preset.</p>
+      <div id="summary" data-status="running">Running...</div>
+    </section>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>preset</th><th class="num">no addition</th><th class="num">BO best (mean ± sd)</th><th class="num">random best (mean ± sd)</th><th class="num">BO wins</th><th class="num">BO n_added</th><th class="num">ms / run</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </main>
+  <script src="../mixture.js"></script>
+  <script src="../bo.js"></script>
+  <script>
+    (async function () {
+      const get = u => fetch(u).then(r => r.json());
+      const [palette, bases, presets, spec] = await Promise.all(
+        ["../data/palette.json", "../data/bases.json", "../data/presets.json", "../data/mixture_spec.json"].map(get));
+      const ms = v => { const m = v.reduce((a, b) => a + b, 0) / v.length; return [m, Math.sqrt(v.reduce((a, b) => a + (b - m) ** 2, 0) / v.length)]; };
+      const f = ([m, s]) => m.toFixed(4) + " ± " + s.toFixed(4);
+      const out = [];
+      for (const p of presets) {
+        const prob = new Mixture.Problem({ palette, base: bases.find(b => b.id === p.base), direction: p.direction, spec });
+        const s0 = prob.evaluate(new Array(prob.dim).fill(spec.x_bounds[0])).score;
+        const bo = [], rs = [], nAdd = [], t = [];
+        for (let seed = 0; seed < 10; seed++) {
+          const t0 = performance.now();
+          const h = await BO.runBO(prob, { budget: 60, seed });
+          t.push(performance.now() - t0);
+          const b = h.reduce((a, c) => (c.ev.score > a.ev.score ? c : a));
+          bo.push(b.ev.score); nAdd.push(b.ev.nAdded);
+          rs.push(Math.max(...BO.runRandomSparse(prob, { budget: 60, seed }).map(c => c.ev.score)));
+        }
+        const wins = bo.filter((v, i) => v > rs[i]).length;
+        out.push({ preset: p.id, s0, bo: ms(bo), rs: ms(rs), wins, n: ms(nAdd)[0], t: ms(t)[0] });
+        document.getElementById("rows").insertAdjacentHTML("beforeend",
+          `<tr><td>${p.id}</td><td class="num">${s0.toFixed(4)}</td><td class="num">${f(ms(bo))}</td><td class="num">${f(ms(rs))}</td><td class="num">${wins}/10</td><td class="num">${ms(nAdd)[0].toFixed(1)}</td><td class="num">${ms(t)[0].toFixed(0)}</td></tr>`);
+      }
+      const s = document.getElementById("summary");
+      s.textContent = "DONE"; s.dataset.status = "done"; s.dataset.result = JSON.stringify(out);
+    })();
+  </script>
+</body>
+</html>

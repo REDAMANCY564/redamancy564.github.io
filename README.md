@@ -3,6 +3,7 @@
 - 个人主页：https://redamancy564.github.io/
 - 项目页：https://redamancy564.github.io/odor-predictor/
 - 风味知识库：https://redamancy564.github.io/flavor-kb/
+- 项目 2 乳品风味改良（贝叶斯优化）：https://redamancy564.github.io/flavor-improver/
 
 ## 风味知识库（flavor-kb/）
 
@@ -25,6 +26,27 @@ python knowledge/fetch_flavordb.py   # 下载 FlavorDB2（约 1,000 次请求，
 python knowledge/build_kb.py         # 生成 flavor-kb/data/*.json
 ```
 原文 PDF（Dunkel 2014、van Gemert 2011）有版权，已加入 `.gitignore`，不会上传。
+
+## 乳品风味改良推荐（flavor-improver/）
+
+方法框架演示：选择一种乳制品基底和改良方向，用贝叶斯优化搜索「添加哪些风味物质、加多少」。评价函数是虚拟的（OAV → log 强度 → 描述词「提升度」向量加和 → 与目标轮廓的余弦相似度，减去种数和用量惩罚），不含掩蔽、协同、基质效应。计划见 `PLAN-formulation.md`。
+
+- **数据**：18 种候选添加物 + 基底物质，阈值取自 van Gemert 2011（固定规则：Czerny 2008 > Buttery > Karagül-Yüceer），基底浓度来自 3 篇定量文献（出处见网页页脚和 `flavor-improver/data/bases.json`）。单分子气味向量来自项目 1 的模型。
+- **参数**：K = 5，λ₁ = 0.05，λ₂ = 0.002，α = 0.1，添加量为阈值的 0.01 至 100 倍（`flavor-improver/data/mixture_spec.json`）。λ₂ 和上限的调整过程记录在 `training/flavor_improver/mixture.py` 注释和网页「结果」部分。
+- **网页**：默认阈值下播放预计算的优化过程（Python / BoTorch）；访客修改阈值后，可在浏览器中重新运行简化版贝叶斯优化（`bo.js`）。
+- **一致性测试**：https://redamancy564.github.io/flavor-improver/tests/parity.html ，检查 `mixture.js` 与 Python 的混合规则、目标函数完全一致。浏览器版算法的表现见 `tests/bo_check.html`（运行约需几十秒）。**修改 `mixture.py` 或数据后，必须重新生成测试数据并确认全部 PASS。**
+
+**重新运行优化实验**（CPU 即可，约 1 小时）：
+```powershell
+cd training
+.\.venv-bo\Scripts\Activate.ps1      # 首次：python -m venv .venv-bo，再安装 CPU 版 torch 和 botorch
+python flavor_improver/mixture.py               # 写出 mixture_spec.json
+python flavor_improver/run_experiments.py       # 4 示例 × 4 方法 × 10 种子 + 已知答案检验（可中断续跑）
+python flavor_improver/analyze.py               # 生成 bo_metrics.json、bo_traces.json
+python flavor_improver/make_parity_fixtures.py  # 生成一致性测试数据
+```
+
+## 分子气味预测（odor-predictor/）
 
 用图神经网络（GNN）从分子结构预测风味分子的气味描述词。模型导出为 ONNX，网页为纯 HTML/CSS/JS，托管在 GitHub Pages，不需要服务器。
 
@@ -58,7 +80,7 @@ git push
 |---|---|
 | 姓名、一句话介绍、邮箱、LinkedIn、简历 PDF | `assets/profile.json`（字段留空 `""` 则网页上不显示） |
 | 主页的其他文字（中 / 英） | `assets/i18n/zh.json`、`assets/i18n/en.json` |
-| 项目页的文字（中 / 英） | `odor-predictor/i18n/zh.json`、`odor-predictor/i18n/en.json` |
+| 项目页的文字（中 / 英） | `odor-predictor/i18n/`、`flavor-improver/i18n/`、`flavor-kb/i18n/` 下的 `zh.json`、`en.json` |
 | 网站样式（颜色、字号等） | `assets/style.css` |
 | 气味标签的中文译名 | `training/label_translations.csv`，改完运行下文的 `make_site_assets.py` |
 
@@ -90,8 +112,16 @@ odor-predictor/         项目页
   data/                 presets.json（预设分子预测）、metrics.json（评估结果）
   engine.js             浏览器端特征提取 + ONNX 推理（须与 training/featurize.py 一致）
   tests/                一致性测试页 parity.html 及测试数据
+flavor-improver/        项目 2：乳品风味改良
+  index.html, app.js    页面与交互逻辑
+  mixture.js, bo.js     浏览器端评价函数（须与 training/flavor_improver/mixture.py 一致）与贝叶斯优化
+  data/                 palette、bases、presets、mixture_spec、bo_traces、bo_metrics
+  tests/                parity.html（一致性）、bo_check.html（浏览器版算法表现）
+flavor-kb/              风味知识库
 training/               训练代码（原始数据不上传）
-PLAN.md                 开发计划
+  flavor_improver/      项目 2 的数据准备、贝叶斯优化实验与分析
+PLAN.md                 开发计划（项目 1）
+PLAN-formulation.md     开发计划（项目 2）
 ```
 
 ## 重新训练模型
@@ -134,3 +164,4 @@ python make_site_assets.py  # 生成 labels.json、presets.json、一致性测�
 - 展示：气味空间二维可视化（UMAP），可点击浏览分子
 - 领域：加入乳品风味相关分子子集分析
 - 主页：完整个人主页（教育经历、论文、专利、其他项目）
+- 乳品风味改良：前体物质推荐（「前体 → 风味物质 → 反应类型」对照表，作为规则查询）；引入掩蔽效应（参考混合物模型，或用 Snitz 2013、Ravia 2020 等公开数据校准，需核实许可）；加入成本、法规限量、溶解度约束做多目标优化；人在回路模式（用户为方案打分，替代虚拟评价函数）；自定义基底和改良方向

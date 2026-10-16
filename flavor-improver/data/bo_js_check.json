@@ -1,0 +1,11 @@
+{
+ "note": "Output of tests/bo_check.html (bo.js, 60 evaluations, default thresholds, seeds 0-9) vs random sparse search with the same budget.",
+ "budget": 60,
+ "seeds": 10,
+ "presets": {
+  "yogurt": {"no_addition": 0.9167, "bo": [0.9291, 0.0020], "random_sparse": [0.9288, 0.0018], "bo_wins": 6},
+  "milk": {"no_addition": 0.9697, "bo": [0.9708, 0.0004], "random_sparse": [0.9699, 0.0005], "bo_wins": 9},
+  "young_gouda": {"no_addition": 0.9612, "bo": [0.9649, 0.0015], "random_sparse": [0.9627, 0.0011], "bo_wins": 8},
+  "mature_gouda": {"no_addition": 0.9231, "bo": [0.9431, 0.0038], "random_sparse": [0.9404, 0.0032], "bo_wins": 7}
+ }
+}

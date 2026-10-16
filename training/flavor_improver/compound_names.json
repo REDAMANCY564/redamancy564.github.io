@@ -1,0 +1,16 @@
+{
+  "_about": "Compounds used in the flavor-improver project. 'palette' = candidate additives; 'base_only' = compounds that occur in the base foods but are not offered as additives. Names are resolved via PubChem.",
+  "palette": [
+    "diacetyl", "acetoin", "2,3-pentanedione", "acetaldehyde", "butanoic acid", "hexanoic acid",
+    "2-heptanone", "2-nonanone", "delta-decalactone", "delta-dodecalactone", "gamma-dodecalactone",
+    "delta-octalactone", "gamma-decalactone", "vanillin", "maltol", "furaneol", "ethyl butanoate", "ethyl hexanoate"
+  ],
+  "base_only": [
+    "acetic acid", "pentanoic acid", "octanoic acid", "decanoic acid", "undecanoic acid", "2-methylpropanoic acid",
+    "2-methylbutanoic acid", "3-methylbutanoic acid", "3-methylbutanal", "3-methyl-1-butanol", "2-phenylethanol",
+    "phenylacetic acid", "hexanal", "octanal", "nonanal", "decanal", "(E)-2-octenal", "benzaldehyde", "furfural",
+    "2-pentylfuran", "styrene", "2-undecanone", "2-pentadecanone", "1-butanol", "1-octen-3-ol",
+    "3,7-dimethyl-1-octanol", "delta-hexalactone", "gamma-nonalactone", "pantolactone", "2(5H)-furanone",
+    "2,4-di-tert-butylphenol"
+  ]
+}

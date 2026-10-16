@@ -1,0 +1,12 @@
+{
+ "x_bounds": [
+  -2.0,
+  2.0
+ ],
+ "x_not_added_below": -1.0,
+ "K": 5,
+ "lambda1": 0.05,
+ "lambda2": 0.002,
+ "alpha": 0.1,
+ "normalization": "L1"
+}
