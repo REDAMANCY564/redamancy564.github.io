@@ -188,10 +188,38 @@
     }
   }
 
+  // ---------- Flavor knowledge base: typical sources + literature ----------
+  let kbSeq = 0;
+  async function renderKbSources() {
+    const my = ++kbSeq;
+    const box = $("kb-body");
+    box.textContent = I18N.t("kb.loading");
+    const fallbackName = current.source === "search" ? current.title : current.name_en;
+    try {
+      const [rd, kb] = await Promise.all([rdkitReady, FlavorKB.load()]);
+      const mol = rd.get_mol(current.smiles);
+      let id = null;
+      try { id = mol ? await FlavorKB.findByMol(mol) : null; } finally { if (mol) mol.delete(); }
+      if (my !== kbSeq) return;
+      box.innerHTML = "";
+      if (id) {
+        box.append(FlavorKBUI.sourcesSummary(kb, id));
+        box.append(FlavorKBUI.literature(FlavorKB.compoundNames(kb.compounds[id]), FlavorKBUI.litFoods(kb, kb.compounds[id])));
+      } else {
+        box.append(FlavorKBUI.el("p", { text: I18N.t("kb.not_in_kb") }));
+        if (fallbackName) box.append(FlavorKBUI.literature([fallbackName], null));
+      }
+    } catch (e) {
+      if (my !== kbSeq) return;
+      box.textContent = I18N.t("kb.failed");
+    }
+  }
+
   function renderDemo() {
     renderInfo();
     renderStructure();
     renderChart();
+    renderKbSources();
   }
 
   $("preset").addEventListener("change", e => {

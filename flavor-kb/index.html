@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flavor Knowledge Base | Simon Cui</title>
+  <meta name="description" content="Key food odorants, detected flavor compounds and related literature, searchable by food or compound.">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .legend { display: grid; gap: 8px; margin-top: 12px; }
+    .legend div { display: grid; grid-template-columns: 9.5em 1fr; gap: 10px; align-items: start; font-size: .9rem; }
+    @media (max-width: 520px) { .legend div { grid-template-columns: 1fr; gap: 2px; } }
+    .search-row { display: flex; gap: 8px; max-width: 560px; }
+    .search-row input { flex: 1 1 auto; min-width: 0; max-width: none; }
+    .btn { font: inherit; font-weight: 600; padding: 8px 18px; border-radius: 8px; border: 0;
+           background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
+    .btn:disabled { opacity: .6; cursor: progress; }
+    .examples { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+    .chip-btn { font: inherit; font-size: .85rem; padding: 2px 10px; border-radius: 999px; cursor: pointer;
+                border: 1px solid var(--border); background: var(--surface); color: var(--accent); }
+    .status { min-height: 1.5em; margin: 8px 0 0; color: var(--muted); font-size: .9rem; }
+    .status.error { color: #b42318; }
+    .results { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 12px; }
+    @media (min-width: 700px) { .results { grid-template-columns: 1fr 1fr; } }
+    .results ul { list-style: none; margin: 0; padding: 0; }
+    .results li { padding: 6px 0; border-bottom: 1px solid var(--border); }
+    .results li a { font-weight: 600; text-decoration: none; }
+    .results li .meta { font-size: .8rem; color: var(--muted); }
+    .detail { margin-top: 16px; }
+    .detail h3 { font-size: 1.25rem; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .detail .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 760px) { .detail .grid.cmp { grid-template-columns: 5fr 7fr; } }
+    .mol-svg { aspect-ratio: 4 / 3; display: grid; place-items: center; color: var(--muted); font-size: .875rem; text-align: center; }
+    .mol-svg svg { width: 100%; height: auto; }
+    .stmt { font-size: .9rem; margin: 4px 0 8px; }
+    .abstract { line-height: 1.8; font-size: .95rem; }
+    .back { font-size: .9rem; display: inline-block; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../">← <span data-i18n="nav.home">Home</span></a>
+      <button class="lang-toggle" id="lang-toggle" type="button">
+        <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1 data-i18n="hero.title">Flavor knowledge base</h1>
+      <p data-i18n="hero.intro"></p>
+      <div class="card legend">
+        <strong data-i18n="legend.title">Evidence tiers</strong>
+        <div><span><span class="tag t1k" data-i18n="legend.t1k"></span></span><span data-i18n="legend.t1k_desc"></span></div>
+        <div><span><span class="tag t1d" data-i18n="legend.t1d"></span></span><span data-i18n="legend.t1d_desc"></span></div>
+        <div><span><span class="tag t2" data-i18n="legend.t2"></span></span><span data-i18n="legend.t2_desc"></span></div>
+        <div><span><span class="tag t3" data-i18n="legend.t3"></span></span><span data-i18n="legend.t3_desc"></span></div>
+      </div>
+    </section>
+
+    <section class="section" id="search">
+      <h2 data-i18n="search.title">Search</h2>
+      <form id="search-form" novalidate>
+        <label class="field" for="search-input" data-i18n="search.label">Food or compound name</label>
+        <div class="search-row">
+          <input id="search-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+                 data-i18n-attr="placeholder:search.placeholder">
+          <button type="submit" class="btn" data-i18n="search.button">Search</button>
+        </div>
+        <div class="examples small">
+          <span class="muted" data-i18n="search.examples">Examples:</span>
+          <button type="button" class="chip-btn" data-q="cultured butter">cultured butter</button>
+          <button type="button" class="chip-btn" data-q="strawberry">strawberry</button>
+          <button type="button" class="chip-btn" data-q="diacetyl">diacetyl</button>
+          <button type="button" class="chip-btn" data-q="methional">methional</button>
+        </div>
+      </form>
+      <p class="status" id="search-status" aria-live="polite"></p>
+      <div id="results"></div>
+      <div class="detail" id="detail"></div>
+    </section>
+
+    <section class="section" id="doi">
+      <h2 data-i18n="doi.title">DOI abstract analysis</h2>
+      <form id="doi-form" novalidate>
+        <label class="field" for="doi-input" data-i18n="doi.label">Paper DOI</label>
+        <div class="search-row">
+          <input id="doi-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+                 data-i18n-attr="placeholder:doi.placeholder">
+          <button type="submit" class="btn" id="doi-btn" data-i18n="doi.button">Analyze</button>
+        </div>
+      </form>
+      <p class="small muted" style="margin-top:8px"><span class="tag t3" data-i18n="legend.t3"></span> <span data-i18n="doi.disclaimer"></span></p>
+      <p class="status" id="doi-status" aria-live="polite"></p>
+      <div id="doi-result"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n-html="footer.data"></p>
+      <p data-i18n-html="footer.apis"></p>
+      <p data-i18n-html="footer.code"></p>
+      <p data-i18n="footer.updating"></p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js"></script>
+  <script src="../assets/i18n.js" data-page-dict="i18n/"></script>
+  <script src="kb.js"></script>
+  <script src="kb-ui.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

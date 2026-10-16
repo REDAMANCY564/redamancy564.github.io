@@ -2,6 +2,29 @@
 
 - 个人主页：https://redamancy564.github.io/
 - 项目页：https://redamancy564.github.io/odor-predictor/
+- 风味知识库：https://redamancy564.github.io/flavor-kb/
+
+## 风味知识库（flavor-kb/）
+
+三级数据，网页上用颜色标签区分：
+
+| 级别 | 来源 | 说明 |
+|---|---|---|
+| 第一级·关键香气物质（深绿） | Dunkel et al., Angew. Chem. Int. Ed. 2014, 53, 7124（doi:10.1002/anie.201309508） | 只摘录正文中明确写出的食品与关键香气物质，附页码，见 `training/knowledge/dunkel2014_main_text.json`。完整对照在补充材料中，未收录 |
+| 第一级·检出（浅绿） | FlavorDB2（Garg et al., NAR 2018），CC BY-NC-SA 3.0 | 「检出」不等于对气味有贡献；衍生数据按同一协议共享，见 `flavor-kb/data/LICENSE.md` |
+| 第二级·实时文献（蓝） | Europe PMC（免费、无需密钥） | 标题和摘要中检索「物质名 + 食品 + aroma 等词」，只列文献 |
+| 第三级·摘要文字匹配（橙） | Europe PMC，查不到时用 Crossref | 按 DOI 获取摘要，高亮其中的物质名，仅为文字匹配 |
+
+物质之间用「去掉立体化学层的标准 InChI」对应（浏览器端与 Python 端结果一致）。
+
+**更新知识库数据：**
+```powershell
+cd training
+.\.venv\Scripts\Activate.ps1
+python knowledge/fetch_flavordb.py   # 下载 FlavorDB2（约 1,000 次请求，每秒 1 次，已下载的会跳过）
+python knowledge/build_kb.py         # 生成 flavor-kb/data/*.json
+```
+原文 PDF（Dunkel 2014、van Gemert 2011）有版权，已加入 `.gitignore`，不会上传。
 
 用图神经网络（GNN）从分子结构预测风味分子的气味描述词。模型导出为 ONNX，网页为纯 HTML/CSS/JS，托管在 GitHub Pages，不需要服务器。
 

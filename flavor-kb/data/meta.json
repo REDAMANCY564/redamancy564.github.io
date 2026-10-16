@@ -1,0 +1,23 @@
+{
+ "built": "2026-10-16",
+ "counts": {
+  "compounds": 1648,
+  "foods": 952,
+  "foods_flavordb": 936,
+  "foods_dunkel": 16,
+  "core_compounds": 67
+ },
+ "sources": {
+  "dunkel": {
+   "citation": "Dunkel A, Steinhaus M, Kotthoff M, Nowak B, Krautwurst D, Schieberle P, Hofmann T. Nature's chemical signatures in human olfaction: a foodborne perspective for future biotechnology. Angew. Chem. Int. Ed. 2014, 53, 7124-7143.",
+   "doi": "10.1002/anie.201309508",
+   "scope": "Statements from the main text only; the full food x odorant matrix is in the article's Supporting Information."
+  },
+  "flavordb": {
+   "citation": "Garg N, et al. FlavorDB: a database of flavor molecules. Nucleic Acids Res. 2018, 46, D1210-D1216.",
+   "doi": "10.1093/nar/gkx957",
+   "url": "https://cosylab.iiitd.edu.in/flavordb2/",
+   "license": "CC BY-NC-SA 3.0"
+  }
+ }
+}

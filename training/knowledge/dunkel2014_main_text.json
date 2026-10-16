@@ -1,0 +1,321 @@
+{
+ "_about": "Key food odorant (KFO) statements transcribed from the MAIN TEXT of Dunkel et al. (2014) only. The complete food x KFO matrix is in the article's Supporting Information (Figure S1, Table S1) and is not reproduced here. Names are resolved to structures via PubChem by build_kb.py. Ambiguous names in the text (e.g. 'methylbutyl acetate', '2-allylmethoxyphenol', 'propyl-2-methoxyphenol') are deliberately left out.",
+ "source": {
+  "citation": "Dunkel A, Steinhaus M, Kotthoff M, Nowak B, Krautwurst D, Schieberle P, Hofmann T. Nature's chemical signatures in human olfaction: a foodborne perspective for future biotechnology. Angew. Chem. Int. Ed. 2014, 53, 7124-7143.",
+  "doi": "10.1002/anie.201309508"
+ },
+ "pubchem_query": {
+  "cis-whisky lactone": "cis-whiskey lactone",
+  "ethyl 2-methyl-3-sulfanylpropanoate": "ethyl 3-mercapto-2-methylpropanoate",
+  "(E,E,Z,E)-1,3,5,9-undecatetraene": "undeca-1,3,5,9-tetraene"
+ },
+ "generalists": {
+  "page": 7130,
+  "note": "KFOs detected in more than 25% of the 227 food samples analysed.",
+  "compounds": [
+   {
+    "name": "methional",
+    "odor": "cooked potato-like"
+   },
+   {
+    "name": "2-methylbutanal",
+    "odor": "malty"
+   },
+   {
+    "name": "3-methylbutanal",
+    "odor": "malty"
+   },
+   {
+    "name": "butane-2,3-dione",
+    "odor": "buttery"
+   },
+   {
+    "name": "(E,E)-2,4-decadienal",
+    "odor": "fatty, fried"
+   },
+   {
+    "name": "furaneol",
+    "odor": "caramel-like"
+   },
+   {
+    "name": "hexanal",
+    "odor": "green, grassy"
+   },
+   {
+    "name": "sotolon",
+    "odor": "seasoning-like, maple syrup-like"
+   },
+   {
+    "name": "1-octen-3-one",
+    "odor": "mushroom-like"
+   },
+   {
+    "name": "acetic acid",
+    "odor": "vinegar-like"
+   },
+   {
+    "name": "acetaldehyde",
+    "odor": "fresh, fruity"
+   },
+   {
+    "name": "ethyl 2-methylbutanoate",
+    "odor": "fruity"
+   },
+   {
+    "name": "ethyl 3-methylbutanoate",
+    "odor": "fruity"
+   },
+   {
+    "name": "(E)-2-nonenal",
+    "odor": "cardboard-like"
+   },
+   {
+    "name": "vanillin",
+    "odor": "vanilla-like"
+   },
+   {
+    "name": "2-acetyl-1-pyrroline",
+    "odor": "roasty, popcorn-like"
+   },
+   {
+    "name": "2-methylbutanoic acid",
+    "odor": "sweaty"
+   },
+   {
+    "name": "3-methylbutanoic acid",
+    "odor": "sweaty"
+   },
+   {
+    "name": "butanoic acid",
+    "odor": "sweaty"
+   }
+  ]
+ },
+ "foods": [
+  {
+   "food": "cultured butter",
+   "page": 7131,
+   "complete": true,
+   "statement": "The odor of cultured butter is created by only three KFOs.",
+   "compounds": [
+    "butane-2,3-dione",
+    "delta-decalactone",
+    "butanoic acid"
+   ]
+  },
+  {
+   "food": "alcoholic beverages (beer, wine, spirits)",
+   "page": 7132,
+   "statement": "Yeast fermentation products shared by all alcoholic beverages, plus (E)-beta-damascenone.",
+   "compounds": [
+    "ethanol",
+    "butane-2,3-dione",
+    "3-methyl-1-butanol",
+    "2-phenylethanol",
+    "ethyl butanoate",
+    "ethyl 2-methylbutanoate",
+    "ethyl 3-methylbutanoate",
+    "ethyl 2-methylpropanoate",
+    "ethyl hexanoate",
+    "ethyl octanoate",
+    "(E)-beta-damascenone"
+   ]
+  },
+  {
+   "food": "spirits (whisky, brandy, cognac)",
+   "page": 7132,
+   "statement": "Odorants characterising spirits in addition to the general fermentation metabolites.",
+   "compounds": [
+    "1,1-diethoxyethane",
+    "2-phenylethyl acetate",
+    "2-methoxyphenol",
+    "4-ethyl-2-methoxyphenol",
+    "vanillin",
+    "2-methyl-1-butanol",
+    "(E)-2-nonenal",
+    "delta-nonalactone"
+   ]
+  },
+  {
+   "food": "beer",
+   "page": 7133,
+   "statement": "High odor impact in beer, mostly formed during malting; 4-vinylguaiacol in wheat beer, linalool in Pilsner-type beer.",
+   "compounds": [
+    "furaneol",
+    "sotolon",
+    "methional",
+    "2-methylbutanal",
+    "3-methylbutanal",
+    "4-vinylguaiacol",
+    "linalool"
+   ]
+  },
+  {
+   "food": "wine (red and white)",
+   "page": 7133,
+   "statement": "Additional fermentation products with high odor impact in red and white wine.",
+   "compounds": [
+    "acetic acid",
+    "butanoic acid",
+    "octanoic acid",
+    "decanoic acid",
+    "delta-decalactone",
+    "methionol"
+   ]
+  },
+  {
+   "food": "wine (red and white)",
+   "page": 7130,
+   "statement": "Individualist odorant of red and white wine (also orange juice).",
+   "compounds": [
+    "wine lactone"
+   ]
+  },
+  {
+   "food": "Gewuerztraminer wine",
+   "page": 7133,
+   "statement": "Variety-specific key odorant.",
+   "compounds": [
+    "cis-rose oxide"
+   ]
+  },
+  {
+   "food": "Scheurebe wine",
+   "page": 7133,
+   "statement": "Variety-specific key odorant.",
+   "compounds": [
+    "4-mercapto-4-methyl-2-pentanone"
+   ]
+  },
+  {
+   "food": "oak-aged beverages",
+   "page": 7133,
+   "statement": "Released from oak wood upon toasting.",
+   "compounds": [
+    "cis-whisky lactone",
+    "vanillin"
+   ]
+  },
+  {
+   "food": "orange juice",
+   "page": 7133,
+   "statement": "Esters, terpenoids and aldehydes shared by orange and grapefruit juice.",
+   "compounds": [
+    "ethyl butanoate",
+    "ethyl 2-methylpropanoate",
+    "ethyl 2-methylbutanoate",
+    "ethyl 3-methylbutanoate",
+    "ethyl hexanoate",
+    "limonene",
+    "linalool",
+    "myrcene",
+    "alpha-pinene",
+    "(Z)-3-hexenal",
+    "octanal",
+    "nonanal",
+    "decanal",
+    "hexanal",
+    "wine lactone"
+   ]
+  },
+  {
+   "food": "grapefruit juice",
+   "page": 7133,
+   "statement": "Shared with orange juice, plus thiols that solely coin the grapefruit signature; acetaldehyde and (R)-limonene reach high levels.",
+   "compounds": [
+    "ethyl butanoate",
+    "ethyl 2-methylpropanoate",
+    "ethyl 2-methylbutanoate",
+    "ethyl 3-methylbutanoate",
+    "ethyl hexanoate",
+    "limonene",
+    "linalool",
+    "myrcene",
+    "alpha-pinene",
+    "(Z)-3-hexenal",
+    "octanal",
+    "nonanal",
+    "decanal",
+    "hexanal",
+    "1-p-menthene-8-thiol",
+    "4-mercapto-4-methyl-2-pentanone",
+    "acetaldehyde"
+   ]
+  },
+  {
+   "food": "apple juice",
+   "page": 7133,
+   "statement": "KFOs of apple juice.",
+   "compounds": [
+    "hexanal",
+    "(Z)-3-hexenal",
+    "ethyl 2-methylbutanoate",
+    "ethyl 3-methylbutanoate",
+    "(E)-beta-damascenone",
+    "(E)-2-hexenal",
+    "1-octen-3-one",
+    "(Z)-1,5-octadien-3-one",
+    "dimethyl sulfide",
+    "methional",
+    "1-butanol",
+    "1-hexanol"
+   ]
+  },
+  {
+   "food": "strawberry",
+   "page": 7133,
+   "statement": "Green aldehyde, fruity esters and a high OAV of furaneol.",
+   "compounds": [
+    "(Z)-3-hexenal",
+    "methyl butanoate",
+    "methyl 2-methylbutanoate",
+    "methyl 3-methylbutanoate",
+    "ethyl butanoate",
+    "ethyl 2-methylpropanoate",
+    "ethyl hexanoate",
+    "furaneol"
+   ]
+  },
+  {
+   "food": "pineapple",
+   "page": 7133,
+   "statement": "As strawberry, plus two odorants that differentiate pineapple.",
+   "compounds": [
+    "(Z)-3-hexenal",
+    "methyl butanoate",
+    "methyl 2-methylbutanoate",
+    "methyl 3-methylbutanoate",
+    "ethyl butanoate",
+    "ethyl 2-methylpropanoate",
+    "ethyl hexanoate",
+    "furaneol",
+    "(E,Z)-1,3,5-undecatriene",
+    "ethyl 2-methyl-3-sulfanylpropanoate"
+   ]
+  },
+  {
+   "food": "hops",
+   "page": 7130,
+   "statement": "Individualist odorant.",
+   "compounds": [
+    "(E,E,Z,E)-1,3,5,9-undecatetraene"
+   ]
+  },
+  {
+   "food": "garlic",
+   "page": 7130,
+   "statement": "Individualist odorant.",
+   "compounds": [
+    "diallyl disulfide"
+   ]
+  },
+  {
+   "food": "onion",
+   "page": 7130,
+   "statement": "Individualist odorant.",
+   "compounds": [
+    "dipropyl disulfide"
+   ]
+  }
+ ]
+}
