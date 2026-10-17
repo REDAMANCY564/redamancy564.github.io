@@ -1,0 +1,22 @@
+[
+ {
+  "id": "sweet",
+  "en": "sweet",
+  "zh": "甜"
+ },
+ {
+  "id": "bitter",
+  "en": "bitter",
+  "zh": "苦"
+ },
+ {
+  "id": "umami",
+  "en": "umami",
+  "zh": "鲜"
+ },
+ {
+  "id": "tasteless",
+  "en": "tasteless",
+  "zh": "无味"
+ }
+]

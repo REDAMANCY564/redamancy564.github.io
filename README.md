@@ -4,6 +4,7 @@
 - 项目页：https://redamancy564.github.io/odor-predictor/
 - 风味知识库：https://redamancy564.github.io/flavor-kb/
 - 项目 2 乳品风味改良（贝叶斯优化）：https://redamancy564.github.io/flavor-improver/
+- 味觉预测：https://redamancy564.github.io/taste-predictor/
 
 ## 风味知识库（flavor-kb/）
 
@@ -63,6 +64,33 @@ python flavor_improver/make_parity_fixtures.py  # 生成一致性测试数据
 - **搜索任意分子**：输入英文名称、CAS 号或 SMILES。名称和 CAS 号通过 PubChem 转为结构，然后在访客的浏览器中实时计算特征并运行模型。网址可带参数直接分享，例如 `odor-predictor/?q=linalool`。
 - **一致性测试**：https://redamancy564.github.io/odor-predictor/tests/parity.html ，检查浏览器端（`odor-predictor/engine.js`）的特征和预测与 Python 完全一致（50 个随机测试分子 + 10 个预设分子 + 15 个边界结构）。**修改特征或重新训练后，必须先打开这个页面确认全部 PASS 再上线。**
 - **气味阈值**：仅 10 个预设分子显示水中阈值文献值（van Gemert 2011 汇编；数据在 `training/odor_thresholds.json`）。该书有版权，PDF 已加入 `.gitignore`，不会上传。
+
+## 味觉预测（taste-predictor/）
+
+沿用气味预测的 GNN 结构、原子特征和 ONNX 流程，预测小分子的甜、苦、鲜、无味四类（多标签，各一个概率）。酸、咸样本太少，不建模；数据中记载为酸或咸的预设分子在页面上单独提示。
+
+- **数据**：ChemTastesDB v2.1（Zenodo 15051366，CC BY 4.0）为主，VirtuousMultiTaste（GitHub，MIT，固定 commit）为辅。BitterDB 为 CC BY-NC-ND（禁止演绎），未直接使用；SuperSweet 已下线。清洗后 3,937 个分子：甜 1,799、苦 1,569、鲜 127、无味 201。剔除多肽（3 个及以上残基，二肽如阿斯巴甜保留）、无机物和超过 64 个重原子的分子。
+- **标签规则**（`training/taste/clean.py`）：同一分子在不同记录中冲突时取阳性；「非甜」等只给该类记阴性，其余为未知；未知标签不计入损失和 AUROC。
+- **部署模型**：评估用只训练集的模型；评估后按相同设置用全部数据重新训练作为网页模型（因为核苷酸类鲜味分子整组落在测试集，用户 2026-10-17 选择此方案）。
+- **浏览器端标准化**：RDKit.js 没有 neutralize，`taste-predictor/engine.js` 按 RDKit Uncharger 规则重写了中和步骤，其余复用 `odor-predictor/engine.js`。
+- **一致性测试**：https://redamancy564.github.io/taste-predictor/tests/parity.html （64 个特征用例 + 23 个标准化用例，含盐和两性离子）。**修改特征、标准化或重新训练后，必须确认全部 PASS。**
+
+**重新训练：**
+```powershell
+cd training
+.\.venv\Scripts\Activate.ps1
+python taste/download.py           # 下载 ChemTastesDB、VirtuousMultiTaste、ChEMBL 临床阶段分子列表（不上传）
+python taste/clean.py              # 解析标签、标准化、过滤、合并，汇报冲突
+python taste/drug_flags.py         # 用 ChEMBL 标记药物分子（评估苦味偏差）
+python taste/split.py              # 混合骨架划分（80/10/10）
+python taste/baseline_fp.py        # Morgan 指纹 + 逻辑回归
+python taste/train_gnn.py          # GNN 3 个种子 + 全数据部署模型
+python taste/umami_valid.py        # 鲜味的验证集参考值
+python taste/export_taste_onnx.py  # 导出 ONNX 并验证
+python taste/make_site_assets.py   # labels、presets、一致性测试数据
+```
+
+**当前结果（测试集 AUROC，GNN 为 3 个种子均值）：** 甜 0.854 / 基线 0.866；苦 0.863 / 0.867；无味 0.889 / 0.826；鲜两者均为 1.000，但测试集鲜味以核苷酸为主且无含磷阴性样本，不可信（验证集无磷鲜味参考 0.943 / 0.950）。苦味中药物分子 AUROC 0.736，非药物 0.875。
 
 ---
 
@@ -129,8 +157,10 @@ flavor-improver/        项目 2：乳品风味改良
   data/                 palette、bases、presets、mixture_spec、bo_traces、bo_metrics、reference（示例 5）、precursors（前体对照表）
   tests/                parity.html（一致性）、bo_check.html（浏览器版算法表现）
 flavor-kb/              风味知识库
+taste-predictor/        味觉预测（结构同 odor-predictor；engine.js 在气味引擎上加中和步骤）
 training/               训练代码（原始数据不上传）
   flavor_improver/      项目 2 的数据准备、贝叶斯优化实验与分析
+  taste/                味觉预测的数据处理、训练、导出
 PLAN.md                 开发计划（项目 1）
 PLAN-formulation.md     开发计划（项目 2）
 ```
@@ -175,4 +205,5 @@ python make_site_assets.py  # 生成 labels.json、presets.json、一致性测�
 - 展示：气味空间二维可视化（UMAP），可点击浏览分子
 - 领域：加入乳品风味相关分子子集分析
 - 主页：完整个人主页（教育经历、论文、专利、其他项目）
+- 味觉预测：纳入多肽（苦味肽、鲜味肽、kokumi 肽，需要适合长链的表示方法）；加入手性特征以区分 D/L 氨基酸和糖的异构体；补充酸、咸数据后再建模；对单一来源的可疑标签做人工复核（如丁酸、香兰素被记为甜）；预测强度或阈值（需要定量数据）
 - 乳品风味改良：前体物质推荐（「前体 → 风味物质 → 反应类型」对照表，作为规则查询）；引入掩蔽效应（参考混合物模型，或用 Snitz 2013、Ravia 2020 等公开数据校准，需核实许可）；加入成本、法规限量、溶解度约束做多目标优化；人在回路模式（用户为方案打分，替代虚拟评价函数）；自定义基底和改良方向

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parity test | Taste Predictor</title>
+  <link rel="stylesheet" href="../../assets/style.css">
+  <style>
+    .pass { color: #1a7f37; font-weight: 700; }
+    .fail { color: #c0392b; font-weight: 700; }
+    #summary { font-size: 1.25rem; margin: 16px 0; }
+    h2 { margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1>Browser / Python parity test</h1>
+      <p class="muted">Compares the JavaScript standardizer, featurizer and onnxruntime-web output against values computed
+        in Python (training/taste/make_site_assets.py). Part 1: features and outputs for 50 random test-set molecules and
+        14 edge cases. Part 2: standardization (largest fragment, neutralization) of the 13 presets and 10 salts, ions and
+        zwitterions, checked through the model output. Live input on the main page is enabled only if all pass.</p>
+      <div id="summary" data-status="running">Running...</div>
+    </section>
+    <h2>Part 1: featurizer</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>SMILES</th><th class="num">atoms</th><th class="num">max |ΔX|</th><th class="num">max |ΔA|</th><th class="num">max |Δprob|</th><th>result</th></tr></thead>
+        <tbody id="rows-feat"></tbody>
+      </table>
+    </div>
+    <h2>Part 2: standardization</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>input</th><th>Python standardized</th><th class="num">atoms</th><th class="num">max |Δprob|</th><th>result</th></tr></thead>
+        <tbody id="rows-std"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.wasm.min.js"></script>
+  <script src="../../odor-predictor/engine.js"></script>
+  <script src="../engine.js"></script>
+  <script>
+    (async function () {
+      const summary = document.getElementById("summary");
+      const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      const cell = (ok, err) => "<td class=\"" + (ok ? "pass\">PASS" : "fail\">FAIL " + esc(err)) + "</td>";
+      try {
+        const [rdkit, spec, fixtures] = await Promise.all([
+          initRDKitModule({ locateFile: () => "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.wasm" }),
+          fetch("../model/feature_spec.json").then(r => r.json()),
+          fetch("parity_fixtures.json").then(r => r.json()),
+        ]);
+        const session = await TasteEngine.loadModel("../model/" + spec.model_file);
+        const N = spec.max_atoms, F = spec.num_features, tol = fixtures.tolerance;
+        const maxDiff = (a, b) => b.reduce((m, v, k) => Math.max(m, Math.abs(a[k] - v)), 0);
+        let passed = 0, total = 0;
+
+        const rowsF = [];
+        for (const [idx, fx] of fixtures.featurize.entries()) {
+          let dX = 0, dA = 0, dP = 0, n = -1, ok = false, err = "";
+          try {
+            const { feats } = TasteEngine.standardizedFeatures(rdkit, fx.smiles, spec);
+            n = feats.numAtoms;
+            if (n === fx.num_atoms) {
+              for (let i = 0; i < n; i++) {
+                for (let k = 0; k < F; k++) dX = Math.max(dX, Math.abs(feats.X[i * F + k] - fx.X[i][k]));
+                for (let k = 0; k < n; k++) dA = Math.max(dA, Math.abs(feats.A[i * N + k] - fx.A[i][k]));
+              }
+              dP = maxDiff(await TasteEngine.predict(session, feats, spec), fx.probs);
+              ok = dX === 0 && dA <= tol.A && dP <= tol.probs;
+            } else {
+              err = "atom count " + n + " vs " + fx.num_atoms;
+            }
+          } catch (e) {
+            err = e.code || String(e);
+          }
+          total++; if (ok) passed++;
+          rowsF.push("<tr><td>" + (idx + 1) + "</td><td class=\"mono\">" + esc(fx.smiles) + "</td><td class=\"num\">" + n +
+            "</td><td class=\"num\">" + dX.toExponential(1) + "</td><td class=\"num\">" + dA.toExponential(1) +
+            "</td><td class=\"num\">" + dP.toExponential(1) + "</td>" + cell(ok, err) + "</tr>");
+        }
+        document.getElementById("rows-feat").innerHTML = rowsF.join("");
+
+        const rowsS = [];
+        for (const [idx, fx] of fixtures.standardize.entries()) {
+          let dP = 0, n = -1, ok = false, err = "";
+          try {
+            const { feats } = TasteEngine.standardizedFeatures(rdkit, fx.input, spec);
+            n = feats.numAtoms;
+            if (n === fx.num_atoms) {
+              dP = maxDiff(await TasteEngine.predict(session, feats, spec), fx.probs);
+              ok = dP <= tol.probs;
+              if (!ok) err = "output differs";
+            } else {
+              err = "atom count " + n + " vs " + fx.num_atoms;
+            }
+          } catch (e) {
+            err = e.code || String(e);
+          }
+          total++; if (ok) passed++;
+          rowsS.push("<tr><td>" + (idx + 1) + "</td><td class=\"mono\">" + esc(fx.input) + "</td><td class=\"mono\">" +
+            esc(fx.std_smiles) + "</td><td class=\"num\">" + n + "</td><td class=\"num\">" + dP.toExponential(1) + "</td>" +
+            cell(ok, err) + "</tr>");
+        }
+        document.getElementById("rows-std").innerHTML = rowsS.join("");
+
+        summary.textContent = (passed === total ? "PASS " : "FAIL ") + passed + "/" + total;
+        summary.className = passed === total ? "pass" : "fail";
+        summary.dataset.status = passed === total ? "pass" : "fail";
+      } catch (e) {
+        summary.textContent = "ERROR " + e;
+        summary.className = "fail";
+        summary.dataset.status = "error";
+      }
+    })();
+  </script>
+</body>
+</html>

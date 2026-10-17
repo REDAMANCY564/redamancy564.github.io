@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taste Predictor | Simon Cui</title>
+  <meta name="description" content="A graph neural network that predicts the basic taste of small molecules (sweet, bitter, umami, tasteless) from their structure.">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .demo-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 16px; }
+    @media (min-width: 760px) { .demo-grid { grid-template-columns: 5fr 7fr; } }
+    .mol-name { font-size: 1.15rem; font-weight: 700; margin: 0; }
+    .mol-smiles { color: var(--muted); font-size: .875rem; word-break: break-all; margin: 2px 0 8px; }
+    .mol-svg { aspect-ratio: 4 / 3; display: grid; place-items: center; color: var(--muted); font-size: .875rem; text-align: center; }
+    .mol-svg svg { width: 100%; height: auto; }
+    .mol-links { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+    .chart-box { position: relative; height: 240px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .chip { font-size: .85rem; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); }
+    .chip.hit { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .raw-labels { margin-top: 8px; }
+    .raw-labels summary { cursor: pointer; color: var(--accent); }
+    .raw-labels ul { margin: 6px 0 0; padding-left: 1.2em; word-break: break-word; }
+    .sour-note { margin-top: 10px; }
+
+    .search { margin-bottom: 20px; }
+    .search-row { display: flex; gap: 8px; max-width: 560px; }
+    .search-row input { flex: 1 1 auto; min-width: 0; max-width: none; }
+    .btn { font: inherit; font-weight: 600; padding: 8px 18px; border-radius: 8px; border: 0;
+           background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
+    .btn:disabled { opacity: .6; cursor: progress; }
+    .examples { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+    .chip-btn { font: inherit; font-size: .85rem; padding: 2px 10px; border-radius: 999px; cursor: pointer;
+                border: 1px solid var(--border); background: var(--surface); color: var(--accent); max-width: 100%;
+                overflow: hidden; text-overflow: ellipsis; }
+    .chip-btn:hover { border-color: var(--accent); }
+    .search-status { min-height: 1.5em; margin: 8px 0 0; color: var(--muted); }
+    .search-status.error { color: #b42318; }
+
+    .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 8px 0 20px; }
+    .flow .step { flex: 1 1 130px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; }
+    .flow .step .ico { display: block; height: 44px; margin: 0 auto 6px; }
+    .flow .step b { display: block; }
+    .flow .step span { font-size: .85rem; color: var(--muted); }
+    .flow .arrow { align-self: center; color: var(--accent); font-size: 1.4rem; }
+    @media (max-width: 699px) {
+      .flow { flex-direction: column; }
+      .flow .step { flex-basis: auto; }
+      .flow .arrow { transform: rotate(90deg); }
+    }
+    .method-text p, .results-text p { margin-bottom: 10px; }
+    td.na { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../">← <span data-i18n="nav.home">Home</span></a>
+      <button class="lang-toggle" id="lang-toggle" type="button">
+        <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1 data-i18n="hero.title">Predicting taste from molecular structure</h1>
+      <p data-i18n="hero.intro"></p>
+    </section>
+
+    <!-- Demo -->
+    <section class="section" id="demo">
+      <h2 data-i18n="demo.title">Try it</h2>
+      <form id="search-form" class="search" novalidate>
+        <label class="field" for="search-input" data-i18n="search.label">Search any molecule</label>
+        <div class="search-row">
+          <input id="search-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+                 data-i18n-attr="placeholder:search.placeholder">
+          <button type="submit" id="search-btn" class="btn" data-i18n="search.button">Predict</button>
+        </div>
+        <div class="examples small">
+          <span class="muted" data-i18n="search.examples">Examples:</span>
+          <button type="button" class="chip-btn" data-q="aspartame">aspartame</button>
+          <button type="button" class="chip-btn" data-q="quinine">quinine</button>
+          <button type="button" class="chip-btn mono" data-q="CC(C)CC(=O)O">CC(C)CC(=O)O</button>
+        </div>
+        <p class="small search-status" id="search-status" aria-live="polite"></p>
+      </form>
+
+      <label class="field" for="preset" data-i18n="demo.select">Or pick a preset molecule</label>
+      <select id="preset"></select>
+
+      <div class="demo-grid">
+        <div class="card">
+          <p class="mol-name" id="mol-name"></p>
+          <p class="mol-smiles mono" id="mol-smiles"></p>
+          <div class="mol-svg" id="mol-svg"></div>
+          <div class="mol-links small">
+            <a id="mol-pubchem" target="_blank" rel="noopener" data-i18n="demo.pubchem">View on PubChem</a>
+            <a id="mol-odor" data-i18n="demo.odor_link">See its predicted odor</a>
+          </div>
+        </div>
+        <div class="card">
+          <h3 data-i18n="demo.chart_title">Predicted taste</h3>
+          <div class="chart-box"><canvas id="pred-chart" aria-label="Predicted taste probabilities"></canvas></div>
+          <p class="small muted" id="chart-note" style="margin-top:8px"></p>
+          <div class="note sour-note small" id="sour-note" hidden></div>
+        </div>
+      </div>
+      <div class="note" id="mol-status"></div>
+    </section>
+
+    <!-- Method -->
+    <section class="section" id="method">
+      <h2 data-i18n="method.title">How it works</h2>
+      <div class="flow">
+        <div class="step">
+          <svg class="ico" viewBox="0 0 80 44" aria-hidden="true"><text x="40" y="28" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">[Na+].C..</text></svg>
+          <b data-i18n="flow.1.title">Molecule</b><span data-i18n="flow.1.sub"></span>
+        </div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="step">
+          <svg class="ico" viewBox="0 0 80 44" aria-hidden="true"><text x="40" y="28" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">C..C(=O)O</text></svg>
+          <b data-i18n="flow.2.title">Standardize</b><span data-i18n="flow.2.sub"></span>
+        </div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="step">
+          <svg class="ico" viewBox="0 0 80 44" aria-hidden="true" stroke="currentColor" stroke-width="2" fill="none">
+            <path d="M14 30 L30 16 L46 30 L62 16 M30 16 L30 4"/>
+            <g fill="#0f6e6e" stroke="none"><circle cx="14" cy="30" r="4"/><circle cx="30" cy="16" r="4"/><circle cx="46" cy="30" r="4"/><circle cx="62" cy="16" r="4"/><circle cx="30" cy="4" r="4" fill="#c0392b"/></g>
+          </svg>
+          <b data-i18n="flow.3.title">Graph</b><span data-i18n="flow.3.sub"></span>
+        </div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="step">
+          <svg class="ico" viewBox="0 0 80 44" aria-hidden="true" fill="#0f6e6e">
+            <g stroke="#9aa5a5" stroke-width="1"><path d="M12 10 L40 22 L68 10 M12 34 L40 22 L68 34 M12 10 L40 6 L68 10 M12 34 L40 38 L68 34"/></g>
+            <circle cx="12" cy="10" r="4"/><circle cx="12" cy="34" r="4"/><circle cx="40" cy="6" r="4"/><circle cx="40" cy="22" r="4"/><circle cx="40" cy="38" r="4"/><circle cx="68" cy="10" r="4"/><circle cx="68" cy="34" r="4"/>
+          </svg>
+          <b data-i18n="flow.4.title">Graph neural network</b><span data-i18n="flow.4.sub"></span>
+        </div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="step">
+          <svg class="ico" viewBox="0 0 80 44" aria-hidden="true" fill="#0f6e6e">
+            <rect x="10" y="4" width="56" height="7" rx="2"/><rect x="10" y="14" width="22" height="7" rx="2" opacity=".75"/><rect x="10" y="24" width="10" height="7" rx="2" opacity=".5"/><rect x="10" y="34" width="4" height="7" rx="2" opacity=".35"/>
+          </svg>
+          <b data-i18n="flow.5.title">Taste</b><span data-i18n="flow.5.sub"></span>
+        </div>
+      </div>
+      <div class="method-text">
+        <p data-i18n-html="method.data"></p>
+        <p data-i18n-html="method.model"></p>
+        <p data-i18n-html="method.eval"></p>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section class="section" id="results">
+      <h2 data-i18n="results.title">How well does it work?</h2>
+      <p data-i18n="results.intro"></p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="results.col.taste">Taste</th>
+              <th class="num" data-i18n="results.col.pos">Test positives</th>
+              <th class="num" data-i18n="results.col.gnn">Graph neural network</th>
+              <th class="num" data-i18n="results.col.lr">Fingerprint + logistic regression</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+      <p class="small muted" id="results-note" style="margin-top:8px"></p>
+      <div class="results-text">
+        <p data-i18n="results.takeaway"></p>
+        <p id="results-umami"></p>
+        <p id="results-drug"></p>
+        <p data-i18n="results.deployed"></p>
+      </div>
+    </section>
+
+    <!-- Limitations -->
+    <section class="section" id="limits">
+      <h2 data-i18n="limits.title">Limitations</h2>
+      <ul class="plain">
+        <li data-i18n-html="limits.class"></li>
+        <li data-i18n-html="limits.sour"></li>
+        <li data-i18n-html="limits.bias"></li>
+        <li data-i18n-html="limits.peptide"></li>
+        <li data-i18n-html="limits.stereo"></li>
+        <li data-i18n-html="limits.safety"></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n-html="footer.data"></p>
+      <p data-i18n-html="footer.chembl"></p>
+      <p data-i18n-html="footer.related"></p>
+      <p data-i18n-html="footer.code"></p>
+      <p data-i18n="footer.updating"></p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.wasm.min.js"></script>
+  <script src="../odor-predictor/engine.js"></script>
+  <script src="engine.js"></script>
+  <script src="../assets/i18n.js" data-page-dict="i18n/"></script>
+  <script src="app.js"></script>
+</body>
+</html>

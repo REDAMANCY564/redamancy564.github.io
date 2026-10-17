@@ -1,0 +1,208 @@
+{
+  "morgan_logreg": {
+    "params": {
+      "radius": 2,
+      "bits": 2048,
+      "C": 0.1
+    },
+    "valid_macro_auroc": 0.8558,
+    "macro_auroc": 0.8897,
+    "per_label": {
+      "sweet": {
+        "auroc": 0.8659,
+        "test_pos": 180,
+        "test_neg": 214,
+        "auroc_cyclic": 0.8549,
+        "auroc_acyclic": 0.7975
+      },
+      "bitter": {
+        "auroc": 0.8671,
+        "test_pos": 128,
+        "test_neg": 261,
+        "auroc_cyclic": 0.8765,
+        "auroc_acyclic": 0.8123
+      },
+      "umami": {
+        "auroc": 0.9999,
+        "test_pos": 35,
+        "test_neg": 354,
+        "auroc_cyclic": 1.0,
+        "auroc_acyclic": 1.0
+      },
+      "tasteless": {
+        "auroc": 0.8259,
+        "test_pos": 21,
+        "test_neg": 338,
+        "auroc_cyclic": 0.8216,
+        "auroc_acyclic": 0.8158
+      }
+    },
+    "bitter_by_drug": {
+      "drug": {
+        "auroc": 0.6786,
+        "pos_neg": [
+          28,
+          10
+        ]
+      },
+      "non_drug": {
+        "auroc": 0.868,
+        "pos_neg": [
+          100,
+          251
+        ]
+      }
+    },
+    "umami_nucleotides": {
+      "excluding_nucleotides": {
+        "auroc": 1.0,
+        "pos_neg": [
+          3,
+          354
+        ]
+      },
+      "nucleotides_vs_all_negatives": {
+        "auroc": 0.9999,
+        "n_nucleotides": 32
+      }
+    }
+  },
+  "gnn": {
+    "params": {
+      "hidden": 128,
+      "num_layers": 3,
+      "dropout": 0.2,
+      "lr": 0.001,
+      "batch": 64,
+      "patience": 20,
+      "n_parameters": 103300
+    },
+    "seeds": [
+      {
+        "seed": 0,
+        "best_epoch": 65,
+        "valid_macro_auroc": 0.8716,
+        "test_macro_auroc": 0.9025,
+        "test_per_label": {
+          "sweet": 0.8568,
+          "bitter": 0.8673,
+          "umami": 1.0,
+          "tasteless": 0.8857
+        }
+      },
+      {
+        "seed": 1,
+        "best_epoch": 58,
+        "valid_macro_auroc": 0.8555,
+        "test_macro_auroc": 0.896,
+        "test_per_label": {
+          "sweet": 0.8359,
+          "bitter": 0.8541,
+          "umami": 0.9999,
+          "tasteless": 0.8941
+        }
+      },
+      {
+        "seed": 2,
+        "best_epoch": 119,
+        "valid_macro_auroc": 0.8988,
+        "test_macro_auroc": 0.9057,
+        "test_per_label": {
+          "sweet": 0.868,
+          "bitter": 0.8668,
+          "umami": 1.0,
+          "tasteless": 0.8879
+        }
+      }
+    ],
+    "test_macro_auroc_mean": 0.9014,
+    "test_macro_auroc_std": 0.004,
+    "test_per_label_mean": {
+      "sweet": 0.8536,
+      "bitter": 0.8627,
+      "umami": 1.0,
+      "tasteless": 0.8892
+    },
+    "test_per_label_std": {
+      "sweet": 0.0133,
+      "bitter": 0.0061,
+      "umami": 0.0,
+      "tasteless": 0.0036
+    },
+    "evaluated_seed": 2,
+    "valid_macro_auroc": 0.8988,
+    "deployed_model": {
+      "trained_on": "all molecules (train+valid+test)",
+      "epochs": 65,
+      "note": "test metrics come from the evaluated model trained on the train split only"
+    },
+    "macro_auroc": 0.9057,
+    "per_label": {
+      "sweet": {
+        "auroc": 0.868,
+        "test_pos": 180,
+        "test_neg": 214,
+        "auroc_cyclic": 0.8485,
+        "auroc_acyclic": 0.8494
+      },
+      "bitter": {
+        "auroc": 0.8668,
+        "test_pos": 128,
+        "test_neg": 261,
+        "auroc_cyclic": 0.8726,
+        "auroc_acyclic": 0.8393
+      },
+      "umami": {
+        "auroc": 1.0,
+        "test_pos": 35,
+        "test_neg": 354,
+        "auroc_cyclic": 1.0,
+        "auroc_acyclic": 1.0
+      },
+      "tasteless": {
+        "auroc": 0.8879,
+        "test_pos": 21,
+        "test_neg": 338,
+        "auroc_cyclic": 0.8903,
+        "auroc_acyclic": 0.6842
+      }
+    },
+    "bitter_by_drug": {
+      "drug": {
+        "auroc": 0.7357,
+        "pos_neg": [
+          28,
+          10
+        ]
+      },
+      "non_drug": {
+        "auroc": 0.8753,
+        "pos_neg": [
+          100,
+          251
+        ]
+      }
+    },
+    "umami_nucleotides": {
+      "excluding_nucleotides": {
+        "auroc": 1.0,
+        "pos_neg": [
+          3,
+          354
+        ]
+      },
+      "nucleotides_vs_all_negatives": {
+        "auroc": 1.0,
+        "n_nucleotides": 32
+      }
+    }
+  },
+  "umami_valid_reference": {
+    "subset": "validation molecules without phosphorus",
+    "pos": 14,
+    "neg": 366,
+    "gnn": 0.9426,
+    "morgan_logreg": 0.9504,
+    "note": "validation set was used for early stopping and for choosing C: optimistic"
+  }
+}

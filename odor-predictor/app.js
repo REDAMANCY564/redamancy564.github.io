@@ -153,6 +153,7 @@
     const link = $("mol-pubchem");
     link.hidden = !current.pubchem_cid;
     if (current.pubchem_cid) link.href = "https://pubchem.ncbi.nlm.nih.gov/compound/" + current.pubchem_cid;
+    $("mol-taste").href = "../taste-predictor/?q=" + encodeURIComponent(current.smiles) + "#demo";
     renderThreshold();
 
     const status = $("mol-status");

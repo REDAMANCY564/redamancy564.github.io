@@ -1,0 +1,526 @@
+[
+ {
+  "id": "lactose",
+  "name_en": "Lactose",
+  "name_zh": "乳糖",
+  "smiles": "OC[C@H]1O[C@@H](O[C@H]2[C@H](O)[C@@H](O)C(O)O[C@@H]2CO)[C@H](O)[C@@H](O)[C@H]1O",
+  "std_smiles": "OCC1OC(OC2C(CO)OC(O)C(O)C2O)C(O)C(O)C1O",
+  "pubchem_cid": 440995,
+  "probs": {
+   "sweet": 0.9478,
+   "bitter": 0.0775,
+   "umami": 0.0007,
+   "tasteless": 0.0061
+  },
+  "probs_train_only": {
+   "sweet": 0.9763,
+   "bitter": 0.0376,
+   "umami": 0.0,
+   "tasteless": 0.0011
+  },
+  "dataset_split": "test",
+  "dataset_labels": {
+   "sweet": 1,
+   "bitter": 0,
+   "umami": 0,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "ChemTastesDB",
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": 0,
+   "salty": 0
+  },
+  "dataset_raw_labels": [
+   "Chem:Sweet",
+   "Chem:Sweet(6); Non-bitter",
+   "Chem:Sweet(8); Non-bitter",
+   "Virt:Sweet"
+  ]
+ },
+ {
+  "id": "galactose",
+  "name_en": "D-Galactose",
+  "name_zh": "D-半乳糖",
+  "smiles": "OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@H]1O",
+  "std_smiles": "OCC1OC(O)C(O)C(O)C1O",
+  "pubchem_cid": 6036,
+  "probs": {
+   "sweet": 0.9592,
+   "bitter": 0.0643,
+   "umami": 0.0006,
+   "tasteless": 0.0057
+  },
+  "probs_train_only": {
+   "sweet": 0.9758,
+   "bitter": 0.0417,
+   "umami": 0.0,
+   "tasteless": 0.0011
+  },
+  "dataset_split": "valid",
+  "dataset_labels": {
+   "sweet": 1,
+   "bitter": 1,
+   "umami": 0,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "ChemTastesDB",
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": 0,
+   "salty": 0
+  },
+  "dataset_raw_labels": [
+   "Chem:Bitter/Non-bitter; Sweet(5)",
+   "Chem:Sweet",
+   "Chem:Sweet/Bitter; Bitter",
+   "Virt:Sweet"
+  ]
+ },
+ {
+  "id": "glucose",
+  "name_en": "D-Glucose",
+  "name_zh": "D-葡萄糖",
+  "smiles": "OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O",
+  "std_smiles": "OCC1OC(O)C(O)C(O)C1O",
+  "pubchem_cid": 5793,
+  "probs": {
+   "sweet": 0.9592,
+   "bitter": 0.0643,
+   "umami": 0.0006,
+   "tasteless": 0.0057
+  },
+  "probs_train_only": {
+   "sweet": 0.9758,
+   "bitter": 0.0417,
+   "umami": 0.0,
+   "tasteless": 0.0011
+  },
+  "dataset_split": "valid",
+  "dataset_labels": {
+   "sweet": 1,
+   "bitter": 1,
+   "umami": 0,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "ChemTastesDB",
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": 0,
+   "salty": 0
+  },
+  "dataset_raw_labels": [
+   "Chem:Bitter/Non-bitter; Sweet(5)",
+   "Chem:Sweet",
+   "Chem:Sweet/Bitter; Bitter",
+   "Virt:Sweet"
+  ]
+ },
+ {
+  "id": "sucrose",
+  "name_en": "Sucrose",
+  "name_zh": "蔗糖",
+  "smiles": "OC[C@H]1O[C@H](O[C@]2(CO)O[C@H](CO)[C@@H](O)[C@@H]2O)[C@H](O)[C@@H](O)[C@@H]1O",
+  "std_smiles": "OCC1OC(OC2(CO)OC(CO)C(O)C2O)C(O)C(O)C1O",
+  "pubchem_cid": 5988,
+  "probs": {
+   "sweet": 0.9302,
+   "bitter": 0.1014,
+   "umami": 0.0003,
+   "tasteless": 0.0059
+  },
+  "probs_train_only": {
+   "sweet": 0.942,
+   "bitter": 0.0472,
+   "umami": 0.0,
+   "tasteless": 0.0039
+  },
+  "dataset_split": "train",
+  "dataset_labels": {
+   "sweet": 1,
+   "bitter": 0,
+   "umami": 0,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "ChemTastesDB",
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": 0,
+   "salty": 0
+  },
+  "dataset_raw_labels": [
+   "Chem:Sweet(22); Very sweet; Non-bitter",
+   "Chem:Tasteless(2); Sweet",
+   "Chem:Tasteless; Sweet(3)",
+   "Virt:Sweet"
+  ]
+ },
+ {
+  "id": "msg",
+  "name_en": "Monosodium glutamate",
+  "name_zh": "谷氨酸钠",
+  "smiles": "N[C@@H](CCC(=O)O)C(=O)[O-].[Na+]",
+  "std_smiles": "NC(CCC(=O)O)C(=O)O",
+  "pubchem_cid": 23672308,
+  "probs": {
+   "sweet": 0.5346,
+   "bitter": 0.1645,
+   "umami": 0.752,
+   "tasteless": 0.0138
+  },
+  "probs_train_only": {
+   "sweet": 0.7925,
+   "bitter": 0.3384,
+   "umami": 0.6061,
+   "tasteless": 0.0002
+  },
+  "dataset_split": "train",
+  "dataset_labels": {
+   "sweet": 1,
+   "bitter": 0,
+   "umami": 1,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "ChemTastesDB",
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": 1,
+   "salty": 1
+  },
+  "dataset_raw_labels": [
+   "Chem:Neutral; Salty; Umami; Sour",
+   "Chem:Salty; Umami/Acid; Sour",
+   "Chem:Umami",
+   "Chem:Umami(7); Salty/Umami",
+   "Virt:Sweet",
+   "Virt:Umami"
+  ]
+ },
+ {
+  "id": "imp",
+  "name_en": "Disodium inosinate (IMP)",
+  "name_zh": "5'-肌苷酸二钠",
+  "smiles": "O=c1[nH]cnc2c1ncn2[C@@H]1O[C@H](COP(=O)([O-])[O-])[C@@H](O)[C@H]1O.[Na+].[Na+]",
+  "std_smiles": "O=c1[nH]cnc2c1ncn2C1OC(COP(=O)(O)O)C(O)C1O",
+  "pubchem_cid": 135414245,
+  "probs": {
+   "sweet": 0.0147,
+   "bitter": 0.0043,
+   "umami": 0.9981,
+   "tasteless": 0.0
+  },
+  "probs_train_only": {
+   "sweet": 0.0934,
+   "bitter": 0.0211,
+   "umami": 0.9981,
+   "tasteless": 0.0
+  },
+  "dataset_split": "test",
+  "dataset_labels": {
+   "sweet": 0,
+   "bitter": 0,
+   "umami": 1,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "ChemTastesDB",
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": 0,
+   "salty": 0
+  },
+  "dataset_raw_labels": [
+   "Chem:Umami",
+   "Virt:Umami"
+  ]
+ },
+ {
+  "id": "lactic-acid",
+  "name_en": "L-Lactic acid",
+  "name_zh": "L-乳酸",
+  "smiles": "C[C@H](O)C(=O)O",
+  "std_smiles": "CC(O)C(=O)O",
+  "pubchem_cid": 107689,
+  "probs": {
+   "sweet": 0.4434,
+   "bitter": 0.3834,
+   "umami": 0.1726,
+   "tasteless": 0.0097
+  },
+  "probs_train_only": {
+   "sweet": 0.7136,
+   "bitter": 0.7446,
+   "umami": 0.1013,
+   "tasteless": 0.0003
+  },
+  "dataset_split": "train",
+  "dataset_labels": {
+   "sweet": 1,
+   "bitter": 1,
+   "umami": 1,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "ChemTastesDB",
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": 1,
+   "salty": 0
+  },
+  "dataset_raw_labels": [
+   "Chem:Bitter",
+   "Chem:Sour(4); Umami",
+   "Chem:Very bitter",
+   "Virt:Bitter",
+   "Virt:Sweet"
+  ]
+ },
+ {
+  "id": "citric-acid",
+  "name_en": "Citric acid",
+  "name_zh": "柠檬酸",
+  "smiles": "OC(=O)CC(O)(CC(=O)O)C(=O)O",
+  "std_smiles": "O=C(O)CC(O)(CC(=O)O)C(=O)O",
+  "pubchem_cid": 311,
+  "probs": {
+   "sweet": 0.5458,
+   "bitter": 0.4455,
+   "umami": 0.0692,
+   "tasteless": 0.0412
+  },
+  "probs_train_only": {
+   "sweet": 0.0286,
+   "bitter": 0.267,
+   "umami": 0.6657,
+   "tasteless": 0.0424
+  },
+  "dataset_split": "valid",
+  "dataset_labels": {
+   "sweet": 1,
+   "bitter": 1,
+   "umami": 0,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "ChemTastesDB",
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": 1,
+   "salty": 0
+  },
+  "dataset_raw_labels": [
+   "Chem:Bitter",
+   "Chem:Sour(4); Sour/Sweet",
+   "Virt:Bitter",
+   "Virt:Other"
+  ]
+ },
+ {
+  "id": "leucine",
+  "name_en": "L-Leucine",
+  "name_zh": "L-亮氨酸",
+  "smiles": "CC(C)C[C@H](N)C(=O)O",
+  "std_smiles": "CC(C)CC(N)C(=O)O",
+  "pubchem_cid": 6106,
+  "probs": {
+   "sweet": 0.5064,
+   "bitter": 0.6031,
+   "umami": 0.0567,
+   "tasteless": 0.02
+  },
+  "probs_train_only": {
+   "sweet": 0.6843,
+   "bitter": 0.9156,
+   "umami": 0.004,
+   "tasteless": 0.0001
+  },
+  "dataset_split": "train",
+  "dataset_labels": {
+   "sweet": 1,
+   "bitter": 1,
+   "umami": 0,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "ChemTastesDB",
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": 0,
+   "salty": 0
+  },
+  "dataset_raw_labels": [
+   "Chem:Bitter(4); Slightly bitter; Non-sweet",
+   "Chem:Sweet",
+   "Virt:Bitter",
+   "Virt:Sweet"
+  ]
+ },
+ {
+  "id": "phenylalanine",
+  "name_en": "L-Phenylalanine",
+  "name_zh": "L-苯丙氨酸",
+  "smiles": "N[C@@H](Cc1ccccc1)C(=O)O",
+  "std_smiles": "NC(Cc1ccccc1)C(=O)O",
+  "pubchem_cid": 6140,
+  "probs": {
+   "sweet": 0.4746,
+   "bitter": 0.5586,
+   "umami": 0.0032,
+   "tasteless": 0.0786
+  },
+  "probs_train_only": {
+   "sweet": 0.7582,
+   "bitter": 0.7073,
+   "umami": 0.0036,
+   "tasteless": 0.0101
+  },
+  "dataset_split": "train",
+  "dataset_labels": {
+   "sweet": 1,
+   "bitter": 1,
+   "umami": 0,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "ChemTastesDB",
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": 0,
+   "salty": 0
+  },
+  "dataset_raw_labels": [
+   "Chem:Sweet",
+   "Chem:Tasteless; Bitter(4); Slightly bitter; Non-sweet",
+   "Virt:Bitter",
+   "Virt:Sweet"
+  ]
+ },
+ {
+  "id": "caffeine",
+  "name_en": "Caffeine",
+  "name_zh": "咖啡因",
+  "smiles": "Cn1c(=O)c2c(ncn2C)n(C)c1=O",
+  "std_smiles": "Cn1c(=O)c2c(ncn2C)n(C)c1=O",
+  "pubchem_cid": 2519,
+  "probs": {
+   "sweet": 0.0737,
+   "bitter": 0.8881,
+   "umami": 0.0002,
+   "tasteless": 0.0
+  },
+  "probs_train_only": {
+   "sweet": 0.0002,
+   "bitter": 0.9901,
+   "umami": 0.0,
+   "tasteless": 0.0
+  },
+  "dataset_split": "train",
+  "dataset_labels": {
+   "sweet": 0,
+   "bitter": 1,
+   "umami": 0,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "ChemTastesDB",
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": 0,
+   "salty": 0
+  },
+  "dataset_raw_labels": [
+   "Chem:Bitter",
+   "Virt:Bitter"
+  ]
+ },
+ {
+  "id": "vanillin",
+  "name_en": "Vanillin",
+  "name_zh": "香兰素",
+  "smiles": "COc1cc(C=O)ccc1O",
+  "std_smiles": "COc1cc(C=O)ccc1O",
+  "pubchem_cid": 1183,
+  "probs": {
+   "sweet": 0.5996,
+   "bitter": 0.3142,
+   "umami": 0.0006,
+   "tasteless": 0.1119
+  },
+  "probs_train_only": {
+   "sweet": 0.6182,
+   "bitter": 0.2104,
+   "umami": 0.0003,
+   "tasteless": 0.2272
+  },
+  "dataset_split": "train",
+  "dataset_labels": {
+   "sweet": 1,
+   "bitter": 0,
+   "umami": 0,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": null,
+   "salty": null
+  },
+  "dataset_raw_labels": [
+   "Virt:Sweet"
+  ]
+ },
+ {
+  "id": "butyric-acid",
+  "name_en": "Butyric acid",
+  "name_zh": "丁酸",
+  "smiles": "CCCC(=O)O",
+  "std_smiles": "CCCC(=O)O",
+  "pubchem_cid": 264,
+  "probs": {
+   "sweet": 0.8975,
+   "bitter": 0.1406,
+   "umami": 0.0003,
+   "tasteless": 0.0005
+  },
+  "probs_train_only": {
+   "sweet": 0.9285,
+   "bitter": 0.1039,
+   "umami": 0.0,
+   "tasteless": 0.0
+  },
+  "dataset_split": "train",
+  "dataset_labels": {
+   "sweet": 1,
+   "bitter": 0,
+   "umami": 0,
+   "tasteless": 0
+  },
+  "dataset_sources": [
+   "VirtuousMultiTaste"
+  ],
+  "dataset_sour_salty": {
+   "sour": null,
+   "salty": null
+  },
+  "dataset_raw_labels": [
+   "Virt:Sweet"
+  ]
+ }
+]

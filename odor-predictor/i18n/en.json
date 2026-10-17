@@ -31,6 +31,7 @@
   "demo.rdkit_failed": "The structure drawing could not be loaded. Predictions are still shown.",
   "demo.chart_title": "Top 8 predicted odor descriptors",
   "demo.prob_note": "Each bar is the model's estimated probability that the descriptor is used for this molecule. A molecule usually has several descriptors at once, so the bars do not add up to 100%.",
+  "demo.taste_link": "See its predicted taste →",
   "demo.pubchem": "View on PubChem",
   "status.train": "This molecule was in the training data, so it does not test the model. Its descriptors in the database:",
   "status.valid": "This molecule was in the validation set: it was not used to fit the model, only to decide when to stop training. Its descriptors in the database:",
