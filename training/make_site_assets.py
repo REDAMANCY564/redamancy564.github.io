@@ -4,7 +4,9 @@ Outputs (under odor-predictor/):
   model/labels.json            label order of the model output, with en/zh names
   data/presets.json            10 preset molecules with top-8 predictions
   tests/parity_fixtures.json   50 test molecules: Python features + model outputs,
-                               used by tests/parity.html to check the JS featurizer
+                               used by tests/parity.html to check the JS featurizer;
+                               plus occlusion contributions for 20 molecules
+Presets also carry per-atom occlusion contributions (occlusion.py) for their top-8 labels.
 Predictions come from onnxruntime (the same model file the browser loads).
 """
 import json
@@ -18,11 +20,13 @@ from rdkit import Chem
 from clean_data import standardize
 from evaluate import load_split
 from featurize import featurize, featurize_many
+from occlusion import contributions
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "odor-predictor"
 TOP_K = 8
 N_PARITY = 50
+N_OCCLUSION = 10  # random test molecules with occlusion fixtures (plus the 10 presets)
 SEED = 0
 
 # Names and SMILES checked against PubChem (2026-10-16)
@@ -83,13 +87,14 @@ def main():
     index = {s: i for i, s in enumerate(smiles)}
     presets = []
     for pid, en, zh_name, smi, cid in PRESETS:
-        X, A, M = (a[None] for a in featurize(smi))
-        probs = run(X, A, M)[0]
+        probs, contrib = contributions(run, *featurize(smi))
         top = np.argsort(-probs)[:TOP_K]
         i = index.get(standardize(smi))
         presets.append({
             "id": pid, "name_en": en, "name_zh": zh_name, "smiles": smi, "pubchem_cid": cid,
             "top": [{"label": labels[j], "prob": round(float(probs[j]), 4)} for j in top],
+            # contrib[label][atom]: probability change when that atom is removed (atom order of "smiles")
+            "contrib": {labels[j]: [round(float(v), 4) for v in contrib[:, j]] for j in top},
             "dataset_split": None if i is None else str(split[i]),
             "true_labels": None if i is None else [labels[j] for j in np.flatnonzero(Y[i])],
             "threshold_water": to_ug_per_kg(thr["compounds"][pid]),
@@ -116,8 +121,17 @@ def main():
             "A": A[k, :n, :n].tolist(),
             "probs": probs[k].tolist(),
         })
+    # Occlusion fixtures: contributions for the top-8 labels of each molecule
+    occ_smiles = [smiles[i] for i in pick[:N_OCCLUSION]] + [p[3] for p in PRESETS]
+    occlusion = []
+    for s in occ_smiles:
+        p, c = contributions(run, *featurize(s))
+        top = np.argsort(-p)[:TOP_K]
+        occlusion.append({"smiles": s, "labels": top.tolist(), "contrib": c[:, top].tolist()})
+
     write_json(SITE / "tests" / "parity_fixtures.json",
-               {"tolerance": {"A": 1e-6, "probs": 1e-5}, "molecules": fixtures})
+               {"tolerance": {"A": 1e-6, "probs": 1e-5, "contrib": 1e-5}, "molecules": fixtures,
+                "occlusion": occlusion})
 
 
 if __name__ == "__main__":

@@ -94,7 +94,10 @@
         <div class="card">
           <p class="mol-name" id="mol-name"></p>
           <p class="mol-smiles mono" id="mol-smiles"></p>
+          <p class="small muted" id="mol-raw" hidden></p>
           <div class="mol-svg" id="mol-svg"></div>
+          <div class="contrib-picker" id="contrib-picker"></div>
+          <div class="contrib-legend" id="contrib-legend"></div>
           <div class="mol-links small">
             <a id="mol-pubchem" target="_blank" rel="noopener" data-i18n="demo.pubchem">View on PubChem</a>
             <a id="mol-odor" data-i18n="demo.odor_link">See its predicted odor</a>
@@ -151,6 +154,7 @@
         <p data-i18n-html="method.data"></p>
         <p data-i18n-html="method.model"></p>
         <p data-i18n-html="method.eval"></p>
+        <p data-i18n-html="method.explain"></p>
       </div>
     </section>
 
@@ -210,6 +214,7 @@
   <script src="../odor-predictor/engine.js"></script>
   <script src="engine.js"></script>
   <script src="../assets/i18n.js" data-page-dict="i18n/"></script>
+  <script src="../assets/contrib.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

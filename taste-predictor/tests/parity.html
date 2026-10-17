@@ -19,7 +19,8 @@
       <p class="muted">Compares the JavaScript standardizer, featurizer and onnxruntime-web output against values computed
         in Python (training/taste/make_site_assets.py). Part 1: features and outputs for 50 random test-set molecules and
         14 edge cases. Part 2: standardization (largest fragment, neutralization) of the 13 presets and 10 salts, ions and
-        zwitterions, checked through the model output. Live input on the main page is enabled only if all pass.</p>
+        zwitterions, checked through the model output. Part 3: occlusion attribution (per-atom contributions to all 4 tastes)
+        for 10 test-set molecules and the 13 standardized presets. Live input on the main page is enabled only if all pass.</p>
       <div id="summary" data-status="running">Running...</div>
     </section>
     <h2>Part 1: featurizer</h2>
@@ -34,6 +35,13 @@
       <table>
         <thead><tr><th>#</th><th>input</th><th>Python standardized</th><th class="num">atoms</th><th class="num">max |Δprob|</th><th>result</th></tr></thead>
         <tbody id="rows-std"></tbody>
+      </table>
+    </div>
+    <h2>Part 3: occlusion attribution</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>SMILES</th><th class="num">atoms</th><th class="num">max |Δcontrib|</th><th>result</th></tr></thead>
+        <tbody id="rows-occ"></tbody>
       </table>
     </div>
   </main>
@@ -106,6 +114,29 @@
             cell(ok, err) + "</tr>");
         }
         document.getElementById("rows-std").innerHTML = rowsS.join("");
+
+        const rowsO = [];
+        for (const [idx, fx] of fixtures.occlusion.entries()) {
+          let dC = 0, n = -1, ok = false, err = "";
+          try {
+            const { feats } = TasteEngine.standardizedFeatures(rdkit, fx.smiles, spec);
+            n = feats.numAtoms;
+            if (n === fx.contrib.length) {
+              const { contrib } = await TasteEngine.occlusion(session, feats, spec);
+              for (let i = 0; i < n; i++) dC = Math.max(dC, maxDiff(contrib[i], fx.contrib[i]));
+              ok = dC <= tol.contrib;
+              if (!ok) err = "contributions differ";
+            } else {
+              err = "atom count " + n + " vs " + fx.contrib.length;
+            }
+          } catch (e) {
+            err = e.code || String(e);
+          }
+          total++; if (ok) passed++;
+          rowsO.push("<tr><td>" + (idx + 1) + "</td><td class=\"mono\">" + esc(fx.smiles) + "</td><td class=\"num\">" + n +
+            "</td><td class=\"num\">" + dC.toExponential(1) + "</td>" + cell(ok, err) + "</tr>");
+        }
+        document.getElementById("rows-occ").innerHTML = rowsO.join("");
 
         summary.textContent = (passed === total ? "PASS " : "FAIL ") + passed + "/" + total;
         summary.className = passed === total ? "pass" : "fail";

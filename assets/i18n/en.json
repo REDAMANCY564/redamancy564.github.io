@@ -46,5 +46,12 @@
   "lit.sort_date": "Newest",
   "lit.sort_cited": "Most cited",
   "lit.apply": "Search",
-  "lit.food_placeholder": "e.g. yogurt; leave empty for any food"
+  "lit.food_placeholder": "e.g. yogurt; leave empty for any food",
+  "contrib.pick": "Atom contributions:",
+  "contrib.title": "Which atoms drive the \"{label}\" prediction",
+  "contrib.raise": "raises",
+  "contrib.lower": "lowers",
+  "contrib.none": "Removing any single atom changes this probability by less than 0.5 percentage points, so no atom is colored.",
+  "contrib.unavailable": "No atom contribution data.",
+  "contrib.note": "Colors show how the predicted probability changes when that atom is removed (occlusion, in percentage points): orange atoms raise it, blue atoms lower it, darker means a larger effect. The highlighting shows what the model relies on, not a proven structure-activity cause."
 }

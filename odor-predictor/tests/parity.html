@@ -9,6 +9,7 @@
     .pass { color: #1a7f37; font-weight: 700; }
     .fail { color: #c0392b; font-weight: 700; }
     #summary { font-size: 1.25rem; margin: 16px 0; }
+    h2 { margin-top: 24px; }
   </style>
 </head>
 <body>
@@ -16,13 +17,21 @@
     <section class="hero">
       <h1>Browser / Python parity test</h1>
       <p class="muted">Compares the JavaScript featurizer and onnxruntime-web output against values computed in Python
-        (training/make_site_assets.py) for 50 random test-set molecules, the 10 preset molecules and 15 edge cases. Live input on the main page is enabled only if all pass.</p>
+        (training/make_site_assets.py) for 50 random test-set molecules, the 10 preset molecules and 15 edge cases. Part 2 checks
+        the occlusion attribution (per-atom contributions to the top 8 labels) for 20 molecules. Live input on the main page is enabled only if all pass.</p>
       <div id="summary" data-status="running">Running...</div>
     </section>
     <div class="table-wrap">
       <table>
         <thead><tr><th>#</th><th>SMILES</th><th class="num">atoms</th><th class="num">max |ΔX|</th><th class="num">max |ΔA|</th><th class="num">max |Δprob|</th><th>result</th></tr></thead>
         <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <h2>Part 2: occlusion attribution</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>SMILES</th><th class="num">atoms</th><th class="num">max |Δcontrib|</th><th>result</th></tr></thead>
+        <tbody id="rows-occ"></tbody>
       </table>
     </div>
   </main>
@@ -71,7 +80,33 @@
             "</td><td class=\"num\">" + dP.toExponential(1) + "</td><td class=\"" + (ok ? "pass\">PASS" : "fail\">FAIL " + err) + "</td></tr>");
         }
         document.getElementById("rows").innerHTML = rows.join("");
-        const total = fixtures.molecules.length;
+
+        const rowsOcc = [];
+        for (const [idx, fx] of fixtures.occlusion.entries()) {
+          let dC = 0, n = -1, ok = false, err = "";
+          try {
+            const { mol } = OdorEngine.parseLargestFragment(rdkit, fx.smiles);
+            const feats = OdorEngine.featurizeMol(mol, spec);
+            mol.delete();
+            n = feats.numAtoms;
+            if (n === fx.contrib.length) {
+              const { contrib } = await OdorEngine.occlusion(session, feats, spec);
+              for (let i = 0; i < n; i++) {
+                fx.labels.forEach((j, t) => { dC = Math.max(dC, Math.abs(contrib[i][j] - fx.contrib[i][t])); });
+              }
+              ok = dC <= tol.contrib;
+            } else {
+              err = "atom count " + n + " vs " + fx.contrib.length;
+            }
+          } catch (e) {
+            err = e.code || String(e);
+          }
+          if (ok) passed++;
+          rowsOcc.push("<tr><td>" + (idx + 1) + "</td><td class=\"mono\">" + fx.smiles.replace(/</g, "&lt;") + "</td><td class=\"num\">" + n +
+            "</td><td class=\"num\">" + dC.toExponential(1) + "</td><td class=\"" + (ok ? "pass\">PASS" : "fail\">FAIL " + err) + "</td></tr>");
+        }
+        document.getElementById("rows-occ").innerHTML = rowsOcc.join("");
+        const total = fixtures.molecules.length + fixtures.occlusion.length;
         summary.textContent = (passed === total ? "PASS " : "FAIL ") + passed + "/" + total;
         summary.className = passed === total ? "pass" : "fail";
         summary.dataset.status = passed === total ? "pass" : "fail";

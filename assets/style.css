@@ -151,3 +151,12 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 th { color: var(--muted); font-weight: 600; }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 tr.highlight td { font-weight: 700; }
+
+/* Atom contribution view (assets/contrib.js), odor and taste pages */
+.contrib-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 4px 0 10px; font-size: .85rem; }
+.contrib-picker .chip-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.contrib-legend { margin-bottom: 10px; }
+.contrib-title { font-weight: 600; font-size: .9rem; margin-bottom: 4px; }
+.contrib-bar { height: 10px; border-radius: 5px; border: 1px solid var(--border); }
+.contrib-scale { display: flex; justify-content: space-between; color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.contrib-note { margin: 6px 0 0; }

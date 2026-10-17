@@ -76,8 +76,9 @@
   class TasteError extends E.EngineError {}
 
   /**
-   * SMILES -> standardized features. Returns {feats, smiles (largest fragment, as parsed),
-   * fragmentsRemoved, neutralized (atoms changed)}. Throws EngineError codes from the odor
+   * SMILES -> standardized features. Returns {feats, smiles, fragmentsRemoved, neutralized
+   * (atoms changed)}; smiles is the input if nothing changed, else the canonical standardized
+   * SMILES, and atom indices of feats follow it. Throws EngineError codes from the odor
    * engine plus "no_carbon" (inorganic, e.g. NaCl: outside the training data).
    */
   function standardizedFeatures(rdkit, smiles, spec) {
@@ -94,14 +95,22 @@
     if (!atoms.some(a => z(a) === 6)) throw new TasteError("no_carbon");
     const neutralized = neutralizeJson(j);
     const text = JSON.stringify(j);
-    const feats = E.featurizeMol({ get_json: () => text }, spec);
-    // Display SMILES of the neutralized structure (RDKit.js reads commonchem JSON back)
+    if (!fragmentsRemoved && !neutralized) {
+      // Already standard: keep the input's atom order, so the input SMILES can be drawn as is
+      return { feats: E.featurizeMol({ get_json: () => text }, spec), smiles, fragmentsRemoved, neutralized };
+    }
+    // Changed: featurize the canonical SMILES of the standardized structure (RDKit.js reads
+    // commonchem JSON back), so atom indices match a drawing of the returned SMILES
     if (neutralized) {
       const m2 = rdkit.get_mol(text);
       if (m2) {
         try { fragSmiles = m2.get_smiles(); } finally { m2.delete(); }
       }
     }
+    const m3 = rdkit.get_mol(fragSmiles);
+    if (!m3) throw new TasteError("invalid_smiles");
+    let feats;
+    try { feats = E.featurizeMol(m3, spec); } finally { m3.delete(); }
     return { feats, smiles: fragSmiles, fragmentsRemoved, neutralized };
   }
 

@@ -1717,5 +1717,84 @@
         "test_positives": 113
       }
     }
+  },
+  "ablation_pharmagnn": {
+    "reference": "Liu et al., J Sci Food Agric 106, 8114-8120 (2026), doi:10.1002/jsfa.70826",
+    "n_rare_labels": 48,
+    "configs": {
+      "A": {
+        "loss": "bce",
+        "pharmacophore": false,
+        "asl_gamma_pos_neg": null,
+        "valid_mean": 0.8497,
+        "test_mean": 0.86,
+        "test_std": 0.0003,
+        "test_rare_mean": 0.8907,
+        "rare_vs_A": null,
+        "brier_raw": 0.0259
+      },
+      "B": {
+        "loss": "asl",
+        "pharmacophore": false,
+        "asl_gamma_pos_neg": [
+          1,
+          2
+        ],
+        "valid_mean": 0.8508,
+        "test_mean": 0.8615,
+        "test_std": 0.0029,
+        "test_rare_mean": 0.8885,
+        "rare_vs_A": {
+          "better": 20,
+          "worse": 28,
+          "n": 48,
+          "mean_diff": -0.0022
+        },
+        "brier_raw": 0.0567
+      },
+      "C": {
+        "loss": "bce",
+        "pharmacophore": true,
+        "asl_gamma_pos_neg": null,
+        "valid_mean": 0.8499,
+        "test_mean": 0.8606,
+        "test_std": 0.0017,
+        "test_rare_mean": 0.8903,
+        "rare_vs_A": {
+          "better": 23,
+          "worse": 25,
+          "n": 48,
+          "mean_diff": -0.0004
+        },
+        "brier_raw": 0.026
+      },
+      "D": {
+        "loss": "asl",
+        "pharmacophore": true,
+        "asl_gamma_pos_neg": [
+          0,
+          2
+        ],
+        "valid_mean": 0.8521,
+        "test_mean": 0.8595,
+        "test_std": 0.0013,
+        "test_rare_mean": 0.8841,
+        "rare_vs_A": {
+          "better": 18,
+          "worse": 29,
+          "n": 48,
+          "mean_diff": -0.0066
+        },
+        "brier_raw": 0.0556
+      }
+    },
+    "decision": {
+      "best_by_validation": "D",
+      "test_gain_vs_A": -0.0005,
+      "gain_ge_0.005": false,
+      "all_seeds_beat_A_mean": false,
+      "rare_not_lower": false,
+      "replace": false
+    }
   }
 }

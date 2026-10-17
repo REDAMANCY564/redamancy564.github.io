@@ -46,5 +46,12 @@
   "lit.sort_date": "最新发表",
   "lit.sort_cited": "引用最多",
   "lit.apply": "检索",
-  "lit.food_placeholder": "例如 yogurt，留空则不限食品"
+  "lit.food_placeholder": "例如 yogurt，留空则不限食品",
+  "contrib.pick": "原子贡献：",
+  "contrib.title": "哪些原子影响了「{label}」的预测",
+  "contrib.raise": "提高",
+  "contrib.lower": "降低",
+  "contrib.none": "删去任何单个原子，这一项的概率变化都不到 0.5 个百分点，因此不着色。",
+  "contrib.unavailable": "暂无原子贡献数据。",
+  "contrib.note": "颜色表示删去该原子后预测概率的变化（遮挡法，单位：百分点）：橙色原子提高了概率，蓝色原子降低了概率，颜色越深影响越大。高亮反映的是模型的判断依据，不代表真实的构效因果关系。"
 }

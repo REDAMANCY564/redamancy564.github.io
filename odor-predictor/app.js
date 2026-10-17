@@ -4,12 +4,16 @@
  * - Search: name / CAS (resolved via PubChem) or SMILES, predicted live in the browser
  *   with engine.js (RDKit.js features + onnxruntime-web). Parity with Python is checked
  *   by tests/parity.html.
+ * - Atom contributions (occlusion): precomputed for presets, computed live for searches;
+ *   the selected descriptor's contributions color the structure drawing.
  */
 (async function () {
   const RDKIT_WASM = "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.wasm";
   const PUBCHEM = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/";
   const ACCENT = "#0f6e6e";
+  const ACCENT_LIGHT = "#9cc9c4";
   const TOP_K = 8;
+  const CONTRIB = window.ContribView;
 
   const $ = id => document.getElementById(id);
 
@@ -43,6 +47,7 @@
   // search results have the same shape with source: "search".
   let current = presets[0];
   let chart = null;
+  let selected = current.top[0].label;  // descriptor whose atom contributions are shown
 
   // ---------- Model (lazy: loaded on first search) ----------
   let sessionPromise = null;
@@ -75,33 +80,44 @@
 
   function renderStructure() {
     const box = $("mol-svg");
+    const contrib = current.contrib && current.contrib[selected];
     if (rdkit) {
-      const mol = rdkit.get_mol(current.smiles);
-      if (mol) {
-        try {
-          box.innerHTML = mol.get_svg_with_highlights(JSON.stringify({
-            width: 360, height: 270, bondLineWidth: 1.6, clearBackground: false, addStereoAnnotation: false,
-          }));
-        } finally {
-          mol.delete();
-        }
-        return;
-      }
+      const svg = CONTRIB.drawSvg(rdkit, current.smiles, contrib);
+      if (svg) { box.innerHTML = svg; return; }
     }
     box.textContent = rdkitFailed ? I18N.t("demo.rdkit_failed") : I18N.t("demo.loading_rdkit");
+  }
+
+  function renderContrib() {
+    CONTRIB.renderPicker($("contrib-picker"), current.top.map(t => t.label), selected, labelName, id => {
+      selected = id;
+      renderStructure();
+      renderContrib();
+      renderChart();
+    });
+    CONTRIB.renderLegend($("contrib-legend"), current.contrib && current.contrib[selected], labelName(selected));
   }
 
   function renderChart() {
     const names = current.top.map(t => labelName(t.label));
     const values = current.top.map(t => Math.round(t.prob * 1000) / 10);
+    const colors = current.top.map(t => (t.label === selected ? ACCENT : ACCENT_LIGHT));
     if (!chart) {
       chart = new Chart($("pred-chart"), {
         type: "bar",
-        data: { labels: names, datasets: [{ data: values, backgroundColor: ACCENT, borderRadius: 4, maxBarThickness: 26 }] },
+        data: { labels: names, datasets: [{ data: values, backgroundColor: colors, borderRadius: 4, maxBarThickness: 26 }] },
         options: {
           indexAxis: "y",
           maintainAspectRatio: false,
           animation: { duration: 300 },
+          onClick: (evt, els) => {
+            if (!els.length) return;
+            selected = current.top[els[0].index].label;
+            renderStructure();
+            renderContrib();
+            renderChart();
+          },
+          onHover: (evt, els) => { evt.native.target.style.cursor = els.length ? "pointer" : "default"; },
           plugins: {
             legend: { display: false },
             tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + "%" } },
@@ -115,6 +131,7 @@
     } else {
       chart.data.labels = names;
       chart.data.datasets[0].data = values;
+      chart.data.datasets[0].backgroundColor = colors;
       chart.update();
     }
   }
@@ -217,14 +234,17 @@
   }
 
   function renderDemo() {
+    if (!current.top.some(t => t.label === selected)) selected = current.top[0].label;
     renderInfo();
     renderStructure();
+    renderContrib();
     renderChart();
     renderKbSources();
   }
 
   $("preset").addEventListener("change", e => {
     current = presets.find(p => p.id === e.target.value) || presets[0];
+    selected = current.top[0].label;
     setSearchStatus("");
     renderDemo();
   });
@@ -292,20 +312,29 @@
 
       setSearchStatus("search.predicting");
       const { mol, fragmentsRemoved } = OdorEngine.parseLargestFragment(rd, smiles);
-      let feats;
       try {
-        feats = OdorEngine.featurizeMol(mol, spec);
         smiles = mol.get_smiles();
       } finally {
         mol.delete();
       }
-      const probs = await OdorEngine.predict(session, feats, spec);
+      // Featurize the canonical SMILES that is also drawn, so atom indices of the
+      // contributions match the drawing (predictions do not depend on atom order)
+      const canon = rd.get_mol(smiles);
+      let feats;
+      try {
+        feats = OdorEngine.featurizeMol(canon, spec);
+      } finally {
+        canon.delete();
+      }
+      const { probs, contrib } = await OdorEngine.occlusion(session, feats, spec);
       const order = Array.from(probs.keys()).sort((a, b) => probs[b] - probs[a]).slice(0, TOP_K);
 
       current = {
         source: "search", smiles, title, pubchem_cid: cid,
         top: order.map(j => ({ label: labels[j].id, prob: probs[j] })),
+        contrib: Object.fromEntries(order.map(j => [labels[j].id, contrib.map(c => c[j])])),
       };
+      selected = current.top[0].label;
       const keys = [asSmiles ? "search.done_smiles" : "search.done_name"];
       if (fragmentsRemoved) keys.push("search.fragments");
       setSearchStatus(keys, { title, cid });
@@ -368,6 +397,16 @@
     const item = ([id, v]) => "<li>" + labelName(id) + " <span class=\"muted\">" + fmt(v.auroc) + "</span></li>";
     $("best-labels").innerHTML = robust.slice(0, 5).map(item).join("");
     $("worst-labels").innerHTML = robust.slice(-5).reverse().map(item).join("");
+
+    // Ablation of the PharmaGNN ideas (training/ablation.py); A is the deployed model
+    const ab = metrics.ablation_pharmagnn;
+    $("ablation-body").innerHTML = ["A", "B", "C", "D"].map(k => {
+      const c = ab.configs[k];
+      return "<tr" + (k === "A" ? ' class="highlight"' : "") + "><td>" + I18N.t("ablation.cfg." + k) +
+        '</td><td class="num">' + fmt(c.test_mean) + " ± " + c.test_std.toFixed(4) +
+        '</td><td class="num">' + fmt(c.test_rare_mean) + "</td></tr>";
+    }).join("");
+    $("ablation-note").textContent = I18N.t("ablation.note", { n: ab.n_rare_labels });
   }
 
   // ---------- Init ----------

@@ -4,6 +4,8 @@
  *   train-split-only model for molecules held out during evaluation) and dataset labels
  * - Search: name / CAS (resolved via PubChem) or SMILES, standardized and predicted live in
  *   the browser with engine.js. Parity with Python is checked by tests/parity.html.
+ * - Atom contributions (occlusion, assets/contrib.js): precomputed for presets on the
+ *   standardized structure, computed live for searches; drawn on that structure.
  */
 (async function () {
   const RDKIT_WASM = "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.wasm";
@@ -46,6 +48,10 @@
   // search results have {source: "search", smiles, title, pubchem_cid, probs}.
   let current = presets[0];
   let chart = null;
+  const topTaste = () => ids.reduce((a, b) => (current.probs[b] > current.probs[a] ? b : a));
+  let selected = topTaste();  // taste whose atom contributions are shown
+  // The structure that was featurized: standardized for presets, as returned by the engine for searches
+  const drawn = () => current.std_smiles || current.smiles;
 
   // ---------- Model (lazy: loaded on first search) ----------
   let sessionPromise = null;
@@ -79,19 +85,21 @@
   function renderStructure() {
     const box = $("mol-svg");
     if (rdkit) {
-      const mol = rdkit.get_mol(current.smiles);
-      if (mol) {
-        try {
-          box.innerHTML = mol.get_svg_with_highlights(JSON.stringify({
-            width: 360, height: 270, bondLineWidth: 1.6, clearBackground: false, addStereoAnnotation: false,
-          }));
-        } finally {
-          mol.delete();
-        }
-        return;
-      }
+      const svg = ContribView.drawSvg(rdkit, drawn(), current.contrib && current.contrib[selected]);
+      if (svg) { box.innerHTML = svg; return; }
     }
     box.textContent = rdkitFailed ? I18N.t("demo.rdkit_failed") : I18N.t("demo.loading_rdkit");
+  }
+
+  function selectTaste(id) {
+    selected = id;
+    renderStructure();
+    renderContrib();
+  }
+
+  function renderContrib() {
+    ContribView.renderPicker($("contrib-picker"), ids, selected, labelName, selectTaste);
+    ContribView.renderLegend($("contrib-legend"), current.contrib && current.contrib[selected], labelName(selected));
   }
 
   // A held-out comparison is shown only when the train-split-only model never saw the molecule
@@ -114,6 +122,8 @@
         indexAxis: "y",
         maintainAspectRatio: false,
         animation: { duration: 300 },
+        onClick: (evt, els) => { if (els.length) selectTaste(ids[els[0].index]); },
+        onHover: (evt, els) => { evt.native.target.style.cursor = els.length ? "pointer" : "default"; },
         plugins: {
           legend: { display: datasets.length > 1, position: "bottom", labels: { boxWidth: 12 } },
           tooltip: { callbacks: { label: ctx => ctx.dataset.label + ": " + ctx.parsed.x.toFixed(1) + "%" } },
@@ -142,11 +152,14 @@
       ? (current.title || current.smiles)
       : (I18N.lang === "zh" ? current.name_zh + "  " + current.name_en : current.name_en);
     $("mol-name").textContent = name;
-    $("mol-smiles").textContent = current.smiles;
+    $("mol-smiles").textContent = drawn();
+    const rawForm = $("mol-raw");
+    rawForm.hidden = drawn() === current.smiles;
+    if (!rawForm.hidden) rawForm.textContent = I18N.t("demo.raw_form", { smiles: current.smiles });
     const link = $("mol-pubchem");
     link.hidden = !current.pubchem_cid;
     if (current.pubchem_cid) link.href = "https://pubchem.ncbi.nlm.nih.gov/compound/" + current.pubchem_cid;
-    $("mol-odor").href = "../odor-predictor/?q=" + encodeURIComponent(current.smiles) + "#demo";
+    $("mol-odor").href = "../odor-predictor/?q=" + encodeURIComponent(drawn()) + "#demo";
 
     const status = $("mol-status");
     status.innerHTML = "";
@@ -192,12 +205,14 @@
   function renderDemo() {
     renderInfo();
     renderStructure();
+    renderContrib();
     renderChart();
     renderSourNote();
   }
 
   $("preset").addEventListener("change", e => {
     current = presets.find(p => p.id === e.target.value) || presets[0];
+    selected = topTaste();
     setSearchStatus("");
     renderDemo();
   });
@@ -272,11 +287,13 @@
 
       setSearchStatus("search.predicting");
       const std = TasteEngine.standardizedFeatures(rd, smiles, spec);
-      const out = await TasteEngine.predict(session, std.feats, spec);
+      const { probs: out, contrib } = await TasteEngine.occlusion(session, std.feats, spec);
       current = {
         source: "search", smiles: std.smiles, title, pubchem_cid: cid,
         probs: Object.fromEntries(ids.map((id, j) => [id, out[j]])),
+        contrib: Object.fromEntries(ids.map((id, j) => [id, contrib.map(c => c[j])])),
       };
+      selected = topTaste();
       const keys = [asSmiles ? "search.done_smiles" : "search.done_name"];
       if (std.fragmentsRemoved) keys.push("search.fragments");
       if (std.neutralized) keys.push("search.neutralized");

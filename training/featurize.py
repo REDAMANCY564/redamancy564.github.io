@@ -12,6 +12,11 @@ Atom features (one-hot blocks, concatenated in this order):
   is in ring                                           (1)
 Adjacency: 1 if bonded (bond type ignored), plus self loops, then symmetric
 normalization D^-1/2 (A + I) D^-1/2 over real atoms. Padded rows/cols are 0.
+
+Optional pharmacophore flags (pharma=True, appended after the blocks above):
+  H-bond donor, H-bond acceptor, hydrophobe        (3)
+An atom is flagged if it is in any match of the group's SMARTS, frozen in
+pharmacophore_smarts.json (RDKit BaseFeatures.fdef; same file is used in the browser).
 """
 import json
 from pathlib import Path
@@ -28,6 +33,29 @@ NUM_FEATURES = len(ELEMENTS) + 1 + len(DEGREES) + len(NUM_HS) + len(CHARGES) + 2
 
 ROOT = Path(__file__).resolve().parent.parent
 SPEC_PATH = ROOT / "odor-predictor" / "model" / "feature_spec.json"
+
+PHARMA_PATH = Path(__file__).resolve().parent / "pharmacophore_smarts.json"
+PHARMA_GROUPS = ["donor", "acceptor", "hydrophobe"]
+NUM_FEATURES_PHARMA = NUM_FEATURES + len(PHARMA_GROUPS)
+_pharma_patterns = None
+
+
+def pharma_patterns():
+    global _pharma_patterns
+    if _pharma_patterns is None:
+        groups = json.loads(PHARMA_PATH.read_text(encoding="utf-8"))["groups"]
+        _pharma_patterns = [[Chem.MolFromSmarts(d["smarts"]) for d in groups[g]] for g in PHARMA_GROUPS]
+    return _pharma_patterns
+
+
+def pharma_flags(mol):
+    """[n_atoms, 3] array: donor / acceptor / hydrophobe membership."""
+    flags = np.zeros((mol.GetNumAtoms(), len(PHARMA_GROUPS)), dtype=np.float32)
+    for g, patterns in enumerate(pharma_patterns()):
+        for p in patterns:
+            for match in mol.GetSubstructMatches(p, maxMatches=100000):
+                flags[list(match), g] = 1.0
+    return flags
 
 
 def atom_features(atom):
@@ -46,8 +74,8 @@ def atom_features(atom):
     )
 
 
-def featurize(smiles):
-    """Return X [64, F], A [64, 64], mask [64] as float32 arrays."""
+def featurize(smiles, pharma=False):
+    """Return X [64, F], A [64, 64], mask [64] as float32 arrays (F = 29 with pharma=True)."""
     mol = Chem.MolFromSmiles(smiles)
     if mol is None:
         raise ValueError(f"Invalid SMILES: {smiles}")
@@ -55,9 +83,11 @@ def featurize(smiles):
     if n > MAX_ATOMS:
         raise ValueError(f"Too many atoms ({n} > {MAX_ATOMS}): {smiles}")
 
-    X = np.zeros((MAX_ATOMS, NUM_FEATURES), dtype=np.float32)
+    X = np.zeros((MAX_ATOMS, NUM_FEATURES_PHARMA if pharma else NUM_FEATURES), dtype=np.float32)
     for atom in mol.GetAtoms():
-        X[atom.GetIdx()] = atom_features(atom)
+        X[atom.GetIdx(), :NUM_FEATURES] = atom_features(atom)
+    if pharma:
+        X[:n, NUM_FEATURES:] = pharma_flags(mol)
 
     adj = np.eye(n, dtype=np.float64)
     for bond in mol.GetBonds():
@@ -72,8 +102,8 @@ def featurize(smiles):
     return X, A, mask
 
 
-def featurize_many(smiles_list):
-    out = [featurize(s) for s in smiles_list]
+def featurize_many(smiles_list, pharma=False):
+    out = [featurize(s, pharma) for s in smiles_list]
     return tuple(np.stack(a) for a in zip(*out))
 
 

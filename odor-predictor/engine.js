@@ -145,5 +145,52 @@
     return out[spec.model_output.name].data;
   }
 
-  window.OdorEngine = { EngineError, parseLargestFragment, featurizeMol, loadModel, predict };
+  /**
+   * Occlusion attribution (same as training/occlusion.py). Atom i is removed from the graph:
+   * feature row and mask zeroed, bonds dropped, adjacency of the other atoms renormalized.
+   * All numAtoms + 1 inputs run as one batch. Returns {probs: Float32Array [L],
+   * contrib: Array(numAtoms) of Float32Array [L]} with contrib = p(full) - p(without atom i).
+   */
+  async function occlusion(session, feats, spec) {
+    const N = spec.max_atoms, F = spec.num_features, n = feats.numAtoms, B = n + 1;
+    const X = new Float32Array(B * N * F), A = new Float32Array(B * N * N), mask = new Float32Array(B * N);
+    const raw = [];  // bonds + self loops, from the normalized adjacency
+    for (let i = 0; i < n; i++) {
+      const row = new Float64Array(n);
+      for (let k = 0; k < n; k++) row[k] = feats.A[i * N + k] > 0 ? 1 : 0;
+      raw.push(row);
+    }
+    X.set(feats.X, 0); A.set(feats.A, 0); mask.set(feats.mask, 0);
+    for (let r = 0; r < n; r++) {
+      const b = r + 1;
+      X.set(feats.X, b * N * F);
+      X.fill(0, b * N * F + r * F, b * N * F + (r + 1) * F);
+      mask.set(feats.mask, b * N);
+      mask[b * N + r] = 0;
+      const deg = raw.map((row, i) => (i === r ? 0 : row.reduce((s, x, k) => s + (k === r ? 0 : x), 0)));
+      const dinv = deg.map(v => (v > 0 ? 1 / Math.sqrt(v) : 0));
+      for (let i = 0; i < n; i++) {
+        if (i === r) continue;
+        for (let k = 0; k < n; k++) {
+          if (k !== r && raw[i][k]) A[b * N * N + i * N + k] = raw[i][k] * dinv[i] * dinv[k];
+        }
+      }
+    }
+    const out = await session.run({
+      X: new ort.Tensor("float32", X, [B, N, F]),
+      A: new ort.Tensor("float32", A, [B, N, N]),
+      mask: new ort.Tensor("float32", mask, [B, N]),
+    });
+    const P = out[spec.model_output.name].data, L = P.length / B;
+    const probs = P.slice(0, L);
+    const contrib = [];
+    for (let r = 0; r < n; r++) {
+      const c = new Float32Array(L);
+      for (let j = 0; j < L; j++) c[j] = probs[j] - P[(r + 1) * L + j];
+      contrib.push(c);
+    }
+    return { probs, contrib };
+  }
+
+  window.OdorEngine = { EngineError, parseLargestFragment, featurizeMol, loadModel, predict, occlusion };
 })();

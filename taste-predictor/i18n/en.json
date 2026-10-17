@@ -40,6 +40,7 @@
   "demo.heldout_note": "Light bars come from the model trained on the training split only, which never saw this molecule: a genuine prediction.",
   "demo.sour_note": "The data also records this molecule as {tastes}. The model does not predict sour or salty taste, so the chart leaves them out.",
   "demo.pubchem": "View on PubChem",
+  "demo.raw_form": "Drawn and computed on the standardized structure (counter-ions removed, charges neutralized, no stereochemistry, as in the training data). Original form: {smiles}",
   "demo.odor_link": "See its predicted odor →",
   "chart.deployed": "Website model",
   "chart.heldout": "Training-split-only model",
@@ -65,6 +66,7 @@
   "method.data": "<b>Data.</b> Two public datasets were merged: ChemTastesDB (main source) and the data released by the VirtuousMultiTaste project. After unifying the labels there are 3,937 organic small molecules: 1,799 sweet, 1,569 bitter, 127 umami and 201 tasteless. When sources disagree about a molecule, the positive record wins (for example, bitter in one source and not bitter in another counts as bitter). Peptides (3 or more amino-acid residues), inorganic salts and molecules with more than 64 heavy atoms were left out.",
   "method.model": "<b>Model.</b> The same model design and atom features as this site's <a href=\"../odor-predictor/\">odor predictor</a>: each atom is described by its element, number of neighboring atoms and hydrogens, charge, aromaticity and ring membership. After 3 rounds of message passing, the atoms are pooled into one molecule representation and turned into 4 probabilities. The model has about 100,000 parameters and runs directly in your browser.",
   "method.eval": "<b>Fair testing.</b> Molecules with rings were split by ring scaffold into training (80%), validation (10%) and test (10%) sets, so every ring scaffold in the test set is new to the model. Molecules without rings (about 20%) were split at random.",
+  "method.explain": "<b>Atom contributions.</b> The coloring on the structure uses occlusion: each atom of the molecule (after removing counter-ions and neutralizing charges) is removed in turn, the model is run again, and the change in the taste's probability is recorded. Atoms whose removal lowers the probability (orange) are what the model relies on; atoms whose removal raises it (blue) hold the prediction down. This shows which structures the model weighs, not that they chemically determine the taste.",
 
   "results.title": "How well does it work?",
   "results.intro": "Performance is measured with AUROC: take one random molecule that has a taste and one that does not; AUROC is the chance that the model scores the first one higher. 0.5 is random guessing, 1.0 is perfect. The table shows results on 394 test molecules.",

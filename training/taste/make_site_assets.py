@@ -8,6 +8,9 @@ Outputs:
                                - "featurize": standardized SMILES -> Python X, A, probs
                                - "standardize": raw input (salts, charges, stereo) ->
                                  Python standardized SMILES and probs
+                               - "occlusion": per-atom contributions (training/occlusion.py)
+Presets carry per-atom occlusion contributions for all 4 tastes, in the atom order of
+std_smiles (the structure the page draws).
 Predictions come from onnxruntime with the same model file the browser loads.
 """
 import json
@@ -22,6 +25,7 @@ from common import DATA_DIR, LABELS, ROOT, load
 from clean_data import standardize
 from export_taste_onnx import ONNX_PATH, load_model
 from featurize import featurize, featurize_many
+from occlusion import contributions
 from presets_taste import PRESETS
 
 SITE = ROOT / "taste-predictor"
@@ -66,7 +70,7 @@ def main():
     for pid, en, zh, smi, cid in PRESETS:
         std = standardize(smi)
         X, A, M = (a[None] for a in featurize(std))
-        p = run(X, A, M)[0]
+        p, contrib = contributions(run, X[0], A[0], M[0])
         with torch.no_grad():
             pe = eval_model(*(torch.from_numpy(a) for a in (X, A, M))).numpy()[0]
         i = index.get(std)
@@ -74,6 +78,8 @@ def main():
             "id": pid, "name_en": en, "name_zh": zh, "smiles": smi, "std_smiles": std, "pubchem_cid": cid,
             "probs": {l: round(float(v), 4) for l, v in zip(LABELS, p)},
             "probs_train_only": {l: round(float(v), 4) for l, v in zip(LABELS, pe)},
+            # contrib[taste][atom]: probability change when that atom is removed (atom order of std_smiles)
+            "contrib": {l: [round(float(v), 4) for v in contrib[:, j]] for j, l in enumerate(LABELS)},
             "dataset_split": None if i is None else str(d["split"][i]),
             "dataset_labels": None if i is None else {
                 l: None if np.isnan(v) else int(v) for l, v in zip(LABELS, d["Y"][i])},
@@ -108,8 +114,11 @@ def main():
         std_fx.append({"input": s, "std_smiles": std, "num_atoms": int(M1.sum()),
                        "probs": run(X1, A1, M1)[0].tolist()})
     print(f"  standardize cases: " + "; ".join(f"{f['input']} -> {f['std_smiles']}" for f in std_fx[-len(STANDARDIZE_CASES):]))
+    occ_smiles = [d["smiles"][i] for i in pick[:10]] + [standardize(p[3]) for p in PRESETS]
+    occlusion = [{"smiles": s, "contrib": contributions(run, *featurize(s))[1].tolist()} for s in occ_smiles]
     write_json(SITE / "tests" / "parity_fixtures.json",
-               {"tolerance": {"A": 1e-6, "probs": 1e-5}, "featurize": featurize_fx, "standardize": std_fx})
+               {"tolerance": {"A": 1e-6, "probs": 1e-5, "contrib": 1e-5}, "featurize": featurize_fx,
+                "standardize": std_fx, "occlusion": occlusion})
 
 
 if __name__ == "__main__":

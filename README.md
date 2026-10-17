@@ -62,7 +62,9 @@ python flavor_improver/make_parity_fixtures.py  # 生成一致性测试数据
 用图神经网络（GNN）从分子结构预测风味分子的气味描述词。模型导出为 ONNX，网页为纯 HTML/CSS/JS，托管在 GitHub Pages，不需要服务器。
 
 - **搜索任意分子**：输入英文名称、CAS 号或 SMILES。名称和 CAS 号通过 PubChem 转为结构，然后在访客的浏览器中实时计算特征并运行模型。网址可带参数直接分享，例如 `odor-predictor/?q=linalool`。
-- **一致性测试**：https://redamancy564.github.io/odor-predictor/tests/parity.html ，检查浏览器端（`odor-predictor/engine.js`）的特征和预测与 Python 完全一致（50 个随机测试分子 + 10 个预设分子 + 15 个边界结构）。**修改特征或重新训练后，必须先打开这个页面确认全部 PASS 再上线。**
+- **原子贡献高亮（遮挡法）**：依次删去每个原子重新预测，概率变化即该原子的贡献，橙色为提高、蓝色为降低（`training/occlusion.py`；浏览器端 `OdorEngine.occlusion`；绘图与图例在共用的 `assets/contrib.js`）。预设分子在 Python 中预计算，搜索的分子在浏览器中现场计算。页面注明高亮只反映模型的判断依据，不代表构效因果。
+- **一致性测试**：https://redamancy564.github.io/odor-predictor/tests/parity.html ，检查浏览器端（`odor-predictor/engine.js`）的特征和预测与 Python 完全一致（50 个随机测试分子 + 10 个预设分子 + 15 个边界结构），以及 20 个分子的原子贡献。**修改特征或重新训练后，必须先打开这个页面确认全部 PASS 再上线。**
+- **尝试过的改进（未采用，2026-10-17）**：参考 PharmaGNN（Liu et al., J Sci Food Agric 106, 8114-8120, 2026, doi:10.1002/jsfa.70826），在同一骨架划分上做消融：非对称损失、原子药效团标记（供体 / 受体 / 疏水，RDKit BaseFeatures 定义，冻结在 `training/pharmacophore_smarts.json`）及两者组合。测试集 macro AUROC：原模型 0.860 ± 0.0003，ASL 0.8615 ± 0.0029，药效团 0.8606 ± 0.0017，两者 0.8595 ± 0.0013；稀有标签未改善，未达到事先约定的替换条件（提升 ≥ 0.005、3 个种子都更好、稀有标签不下降），线上模型不变。详见 `training/ablation_results.json`。
 - **气味阈值**：仅 10 个预设分子显示水中阈值文献值（van Gemert 2011 汇编；数据在 `training/odor_thresholds.json`）。该书有版权，PDF 已加入 `.gitignore`，不会上传。
 
 ## 味觉预测（taste-predictor/）
@@ -73,7 +75,8 @@ python flavor_improver/make_parity_fixtures.py  # 生成一致性测试数据
 - **标签规则**（`training/taste/clean.py`）：同一分子在不同记录中冲突时取阳性；「非甜」等只给该类记阴性，其余为未知；未知标签不计入损失和 AUROC。
 - **部署模型**：评估用只训练集的模型；评估后按相同设置用全部数据重新训练作为网页模型（因为核苷酸类鲜味分子整组落在测试集，用户 2026-10-17 选择此方案）。
 - **浏览器端标准化**：RDKit.js 没有 neutralize，`taste-predictor/engine.js` 按 RDKit Uncharger 规则重写了中和步骤，其余复用 `odor-predictor/engine.js`。
-- **一致性测试**：https://redamancy564.github.io/taste-predictor/tests/parity.html （64 个特征用例 + 23 个标准化用例，含盐和两性离子）。**修改特征、标准化或重新训练后，必须确认全部 PASS。**
+- **原子贡献高亮**：同气味页面，在标准化后的结构上计算和绘图（预设分子显示原始形式备注）。
+- **一致性测试**：https://redamancy564.github.io/taste-predictor/tests/parity.html （64 个特征用例 + 23 个标准化用例，含盐和两性离子，+ 23 个原子贡献用例）。**修改特征、标准化或重新训练后，必须确认全部 PASS。**
 
 **重新训练：**
 ```powershell
@@ -142,7 +145,7 @@ python -m http.server 8000
 
 ```
 index.html              个人主页
-assets/                 全站共用：样式、中英切换、个人信息
+assets/                 全站共用：样式、中英切换、个人信息、原子贡献绘图（contrib.js）
 odor-predictor/         项目页
   index.html, app.js    页面与交互逻辑
   i18n/                 页面中英文案
@@ -176,7 +179,11 @@ python split.py             # 骨架 / 随机混合划分（80/10/10）
 python baseline.py          # Morgan 指纹 + 逻辑回归 / 随机森林
 python train.py             # GNN，3 个随机种子
 python export_onnx.py       # 导出 ONNX 并验证与 PyTorch 一致
-python make_site_assets.py  # 生成 labels.json、presets.json、一致性测试数据
+python make_site_assets.py  # 生成 labels.json、presets.json（含原子贡献）、一致性测试数据
+
+# 可选：PharmaGNN 思路的消融实验（约 15 分钟，GPU）
+python ablation.py          # 4 组设置 × 3 个种子，写出 ablation_results.json
+python ablation_to_site.py  # 把摘要写入 odor-predictor/data/metrics.json
 ```
 
 新电脑上先建环境：`python -m venv .venv`，然后按 `requirements.txt` 顶部的说明安装 PyTorch（RTX 50 系显卡需 CUDA 12.8 及以上版本）和其他依赖。
