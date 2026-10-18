@@ -38,41 +38,71 @@
     return t === "" || !/^[-+]?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?$/.test(t) ? null : Number(t);
   };
 
+  /** Unit in a column header -> factor to the target unit; null when no unit is written. */
+  function unitFactor(header, to) {
+    const h = String(header || "").toLowerCase().replace(/µ|μ/g, "u").replace(/\s+/g, "");
+    const ug = /ng\/kg|ng\/l|ppt/.test(h) ? 0.001 : /ug\/kg|ug\/l|ng\/g|ng\/ml|ppb/.test(h) ? 1
+      : /mg\/kg|mg\/l|ug\/g|ug\/ml|ppm/.test(h) ? 1000 : null;
+    if (ug == null) return null;
+    return to === "ug_kg" ? ug : ug / 1000;
+  }
+
+  // accepted column names (case-insensitive, any unit in brackets); the gcms-interpreter export uses the first ones
+  const COLS = {
+    name: /^(compound name|compound|name|化合物名称|化合物|物质名称|物质|名称)(?=$|[\s(（:：])/,
+    cas: /^(cas|cas no\.?|cas号|cas 号)$/,
+    amount: /^(amount|concentration|conc\.?|浓度|含量)(?!.*(%|相对))/,
+    rel: /^(relative content|relative|area|peak area|相对含量|峰面积|面积)/,
+    thr: /^(odor threshold|odour threshold|threshold|气味阈值|阈值)(?!.*(source|来源))/,
+    src: /^(threshold source|阈值来源)/,
+    kb: /^kb id$/,
+    oav: /^oav$/,
+    roav: /^roav$/,
+  };
+
   /**
-   * Record from the ranking CSV of gcms-interpreter ("Export the ranking (CSV)").
-   * Columns used: Compound, CAS, "Amount (ug/kg)" (-> OAV) or "Relative content (%)" (-> ROAV),
-   * "Odor threshold in water (mg/kg)", "Threshold source", optional "KB id". A value "not detected"
-   * (also "n.d.", "nd", "未检出") marks a target of the standard file that was not found.
-   * Returns {rec, error}: error "header" (not this format) or "empty" (no compound with a value).
+   * Record from a CSV: the ranking export of gcms-interpreter, or the visitor's own table.
+   * Needed: a compound name column and one of
+   *   amount (unit from the header, default ug/kg; with thresholds -> OAV),
+   *   relative content or peak area (with thresholds -> ROAV),
+   *   OAV (used as given), ROAV (used as given).
+   * Thresholds: unit from the header, default mg/kg; missing ones fall back to built-in values on the page.
+   * A value "not detected" (also "n.d.", "nd", "未检出") marks a target that was not found.
+   * Compounds with a given OAV / ROAV carry given: true (value = that OAV / ROAV, thresholds not used).
+   * Returns {rec, error}: error "header" (no name column or no value column) or "empty" (no compound with a value).
    */
   function recordFromCsv(text, name) {
     const rows = parseCsv(text);
     if (!rows.length) return { rec: null, error: "empty" };
-    const h = rows[0].map(x => x.trim().toLowerCase());
+    const raw = rows[0].map(x => x.trim());
+    const h = raw.map(x => x.toLowerCase());
     const col = re => h.findIndex(x => re.test(x));
-    const iName = col(/^compound$/), iCas = col(/^cas$/), iAmt = col(/^amount/), iRel = col(/^relative content/),
-      iThr = col(/^odor threshold/), iSrc = col(/^threshold source/), iKb = col(/^kb id$/);
-    if (iName < 0 || iThr < 0 || (iAmt < 0 && iRel < 0)) return { rec: null, error: "header" };
-    const mode = iAmt >= 0 ? "oav" : "roav", iVal = iAmt >= 0 ? iAmt : iRel;
-    const compounds = [];
-    const notFound = [];
+    const i = {};
+    for (const k in COLS) i[k] = col(COLS[k]);
+    if (i.name < 0) return { rec: null, error: "header" };
+    let mode, basis, iVal, given = false, factor = 1;
+    if (i.amount >= 0) { mode = "oav"; basis = "conc"; iVal = i.amount; factor = unitFactor(raw[i.amount], "ug_kg") || 1; }
+    else if (i.rel >= 0) { mode = "roav"; basis = /area|面积/.test(h[i.rel]) ? "area" : "rel"; iVal = i.rel; }
+    else if (i.oav >= 0) { mode = "oav"; basis = "oav"; iVal = i.oav; given = true; }
+    else if (i.roav >= 0) { mode = "roav"; basis = "roav"; iVal = i.roav; given = true; }
+    else return { rec: null, error: "header" };
+    const thrFactor = i.thr >= 0 ? unitFactor(raw[i.thr], "mg_kg") || 1 : 1;
+    const cell = (r, k) => (i[k] >= 0 && r[i[k]] ? r[i[k]].trim() : "");
+    const compounds = [], notFound = [];
     rows.slice(1).forEach(r => {
-      if (!r[iName] || !r[iName].trim()) return;
-      if (ND.test(String(r[iVal] || "").trim())) {
-        notFound.push({ label: r[iName].trim(), cas: iCas >= 0 ? (r[iCas] || "").trim() : "", kbId: iKb >= 0 && r[iKb] ? r[iKb].trim() : null });
-        return;
-      }
-      const value = num(r[iVal]);
-      if (value == null || value < 0) return;
-      const thr = num(r[iThr]);
-      compounds.push({
-        label: r[iName].trim(), cas: iCas >= 0 ? (r[iCas] || "").trim() : "", kbId: iKb >= 0 && r[iKb] ? r[iKb].trim() : null,
-        value, thr_mg_kg: thr != null && thr > 0 ? thr : null, thrSource: iSrc >= 0 && r[iSrc] ? r[iSrc].trim() : null,
-      });
+      const label = cell(r, "name");
+      if (!label) return;
+      const ident = { label, cas: cell(r, "cas"), kbId: cell(r, "kb") || null };
+      if (ND.test(String(r[iVal] || "").trim())) { notFound.push(ident); return; }
+      const v = num(r[iVal]);
+      if (v == null || v < 0) return;
+      const thr = given ? null : num(cell(r, "thr"));
+      compounds.push(Object.assign(ident, {
+        value: v * factor, thr_mg_kg: thr != null && thr > 0 ? thr * thrFactor : null, thrSource: cell(r, "src") || null,
+      }, given ? { given: true } : {}));
     });
     if (!compounds.length) return { rec: null, error: "empty" };
-    return { rec: { name: name || "csv", savedAt: new Date().toISOString(), source: "csv", mode,
-                    basis: mode === "oav" ? "conc" : "rel", compounds, notFound }, error: null };
+    return { rec: { name: name || "csv", savedAt: new Date().toISOString(), source: "csv", mode, basis, compounds, notFound }, error: null };
   }
 
   /** Normalized compound name for matching when there is no KB id and no CAS. */
@@ -138,6 +168,7 @@
     const val = r => (r[side] ? r[side].value : r[side + "NotFound"] ? 0 : null);
     const ratio = rows.map(r => {
       const v = val(r), thr = r.thrUse && r.thrUse.v;
+      if (r[side] && r[side].given) return v;      // OAV or ROAV given in the file: thresholds not used
       if (v == null || !(thr > 0)) return null;
       return mode === "oav" ? v / (thr * 1000) : v / thr;
     });
@@ -146,7 +177,7 @@
       const v = val(r);
       if (ratio[i] == null) return { value: v, score: null, I: 0 };
       const score = mode === "oav" ? ratio[i] : max > 0 ? (100 * ratio[i]) / max : 0;
-      return { value: v, score, I: intensity(score) };
+      return { value: v, score, I: intensity(score), given: !!(r[side] && r[side].given) };
     });
   }
 

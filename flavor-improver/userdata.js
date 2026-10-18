@@ -154,7 +154,10 @@ window.UserMode = (function () {
     const { sample, target } = state.recs;
     const modeNote = m.mode === "oav" ? t("user.mode_oav")
       : t("user.mode_roav", { s: sample.mode.toUpperCase(), t: target.mode.toUpperCase() });
-    const unit = side => (state.recs[side].mode === "oav" ? "µg/kg" : t("user.rel_unit"));
+    const unit = side => {
+      const b = state.recs[side].basis;
+      return b === "oav" ? t("user.unit_oav") : b === "roav" ? t("user.unit_roav") : state.recs[side].mode === "oav" ? "µg/kg" : t("user.rel_unit");
+    };
     let h = '<p class="small"><b>' + esc(t("user.mode_title")) + "</b> " + esc(modeNote) + "</p>";
     h += '<div class="table-wrap"><table class="user-table"><thead><tr><th>' + esc(t("col.compound")) + "</th><th>CAS</th>" +
       '<th class="num">' + esc(t("user.slot_sample")) + '<span class="sub">' + esc(unit("sample")) + "</span></th>" +
@@ -166,8 +169,12 @@ window.UserMode = (function () {
       if (!r.s) notes.push(t(r.sNotFound ? "user.note_s_nd" : "user.note_s_missing"));
       if (!r.t) notes.push(t(r.tNotFound ? "user.note_t_nd" : "user.note_t_missing"));
       if (r.thrConflict) notes.push(t("user.note_thr_conflict", { s: fmt(r.s.thr_mg_kg), t: fmt(r.t.thr_mg_kg) }));
-      if (!r.thrUse.v) notes.push(t("user.note_no_thr"));
-      else if (r.thrUse.from === "builtin") notes.push(t("user.note_thr_builtin"));
+      const givenS = r.s && r.s.given, givenT = r.t && r.t.given;
+      if (givenS || givenT) notes.push(t(givenS && givenT ? "user.note_given_both" : givenS ? "user.note_given_s" : "user.note_given_t"));
+      if (!(givenS && givenT || givenS && !r.t || givenT && !r.s)) {
+        if (!r.thrUse.v) notes.push(t("user.note_no_thr"));
+        else if (r.thrUse.from === "builtin") notes.push(t("user.note_thr_builtin"));
+      }
       const vec = r.vec ? (r.vec.src === "kb" ? t("user.vec_kb") : t("user.vec_model")) : '<span class="error">' + esc(t("user.vec_none")) + "</span>";
       h += "<tr><td>" + esc(r.label) + '</td><td class="nw">' + esc(r.cas) + '</td><td class="num nw">' + (r.s ? fmt(r.s.value) : "-") +
         '</td><td class="num nw">' + (r.t ? fmt(r.t.value) : "-") + '</td><td class="num"><input class="thr" type="number" min="0" step="any" data-uthr="' +

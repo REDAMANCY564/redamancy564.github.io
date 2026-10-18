@@ -41,7 +41,23 @@
         [a.rec.compounds[1].thr_mg_kg, a.rec.compounds[2].thr_mg_kg, a.rec.compounds[0].kbId, a.rec.compounds[1].kbId], [2.7e-5, null, "c6184", null]);
       const r = C.recordFromCsv('"Rank","Compound","CAS","Relative content (%)","Odor threshold in water (mg/kg)","Threshold source","ROAV"\n"1","hexanal","66-25-1","12.5","0.0024","","100"\n', "s2");
       check("ranking CSV: ROAV mode from the relative content column", [r.rec.mode, r.rec.basis, r.rec.compounds[0].value], ["roav", "rel", 12.5]);
-      check("other CSV: header error", C.recordFromCsv("Name,Area\nx,1\n").error, "header");
+      check("other CSV: no name column -> header error", C.recordFromCsv("Peak,Area\n1,1\n").error, "header");
+      check("other CSV: no value column -> header error", C.recordFromCsv("化合物,CAS\nx,66-25-1\n").error, "header");
+      const zh = C.recordFromCsv("化合物,CAS号,浓度 (mg/kg),阈值 (µg/kg)\n己醛,66-25-1,0.028,2.4\n辛醛,124-13-0,未检出,\n", "zh");
+      check("own CSV: Chinese headers, units from the headers (mg/kg -> ug/kg, ug/kg -> mg/kg)",
+        [zh.rec.mode, zh.rec.compounds[0].label, zh.rec.compounds[0].cas, +zh.rec.compounds[0].value.toFixed(6), +zh.rec.compounds[0].thr_mg_kg.toFixed(9), zh.rec.notFound.map(x => x.label)],
+        ["oav", "己醛", "66-25-1", 28, 0.0024, ["辛醛"]]);
+      const area = C.recordFromCsv("Compound name;Peak area;Threshold (mg/kg)\nhexanal;12000;0.0024\n");
+      check("own CSV: semicolons, peak area -> ROAV", [area.rec.mode, area.rec.basis, area.rec.compounds[0].value], ["roav", "area", 12000]);
+      const g = C.recordFromCsv("Compound,OAV\nhexanal,41.8\nheptanal,10\n");
+      check("own CSV: OAV given -> used as is, no thresholds", [g.rec.mode, g.rec.basis, g.rec.compounds.map(c => [c.value, c.given, c.thr_mg_kg])],
+        ["oav", "oav", [[41.8, true, null], [10, true, null]]]);
+      check("own CSV: ROAV given", [C.recordFromCsv("名称,ROAV\na,100\nb,5\n").rec.mode, C.recordFromCsv("名称,ROAV\na,100\nb,5\n").rec.basis], ["roav", "roav"]);
+      check("own CSV: 'Threshold source' before the threshold column is not taken as the threshold",
+        C.recordFromCsv("Compound,Threshold source,Amount (ug/kg),Threshold (mg/kg)\na,lit,5,0.001\n").rec.compounds[0].thr_mg_kg, 0.001);
+      // given OAV on one side, amount + threshold on the other: each side scored on its own terms
+      const sg = C.sideScores([{ s: { value: 41.8, given: true }, thrUse: { v: 0.0024 } }], "s", "oav");
+      check("scores: a given OAV is used without the threshold", [sg[0].score, sg[0].given], [41.8, true]);
       check("CSV without values: empty", C.recordFromCsv('"Compound","Amount (ug/kg)","Odor threshold in water (mg/kg)"\n"x","-",""\n').error, "empty");
 
       // identity keys
