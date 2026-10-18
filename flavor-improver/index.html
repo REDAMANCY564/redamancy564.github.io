@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net https://pubchem.ncbi.nlm.nih.gov; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>Flavor Improver | Simon Cui</title>
   <meta name="description" content="A demonstration of Bayesian optimization for dairy flavor improvement, with a virtual evaluation function.">
   <link rel="stylesheet" href="../assets/style.css">
@@ -10,6 +11,22 @@
     .btn { font: inherit; font-weight: 600; padding: 8px 18px; border-radius: 8px; border: 1px solid var(--accent);
            background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
     .btn.secondary { background: var(--surface); color: var(--accent); }
+    .user-slots { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 12px 0; }
+    @media (min-width: 700px) { .user-slots { grid-template-columns: 1fr 1fr; } }
+    .user-slots h4 { margin: 0 0 6px; font-size: 1rem; }
+    .file-btn { display: inline-block; cursor: pointer; }
+    .user-table td, .user-table th { white-space: normal; }
+    .user-table td.nw { white-space: nowrap; }
+    .user-table td.small { min-width: 10em; }
+    .user-dialog { border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; max-width: min(460px, calc(100vw - 32px)); }
+    .user-dialog::backdrop { background: rgba(0, 0, 0, .3); }
+    .user-dialog h3 { margin-top: 0; }
+    .rule-row { display: block; margin: 8px 0; }
+    .rule-row input { width: 6em; max-width: none; padding: 3px 6px; }
+    .rec-list li { margin-bottom: 6px; }
+    .user-table input.thr { width: 7.5em; }
+    .user-table .smiles-in { width: 100%; min-width: 14em; max-width: none; padding: 4px 6px; font-size: .85rem; font-family: ui-monospace, Consolas, monospace; }
+    .error { color: #b42318; }
     .btn:disabled { opacity: .55; cursor: not-allowed; }
     .btn-sm { font: inherit; font-size: .8rem; padding: 1px 8px; border-radius: 6px; border: 1px solid var(--border);
               background: var(--surface); color: var(--accent); cursor: pointer; }
@@ -84,6 +101,7 @@
       <h1 data-i18n="hero.title">Improving dairy flavor with Bayesian optimization</h1>
       <p data-i18n="hero.intro"></p>
       <div class="note warn" data-i18n-html="hero.disclaimer"></div>
+      <p class="note" data-i18n-html="hero.own_data"></p>
     </section>
 
     <!-- Demo -->
@@ -283,6 +301,69 @@
           <p class="small muted" id="ref-sim-note" style="margin-top:8px"></p>
         </details>
       </div>
+
+      <!-- Use my own data (PLAN-userdata.md): sample vs target from gcms-interpreter -->
+      <div id="user-area" hidden>
+        <div class="note" style="margin-top:12px">
+          <p style="margin:0 0 6px" data-i18n-html="user.intro"></p>
+          <p class="small" style="margin:0" data-i18n-html="user.privacy"></p>
+        </div>
+        <div class="user-slots">
+          <div class="card" id="user-slot-sample"></div>
+          <div class="card" id="user-slot-target"></div>
+        </div>
+        <div class="thr-tools">
+          <button type="button" class="btn-sm" id="user-example" data-i18n="user.example">Load the example pair</button>
+          <span class="small muted" data-i18n="user.example_note"></span>
+        </div>
+        <h3 class="sub-h" data-i18n="user.merge_title">Data check</h3>
+        <div id="user-merge"></div>
+
+        <div id="user-cmp" hidden>
+          <h3 class="sub-h" data-i18n="user.cmp_title">Comparison</h3>
+          <label class="small"><span data-i18n="user.view">Profile dimensions</span>
+            <select id="user-view" style="width:auto;padding:4px 8px;font-size:.875rem">
+              <option value="dairy" data-i18n="user.view_dairy">12 dairy dimensions</option>
+              <option value="ref" data-i18n="user.view_ref">12 dimensions of example 5</option>
+              <option value="all" data-i18n="user.view_all">all 138 descriptors</option>
+            </select></label>
+          <div class="thr-tools" style="margin-top:6px">
+            <button type="button" class="btn-sm" id="user-rules-open" data-i18n="user.rules_open">Adjust the comparison rule</button>
+            <span class="small muted" id="user-rules-now"></span>
+          </div>
+          <div class="chart-box" style="margin-top:8px"><canvas id="user-radar" aria-label="Odor profile radar chart"></canvas></div>
+          <p class="small muted" id="user-radar-note"></p>
+          <h4 style="margin:16px 0 6px" data-i18n="user.gap_title">Compounds that differ most</h4>
+          <div class="table-wrap"><table class="user-table"><thead id="user-gap-head"></thead><tbody id="user-gap-body"></tbody></table></div>
+          <p class="small muted" id="user-gap-note"></p>
+          <div class="user-slots">
+            <div class="card"><h4 data-i18n="user.list_s_title">Higher in the sample</h4><p class="small muted" data-i18n="user.list_s_intro"></p><ul class="plain small" id="user-higher-s"></ul></div>
+            <div class="card"><h4 data-i18n="user.list_t_title">Higher in the target</h4><p class="small muted" id="user-list-t-intro"></p><ul class="plain small" id="user-higher-t"></ul></div>
+          </div>
+
+          <h3 class="sub-h" data-i18n="user.rec_title">What to add</h3>
+          <div class="note warn">
+            <p class="small" style="margin:0 0 4px" data-i18n-html="user.rec_notice1"></p>
+            <p class="small" style="margin:0" data-i18n-html="user.rec_notice2"></p>
+          </div>
+          <div id="user-rec" style="margin-top:10px"></div>
+        </div>
+
+        <dialog id="user-rules" class="user-dialog" aria-labelledby="user-rules-title">
+          <h3 id="user-rules-title" data-i18n="user.rules_title">Comparison rule</h3>
+          <p class="small muted" data-i18n="user.rules_intro"></p>
+          <label class="small rule-row"><span data-i18n="user.rule_fold">OAV mode: higher on one side from</span>
+            <input type="number" id="user-rule-fold" min="1.1" max="100" step="0.1"> <span data-i18n="user.rule_fold_unit">fold</span></label>
+          <label class="small rule-row"><span data-i18n="user.rule_pp">ROAV mode: higher on one side from</span>
+            <input type="number" id="user-rule-pp" min="0.1" max="50" step="0.5"> <span data-i18n="user.rule_pp_unit">percentage points</span></label>
+          <p class="small error" id="user-rules-msg"></p>
+          <div class="thr-tools">
+            <button type="button" class="btn-sm" id="user-rules-apply" data-i18n="user.rules_apply">Apply</button>
+            <button type="button" class="btn-sm" id="user-rules-reset" data-i18n="user.rules_reset">Defaults</button>
+            <button type="button" class="btn-sm" id="user-rules-close" data-i18n="user.rules_close">Close</button>
+          </div>
+        </dialog>
+      </div>
     </section>
 
     <!-- Method -->
@@ -313,6 +394,14 @@
       <p style="margin-top:12px" data-i18n-html="method.params"></p>
       <p data-i18n-html="method.lift"></p>
       <div class="note" data-i18n-html="method.no_decrease"></div>
+
+      <h3 class="sub-h" data-i18n="method.user_title">With your own data</h3>
+      <ol class="small" style="padding-left:1.4em">
+        <li data-i18n-html="method.user.1"></li>
+        <li data-i18n-html="method.user.2"></li>
+        <li data-i18n-html="method.user.3"></li>
+        <li data-i18n-html="method.user.4"></li>
+      </ol>
     </section>
 
     <!-- Results -->
@@ -369,6 +458,7 @@
         <li data-i18n-html="limits.6"></li>
         <li data-i18n-html="limits.7"></li>
         <li data-i18n-html="limits.8"></li>
+        <li data-i18n-html="limits.9"></li>
       </ul>
       <p class="small muted" style="margin-top:12px" data-i18n="limits.future"></p>
 
@@ -406,10 +496,13 @@
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
-  <script src="../assets/i18n.js?v=20261018j" data-page-dict="i18n/"></script>
-  <script src="mixture.js"></script>
-  <script src="bo.js"></script>
-  <script src="reference.js"></script>
-  <script src="app.js"></script>
+  <script src="../assets/i18n.js?v=20261018o" data-page-dict="i18n/"></script>
+  <script src="../assets/flavor-handoff.js?v=20261018o"></script>
+  <script src="mixture.js?v=20261018o"></script>
+  <script src="bo.js?v=20261018o"></script>
+  <script src="reference.js?v=20261018o"></script>
+  <script src="userdata-core.js?v=20261018o"></script>
+  <script src="userdata.js?v=20261018o"></script>
+  <script src="app.js?v=20261018o"></script>
 </body>
 </html>

@@ -36,6 +36,8 @@
   const REF_ID = "ref";               // example 5 (reference-food mode, reference.js)
   let preset = presets[0];
   let refMode = false;
+  const USER_ID = "user";             // the visitor's own data (userdata.js)
+  let userMode = new URLSearchParams(location.search).get("mode") === "user";
   let problem = null;
   let player = { mode: "pre", steps: [], compare: null, pos: -1, timer: null, playing: false, done: false };
   let liveRunning = false;
@@ -65,15 +67,17 @@
   // ---- preset select ----
   function renderPresetOptions() {
     $("preset").innerHTML = presets.map(p => `<option value="${p.id}">${esc(baseName(baseById[p.base]))}</option>`).join("") +
-      `<option value="${REF_ID}">${esc(t("ref.option"))}</option>`;
-    $("preset").value = refMode ? REF_ID : preset.id;
+      `<option value="${REF_ID}">${esc(t("ref.option"))}</option>` +
+      `<option value="${USER_ID}">${esc(t("user.option"))}</option>`;
+    $("preset").value = userMode ? USER_ID : refMode ? REF_ID : preset.id;
   }
   $("preset").addEventListener("change", e => {
     stopPlayer();
     refMode = e.target.value === REF_ID;
-    $("bo-area").hidden = refMode;
-    $("ref-area").hidden = !refMode;
+    userMode = e.target.value === USER_ID;
+    showArea();
     if (refMode) { RefMode.render(); return; }
+    if (userMode) { UserMode.render(); return; }
     preset = presets.find(p => p.id === e.target.value);
     renderAll();
   });
@@ -410,8 +414,20 @@
   renderAll();
   renderResults();
   RefMode.init({ ref: refData, pre: precursors, spec, t, esc, fmt, pick: o => I18N.pick(o) });
+  UserMode.init({ t, esc, fmt, pick: o => I18N.pick(o) });
+  function showArea() {
+    $("bo-area").hidden = refMode || userMode;
+    $("ref-area").hidden = !refMode;
+    $("user-area").hidden = !userMode;
+  }
+  if (userMode) {
+    renderPresetOptions();
+    showArea();
+    UserMode.render();
+  }
   I18N.onChange(() => {
     if (refMode) RefMode.render();
+    if (userMode) UserMode.render();
     renderPresetOptions();
     renderBaseMeta();
     renderThresholdTables();

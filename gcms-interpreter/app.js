@@ -814,18 +814,45 @@
     const q = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
     const score = F.mode === "oav" ? "OAV" : "ROAV";
     const lines = [["Rank", "Compound", "CAS", F.mode === "oav" ? "Amount (ug/kg)" : "Relative content (%)", "Odor threshold in water (mg/kg)",
-      "Threshold source", score, "Odor descriptors", "Descriptor source"].map(q).join(",")];
+      "Threshold source", score, "Odor descriptors", "Descriptor source", "KB id"].map(q).join(",")];
     let rank = 0;
     order.forEach(k => {
       const x = F.items[k], c = calc.rows[k], dt = descText(x.t.ident.kbId);
       const src = x.edited ? "user" : x.fromFile ? "standard file" : x.built ? x.built.src + " (van Gemert 2011, built-in)" : "";
       lines.push([c.status === "ok" ? ++rank : "", x.t.label, x.t.ident.casNorm || x.t.cas || "",
         sig(F.mode === "oav" ? x.value : x.r.rel, 4), x.thr > 0 ? x.thr : "", src,
-        c.status === "ok" ? sig(c.score, 4) : c.status, dt.text, dt.d.src || ""].map(q).join(","));
+        c.status === "ok" ? sig(c.score, 4) : c.status, dt.text, dt.d.src || "", x.t.ident.kbId || ""].map(q).join(","));
+    });
+    // targets of the standard file that were not found in this sample (flavor-improver reads them as not detected)
+    RUN.result.rows.forEach((r, i) => {
+      if (r.found) return;
+      const tg = STD.targets[i];
+      lines.push(["", tg.label, tg.ident.casNorm || tg.cas || "", "not detected", "", "", "not_detected", "", "", tg.ident.kbId || ""].map(q).join(","));
     });
     const name = String(S.sample || "sample").replace(/[\\/:*?"<>|]+/g, "_");
     download("﻿" + lines.join("\r\n") + "\r\n", name + "_" + score + ".csv", "text/csv");
   });
+
+  // ---------- Hand-off to flavor-improver (PLAN-userdata.md): this browser only ----------
+  function handoffRecord() {
+    const { F } = FLV.last;
+    const thrSource = x => (x.edited ? "user" : x.fromFile ? "standard file" : x.built ? "built-in" : null);
+    const compounds = F.items.filter(x => x.value != null).map(x => ({
+      label: x.t.label, cas: x.t.ident.casNorm || x.t.cas || "", kbId: x.t.ident.kbId || null,
+      value: x.value, thr_mg_kg: x.thr > 0 ? x.thr : null, thrSource: thrSource(x),
+    }));
+    const notFound = RUN.result.rows.map((r, i) => [r, STD.targets[i]]).filter(([r]) => !r.found)
+      .map(([, t]) => ({ label: t.label, cas: t.ident.casNorm || t.cas || "", kbId: t.ident.kbId || null }));
+    return { name: String(S.sample || "sample"), savedAt: new Date().toISOString(), source: "gcms",
+             mode: F.mode, basis: F.basis, compounds, notFound };
+  }
+  ["sample", "target"].forEach(slot => $("handoff-" + slot).addEventListener("click", () => {
+    if (!FLV.last) return;
+    const rec = handoffRecord();
+    const ok = FlavorHandoff.save(slot, rec);
+    $("handoff-status").textContent = I18N.t(ok ? "handoff.saved_" + slot : "handoff.failed", { name: rec.name, n: rec.compounds.length });
+    $("handoff-status").classList.toggle("error", !ok);
+  }));
 
   function renderLimits() {
     const items = [];

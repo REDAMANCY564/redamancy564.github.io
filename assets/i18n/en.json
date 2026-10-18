@@ -10,7 +10,7 @@
   "home.odor.desc": "A graph neural network that predicts odor descriptors of flavor molecules, running entirely in your browser.",
   "home.odor.tags": "Graph neural network · RDKit · ONNX",
   "home.fi.title": "Improving Dairy Flavor with Bayesian Optimization",
-  "home.fi.desc": "Pick a dairy product and a direction of improvement, and watch Bayesian optimization decide which flavor compounds to add and how much. Uses a virtual evaluation function; thresholds can be edited.",
+  "home.fi.desc": "Choose a dairy product and a direction to see how Bayesian optimization decides which flavor compounds to add and how much. You can also import your own GC-MS results, compare a sample with a target (e.g. formula and human milk) by OAV or ROAV and odor profile, and get directions for what to add; your data stay in your browser.",
   "home.fi.tags": "Bayesian optimization · Gaussian process · BoTorch",
   "home.view": "View project",
   "footer.updating": "This website is continuously updated.",

@@ -257,6 +257,16 @@
       <p id="rank-summary"></p>
       <div class="table-wrap"><table class="preview ident" id="rank-table"></table></div>
       <div class="row-wrap"><button type="button" class="btn secondary" id="rank-export" data-i18n="rank.export">Export the ranking (CSV)</button></div>
+      <div class="card handoff">
+        <p style="margin:0 0 6px"><b data-i18n="handoff.title">Compare with a target in the flavor improver</b></p>
+        <p class="small muted" data-i18n="handoff.intro" style="margin:0 0 8px"></p>
+        <div class="row-wrap">
+          <button type="button" class="btn secondary" id="handoff-sample" data-i18n="handoff.as_sample">Send as the sample</button>
+          <button type="button" class="btn secondary" id="handoff-target" data-i18n="handoff.as_target">Send as the target</button>
+          <a class="small" href="../flavor-improver/?mode=user" id="handoff-open" data-i18n="handoff.open">Open the flavor improver</a>
+        </div>
+        <p class="small" id="handoff-status" aria-live="polite" style="margin:8px 0 0"></p>
+      </div>
 
       <h3 style="margin-top:20px" data-i18n="radar.title">Flavor profile</h3>
       <div class="row-wrap">
@@ -294,13 +304,14 @@
   </footer>
 
   <script src="../assets/vendor/sheetjs/xlsx.full.min.js"></script>
-  <script src="../assets/i18n.js?v=20261018e" data-page-dict="i18n/"></script>
-  <script src="io.js?v=20261018e"></script>
-  <script src="mapping.js?v=20261018e"></script>
-  <script src="cas.js?v=20261018e"></script>
-  <script src="names.js?v=20261018e"></script>
-  <script src="rules.js?v=20261018e"></script>
-  <script src="flavor.js?v=20261018e"></script>
-  <script src="app.js?v=20261018e"></script>
+  <script src="../assets/i18n.js?v=20261018l" data-page-dict="i18n/"></script>
+  <script src="io.js?v=20261018l"></script>
+  <script src="mapping.js?v=20261018l"></script>
+  <script src="cas.js?v=20261018l"></script>
+  <script src="names.js?v=20261018l"></script>
+  <script src="rules.js?v=20261018l"></script>
+  <script src="flavor.js?v=20261018l"></script>
+  <script src="../assets/flavor-handoff.js?v=20261018l"></script>
+  <script src="app.js?v=20261018l"></script>
 </body>
 </html>

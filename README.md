@@ -47,6 +47,8 @@ python flavor_improver/prepare_reference.py vg.txt --final             # 生成 
 python flavor_improver/make_parity_fixtures.py                         # 更新一致性测试数据（含示例 5）
 ```
 
+**用自己的数据（2026-10-18）**：计划见 `PLAN-userdata.md`。在 GC-MS 风味解读中分别处理当前样品和目标样品，点「作为当前样品发送 / 作为目标发送」（`assets/flavor-handoff.js`，浏览器本地存储，不上传），或上传其导出的排名 CSV；在配方改良的示例列表中选「用我自己的 GC-MS 数据」（或打开 `flavor-improver/?mode=user`）。页面按化合物合并两边（阈值可改），两边都定量时按 OAV 比较，否则按 ROAV（贡献占比）；轮廓维度默认母乳 / 奶粉 12 维，可切换；「一方较高」的标准默认 2 倍 / 2 个百分点，可在设置窗口调整；只推荐添加哪些物质（OAV 模式按补到目标水平后的轮廓相似度排序），不给添加量。不在风味知识库中的物质可提供 SMILES（或点击后从 PubChem 按 CAS / 名称查询）由 odor-predictor 模型在浏览器中预测气味。页面有内容安全策略（脚本只来自本站、cdnjs、jsdelivr；数据只能发往本站、jsdelivr 和用户点击时的 PubChem）。逻辑在 `userdata-core.js`，单元测试 `flavor-improver/tests/userdata.html`；示例数据 `flavor-improver/examples/` 由 `training/flavor_improver/make_userdata_examples.py` 从示例 5 的已发表数据生成。
+
 **尝试过的改进：混合物气味相似度模型（2026-10-18，未采用）**：计划见 `PLAN-mixture.md`。借鉴 Satarifard et al., *PNAS* 2026（doi:10.1073/pnas.2611057123），想用一个比较两个混合物的小模型替换参照食品模式的加和规则。DREAM 挑战赛整理的数据没有开放许可（Synapse 条款禁止用于其他目的），只用了 Snitz et al. 2013（*PLoS Comput Biol*，CC BY 4.0）的相似度评分。按混合物分组：实验 2、3 共 165 对训练和交叉验证，实验 1 的 141 对不重叠比较作测试集（只算一次；实验 1 的 11 号混合物在补充表中组成被截断，已去掉）。测试集 Pearson / Spearman：新模型（GNN 预测概率幂平均 + 138 维权重的角距离）0.537 / 0.516，Snitz 21 描述符角距离 0.504 / 0.563，现用加和规则（12 维）0.315 / 0.382，138 维加和 0.449 / 0.553；与各基线的 Pearson 差值置信区间都包含 0，未达到替换条件，评价函数不变，只在网页「局限」部分报告。
 ```powershell
 cd training

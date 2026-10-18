@@ -205,5 +205,13 @@
   "radar.view_all": "All 138 odor labels",
   "radar.note_all": "Each compound's intensity I = log10({score}) (when {score} > 1, else 0) weights the GNN's probabilities for 138 odor labels (not divided by label frequency here: over 138 labels that would inflate rare labels such as cucumber a hundredfold); the {n} compounds are summed and normalized. The chart shows the 10 largest labels as percentages of the total. Suited to non-dairy samples. The profile uses model predictions throughout.",
   "confirm.progress": "Identifying compounds: {done} / {total} rows",
-  "run.busy": "Calculating, please wait..."
+  "run.busy": "Calculating, please wait...",
+  "handoff.title": "Compare with a target in the flavor improver",
+  "handoff.intro": "Save this sample's result (found targets, amounts, thresholds and the calculation mode) in this browser, then compare it with a target on the flavor improver page. The data stay on your computer and are not uploaded; process the sample and the target one after the other and send each once.",
+  "handoff.as_sample": "Send as the sample",
+  "handoff.as_target": "Send as the target",
+  "handoff.open": "Open the flavor improver →",
+  "handoff.saved_sample": "Saved \"{name}\" ({n} compounds) as the sample.",
+  "handoff.saved_target": "Saved \"{name}\" ({n} compounds) as the target.",
+  "handoff.failed": "Could not save: local storage is unavailable in this browser, or there is nothing to send. Use \"Export the ranking (CSV)\" and upload the file on the flavor improver page instead."
 }

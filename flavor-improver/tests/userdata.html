@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User-data mode tests</title>
+  <link rel="stylesheet" href="../../assets/style.css">
+  <style>.pass { color: #1f6f3f; } .fail { color: #b42318; font-weight: 700; } td, th { white-space: normal; }</style>
+</head>
+<body>
+  <main class="container">
+    <h1>User-data mode: unit tests</h1>
+    <p class="small muted">flavor-improver/userdata-core.js and assets/flavor-handoff.js (PLAN-userdata.md). No network, no data leaves the page.</p>
+    <p id="summary"></p>
+    <div class="table-wrap"><table id="out"><thead><tr><th>Check</th><th>Result</th><th>Got</th></tr></thead><tbody></tbody></table></div>
+  </main>
+  <script src="../../assets/flavor-handoff.js"></script>
+  <script src="../userdata-core.js"></script>
+  <script>
+    (async function () {
+      const rows = [];
+      const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+      const check = (name, got, want) => rows.push({ name, ok: same(got, want), got });
+      const C = UserCore;
+
+      // CSV parsing
+      check("csv: quotes, doubled quotes, BOM, CRLF", C.parseCsv('﻿"a","b ""x""",c\r\n1,"2,5",3\r\n'), [["a", 'b "x"', "c"], ["1", "2,5", "3"]]);
+      check("csv: semicolon separator", C.parseCsv("a;b\n1;2"), [["a", "b"], ["1", "2"]]);
+      check("csv: blank lines dropped", C.parseCsv("a,b\n\n1,2\n"), [["a", "b"], ["1", "2"]]);
+
+      // ranking CSV of gcms-interpreter
+      const oavCsv = '"Rank","Compound","CAS","Amount (ug/kg)","Odor threshold in water (mg/kg)","Threshold source","OAV","Odor descriptors","Descriptor source","KB id"\r\n' +
+        '"1","hexanal","66-25-1","100.4","0.0024","standard file","41.84","green","dunkel","c6184"\r\n' +
+        '"2","(E,E)-2,4-decadienal","25152-84-5","11.11","2.7e-05","built-in","411.5","fatty","dunkel",""\r\n' +
+        '"","mystery","","5","","","no_threshold","","",""\r\n' +
+        '"","absent","","-","0.1","","no_value","","",""\r\n';
+      const a = C.recordFromCsv(oavCsv, "s1");
+      check("ranking CSV: OAV mode from the amount column", [a.error, a.rec.mode, a.rec.basis], [null, "oav", "conc"]);
+      check("ranking CSV: rows with a value (no-value row skipped)", a.rec.compounds.map(c => c.label), ["hexanal", "(E,E)-2,4-decadienal", "mystery"]);
+      check("ranking CSV: scientific notation, missing threshold = null, KB id kept",
+        [a.rec.compounds[1].thr_mg_kg, a.rec.compounds[2].thr_mg_kg, a.rec.compounds[0].kbId, a.rec.compounds[1].kbId], [2.7e-5, null, "c6184", null]);
+      const r = C.recordFromCsv('"Rank","Compound","CAS","Relative content (%)","Odor threshold in water (mg/kg)","Threshold source","ROAV"\n"1","hexanal","66-25-1","12.5","0.0024","","100"\n', "s2");
+      check("ranking CSV: ROAV mode from the relative content column", [r.rec.mode, r.rec.basis, r.rec.compounds[0].value], ["roav", "rel", 12.5]);
+      check("other CSV: header error", C.recordFromCsv("Name,Area\nx,1\n").error, "header");
+      check("CSV without values: empty", C.recordFromCsv('"Compound","Amount (ug/kg)","Odor threshold in water (mg/kg)"\n"x","-",""\n').error, "empty");
+
+      // identity keys
+      check("key: KB id > CAS > normalized name",
+        [C.keyOf({ kbId: "c1", cas: "66-25-1", label: "x" }), C.keyOf({ cas: "66-25-1", label: "x" }), C.keyOf({ cas: "bad", label: "(E)-2-Hexenal" })],
+        ["kb:c1", "cas:66-25-1", "name:e2hexenal"]);
+
+      // merge
+      const S = { mode: "oav", compounds: [
+        { label: "hexanal", cas: "66-25-1", kbId: "c6184", value: 28, thr_mg_kg: 0.0045 },
+        { label: "octanal", cas: "124-13-0", kbId: null, value: 1.6, thr_mg_kg: 0.0034 } ],
+        notFound: [{ label: "heptanal", cas: "111-71-7", kbId: "c8130" }] };
+      const T = { mode: "oav", compounds: [
+        { label: "Hexanal", cas: "66-25-1", kbId: "c6184", value: 100, thr_mg_kg: 0.0024 },
+        { label: "heptanal", cas: "111-71-7", kbId: "c8130", value: 30, thr_mg_kg: null },
+        { label: "eucalyptol", cas: "470-82-6", kbId: null, value: 2.5, thr_mg_kg: 0.0011 } ], notFound: [] };
+      const m = C.merge(S, T);
+      const byLabel = Object.fromEntries(m.rows.map(x => [x.label, x]));
+      check("merge: both OAV -> OAV; one row per compound", [m.mode, m.rows.length], ["oav", 4]);
+      check("merge: target threshold first, conflict flagged",
+        [byLabel.Hexanal.thr, byLabel.Hexanal.thrFrom, byLabel.Hexanal.thrConflict], [0.0024, "target", true]);
+      check("merge: sample threshold when the target has none; not detected in the sample",
+        [byLabel.heptanal.thr, byLabel.heptanal.thrFrom, byLabel.heptanal.sNotFound, byLabel.heptanal.s], [null, null, true, null]);
+      check("merge: only in one side", [byLabel.octanal.t, byLabel.octanal.tNotFound, byLabel.eucalyptol.s], [null, false, null]);
+      check("merge: one side ROAV -> ROAV", C.merge(Object.assign({}, S, { mode: "roav" }), T).mode, "roav");
+
+      const nd = C.recordFromCsv('"Compound","CAS","Amount (ug/kg)","Odor threshold in water (mg/kg)"\n"a","","5","0.001"\n"b","1-1-1","not detected",""\n"c","","n.d.",""\n');
+      check("ranking CSV: 'not detected' rows -> notFound", [nd.rec.compounds.length, nd.rec.notFound.map(x => x.label)], [1, ["b", "c"]]);
+
+      // comparison (stage 2): two labels, prevalence 0.5 each; views use label ids of the "all" view
+      const labels = [{ id: "x" }, { id: "y" }], prev = [0.5, 0.5];
+      const vx = { p: [[0, 1]] }, vy = { p: [[1, 1]] };
+      const row = (key, s, t, thr, vec, extra) => Object.assign({ key, label: key, s: s == null ? null : { value: s }, t: t == null ? null : { value: t },
+        sNotFound: false, tNotFound: false, thrUse: { v: thr }, vec }, extra || {});
+      // OAV: thresholds 0.001 mg/kg = 1 ug/kg, so OAV = amount
+      const rowsA = [row("A", 10, 100, 0.001, vx), row("B", 100, 10, 0.001, vy), row("C", 0.5, 0.8, 0.001, vx),
+                     row("D", null, 50, 0.001, vx, { sNotFound: true }), row("E", null, 5, 0.001, vy)];
+      const A = C.analyze(rowsA, "oav", "all", labels, prev);
+      check("analyze OAV: scores and intensities", [A.s[0].score, A.t[0].score, A.s[3].value, +A.s[0].I.toFixed(6)], [10, 100, 0, 1]);
+      check("analyze OAV: gaps (log10 ratio, OAV < 1 or not detected counted as 1), order by size",
+        A.gaps.map(g => [g.row.key, +g.gap.toFixed(6)]), [["D", 1.69897], ["A", 1], ["B", -1]]);
+      check("analyze OAV: C left out (OAV < 1 on both sides); E unknown in the sample", [A.gaps.some(g => g.row.key === "C"), A.unknown.map(u => [u.row.key, u.side])], [false, [["E", "s"]]]);
+      check("analyze OAV: lists by 2-fold rule", [A.higherTarget.map(g => g.row.key), A.higherSample.map(g => g.row.key)], [["D", "A"], ["B"]]);
+      // profiles (all view, probabilities): sample x: I(A)=1, y: I(B)=2 -> [1/3, 2/3]; target x: 2 + log10(50), y: 1 + log10(5)
+      const tx = 2 + Math.log10(50), ty = 1 + Math.log10(5);
+      check("analyze OAV: profiles", [A.profiles.s.map(v => +v.toFixed(6)), A.profiles.t.map(v => +v.toFixed(6))],
+        [[0.333333, 0.666667], [+(tx / (tx + ty)).toFixed(6), +(ty / (tx + ty)).toFixed(6)]]);
+      check("analyze: cosine of identical shapes = 1", +C.cosine([1, 2], [2, 4]).toFixed(12), 1);
+      check("analyze: lift view divides by prevalence", C.weights(vx, "all", labels, prev), [1, 0]);
+      // custom rule (settings dialog): 15-fold -> only D (50x) counts as higher in the target
+      const A15 = C.analyze(rowsA, "oav", "all", labels, prev, { fold: 15, pp: 0.02 });
+      check("analyze OAV: custom fold rule", [A15.higherTarget.map(g => g.row.key), A15.higherSample.map(g => g.row.key), A15.fold], [["D"], [], 15]);
+      // recommendations: D and A (both x); raising one in the sample to the target's intensity, ranked by similarity
+      const rec = A.rec;
+      const cosFor = Is => { const px = Is[0], py = Is[1], s = px + py; return C.cosine([px / s, py / s], A.profiles.t); };
+      const cosD = cosFor([1 + Math.log10(50), 2]), cosA = cosFor([2, 2]);   // x from A (1) + D (log 50), or A raised to 2
+      const order = cosD >= cosA ? ["D", "A"] : ["A", "D"];
+      check("recommend: candidates with a vector, ranked by similarity after topping up", rec.items.map(g => g.row.key), order);
+      check("recommend: similarity after topping up one compound", rec.items.map(g => +g.cosAfter.toFixed(6)), order.map(k => +(k === "D" ? cosD : cosA).toFixed(6)));
+      check("recommend: all candidates together", +rec.cosAll.toFixed(6), +cosFor([2 + Math.log10(50), 2]).toFixed(6));
+      check("recommend: target compound not measured in the sample", rec.unmeasured.map(u => u.row.key), ["E"]);
+      // ROAV: each side relative to its own maximum; share = I / sum I
+      const R = C.analyze([row("A", 10, 100, 0.001, vx), row("B", 100, 100, 0.001, vy)], "roav", "all", labels, prev);
+      check("analyze ROAV: max = 100 per side", [R.s[1].score, R.s[0].score, R.t[0].score], [100, 10, 100]);
+      check("analyze ROAV: share difference", R.gaps.map(g => [g.row.key, +g.gap.toFixed(6)]), [["A", +(0.5 - 1 / 3).toFixed(6)], ["B", +(0.5 - 2 / 3).toFixed(6)]]);
+
+      // hand-off store
+      const H = FlavorHandoff;
+      check("hand-off: invalid records rejected", [H.validate({ mode: "x", compounds: [] }).length > 0, H.validate({ mode: "oav", compounds: [{ label: "a", value: -1 }] }).length > 0], [true, true]);
+      let stored = null;
+      try { localStorage.getItem("x"); stored = true; } catch (e) { stored = false; }
+      if (stored) {
+        const before = localStorage.getItem(H.KEY);
+        H.save("sample", { name: "t", mode: "oav", compounds: [{ label: "a", value: 1 }] });
+        check("hand-off: save and get", H.get("sample").name, "t");
+        check("hand-off: unknown slot refused", H.save("other", { mode: "oav", compounds: [{ label: "a", value: 1 }] }), false);
+        H.clear("sample");
+        check("hand-off: clear", H.get("sample"), null);
+        if (before != null) localStorage.setItem(H.KEY, before); else localStorage.removeItem(H.KEY);
+      }
+
+      const tb = document.querySelector("#out tbody");
+      rows.forEach(x => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = "<td></td><td class='" + (x.ok ? "pass" : "fail") + "'>" + (x.ok ? "PASS" : "FAIL") + "</td><td><code></code></td>";
+        tr.cells[0].textContent = x.name;
+        tr.querySelector("code").textContent = JSON.stringify(x.got);
+        tb.appendChild(tr);
+      });
+      const n = rows.filter(x => x.ok).length;
+      document.getElementById("summary").textContent = n + " / " + rows.length + " passed";
+      document.getElementById("summary").className = n === rows.length ? "pass" : "fail";
+      document.title = (n === rows.length ? "PASS " : "FAIL ") + n + "/" + rows.length;
+    })();
+  </script>
+</body>
+</html>
