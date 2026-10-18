@@ -47,6 +47,16 @@ python flavor_improver/prepare_reference.py vg.txt --final             # 生成 
 python flavor_improver/make_parity_fixtures.py                         # 更新一致性测试数据（含示例 5）
 ```
 
+**尝试过的改进：混合物气味相似度模型（2026-10-18，未采用）**：计划见 `PLAN-mixture.md`。借鉴 Satarifard et al., *PNAS* 2026（doi:10.1073/pnas.2611057123），想用一个比较两个混合物的小模型替换参照食品模式的加和规则。DREAM 挑战赛整理的数据没有开放许可（Synapse 条款禁止用于其他目的），只用了 Snitz et al. 2013（*PLoS Comput Biol*，CC BY 4.0）的相似度评分。按混合物分组：实验 2、3 共 165 对训练和交叉验证，实验 1 的 141 对不重叠比较作测试集（只算一次；实验 1 的 11 号混合物在补充表中组成被截断，已去掉）。测试集 Pearson / Spearman：新模型（GNN 预测概率幂平均 + 138 维权重的角距离）0.537 / 0.516，Snitz 21 描述符角距离 0.504 / 0.563，现用加和规则（12 维）0.315 / 0.382，138 维加和 0.449 / 0.553；与各基线的 Pearson 差值置信区间都包含 0，未达到替换条件，评价函数不变，只在网页「局限」部分报告。
+```powershell
+cd training
+.\.venv\Scripts\Activate.ps1
+python mixture/snitz_data.py         # 下载好的 Snitz 补充材料 → training/data/mixture/snitz.json（结构来自 PubChem）
+python mixture/evaluate.py           # 交叉验证选模型（不看测试集）
+python mixture/evaluate.py --test    # 测试集，只运行一次
+python mixture/patch_page.py         # 把测试结果写入 flavor-improver 页面（一次性）
+```
+
 **重新运行优化实验**（CPU 即可，约 1 小时）：
 ```powershell
 cd training

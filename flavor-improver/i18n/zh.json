@@ -126,7 +126,7 @@
   "limits.6": "很多候选物质的气味向量非常接近，同一个目标可以由不同配方达到，推荐的具体物质不唯一。",
   "limits.7": "感知强度用 log<sub>10</sub>(OAV) 近似，没有考虑每个物质各自的浓度-强度曲线。",
   "limits.8": "不考虑成本、法规限量、溶解度和稳定性。",
-  "limits.future": "后续可能的改进：前体物质推荐（基于反应路径知识）；引入掩蔽效应模型；加入成本和法规约束；由用户为方案打分，代替虚拟评价函数（人在回路）。",
+  "limits.future": "后续可能的改进：前体物质推荐（基于反应路径知识）；更好的混合物模型（下面记录了一次尝试）；加入成本和法规约束；由用户为方案打分，代替虚拟评价函数（人在回路）。",
   "footer.p1": "<b>单分子气味预测：</b>来自本站<a href=\"../odor-predictor/\">项目 1：气味预测</a>的图神经网络。",
   "footer.bases": "基底组成数据：",
   "footer.thr": "<b>气味阈值（水中）：</b>L.J. van Gemert, <i>Odour Thresholds: Compilations of Odour Threshold Values in Air, Water and Other Media</i>, 2nd ed., Oliemans Punter &amp; Partners, 2011。按事先固定的规则选取：优先 Czerny et al., <i>Eur. Food Res. Technol.</i> 228, 265-273 (2008) 的觉察阈值，其次为该汇编收录的 Buttery 等人的觉察阈值，再次为 Karagül-Yüceer 等人（2003/2004）的觉察阈值；都没有的物质不纳入。乙偶姻采用 0.8 mg/kg（Buttery 等人）。",
@@ -218,5 +218,17 @@
   "dim.floral": "花香",
   "dim.cooked": "熟煮",
   "ref.colon": "：",
-  "ref.refs_title": "参考文献"
+  "ref.refs_title": "参考文献",
+  "mix.title": "尝试过的改进：混合物气味相似度模型（未采用）",
+  "mix.why": "<b>为什么要尝试：</b>本页的加和规则把各物质的气味轮廓按强度相加，忽略了真实混合物中的掩蔽和协同，这是本项目最大的局限。2026 年 Monell 化学感官中心、耶鲁大学、IBM 研究院等机构的研究表明，用单分子的气味描述词特征可以较好地预测两个混合物闻起来有多像（Satarifard et al., <i>PNAS</i> 2026）。我们借鉴这一思路，试着训练一个能比较两个混合物的小模型，计划只用于「参照食品」示例（目标本身是一个真实混合物），不用于示例 1~4 的方向型目标。",
+  "mix.how": "<b>怎么做的：</b>该研究整理的大数据集没有开放许可（挑战赛条款禁止用于其他目的），所以只用了 Snitz et al. (2013) 公开的人类相似度评分（CC BY 4.0）：等强度的单分子或混合物两两比较，0~100 评分。混合物表示为各组分预测气味向量（138 个描述词）的幂平均，距离为带可学习维度权重的角度。按混合物分组划分：实验 2、3 共 165 对用于训练和交叉验证，实验 1 中组分不重叠的 141 对作为测试集，只计算一次。下表为测试集上预测距离与人类评分（不相似度）的相关系数。",
+  "mix.col.method": "方法",
+  "mix.row.c": "混合物模型（新）",
+  "mix.row.a21": "对照：Snitz 角距离（21 个结构描述符）",
+  "mix.row.a_all": "对照：Snitz 角距离（全部 1,433 个结构描述符）",
+  "mix.row.b12": "对照：本页现用的加和规则（12 维轮廓余弦）",
+  "mix.row.b138": "对照：加和规则，改用 138 维预测概率",
+  "mix.result": "<b>结果：</b>新模型的 Pearson 最高，但 Spearman 低于 Snitz 角距离和 138 维加和，与各对照的 Pearson 差值的 95% 置信区间都包含 0（按混合物重抽样；对 Snitz 21 描述符 [-0.23, +0.24]，对本页加和规则 [-0.02, +0.41]）。事先约定的替换条件（两项指标都高于对照、差值显著）没有达到，<b>所以本页的评价函数没有更换</b>。另一个观察：本页现用的 12 维加和规则在所有方法中最弱，但这是看到测试结果后才注意到的，没有据此修改。",
+  "mix.note": "这次检验本身也有局限：训练和测试数据都是等强度、非食品基质的混合物，只有约 300 对，来自同一实验室；用于乳品风味还需要按浓度（如 OAV）给组分加权，这一做法没有被这些数据验证。模型预测的是整体相似度，也不能说明具体是哪种掩蔽或协同作用。",
+  "footer.mix": "<b>混合物相似度实验（未采用）：</b>数据来自 Snitz K, Yablonka A, Weiss T, Frumin I, Khan RM, Sobel N. Predicting odor perceptual similarity from odor structure. <i>PLoS Comput Biol</i> 2013, 9(9): e1003184. <a href=\"https://doi.org/10.1371/journal.pcbi.1003184\" target=\"_blank\" rel=\"noopener\">doi:10.1371/journal.pcbi.1003184</a>（CC BY 4.0）；思路参考 Satarifard V, Sisson L, Han Y, et al. A semantic-based community model for high-fidelity tuning of olfactory mixture distances. <i>PNAS</i> 2026, 123(32): e2611057123. <a href=\"https://doi.org/10.1073/pnas.2611057123\" target=\"_blank\" rel=\"noopener\">doi:10.1073/pnas.2611057123</a>。代码在 training/mixture/。"
 }

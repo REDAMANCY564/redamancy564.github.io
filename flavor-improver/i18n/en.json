@@ -126,7 +126,7 @@
   "limits.6": "Many candidates have very similar odor vectors. The same target can be reached with different recipes, so the specific compounds suggested are not unique.",
   "limits.7": "Perceived intensity is approximated by log<sub>10</sub>(OAV); compound-specific concentration-intensity curves are not considered.",
   "limits.8": "Cost, regulatory limits, solubility and stability are not considered.",
-  "limits.future": "Possible next steps: precursor recommendations (based on reaction pathway knowledge); a masking model; cost and regulatory constraints; human-in-the-loop scoring in place of the virtual evaluation function.",
+  "limits.future": "Possible next steps: precursor recommendations (from reaction-pathway knowledge); a better mixture model (one attempt is recorded below); cost and regulatory constraints; letting users score the suggestions instead of the virtual evaluation function (human in the loop).",
   "footer.p1": "<b>Single-molecule odor prediction:</b> the graph neural network from <a href=\"../odor-predictor/\">project 1: Odor Predictor</a> on this site.",
   "footer.bases": "Base composition data:",
   "footer.thr": "<b>Odor thresholds (water):</b> L.J. van Gemert, <i>Odour Thresholds: Compilations of Odour Threshold Values in Air, Water and Other Media</i>, 2nd ed., Oliemans Punter &amp; Partners, 2011. Selected by a rule fixed in advance: the detection threshold of Czerny et al., <i>Eur. Food Res. Technol.</i> 228, 265-273 (2008) first, then the detection threshold of Buttery et al. as compiled there, then Karagül-Yüceer et al. (2003/2004); compounds with none of these were excluded. Acetoin uses 0.8 mg/kg (Buttery et al.).",
@@ -218,5 +218,17 @@
   "dim.floral": "floral",
   "dim.cooked": "cooked",
   "ref.colon": ": ",
-  "ref.refs_title": "References"
+  "ref.refs_title": "References",
+  "mix.title": "Tried: a mixture odor similarity model (not adopted)",
+  "mix.why": "<b>Why:</b> the additive rule on this page sums the odor profiles of the compounds by intensity and ignores masking and synergy in real mixtures, the largest limitation of this project. In 2026, work by the Monell Chemical Senses Center, Yale University, IBM Research and others showed that odor-descriptor features of single molecules predict fairly well how similar two mixtures smell (Satarifard et al., <i>PNAS</i> 2026). Following this idea, we tried to train a small model that compares two mixtures, meant only for the reference-food example (where the target is itself a real mixture), not for the directional targets of examples 1-4.",
+  "mix.how": "<b>How:</b> the large dataset of that study has no open licence (the challenge terms forbid other uses), so only the public human similarity ratings of Snitz et al. (2013, CC BY 4.0) were used: pairwise comparisons of intensity-matched molecules or mixtures, rated 0-100. A mixture is the power mean of its components' predicted odor vectors (138 descriptors) and the distance is an angle with learned per-descriptor weights. The split is by mixture: experiments 2 and 3 (165 pairs) for training and cross-validation, the 141 non-overlapping pairs of experiment 1 as the test set, computed once. The table shows the correlation between predicted distance and human ratings (dissimilarity) on the test set.",
+  "mix.col.method": "Method",
+  "mix.row.c": "Mixture model (new)",
+  "mix.row.a21": "Baseline: Snitz angle (21 structural descriptors)",
+  "mix.row.a_all": "Baseline: Snitz angle (all 1,433 structural descriptors)",
+  "mix.row.b12": "Baseline: this page's additive rule (cosine of 12-dimension profiles)",
+  "mix.row.b138": "Baseline: additive rule with the 138 predicted probabilities",
+  "mix.result": "<b>Result:</b> the new model has the highest Pearson correlation but a lower Spearman correlation than the Snitz angle and the 138-dimension additive rule, and every 95% confidence interval of its Pearson difference to a baseline includes 0 (resampling mixtures; vs the 21-descriptor Snitz angle [-0.23, +0.24], vs this page's additive rule [-0.02, +0.41]). The replacement criterion fixed in advance (better on both metrics, with a clear difference) was not met, <b>so this page's evaluation function was not changed</b>. One more observation: the 12-dimension additive rule used here is the weakest of all methods, but this was noticed only after seeing the test results, so nothing was changed because of it.",
+  "mix.note": "The test has limits of its own: training and test data are intensity-matched mixtures outside a food matrix, only about 300 pairs from one laboratory; using it for dairy flavor would also need concentration weights for the components (e.g. by OAV), which these data do not validate. The model predicts overall similarity and cannot tell which masking or synergy is involved.",
+  "footer.mix": "<b>Mixture similarity experiment (not adopted):</b> data from Snitz K, Yablonka A, Weiss T, Frumin I, Khan RM, Sobel N. Predicting odor perceptual similarity from odor structure. <i>PLoS Comput Biol</i> 2013, 9(9): e1003184. <a href=\"https://doi.org/10.1371/journal.pcbi.1003184\" target=\"_blank\" rel=\"noopener\">doi:10.1371/journal.pcbi.1003184</a> (CC BY 4.0); idea from Satarifard V, Sisson L, Han Y, et al. A semantic-based community model for high-fidelity tuning of olfactory mixture distances. <i>PNAS</i> 2026, 123(32): e2611057123. <a href=\"https://doi.org/10.1073/pnas.2611057123\" target=\"_blank\" rel=\"noopener\">doi:10.1073/pnas.2611057123</a>. Code in training/mixture/."
 }
