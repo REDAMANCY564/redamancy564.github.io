@@ -179,3 +179,6 @@ tr.highlight td { font-weight: 700; }
   .workflow { flex-direction: column; }
   .wf-arrow { transform: rotate(90deg); align-self: center; line-height: 1; }
 }
+
+/* Homepage: project cards grouped by theme */
+.group-title { font-size: .95rem; color: var(--muted); font-weight: 600; margin: 22px 0 10px; letter-spacing: .02em; }

@@ -1,0 +1,1264 @@
+{
+ "method": "Stage D of PLAN-perception.md: consumer segments from pleasantness ratings.\n\nInput per subject: pleasantness of the first presentation, detected stimuli only, z-scored within\nthe subject, minus the panel mean of the stimulus (so what is left is how the subject differs from\neverybody; without this step the clustering mostly separates noisy from consistent raters).\n\nClustering, k = 2..6, two methods as a cross-check:\n  hierarchical: average linkage on 1 - r (r = correlation of two subjects' deviations over the\n                stimuli both detected, at least MIN_OVERLAP)\n  k-means:      on the deviation matrix (missing = 0, i.e. the panel mean)\nDecision rule, fixed before looking at the results: segments are reported as real only if, for\nsome k, BOTH\n  (a) the silhouette is above the 95th percentile of a no-structure null (each subject's deviations\n      permuted across stimuli, NULL_RUNS times), and\n  (b) split-half stability: stimuli split at random into halves, each half clustered, adjusted Rand\n      index between the two solutions, mean over SPLITS splits >= 0.5.\nOtherwise the page says individual differences look continuous, and they are described by the\nfirst principal axes of the deviation matrix instead.\nDescription of a segment or axis: Spearman rho across stimuli between its mean deviation (or axis\nloading) and the panel-mean rating of each of the 20 Keller descriptors.",
+ "results": {
+  "all": {
+   "n_subjects": 55,
+   "n_stimuli": 960,
+   "methods": {
+    "hierarchical": {
+     "2": {
+      "silhouette": 0.0282,
+      "null_p95": 0.0166,
+      "null_mean": 0.0142,
+      "split_half_ari_mean": 0.022,
+      "split_half_ari_p10_p90": [
+       -0.019,
+       0.078
+      ],
+      "sizes": [
+       40,
+       15
+      ],
+      "passes": false
+     },
+     "3": {
+      "silhouette": 0.025,
+      "null_p95": 0.0153,
+      "null_mean": 0.0118,
+      "split_half_ari_mean": 0.05,
+      "split_half_ari_p10_p90": [
+       -0.017,
+       0.123
+      ],
+      "sizes": [
+       30,
+       15,
+       10
+      ],
+      "passes": false
+     },
+     "4": {
+      "silhouette": 0.0281,
+      "null_p95": 0.0162,
+      "null_mean": 0.0131,
+      "split_half_ari_mean": 0.069,
+      "split_half_ari_p10_p90": [
+       0.01,
+       0.14
+      ],
+      "sizes": [
+       15,
+       15,
+       15,
+       10
+      ],
+      "passes": false
+     },
+     "5": {
+      "silhouette": 0.027,
+      "null_p95": 0.0177,
+      "null_mean": 0.014,
+      "split_half_ari_mean": 0.07,
+      "split_half_ari_p10_p90": [
+       0.015,
+       0.128
+      ],
+      "sizes": [
+       15,
+       15,
+       10,
+       9,
+       6
+      ],
+      "passes": false
+     },
+     "6": {
+      "silhouette": 0.0265,
+      "null_p95": 0.0187,
+      "null_mean": 0.0151,
+      "split_half_ari_mean": 0.072,
+      "split_half_ari_p10_p90": [
+       0.015,
+       0.125
+      ],
+      "sizes": [
+       15,
+       11,
+       10,
+       9,
+       6,
+       4
+      ],
+      "passes": false
+     }
+    },
+    "kmeans": {
+     "2": {
+      "silhouette": 0.0279,
+      "null_p95": 0.0836,
+      "null_mean": 0.0777,
+      "split_half_ari_mean": 0.094,
+      "split_half_ari_p10_p90": [
+       -0.019,
+       0.285
+      ],
+      "sizes": [
+       39,
+       16
+      ],
+      "passes": false
+     },
+     "3": {
+      "silhouette": 0.0775,
+      "null_p95": 0.0828,
+      "null_mean": 0.0789,
+      "split_half_ari_mean": 0.056,
+      "split_half_ari_p10_p90": [
+       -0.013,
+       0.135
+      ],
+      "sizes": [
+       53,
+       1,
+       1
+      ],
+      "passes": false
+     },
+     "4": {
+      "silhouette": 0.0185,
+      "null_p95": 0.067,
+      "null_mean": 0.0565,
+      "split_half_ari_mean": 0.026,
+      "split_half_ari_p10_p90": [
+       -0.037,
+       0.095
+      ],
+      "sizes": [
+       50,
+       3,
+       1,
+       1
+      ],
+      "passes": false
+     },
+     "5": {
+      "silhouette": 0.0205,
+      "null_p95": 0.0575,
+      "null_mean": 0.0401,
+      "split_half_ari_mean": 0.041,
+      "split_half_ari_p10_p90": [
+       -0.039,
+       0.136
+      ],
+      "sizes": [
+       41,
+       11,
+       1,
+       1,
+       1
+      ],
+      "passes": false
+     },
+     "6": {
+      "silhouette": -0.0058,
+      "null_p95": 0.0238,
+      "null_mean": -0.0017,
+      "split_half_ari_mean": 0.036,
+      "split_half_ari_p10_p90": [
+       -0.029,
+       0.106
+      ],
+      "sizes": [
+       27,
+       24,
+       1,
+       1,
+       1,
+       1
+      ],
+      "passes": false
+     }
+    }
+   }
+  },
+  "excl_low_retest": {
+   "n_subjects": 44,
+   "n_stimuli": 960,
+   "methods": {
+    "hierarchical": {
+     "2": {
+      "silhouette": 0.0248,
+      "null_p95": 0.0185,
+      "null_mean": 0.0156,
+      "split_half_ari_mean": 0.038,
+      "split_half_ari_p10_p90": [
+       -0.021,
+       0.116
+      ],
+      "sizes": [
+       26,
+       18
+      ],
+      "passes": false
+     },
+     "3": {
+      "silhouette": 0.0245,
+      "null_p95": 0.0174,
+      "null_mean": 0.0137,
+      "split_half_ari_mean": 0.058,
+      "split_half_ari_p10_p90": [
+       -0.017,
+       0.135
+      ],
+      "sizes": [
+       18,
+       18,
+       8
+      ],
+      "passes": false
+     },
+     "4": {
+      "silhouette": 0.0252,
+      "null_p95": 0.0188,
+      "null_mean": 0.0145,
+      "split_half_ari_mean": 0.067,
+      "split_half_ari_p10_p90": [
+       -0.003,
+       0.127
+      ],
+      "sizes": [
+       18,
+       9,
+       9,
+       8
+      ],
+      "passes": false
+     },
+     "5": {
+      "silhouette": 0.0277,
+      "null_p95": 0.0196,
+      "null_mean": 0.0154,
+      "split_half_ari_mean": 0.077,
+      "split_half_ari_p10_p90": [
+       0.019,
+       0.143
+      ],
+      "sizes": [
+       11,
+       9,
+       9,
+       8,
+       7
+      ],
+      "passes": false
+     },
+     "6": {
+      "silhouette": 0.0277,
+      "null_p95": 0.0216,
+      "null_mean": 0.0172,
+      "split_half_ari_mean": 0.076,
+      "split_half_ari_p10_p90": [
+       0.014,
+       0.143
+      ],
+      "sizes": [
+       9,
+       9,
+       8,
+       7,
+       7,
+       4
+      ],
+      "passes": false
+     }
+    },
+    "kmeans": {
+     "2": {
+      "silhouette": 0.0167,
+      "null_p95": 0.0867,
+      "null_mean": 0.0809,
+      "split_half_ari_mean": 0.06,
+      "split_half_ari_p10_p90": [
+       -0.036,
+       0.203
+      ],
+      "sizes": [
+       28,
+       16
+      ],
+      "passes": false
+     },
+     "3": {
+      "silhouette": 0.0308,
+      "null_p95": 0.0649,
+      "null_mean": 0.0583,
+      "split_half_ari_mean": 0.096,
+      "split_half_ari_p10_p90": [
+       -0.029,
+       0.254
+      ],
+      "sizes": [
+       36,
+       5,
+       3
+      ],
+      "passes": false
+     },
+     "4": {
+      "silhouette": 0.0552,
+      "null_p95": 0.059,
+      "null_mean": 0.0513,
+      "split_half_ari_mean": 0.041,
+      "split_half_ari_p10_p90": [
+       -0.048,
+       0.122
+      ],
+      "sizes": [
+       41,
+       1,
+       1,
+       1
+      ],
+      "passes": false
+     },
+     "5": {
+      "silhouette": 0.0051,
+      "null_p95": 0.0455,
+      "null_mean": 0.0148,
+      "split_half_ari_mean": 0.014,
+      "split_half_ari_p10_p90": [
+       -0.048,
+       0.091
+      ],
+      "sizes": [
+       21,
+       14,
+       5,
+       3,
+       1
+      ],
+      "passes": false
+     },
+     "6": {
+      "silhouette": -0.0059,
+      "null_p95": 0.0298,
+      "null_mean": 0.0097,
+      "split_half_ari_mean": 0.046,
+      "split_half_ari_p10_p90": [
+       -0.025,
+       0.139
+      ],
+      "sizes": [
+       25,
+       11,
+       5,
+       1,
+       1,
+       1
+      ],
+      "passes": false
+     }
+    }
+   }
+  },
+  "excl_P55": {
+   "n_subjects": 54,
+   "n_stimuli": 960,
+   "methods": {
+    "hierarchical": {
+     "2": {
+      "silhouette": 0.0278,
+      "null_p95": 0.0169,
+      "null_mean": 0.0144,
+      "split_half_ari_mean": 0.03,
+      "split_half_ari_p10_p90": [
+       -0.025,
+       0.115
+      ],
+      "sizes": [
+       41,
+       13
+      ],
+      "passes": false
+     },
+     "3": {
+      "silhouette": 0.0262,
+      "null_p95": 0.0157,
+      "null_mean": 0.0124,
+      "split_half_ari_mean": 0.063,
+      "split_half_ari_p10_p90": [
+       -0.01,
+       0.143
+      ],
+      "sizes": [
+       22,
+       19,
+       13
+      ],
+      "passes": false
+     },
+     "4": {
+      "silhouette": 0.0247,
+      "null_p95": 0.0164,
+      "null_mean": 0.0127,
+      "split_half_ari_mean": 0.069,
+      "split_half_ari_p10_p90": [
+       0.018,
+       0.139
+      ],
+      "sizes": [
+       22,
+       13,
+       11,
+       8
+      ],
+      "passes": false
+     },
+     "5": {
+      "silhouette": 0.024,
+      "null_p95": 0.0182,
+      "null_mean": 0.0142,
+      "split_half_ari_mean": 0.073,
+      "split_half_ari_p10_p90": [
+       0.02,
+       0.135
+      ],
+      "sizes": [
+       18,
+       13,
+       11,
+       8,
+       4
+      ],
+      "passes": false
+     },
+     "6": {
+      "silhouette": 0.0254,
+      "null_p95": 0.0188,
+      "null_mean": 0.0155,
+      "split_half_ari_mean": 0.074,
+      "split_half_ari_p10_p90": [
+       0.021,
+       0.119
+      ],
+      "sizes": [
+       13,
+       12,
+       11,
+       8,
+       6,
+       4
+      ],
+      "passes": false
+     }
+    },
+    "kmeans": {
+     "2": {
+      "silhouette": 0.0236,
+      "null_p95": 0.0993,
+      "null_mean": 0.0913,
+      "split_half_ari_mean": 0.049,
+      "split_half_ari_p10_p90": [
+       -0.066,
+       0.208
+      ],
+      "sizes": [
+       39,
+       15
+      ],
+      "passes": false
+     },
+     "3": {
+      "silhouette": 0.0085,
+      "null_p95": 0.0759,
+      "null_mean": 0.0715,
+      "split_half_ari_mean": 0.057,
+      "split_half_ari_p10_p90": [
+       -0.028,
+       0.178
+      ],
+      "sizes": [
+       28,
+       24,
+       2
+      ],
+      "passes": false
+     },
+     "4": {
+      "silhouette": 0.0065,
+      "null_p95": 0.0704,
+      "null_mean": 0.0313,
+      "split_half_ari_mean": 0.021,
+      "split_half_ari_p10_p90": [
+       -0.025,
+       0.071
+      ],
+      "sizes": [
+       27,
+       18,
+       8,
+       1
+      ],
+      "passes": false
+     },
+     "5": {
+      "silhouette": 0.0062,
+      "null_p95": 0.0627,
+      "null_mean": 0.0599,
+      "split_half_ari_mean": 0.038,
+      "split_half_ari_p10_p90": [
+       -0.032,
+       0.143
+      ],
+      "sizes": [
+       33,
+       18,
+       1,
+       1,
+       1
+      ],
+      "passes": false
+     },
+     "6": {
+      "silhouette": 0.008,
+      "null_p95": 0.0101,
+      "null_mean": 0.004,
+      "split_half_ari_mean": 0.043,
+      "split_half_ari_p10_p90": [
+       -0.014,
+       0.112
+      ],
+      "sizes": [
+       35,
+       15,
+       1,
+       1,
+       1,
+       1
+      ],
+      "passes": false
+     }
+    }
+   }
+  }
+ },
+ "decision": {
+  "segments_supported": false,
+  "passing": [],
+  "excl_low_retest": [],
+  "excl_P55": []
+ },
+ "pairwise_deviation_r": {
+  "mean": -0.0217,
+  "p05_p95": [
+   -0.1219,
+   0.0802
+  ]
+ },
+ "axes": [
+  {
+   "axis": 1,
+   "variance_share": 0.043,
+   "null_p95": 0.0327,
+   "descriptor_rho": {
+    "edible": -0.121,
+    "bakery": 0.012,
+    "sweet": -0.206,
+    "fruit": -0.303,
+    "fish": 0.159,
+    "garlic": 0.285,
+    "spices": -0.097,
+    "cold": -0.218,
+    "sour": 0.078,
+    "burnt": -0.1,
+    "acid": -0.297,
+    "warm": -0.123,
+    "musky": 0.21,
+    "sweaty": 0.143,
+    "ammonia_urinous": -0.097,
+    "decayed": -0.013,
+    "wood": 0.052,
+    "grass": -0.009,
+    "flower": -0.082,
+    "chemical": -0.346
+   },
+   "rho_with_panel_intensity": -0.572,
+   "rho_with_detection_rate": -0.563,
+   "descriptor_rho_intensity_partialled": {
+    "edible": -0.031,
+    "bakery": 0.038,
+    "sweet": -0.259,
+    "fruit": -0.26,
+    "fish": 0.268,
+    "garlic": 0.276,
+    "spices": 0.06,
+    "cold": -0.254,
+    "sour": 0.166,
+    "burnt": 0.128,
+    "acid": -0.077,
+    "warm": 0.036,
+    "musky": 0.236,
+    "sweaty": 0.193,
+    "ammonia_urinous": 0.142,
+    "decayed": 0.201,
+    "wood": -0.0,
+    "grass": -0.1,
+    "flower": -0.155,
+    "chemical": -0.145
+   },
+   "subject_score_rho_with_qc": {
+    "detect_rate": 0.175,
+    "intensity_mean": 0.168,
+    "pleasantness_mean": -0.081,
+    "pleasantness_sd": 0.052,
+    "retest_pleasantness_r": -0.062,
+    "high_gt_low_frac": -0.091
+   },
+   "subject_scores": {
+    "P01": 8.904,
+    "P02": -4.789,
+    "P03": -3.517,
+    "P04": -1.172,
+    "P05": 5.986,
+    "P06": -0.166,
+    "P07": -1.657,
+    "P08": 1.287,
+    "P09": 0.097,
+    "P10": 0.773,
+    "P11": 1.897,
+    "P12": 1.412,
+    "P13": 1.302,
+    "P14": 1.191,
+    "P15": 5.75,
+    "P16": -8.731,
+    "P17": -7.216,
+    "P18": -2.04,
+    "P19": -2.633,
+    "P20": -2.267,
+    "P21": 3.953,
+    "P22": -2.302,
+    "P23": 3.244,
+    "P24": 6.527,
+    "P25": 1.344,
+    "P26": -2.107,
+    "P27": -3.419,
+    "P28": 1.99,
+    "P29": 2.353,
+    "P30": -11.182,
+    "P31": -0.297,
+    "P32": -2.541,
+    "P33": -11.167,
+    "P34": -0.79,
+    "P35": 1.217,
+    "P36": -1.295,
+    "P37": -4.933,
+    "P38": -0.706,
+    "P39": 6.922,
+    "P40": -1.574,
+    "P41": -5.347,
+    "P42": -1.966,
+    "P43": -0.843,
+    "P44": -0.557,
+    "P45": 0.646,
+    "P46": -6.412,
+    "P47": -0.578,
+    "P48": -4.06,
+    "P49": 1.756,
+    "P50": 6.648,
+    "P51": 0.163,
+    "P52": 3.907,
+    "P53": 11.885,
+    "P54": 11.889,
+    "P55": 3.221
+   },
+   "top_stimuli_positive": [
+    "18554_low",
+    "6202_high",
+    "8129_low",
+    "6140_high",
+    "643820_low",
+    "24197_high",
+    "6999977_high",
+    "31209_low"
+   ],
+   "top_stimuli_negative": [
+    "8174_high",
+    "5363388_high",
+    "31244_high",
+    "8184_high",
+    "246728_high",
+    "7820_high",
+    "10722_high",
+    "8163_high"
+   ],
+   "split_half_abs_r": 0.595,
+   "split_half_null_p95": 0.279
+  },
+  {
+   "axis": 2,
+   "variance_share": 0.0379,
+   "null_p95": 0.0309,
+   "descriptor_rho": {
+    "edible": -0.28,
+    "bakery": -0.313,
+    "sweet": 0.039,
+    "fruit": 0.119,
+    "fish": -0.04,
+    "garlic": -0.095,
+    "spices": -0.142,
+    "cold": 0.187,
+    "sour": 0.059,
+    "burnt": -0.075,
+    "acid": 0.16,
+    "warm": -0.142,
+    "musky": 0.03,
+    "sweaty": 0.024,
+    "ammonia_urinous": 0.153,
+    "decayed": -0.029,
+    "wood": -0.018,
+    "grass": 0.058,
+    "flower": 0.122,
+    "chemical": 0.224
+   },
+   "rho_with_panel_intensity": -0.112,
+   "rho_with_detection_rate": -0.088,
+   "descriptor_rho_intensity_partialled": {
+    "edible": -0.266,
+    "bakery": -0.312,
+    "sweet": 0.038,
+    "fruit": 0.14,
+    "fish": -0.029,
+    "garlic": -0.108,
+    "spices": -0.118,
+    "cold": 0.19,
+    "sour": 0.071,
+    "burnt": -0.039,
+    "acid": 0.23,
+    "warm": -0.117,
+    "musky": 0.027,
+    "sweaty": 0.027,
+    "ammonia_urinous": 0.209,
+    "decayed": 0.004,
+    "wood": -0.029,
+    "grass": 0.044,
+    "flower": 0.114,
+    "chemical": 0.299
+   },
+   "subject_score_rho_with_qc": {
+    "detect_rate": -0.155,
+    "intensity_mean": 0.077,
+    "pleasantness_mean": 0.141,
+    "pleasantness_sd": 0.352,
+    "retest_pleasantness_r": 0.038,
+    "high_gt_low_frac": -0.316
+   },
+   "subject_scores": {
+    "P01": 2.153,
+    "P02": -1.162,
+    "P03": 4.881,
+    "P04": 3.526,
+    "P05": 5.14,
+    "P06": -0.392,
+    "P07": 3.294,
+    "P08": -2.279,
+    "P09": 3.819,
+    "P10": 0.212,
+    "P11": -7.712,
+    "P12": 0.798,
+    "P13": 9.13,
+    "P14": -0.948,
+    "P15": 0.558,
+    "P16": 4.083,
+    "P17": -4.307,
+    "P18": -0.953,
+    "P19": 1.077,
+    "P20": 0.101,
+    "P21": -3.491,
+    "P22": 2.544,
+    "P23": -7.987,
+    "P24": -0.813,
+    "P25": -7.0,
+    "P26": 3.238,
+    "P27": 0.994,
+    "P28": -7.683,
+    "P29": 0.446,
+    "P30": 9.096,
+    "P31": -7.919,
+    "P32": -0.741,
+    "P33": -4.389,
+    "P34": 2.254,
+    "P35": -5.799,
+    "P36": -1.643,
+    "P37": 4.596,
+    "P38": 1.925,
+    "P39": -8.953,
+    "P40": -0.817,
+    "P41": 3.058,
+    "P42": 4.142,
+    "P43": -0.353,
+    "P44": 3.927,
+    "P45": -3.881,
+    "P46": -8.527,
+    "P47": 1.764,
+    "P48": -1.793,
+    "P49": 2.757,
+    "P50": -1.795,
+    "P51": -1.954,
+    "P52": -3.031,
+    "P53": 8.518,
+    "P54": 7.234,
+    "P55": 1.056
+   },
+   "top_stimuli_positive": [
+    "2879_low",
+    "8635_high",
+    "7092_high",
+    "61177_high",
+    "521238_high",
+    "24473_high",
+    "8184_high",
+    "520296_high"
+   ],
+   "top_stimuli_negative": [
+    "17898_high",
+    "26331_high",
+    "520108_high",
+    "520108_low",
+    "17898_low",
+    "18467_high",
+    "104721_high",
+    "7793_high"
+   ],
+   "split_half_abs_r": 0.244,
+   "split_half_null_p95": 0.19
+  },
+  {
+   "axis": 3,
+   "variance_share": 0.037,
+   "null_p95": 0.0301,
+   "descriptor_rho": {
+    "edible": 0.119,
+    "bakery": 0.054,
+    "sweet": 0.167,
+    "fruit": 0.136,
+    "fish": -0.059,
+    "garlic": -0.02,
+    "spices": -0.11,
+    "cold": 0.02,
+    "sour": 0.024,
+    "burnt": -0.257,
+    "acid": -0.19,
+    "warm": -0.042,
+    "musky": -0.107,
+    "sweaty": -0.023,
+    "ammonia_urinous": -0.225,
+    "decayed": -0.093,
+    "wood": -0.109,
+    "grass": 0.015,
+    "flower": 0.087,
+    "chemical": -0.244
+   },
+   "rho_with_panel_intensity": -0.184,
+   "rho_with_detection_rate": -0.169,
+   "descriptor_rho_intensity_partialled": {
+    "edible": 0.154,
+    "bakery": 0.061,
+    "sweet": 0.168,
+    "fruit": 0.171,
+    "fish": -0.041,
+    "garlic": -0.041,
+    "spices": -0.067,
+    "cold": 0.024,
+    "sour": 0.044,
+    "burnt": -0.209,
+    "acid": -0.126,
+    "warm": 0.007,
+    "musky": -0.114,
+    "sweaty": -0.019,
+    "ammonia_urinous": -0.173,
+    "decayed": -0.041,
+    "wood": -0.128,
+    "grass": -0.009,
+    "flower": 0.074,
+    "chemical": -0.187
+   },
+   "subject_score_rho_with_qc": {
+    "detect_rate": 0.252,
+    "intensity_mean": -0.04,
+    "pleasantness_mean": -0.108,
+    "pleasantness_sd": 0.078,
+    "retest_pleasantness_r": 0.159,
+    "high_gt_low_frac": 0.272
+   },
+   "subject_scores": {
+    "P01": -1.693,
+    "P02": 4.433,
+    "P03": 0.519,
+    "P04": 0.676,
+    "P05": 4.54,
+    "P06": -4.613,
+    "P07": -5.218,
+    "P08": -0.071,
+    "P09": -0.455,
+    "P10": 0.473,
+    "P11": -3.622,
+    "P12": -1.997,
+    "P13": -6.114,
+    "P14": -4.878,
+    "P15": -6.189,
+    "P16": 11.887,
+    "P17": -1.99,
+    "P18": 1.219,
+    "P19": 3.099,
+    "P20": 1.083,
+    "P21": -4.927,
+    "P22": -2.114,
+    "P23": 0.162,
+    "P24": 2.257,
+    "P25": 3.187,
+    "P26": -2.472,
+    "P27": -0.358,
+    "P28": 8.369,
+    "P29": -5.169,
+    "P30": 2.11,
+    "P31": 2.009,
+    "P32": 3.759,
+    "P33": 3.044,
+    "P34": 0.254,
+    "P35": 1.628,
+    "P36": -10.15,
+    "P37": -4.102,
+    "P38": 3.95,
+    "P39": 6.472,
+    "P40": -2.943,
+    "P41": -0.847,
+    "P42": 4.213,
+    "P43": 6.888,
+    "P44": 2.632,
+    "P45": -0.97,
+    "P46": -7.962,
+    "P47": 1.127,
+    "P48": -6.577,
+    "P49": 0.303,
+    "P50": 2.301,
+    "P51": -0.669,
+    "P52": 4.982,
+    "P53": 7.926,
+    "P54": -3.555,
+    "P55": -5.849
+   },
+   "top_stimuli_positive": [
+    "7792_high",
+    "5352837_high",
+    "18635_low",
+    "1110_high",
+    "31276_high",
+    "10364_high",
+    "8137_low",
+    "19310_low"
+   ],
+   "top_stimuli_negative": [
+    "2879_high",
+    "7047_high",
+    "8658_high",
+    "61809_high",
+    "460_high",
+    "26331_high",
+    "11419_high",
+    "8375_high"
+   ],
+   "split_half_abs_r": 0.269,
+   "split_half_null_p95": 0.197
+  }
+ ],
+ "segments": {
+  "hierarchical": {
+   "k": 4,
+   "segments": [
+    {
+     "segment": 0,
+     "n": 15,
+     "members": [
+      "P06",
+      "P07",
+      "P11",
+      "P13",
+      "P14",
+      "P15",
+      "P17",
+      "P21",
+      "P29",
+      "P31",
+      "P36",
+      "P37",
+      "P45",
+      "P46",
+      "P48"
+     ],
+     "descriptor_rho": {
+      "edible": 0.041,
+      "bakery": 0.123,
+      "sweet": -0.022,
+      "fruit": -0.046,
+      "fish": 0.022,
+      "garlic": -0.028,
+      "spices": 0.121,
+      "cold": -0.06,
+      "sour": -0.048,
+      "burnt": 0.215,
+      "acid": 0.125,
+      "warm": 0.139,
+      "musky": 0.021,
+      "sweaty": -0.026,
+      "ammonia_urinous": 0.151,
+      "decayed": 0.053,
+      "wood": 0.044,
+      "grass": -0.087,
+      "flower": -0.077,
+      "chemical": 0.166
+     },
+     "mean_detect_rate": 0.725,
+     "flagged_low_retest": 4
+    },
+    {
+     "segment": 1,
+     "n": 10,
+     "members": [
+      "P23",
+      "P25",
+      "P28",
+      "P32",
+      "P35",
+      "P38",
+      "P39",
+      "P40",
+      "P43",
+      "P52"
+     ],
+     "descriptor_rho": {
+      "edible": 0.164,
+      "bakery": 0.22,
+      "sweet": 0.145,
+      "fruit": -0.018,
+      "fish": -0.15,
+      "garlic": -0.028,
+      "spices": -0.002,
+      "cold": -0.056,
+      "sour": -0.137,
+      "burnt": -0.159,
+      "acid": -0.235,
+      "warm": 0.034,
+      "musky": -0.088,
+      "sweaty": -0.078,
+      "ammonia_urinous": -0.216,
+      "decayed": -0.17,
+      "wood": 0.042,
+      "grass": 0.066,
+      "flower": 0.083,
+      "chemical": -0.247
+     },
+     "mean_detect_rate": 0.876,
+     "flagged_low_retest": 0
+    },
+    {
+     "segment": 2,
+     "n": 15,
+     "members": [
+      "P02",
+      "P03",
+      "P04",
+      "P16",
+      "P18",
+      "P19",
+      "P22",
+      "P26",
+      "P27",
+      "P30",
+      "P33",
+      "P41",
+      "P42",
+      "P51",
+      "P55"
+     ],
+     "descriptor_rho": {
+      "edible": -0.014,
+      "bakery": -0.198,
+      "sweet": 0.025,
+      "fruit": 0.166,
+      "fish": -0.061,
+      "garlic": -0.158,
+      "spices": -0.01,
+      "cold": 0.188,
+      "sour": 0.062,
+      "burnt": 0.042,
+      "acid": 0.244,
+      "warm": -0.059,
+      "musky": -0.063,
+      "sweaty": -0.019,
+      "ammonia_urinous": 0.143,
+      "decayed": 0.114,
+      "wood": -0.091,
+      "grass": 0.052,
+      "flower": 0.008,
+      "chemical": 0.254
+     },
+     "mean_detect_rate": 0.694,
+     "flagged_low_retest": 5
+    },
+    {
+     "segment": 3,
+     "n": 15,
+     "members": [
+      "P01",
+      "P05",
+      "P08",
+      "P09",
+      "P10",
+      "P12",
+      "P20",
+      "P24",
+      "P34",
+      "P44",
+      "P47",
+      "P49",
+      "P50",
+      "P53",
+      "P54"
+     ],
+     "descriptor_rho": {
+      "edible": -0.164,
+      "bakery": -0.123,
+      "sweet": -0.1,
+      "fruit": -0.106,
+      "fish": 0.149,
+      "garlic": 0.195,
+      "spices": -0.094,
+      "cold": -0.074,
+      "sour": 0.102,
+      "burnt": -0.123,
+      "acid": -0.182,
+      "warm": -0.147,
+      "musky": 0.112,
+      "sweaty": 0.092,
+      "ammonia_urinous": -0.135,
+      "decayed": -0.056,
+      "wood": -0.009,
+      "grass": 0.002,
+      "flower": 0.012,
+      "chemical": -0.21
+     },
+     "mean_detect_rate": 0.749,
+     "flagged_low_retest": 2
+    }
+   ]
+  },
+  "kmeans": {
+   "k": 3,
+   "segments": [
+    {
+     "segment": 0,
+     "n": 1,
+     "members": [
+      "P28"
+     ],
+     "descriptor_rho": null,
+     "mean_detect_rate": 0.972,
+     "flagged_low_retest": 0
+    },
+    {
+     "segment": 1,
+     "n": 53,
+     "members": [
+      "P01",
+      "P02",
+      "P03",
+      "P04",
+      "P05",
+      "P06",
+      "P07",
+      "P08",
+      "P09",
+      "P10",
+      "P11",
+      "P12",
+      "P13",
+      "P14",
+      "P15",
+      "P16",
+      "P17",
+      "P18",
+      "P19",
+      "P20",
+      "P21",
+      "P22",
+      "P23",
+      "P24",
+      "P25",
+      "P26",
+      "P27",
+      "P29",
+      "P30",
+      "P31",
+      "P32",
+      "P33",
+      "P34",
+      "P35",
+      "P36",
+      "P37",
+      "P38",
+      "P39",
+      "P40",
+      "P41",
+      "P42",
+      "P43",
+      "P44",
+      "P45",
+      "P46",
+      "P47",
+      "P48",
+      "P49",
+      "P50",
+      "P51",
+      "P52",
+      "P54",
+      "P55"
+     ],
+     "descriptor_rho": {
+      "edible": 0.001,
+      "bakery": -0.076,
+      "sweet": 0.066,
+      "fruit": 0.156,
+      "fish": -0.049,
+      "garlic": -0.136,
+      "spices": 0.099,
+      "cold": 0.087,
+      "sour": -0.095,
+      "burnt": 0.064,
+      "acid": 0.178,
+      "warm": 0.107,
+      "musky": -0.154,
+      "sweaty": -0.138,
+      "ammonia_urinous": 0.096,
+      "decayed": 0.018,
+      "wood": -0.095,
+      "grass": -0.032,
+      "flower": 0.037,
+      "chemical": 0.231
+     },
+     "mean_detect_rate": 0.743,
+     "flagged_low_retest": 11
+    },
+    {
+     "segment": 2,
+     "n": 1,
+     "members": [
+      "P53"
+     ],
+     "descriptor_rho": null,
+     "mean_detect_rate": 0.949,
+     "flagged_low_retest": 0
+    }
+   ]
+  }
+ }
+}

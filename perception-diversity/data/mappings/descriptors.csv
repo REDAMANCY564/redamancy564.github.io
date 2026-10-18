@@ -1,0 +1,21 @@
+keller_descriptor,odor_model_label,status,note,rho_mapped,top3_labels_by_rho,panel_mean_rating,decision
+edible,,none,"category, not an odor quality",,caramellic 0.22; coffee 0.19; alliaceous 0.18,5.8,not mapped: no counterpart
+bakery,,close?,"no bakery label; candidates: caramellic, roasted, malty",,caramellic 0.23; chocolate 0.22; burnt 0.19,2.7,not mapped: related only
+sweet,sweet,same,,0.45,raspberry 0.49; sweet 0.45; strawberry 0.42,10.0,mapped
+fruit,fruity,same,,0.50,banana 0.52; melon 0.51; apple 0.51,3.8,mapped
+fish,fishy,same,,0.19,cabbage 0.41; alliaceous 0.37; garlic 0.34,1.3,"not mapped: same word, data disagree"
+garlic,garlic,same,"alliaceous is broader (onion, garlic)",0.32,cabbage 0.40; savory 0.34; alliaceous 0.34,2.5,mapped
+spices,spicy,same,,0.22,smoky 0.31; aromatic 0.27; medicinal 0.26,4.9,"not mapped: same word, data disagree"
+cold,cooling,close?,cooling (menthol-like); could also be fresh / mint,0.16,citrus 0.29; pine 0.28; herbal 0.27,3.4,not mapped: related only
+sour,sour,same,,0.24,cabbage 0.41; cheesy 0.33; tomato 0.31,6.3,"not mapped: same word, data disagree"
+burnt,burnt,same,,0.35,savory 0.42; roasted 0.40; meaty 0.37,4.1,mapped
+acid,sour,close?,"no acid label; sour is the nearest (acetic, butyric)",-0.02,terpenic 0.17; gassy 0.13; musty 0.12,4.7,not mapped: related only
+warm,warm,same,,0.05,aromatic 0.21; vanilla 0.20; powdery 0.19,4.6,"not mapped: same word, data disagree"
+musky,musk,same,,-0.18,cooked 0.27; cabbage 0.27; savory 0.25,6.3,"not mapped: same word, data disagree"
+sweaty,sweaty,same,,0.09,cabbage 0.36; cooked 0.29; cheesy 0.27,3.1,"not mapped: same word, data disagree"
+ammonia/urinous,,close?,"no ammonia / urine label; candidates: animal, pungent",,garlic 0.15; sulfurous 0.14; fishy 0.13,3.7,not mapped: related only
+decayed,,close?,"no decay label; candidates: sulfurous, cheesy, fermented",,cabbage 0.34; meaty 0.30; cooked 0.30,3.4,not mapped: related only
+wood,woody,same,,0.11,earthy 0.18; savory 0.18; fishy 0.15,2.7,"not mapped: same word, data disagree"
+grass,grassy,same,green is broader,0.20,leafy 0.27; lemon 0.26; violet 0.25,2.4,"not mapped: same word, data disagree"
+flower,floral,same,,0.51,floral 0.51; orris 0.48; jasmin 0.48,4.4,mapped
+chemical,,close?,"no chemical label; candidates: solvent, medicinal, ethereal",,pine 0.27; camphoreous 0.27; amber 0.26,11.1,not mapped: related only

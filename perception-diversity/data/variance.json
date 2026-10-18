@@ -1,0 +1,603 @@
+{
+ "method": "Stage B of PLAN-perception.md: where do differences in odor ratings come from?\n\nModel for one rating (subject s, stimulus i = molecule m at level l, presentation r):\n    y = mu + molecule_m + conc_(m,l) + subject_s + (subject x stimulus)_si + noise_sir\nVariance components by the method of moments (unbalanced data: a rating exists only when the\nsubject detected the odor):\n  1. noise: the 40 repeated stimuli; for pairs rated both times, the difference cancels every\n     other term, so var(noise) = mean(diff^2) / 2.\n  2. additive two-way fit on the first presentation (alternating means) -> stimulus effects a_i and\n     subject effects b_s; the residual variance (df-corrected) = interaction + noise.\n  3. var(subject x stimulus) = residual variance - noise.\n  4. var(stimulus) and var(subject) = variance of the estimated effects minus their sampling\n     variance; the stimulus part is split into molecule (mean of its two levels) and concentration\n     (deviation of each level from that mean).\nConfidence intervals: grouped jackknife (leave one subject out + leave one of 20 molecule blocks out,\nvariances added); a two-way bootstrap was tried first but is biased here (a subject or molecule drawn\ntwice duplicates its interaction terms). Checked on 40 simulated data sets with the real missing\npattern (2026-10-18): 95% CIs covered the true shares in 90-100% of runs. --check first verifies the estimator on simulated data with the\nreal missing-data pattern and known components.",
+ "simulation_check": {
+  "molecule": {
+   "true": 200.0,
+   "mean_estimate": 202.0,
+   "sd_estimate": 15.4,
+   "true_share": 0.278,
+   "mean_share": 0.281
+  },
+  "concentration": {
+   "true": 40.0,
+   "mean_estimate": 39.5,
+   "sd_estimate": 3.3,
+   "true_share": 0.056,
+   "mean_share": 0.055
+  },
+  "subject": {
+   "true": 80.0,
+   "mean_estimate": 86.5,
+   "sd_estimate": 20.8,
+   "true_share": 0.111,
+   "mean_share": 0.12
+  },
+  "subject_x_stimulus": {
+   "true": 250.0,
+   "mean_estimate": 250.2,
+   "sd_estimate": 8.2,
+   "true_share": 0.347,
+   "mean_share": 0.347
+  },
+  "noise": {
+   "true": 150.0,
+   "mean_estimate": 150.3,
+   "sd_estimate": 7.4,
+   "true_share": 0.208,
+   "mean_share": 0.209
+  }
+ },
+ "excluded_low_retest": [
+  "P03",
+  "P04",
+  "P07",
+  "P11",
+  "P31",
+  "P34",
+  "P42",
+  "P48",
+  "P49",
+  "P51",
+  "P55"
+ ],
+ "ci": "grouped jackknife, +-1.96 SE",
+ "results": {
+  "pleasantness": {
+   "all": {
+    "components": {
+     "molecule": 121.984,
+     "concentration": 21.258,
+     "subject": 58.472,
+     "subject_x_stimulus": 199.205,
+     "noise": 350.512
+    },
+    "shares": {
+     "molecule": 0.1623,
+     "concentration": 0.0283,
+     "subject": 0.0778,
+     "subject_x_stimulus": 0.2651,
+     "noise": 0.4665,
+     "personal_of_stimulus_related": 0.5817
+    },
+    "n": {
+     "n_ratings": 39624,
+     "n_subjects": 55,
+     "n_stimuli": 960,
+     "n_pairs": 1405
+    },
+    "se": {
+     "molecule": 0.0137,
+     "concentration": 0.0037,
+     "subject": 0.0151,
+     "subject_x_stimulus": 0.0369,
+     "noise": 0.0429,
+     "personal_of_stimulus_related": 0.0385
+    },
+    "ci95": {
+     "molecule": [
+      0.1356,
+      0.1891
+     ],
+     "concentration": [
+      0.021,
+      0.0356
+     ],
+     "subject": [
+      0.0483,
+      0.1074
+     ],
+     "subject_x_stimulus": [
+      0.1928,
+      0.3374
+     ],
+     "noise": [
+      0.3824,
+      0.5505
+     ],
+     "personal_of_stimulus_related": [
+      0.5062,
+      0.6572
+     ]
+    }
+   },
+   "excl_low_retest": {
+    "components": {
+     "molecule": 131.358,
+     "concentration": 22.935,
+     "subject": 61.255,
+     "subject_x_stimulus": 211.282,
+     "noise": 348.95
+    },
+    "shares": {
+     "molecule": 0.1693,
+     "concentration": 0.0296,
+     "subject": 0.079,
+     "subject_x_stimulus": 0.2723,
+     "noise": 0.4498,
+     "personal_of_stimulus_related": 0.5779
+    },
+    "n": {
+     "n_ratings": 33258,
+     "n_subjects": 44,
+     "n_stimuli": 960,
+     "n_pairs": 1209
+    },
+    "se": {
+     "molecule": 0.0141,
+     "concentration": 0.0044,
+     "subject": 0.0168,
+     "subject_x_stimulus": 0.0367,
+     "noise": 0.0439,
+     "personal_of_stimulus_related": 0.0348
+    },
+    "ci95": {
+     "molecule": [
+      0.1416,
+      0.197
+     ],
+     "concentration": [
+      0.021,
+      0.0381
+     ],
+     "subject": [
+      0.046,
+      0.1119
+     ],
+     "subject_x_stimulus": [
+      0.2004,
+      0.3443
+     ],
+     "noise": [
+      0.3637,
+      0.5359
+     ],
+     "personal_of_stimulus_related": [
+      0.5096,
+      0.6462
+     ]
+    }
+   },
+   "excl_P55": {
+    "components": {
+     "molecule": 125.378,
+     "concentration": 21.919,
+     "subject": 58.882,
+     "subject_x_stimulus": 200.694,
+     "noise": 352.93
+    },
+    "shares": {
+     "molecule": 0.165,
+     "concentration": 0.0288,
+     "subject": 0.0775,
+     "subject_x_stimulus": 0.2641,
+     "noise": 0.4645,
+     "personal_of_stimulus_related": 0.5767
+    },
+    "n": {
+     "n_ratings": 39120,
+     "n_subjects": 54,
+     "n_stimuli": 960,
+     "n_pairs": 1392
+    },
+    "se": {
+     "molecule": 0.0146,
+     "concentration": 0.0039,
+     "subject": 0.0153,
+     "subject_x_stimulus": 0.035,
+     "noise": 0.0424,
+     "personal_of_stimulus_related": 0.0364
+    },
+    "ci95": {
+     "molecule": [
+      0.1365,
+      0.1935
+     ],
+     "concentration": [
+      0.0212,
+      0.0365
+     ],
+     "subject": [
+      0.0475,
+      0.1075
+     ],
+     "subject_x_stimulus": [
+      0.1955,
+      0.3327
+     ],
+     "noise": [
+      0.3814,
+      0.5476
+     ],
+     "personal_of_stimulus_related": [
+      0.5054,
+      0.648
+     ]
+    }
+   },
+   "zscore": {
+    "components": {
+     "molecule": 0.183,
+     "concentration": 0.032,
+     "subject": 0.0,
+     "subject_x_stimulus": 0.258,
+     "noise": 0.485
+    },
+    "shares": {
+     "molecule": 0.1911,
+     "concentration": 0.0331,
+     "subject": 0.0,
+     "subject_x_stimulus": 0.2696,
+     "noise": 0.5062,
+     "personal_of_stimulus_related": 0.546
+    },
+    "n": {
+     "n_ratings": 39624,
+     "n_subjects": 55,
+     "n_stimuli": 960,
+     "n_pairs": 1405
+    },
+    "se": {
+     "molecule": 0.0152,
+     "concentration": 0.0045,
+     "subject": 0.0,
+     "subject_x_stimulus": 0.0371,
+     "noise": 0.0389,
+     "personal_of_stimulus_related": 0.0411
+    },
+    "ci95": {
+     "molecule": [
+      0.1613,
+      0.2208
+     ],
+     "concentration": [
+      0.0242,
+      0.042
+     ],
+     "subject": [
+      0.0,
+      0.0
+     ],
+     "subject_x_stimulus": [
+      0.1968,
+      0.3424
+     ],
+     "noise": [
+      0.43,
+      0.5824
+     ],
+     "personal_of_stimulus_related": [
+      0.4655,
+      0.6265
+     ]
+    }
+   }
+  },
+  "intensity": {
+   "all": {
+    "components": {
+     "molecule": 247.6,
+     "concentration": 226.735,
+     "subject": 112.75,
+     "subject_x_stimulus": 103.185,
+     "noise": 495.842
+    },
+    "shares": {
+     "molecule": 0.2087,
+     "concentration": 0.1912,
+     "subject": 0.0951,
+     "subject_x_stimulus": 0.087,
+     "noise": 0.418,
+     "personal_of_stimulus_related": 0.1787
+    },
+    "n": {
+     "n_ratings": 39624,
+     "n_subjects": 55,
+     "n_stimuli": 960,
+     "n_pairs": 1405
+    },
+    "se": {
+     "molecule": 0.0129,
+     "concentration": 0.0125,
+     "subject": 0.0152,
+     "subject_x_stimulus": 0.0387,
+     "noise": 0.0387,
+     "personal_of_stimulus_related": 0.0675
+    },
+    "ci95": {
+     "molecule": [
+      0.1834,
+      0.2341
+     ],
+     "concentration": [
+      0.1667,
+      0.2156
+     ],
+     "subject": [
+      0.0653,
+      0.1248
+     ],
+     "subject_x_stimulus": [
+      0.0112,
+      0.1628
+     ],
+     "noise": [
+      0.3421,
+      0.4939
+     ],
+     "personal_of_stimulus_related": [
+      0.0464,
+      0.3109
+     ]
+    }
+   },
+   "excl_low_retest": {
+    "components": {
+     "molecule": 258.417,
+     "concentration": 237.186,
+     "subject": 97.707,
+     "subject_x_stimulus": 121.431,
+     "noise": 470.632
+    },
+    "shares": {
+     "molecule": 0.218,
+     "concentration": 0.2001,
+     "subject": 0.0824,
+     "subject_x_stimulus": 0.1024,
+     "noise": 0.397,
+     "personal_of_stimulus_related": 0.1968
+    },
+    "n": {
+     "n_ratings": 33258,
+     "n_subjects": 44,
+     "n_stimuli": 960,
+     "n_pairs": 1209
+    },
+    "se": {
+     "molecule": 0.0162,
+     "concentration": 0.0118,
+     "subject": 0.0141,
+     "subject_x_stimulus": 0.0367,
+     "noise": 0.0376,
+     "personal_of_stimulus_related": 0.0584
+    },
+    "ci95": {
+     "molecule": [
+      0.1863,
+      0.2497
+     ],
+     "concentration": [
+      0.177,
+      0.2231
+     ],
+     "subject": [
+      0.0549,
+      0.11
+     ],
+     "subject_x_stimulus": [
+      0.0306,
+      0.1743
+     ],
+     "noise": [
+      0.3233,
+      0.4708
+     ],
+     "personal_of_stimulus_related": [
+      0.0823,
+      0.3113
+     ]
+    }
+   },
+   "excl_P55": {
+    "components": {
+     "molecule": 252.03,
+     "concentration": 231.189,
+     "subject": 114.159,
+     "subject_x_stimulus": 103.04,
+     "noise": 498.244
+    },
+    "shares": {
+     "molecule": 0.2103,
+     "concentration": 0.1929,
+     "subject": 0.0952,
+     "subject_x_stimulus": 0.086,
+     "noise": 0.4157,
+     "personal_of_stimulus_related": 0.1758
+    },
+    "n": {
+     "n_ratings": 39120,
+     "n_subjects": 54,
+     "n_stimuli": 960,
+     "n_pairs": 1392
+    },
+    "se": {
+     "molecule": 0.0151,
+     "concentration": 0.0118,
+     "subject": 0.0156,
+     "subject_x_stimulus": 0.0308,
+     "noise": 0.0346,
+     "personal_of_stimulus_related": 0.0534
+    },
+    "ci95": {
+     "molecule": [
+      0.1806,
+      0.2399
+     ],
+     "concentration": [
+      0.1697,
+      0.2161
+     ],
+     "subject": [
+      0.0646,
+      0.1258
+     ],
+     "subject_x_stimulus": [
+      0.0256,
+      0.1463
+     ],
+     "noise": [
+      0.3478,
+      0.4835
+     ],
+     "personal_of_stimulus_related": [
+      0.0712,
+      0.2804
+     ]
+    }
+   },
+   "zscore": {
+    "components": {
+     "molecule": 0.248,
+     "concentration": 0.226,
+     "subject": 0.02,
+     "subject_x_stimulus": 0.091,
+     "noise": 0.504
+    },
+    "shares": {
+     "molecule": 0.228,
+     "concentration": 0.2074,
+     "subject": 0.0185,
+     "subject_x_stimulus": 0.0833,
+     "noise": 0.4628,
+     "personal_of_stimulus_related": 0.1605
+    },
+    "n": {
+     "n_ratings": 39624,
+     "n_subjects": 55,
+     "n_stimuli": 960,
+     "n_pairs": 1405
+    },
+    "se": {
+     "molecule": 0.0127,
+     "concentration": 0.0119,
+     "subject": 0.0032,
+     "subject_x_stimulus": 0.0367,
+     "noise": 0.0387,
+     "personal_of_stimulus_related": 0.0611
+    },
+    "ci95": {
+     "molecule": [
+      0.2031,
+      0.253
+     ],
+     "concentration": [
+      0.1841,
+      0.2307
+     ],
+     "subject": [
+      0.0123,
+      0.0248
+     ],
+     "subject_x_stimulus": [
+      0.0113,
+      0.1552
+     ],
+     "noise": [
+      0.3868,
+      0.5387
+     ],
+     "personal_of_stimulus_related": [
+      0.0407,
+      0.2804
+     ]
+    }
+   },
+   "nondetect_zero": {
+    "components": {
+     "molecule": 328.697,
+     "concentration": 308.594,
+     "subject": 116.946,
+     "subject_x_stimulus": 57.177,
+     "noise": 555.579
+    },
+    "shares": {
+     "molecule": 0.2405,
+     "concentration": 0.2257,
+     "subject": 0.0855,
+     "subject_x_stimulus": 0.0418,
+     "noise": 0.4064,
+     "personal_of_stimulus_related": 0.0823
+    },
+    "n": {
+     "n_ratings": 52800,
+     "n_subjects": 55,
+     "n_stimuli": 960,
+     "n_pairs": 2200
+    },
+    "se": {
+     "molecule": 0.0158,
+     "concentration": 0.0109,
+     "subject": 0.0147,
+     "subject_x_stimulus": 0.0346,
+     "noise": 0.0381,
+     "personal_of_stimulus_related": 0.0617
+    },
+    "ci95": {
+     "molecule": [
+      0.2094,
+      0.2715
+     ],
+     "concentration": [
+      0.2044,
+      0.2471
+     ],
+     "subject": [
+      0.0567,
+      0.1144
+     ],
+     "subject_x_stimulus": [
+      0,
+      0.1096
+     ],
+     "noise": [
+      0.3317,
+      0.4811
+     ],
+     "personal_of_stimulus_related": [
+      0,
+      0.2033
+     ]
+    }
+   }
+  }
+ },
+ "noise_diagnostics": {
+  "pleasantness": {
+   "residual_var_repeated_molecules": 495.3,
+   "residual_var_other_molecules": 537.4,
+   "noise_by_rating_tercile": {
+    "low": 203.6,
+    "middle": 520.2,
+    "high": 328.4
+   },
+   "noise_by_molecule_range": [
+    171.7,
+    498.2
+   ],
+   "pair_mean_rating": 42.3
+  },
+  "intensity": {
+   "residual_var_repeated_molecules": 601.8,
+   "residual_var_other_molecules": 582.9,
+   "noise_by_rating_tercile": {
+    "low": 659.6,
+    "middle": 713.5,
+    "high": 109.2
+   },
+   "noise_by_molecule_range": [
+    178.5,
+    1080.7
+   ],
+   "pair_mean_rating": 55.8
+  }
+ }
+}

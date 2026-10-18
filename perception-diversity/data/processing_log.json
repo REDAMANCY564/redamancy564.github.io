@@ -1,0 +1,206 @@
+{
+ "source": "Keller A, Vosshall LB. Olfactory perception of chemically diverse molecules. BMC Neurosci 2016;17:55. doi:10.1186/s12868-016-0287-2. Data: CC0 (Additional file 1).",
+ "script": "training/perception/prepare.py",
+ "steps": [
+  {
+   "step": "import",
+   "file": "keller2016_S1.xlsx",
+   "rows": 55000,
+   "columns_kept": 31,
+   "columns_dropped": [
+    "Gender",
+    "Race",
+    "Ethnicity",
+    "Age",
+    "Subject # (DREAM challenge)",
+    "THE ODOR IS:",
+    "Catalogue #*"
+   ],
+   "reason": "demographics, DREAM subject number and free-text descriptions are not used (PLAN 4.4)"
+  },
+  {
+   "step": "subjects",
+   "n": 55,
+   "coding": "random permutation (seed 2026) -> P01..P55; key kept private"
+  },
+  {
+   "step": "cid_repair",
+   "rows": 220,
+   "molecules": [
+    {
+     "name": "isobutyl acetate",
+     "value_in_cid_column": "109-19-0",
+     "cas_status": "suspicious",
+     "pubchem_cids_by_cas": [],
+     "pubchem_cids_by_name": [
+      8038
+     ],
+     "cid_used": 8038,
+     "method": "PubChem lookup of the name (CAS not found)"
+    },
+    {
+     "name": "6,10-Dimethyl-5,9-undecadien-2-one",
+     "value_in_cid_column": "3796-70-1",
+     "cas_status": "ok",
+     "pubchem_cids_by_cas": [
+      1549778
+     ],
+     "pubchem_cids_by_name": [
+      1549778,
+      19633,
+      1713001
+     ],
+     "cid_used": 1549778,
+     "method": "PubChem lookup of the CAS"
+    }
+   ]
+  },
+  {
+   "step": "identity_check",
+   "rule": "CID, name and CAS compared on the structure skeleton (InChIKey connectivity block); two sources against one decide, otherwise the sheet CID is kept and flagged",
+   "status": {
+    "consistent": 473,
+    "name_ambiguous": 4,
+    "unresolved": 1,
+    "cid_replaced": 1,
+    "manual_keep": 1
+   },
+   "cid_replaced": {
+    "6753": 6515677
+   }
+  },
+  {
+   "step": "molecules",
+   "n": 480,
+   "cas_check": {
+    "matches_pubchem": 478,
+    "check_digit_failed": 1,
+    "not_in_pubchem_rn": 1
+   },
+   "identity_check": {
+    "consistent": 473,
+    "name_ambiguous": 4,
+    "unresolved": 1,
+    "manual_keep": 1,
+    "cid_replaced": 1
+   },
+   "odor_dataset_split": {
+    "train": 388,
+    "test": 47,
+    "valid": 36,
+    "not_in_odor_dataset": 9
+   },
+   "stereo_groups": 8,
+   "name_variant_molecules": 1,
+   "identifier": "InChIKey (PubChem) + canonical non-stereo SMILES (odor-predictor standardization)"
+  },
+  {
+   "step": "concentration",
+   "labels": [
+    "1/10",
+    "1/1,000",
+    "1/1,000",
+    "1/100,000",
+    "1/100,000",
+    "1/10,000,000"
+   ],
+   "pairs": {
+    "1/1,000 & 1/100,000": 288,
+    "1/10 & 1/1,000": 134,
+    "1/100,000 & 1/10,000,000": 58
+   },
+   "rule": "dilution in paraffin oil; log10 of the dilution fraction; within each molecule the stronger one = high"
+  },
+  {
+   "step": "scales",
+   "detected_rows": 41289,
+   "not_detected_rows": 13711,
+   "descriptor_blanks_set_to_0": 685964,
+   "conversion": "none needed: every scale is a 0-100 slider"
+  },
+  {
+   "step": "row_checks",
+   "rows": 55000,
+   "rating_out_of_range": 0,
+   "detected_but_rating_missing": 0,
+   "not_detected_but_rating_present": 0,
+   "duplicate_subject_stimulus_presentation": 0,
+   "exact_duplicate_rows": 0,
+   "stimuli_per_subject": [
+    1000
+   ],
+   "repeated_stimuli_per_subject": [
+    40
+   ],
+   "know_missing_when_detected": 0
+  },
+  {
+   "step": "subject_checks",
+   "flag_rules": {
+    "low_retest_intensity": "test-retest r of intensity < 0.2 (agreed rule for the sensitivity analysis)",
+    "few_retest_pairs": "fewer than 10 repeated stimuli detected both times (r unreliable)",
+    "narrow_scale": "SD of pleasantness < 10 (uses a narrow part of the scale)",
+    "extreme_mean": "mean pleasantness or intensity more than 2 SD from the panel",
+    "high_nondetect": "does not detect more than 50% of stimuli"
+   },
+   "flag_counts": {
+    "low_retest_intensity": 11,
+    "few_retest_pairs": 0,
+    "narrow_scale": 1,
+    "extreme_mean": 6,
+    "high_nondetect": 3
+   },
+   "retest_intensity_r": {
+    "count": 55.0,
+    "mean": 0.401,
+    "std": 0.267,
+    "min": -0.787,
+    "25%": 0.3,
+    "50%": 0.439,
+    "75%": 0.581,
+    "max": 0.753
+   },
+   "retest_pleasantness_r": {
+    "count": 55.0,
+    "mean": 0.475,
+    "std": 0.23,
+    "min": -0.392,
+    "25%": 0.344,
+    "50%": 0.507,
+    "75%": 0.647,
+    "max": 0.827
+   },
+   "action": "flagged only, nothing removed; z-scoring per subject is applied in the analyses, raw values kept"
+  },
+  {
+   "step": "panel_reliability",
+   "split_half_spearman_brown": {
+    "intensity": 0.962,
+    "pleasantness": 0.908
+   },
+   "halves": 200
+  },
+  {
+   "step": "descriptor_mapping",
+   "same": 13,
+   "close": 6,
+   "none": 1,
+   "molecules_with_model_probs": 480,
+   "mapped": [
+    "sweet",
+    "fruit",
+    "garlic",
+    "burnt",
+    "flower"
+   ],
+   "rule": "mapped only if the meaning is the same AND rho >= 0.3; analyses use the 20 Keller descriptors directly, the mapping is only for comparison with the odor model",
+   "evidence": "Spearman rho across molecules: panel-mean descriptor rating (detected, 1st presentation, both concentrations pooled) vs odor-model probability",
+   "status": "approved by user 2026-10-18"
+  },
+  {
+   "step": "output",
+   "ratings_rows": 55000,
+   "file": "training/data/perception/ratings_long.csv.gz (private)"
+  }
+ ]
+}

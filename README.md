@@ -125,6 +125,27 @@ python odormap/build_maps.py        # 定稿地图 + 评估（测试集只算一
 python odormap/make_site_data.py    # odor-map/data/：坐标、区域标签、食品列表
 ```
 
+## 气味感知的个体差异（perception-diversity/）
+
+用 Keller & Vosshall 2016（BMC Neuroscience 17:55，数据 CC0）中 55 人对 480 个分子（每个两个浓度）的嗅觉评价，回答「同一个气味，为什么每个人感受不同」。人口学信息在导入时丢弃，受试者随机重新编码为 P01 到 P55。
+
+- **数据处理**：CAS 校验位、CAS / CID / 名称三方比对（二对一纠正；发现原表 1 个 CID 指向错误结构），浓度和量表标准化，描述词映射（词义相同且数据相关 ≥ 0.3 才映射），每人的重测一致性和打分习惯；问题只标记不删除，处理日志在 `perception-diversity/data/processing_log.json`。
+- **差异来源**（矩估计，噪音用重复测试估计，置信区间用分组刀切法）：愉悦度中可重复的差异 58% 来自个人口味，强度只有 18%；各种剔除规则下结论不变。
+- **个性化预测**：群体模型可以预测平均评分；但只给 5 个评分时，除整体偏移外学不到个人偏好。
+- **分群**：按预先规定的标准（轮廓系数高于对照，且折半稳定性 ARI ≥ 0.5）没有可靠的群体；唯一可重复的个人差异方向主要反映对浓烈气味的接受度。
+
+**重新生成：**
+```powershell
+cd training
+.\.venv\Scripts\Activate.ps1
+# 原始数据：论文附件 1（12868_2016_287_MOESM1_ESM.xlsx）放到 training/data/perception/raw/keller2016_S1.xlsx
+python perception/prepare.py         # 标签标准化与质量检查（PubChem 查询有缓存）
+python perception/variance.py        # 差异来源分解（约 20 秒）
+python perception/predict.py         # 个性化预测（约 20 分钟）
+python perception/cluster.py         # 分群与连续维度（约 5 分钟）
+python perception/make_site_data.py  # perception-diversity/data/site.json
+```
+
 ---
 
 ## 如何更新网站（最常用）
@@ -192,10 +213,12 @@ flavor-improver/        项目 2：乳品风味改良
 flavor-kb/              风味知识库
 taste-predictor/        味觉预测（结构同 odor-predictor；engine.js 在气味引擎上加中和步骤）
 odor-map/               气味空间地图（data/：coords.bin、map.json、foods.json；分子数据读 ingredient-finder/data/）
+perception-diversity/   气味感知的个体差异（data/：site.json、映射表、质量检查、处理日志）
 training/               训练代码（原始数据不上传）
   flavor_improver/      项目 2 的数据准备、贝叶斯优化实验与分析
   taste/                味觉预测的数据处理、训练、导出
   odormap/              气味空间地图的 UMAP、评估和站点数据
+  perception/           个体差异项目：标准化与质量检查、差异分解、预测、分群
 PLAN.md                 开发计划（项目 1）
 PLAN-formulation.md     开发计划（项目 2）
 ```
@@ -235,6 +258,8 @@ python ablation_to_site.py  # 把摘要写入 odor-predictor/data/metrics.json
 - The Good Scents Company；Leffingwell & Associates（Sanchez-Lengeling et al., 2019, arXiv:1910.10685，CC BY-NC，仅限非商业用途）
 - 合并清洗数据集：OpenPOM（Barsainyan et al., 2023），https://github.com/BioMachineLearning/openpom
 - Lee et al., A principal odor map unifies diverse tasks in human olfactory perception, *Science* 381, 999-1006 (2023)
+
+- 人类嗅觉评价：Keller A, Vosshall LB. Olfactory perception of chemically diverse molecules. *BMC Neuroscience* 17, 55 (2016)，doi:10.1186/s12868-016-0287-2（数据 CC0）
 
 原始数据不在本仓库中转载。
 

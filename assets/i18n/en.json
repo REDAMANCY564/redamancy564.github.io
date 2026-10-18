@@ -75,5 +75,11 @@
   "wf.5.desc": "Turn instrument data into key aroma compounds and a flavor profile",
   "home.map.title": "Odor Space Map",
   "home.map.desc": "More than 5,000 flavor molecules drawn as a zoomable map by AI-predicted odor, so molecules that smell alike sit together; switch to a map arranged by molecular structure to compare, and highlight the key aroma compounds of a food.",
-  "home.map.tags": "UMAP · Graph neural network · Odor vs structure"
+  "home.map.tags": "UMAP · Graph neural network · Odor vs structure",
+  "home.group.molecule": "Molecules and odor prediction",
+  "home.group.flavor": "Flavor analysis and formulation",
+  "home.group.perception": "Perception and consumer science",
+  "home.perc.title": "Why People Smell Differently",
+  "home.perc.desc": "Public smell ratings of 480 molecules by 55 people: how much of the differences comes from the molecule, personal taste or noise; whether a new consumer's preferences can be predicted from a few ratings; and whether consumer segments exist. Labels are standardized and the data quality-checked first.",
+  "home.perc.tags": "Variance decomposition · Personalized prediction · Data quality"
 }

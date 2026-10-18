@@ -1,0 +1,1241 @@
+{
+ "method": "Stage C of PLAN-perception.md: personalized prediction of odor ratings.\n\nTarget: pleasantness (main) and intensity, raw 0-100, first presentation, detected ratings only.\nMolecule features: the odor model's 138 predicted probabilities (the embedding chosen for\ningredient-finder) + log10 dilution + high/low flag. For comparison, the population model is also\nfitted on Morgan fingerprints (radius 2, 2048 bits).\n\nScenario A, new molecules (known subjects): 5-fold CV over molecules. Cyclic molecules are grouped\nby Murcko scaffold, except the benzene scaffold (104 molecules, more than a fold) which is split\nlike acyclic molecules (one by one); stereo pairs stay together; both concentrations of a molecule\nstay together. Hyperparameters by inner 4-fold CV on the training molecules only.\n  baselines: global mean; personal mean (subject's mean on training molecules)\n  population: ridge on the stimulus mean rating\n  + offset: population + subject's mean residual\n  + personal slopes: per-subject ridge of the residual on the first k principal components of\n    the features (k and penalty chosen in the inner CV)\n  reference (not a model): panel mean of the test stimulus from the other subjects + offset\n    (\"if the population model were perfect\")\n\nScenario B, new consumers: 5-fold CV over subjects. From the training subjects: stimulus means and\nk latent factors of the residuals (matrix factorization, ALS with ridge). A test subject gives n\nknown ratings (n = 5 main; curve 1..50), drawn at random 20 times, or a fixed probe set (the 5\nstimuli with the largest between-subject spread of the residual among those most training subjects\ndetect); the rest of the subject's ratings are predicted.\n  baselines: global mean; molecule mean (training subjects); personal mean (mean of the n ratings)\n  + offset: molecule mean + subject offset (shrunk)\n  + factors: molecule mean + offset + u_s . v_i (ridge from the n ratings)\n\nMetrics: Pearson r over all predicted ratings (pooled), mean per-subject r, RMSE.\nCeilings: test-retest of single ratings (repeat pairs, pooled r and RMSE); for the population\nmodel, reliability of the panel mean (split-half, Spearman-Brown).",
+ "folds": {
+  "molecules_per_fold": [
+   96,
+   96,
+   96,
+   96,
+   96
+  ],
+  "kinds": {
+   "acyclic": 228,
+   "cyclic": 148,
+   "benzene": 104
+  }
+ },
+ "results": {
+  "pleasantness": {
+   "ceiling": {
+    "test_retest_single_rating": {
+     "r": 0.5176,
+     "r_per_subject_mean": 0.475,
+     "rmse": 26.477,
+     "n": 1405
+    },
+    "max_r_for_a_single_rating": 0.7194,
+    "note": "test-retest r = how well one noisy rating predicts another; sqrt(r) = the highest r any prediction can reach with a single noisy rating (prediction = the person's true score)",
+    "panel_mean_reliability": 0.908
+   },
+   "new_molecules": {
+    "chosen": [
+     {
+      "fold": 0,
+      "alpha": 3000,
+      "k": 20,
+      "lam": 300,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 1,
+      "alpha": 1000,
+      "k": 20,
+      "lam": 300,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 2,
+      "alpha": 3000,
+      "k": 10,
+      "lam": 300,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 3,
+      "alpha": 1000,
+      "k": 10,
+      "lam": 300,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 4,
+      "alpha": 3000,
+      "k": 20,
+      "lam": 300,
+      "n_test_molecules": 96
+     }
+    ],
+    "rating_level": {
+     "global_mean": {
+      "r": -0.0317,
+      "r_per_subject_mean": -0.0361,
+      "rmse": 27.965,
+      "n": 39624
+     },
+     "personal_mean": {
+      "r": 0.269,
+      "r_per_subject_mean": -0.0804,
+      "rmse": 26.927,
+      "n": 39624
+     },
+     "population": {
+      "r": 0.2837,
+      "r_per_subject_mean": 0.3048,
+      "rmse": 26.811,
+      "n": 39624
+     },
+     "population_offset": {
+      "r": 0.3911,
+      "r_per_subject_mean": 0.2997,
+      "rmse": 25.733,
+      "n": 39624
+     },
+     "population_offset_slopes": {
+      "r": 0.4203,
+      "r_per_subject_mean": 0.325,
+      "rmse": 25.375,
+      "n": 39624
+     },
+     "reference_panel_mean_offset": {
+      "r": 0.5281,
+      "r_per_subject_mean": 0.489,
+      "rmse": 23.756,
+      "n": 39624
+     }
+    },
+    "subsets": {
+     "kind=acyclic": {
+      "population": {
+       "r": 0.2921,
+       "r_per_subject_mean": 0.3164,
+       "rmse": 26.554,
+       "n": 18230
+      },
+      "population_offset_slopes": {
+       "r": 0.4256,
+       "r_per_subject_mean": 0.3273,
+       "rmse": 25.128,
+       "n": 18230
+      }
+     },
+     "kind=benzene": {
+      "population": {
+       "r": 0.2729,
+       "r_per_subject_mean": 0.3021,
+       "rmse": 26.864,
+       "n": 8747
+      },
+      "population_offset_slopes": {
+       "r": 0.4194,
+       "r_per_subject_mean": 0.3044,
+       "rmse": 25.341,
+       "n": 8747
+      }
+     },
+     "kind=cyclic": {
+      "population": {
+       "r": 0.252,
+       "r_per_subject_mean": 0.2641,
+       "rmse": 27.14,
+       "n": 12647
+      },
+      "population_offset_slopes": {
+       "r": 0.3969,
+       "r_per_subject_mean": 0.2744,
+       "rmse": 25.751,
+       "n": 12647
+      }
+     },
+     "seen=train": {
+      "population": {
+       "r": 0.2896,
+       "r_per_subject_mean": 0.3131,
+       "rmse": 26.678,
+       "n": 32235
+      },
+      "population_offset_slopes": {
+       "r": 0.4266,
+       "r_per_subject_mean": 0.3329,
+       "rmse": 25.211,
+       "n": 32235
+      }
+     },
+     "seen=unseen": {
+      "population": {
+       "r": 0.2619,
+       "r_per_subject_mean": 0.2734,
+       "rmse": 27.384,
+       "n": 7389
+      },
+      "population_offset_slopes": {
+       "r": 0.395,
+       "r_per_subject_mean": 0.2923,
+       "rmse": 26.082,
+       "n": 7389
+      }
+     }
+    },
+    "population_level": {
+     "r_stimulus_means": 0.5467,
+     "n_stimuli": 960,
+     "r_stimulus_means_train": 0.5671,
+     "n_train": 776,
+     "r_stimulus_means_unseen": 0.476,
+     "n_unseen": 184
+    }
+   },
+   "new_molecules_fingerprint": {
+    "chosen": [
+     {
+      "fold": 0,
+      "alpha": 10000,
+      "k": 20,
+      "lam": 300,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 1,
+      "alpha": 10000,
+      "k": 40,
+      "lam": 300,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 2,
+      "alpha": 30000,
+      "k": 40,
+      "lam": 300,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 3,
+      "alpha": 3000,
+      "k": 40,
+      "lam": 300,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 4,
+      "alpha": 10000,
+      "k": 40,
+      "lam": 300,
+      "n_test_molecules": 96
+     }
+    ],
+    "rating_level": {
+     "global_mean": {
+      "r": -0.0317,
+      "r_per_subject_mean": -0.0361,
+      "rmse": 27.965,
+      "n": 39624
+     },
+     "personal_mean": {
+      "r": 0.269,
+      "r_per_subject_mean": -0.0804,
+      "rmse": 26.927,
+      "n": 39624
+     },
+     "population": {
+      "r": 0.2599,
+      "r_per_subject_mean": 0.2804,
+      "rmse": 27.036,
+      "n": 39624
+     },
+     "population_offset": {
+      "r": 0.3725,
+      "r_per_subject_mean": 0.2739,
+      "rmse": 25.958,
+      "n": 39624
+     },
+     "population_offset_slopes": {
+      "r": 0.3851,
+      "r_per_subject_mean": 0.2841,
+      "rmse": 25.808,
+      "n": 39624
+     },
+     "reference_panel_mean_offset": {
+      "r": 0.5281,
+      "r_per_subject_mean": 0.489,
+      "rmse": 23.756,
+      "n": 39624
+     }
+    },
+    "subsets": {
+     "kind=acyclic": {
+      "population": {
+       "r": 0.2667,
+       "r_per_subject_mean": 0.2873,
+       "rmse": 26.826,
+       "n": 18230
+      },
+      "population_offset_slopes": {
+       "r": 0.3843,
+       "r_per_subject_mean": 0.2837,
+       "rmse": 25.646,
+       "n": 18230
+      }
+     },
+     "kind=benzene": {
+      "population": {
+       "r": 0.2717,
+       "r_per_subject_mean": 0.3018,
+       "rmse": 26.904,
+       "n": 8747
+      },
+      "population_offset_slopes": {
+       "r": 0.4142,
+       "r_per_subject_mean": 0.2972,
+       "rmse": 25.415,
+       "n": 8747
+      }
+     },
+     "kind=cyclic": {
+      "population": {
+       "r": 0.2061,
+       "r_per_subject_mean": 0.2168,
+       "rmse": 27.425,
+       "n": 12647
+      },
+      "population_offset_slopes": {
+       "r": 0.3454,
+       "r_per_subject_mean": 0.2024,
+       "rmse": 26.305,
+       "n": 12647
+      }
+     },
+     "seen=train": {
+      "population": {
+       "r": 0.2659,
+       "r_per_subject_mean": 0.2877,
+       "rmse": 26.909,
+       "n": 32235
+      },
+      "population_offset_slopes": {
+       "r": 0.3909,
+       "r_per_subject_mean": 0.2912,
+       "rmse": 25.662,
+       "n": 32235
+      }
+     },
+     "seen=unseen": {
+      "population": {
+       "r": 0.2349,
+       "r_per_subject_mean": 0.2518,
+       "rmse": 27.582,
+       "n": 7389
+      },
+      "population_offset_slopes": {
+       "r": 0.3623,
+       "r_per_subject_mean": 0.2584,
+       "rmse": 26.431,
+       "n": 7389
+      }
+     }
+    },
+    "population_level": {
+     "r_stimulus_means": 0.4923,
+     "n_stimuli": 960,
+     "r_stimulus_means_train": 0.5074,
+     "n_train": 776,
+     "r_stimulus_means_unseen": 0.4314,
+     "n_unseen": 184
+    }
+   },
+   "new_consumers": {
+    "chosen": [
+     {
+      "fold": 0,
+      "k": 3,
+      "lam_v": 100,
+      "lam_b": 3,
+      "lam_u": 100,
+      "inner_r": 0.4773
+     },
+     {
+      "fold": 1,
+      "k": 3,
+      "lam_v": 100,
+      "lam_b": 10,
+      "lam_u": 1000,
+      "inner_r": 0.4927
+     },
+     {
+      "fold": 2,
+      "k": 5,
+      "lam_v": 30,
+      "lam_b": 10,
+      "lam_u": 1000,
+      "inner_r": 0.4742
+     },
+     {
+      "fold": 3,
+      "k": 5,
+      "lam_v": 30,
+      "lam_b": 10,
+      "lam_u": 10000,
+      "inner_r": 0.4802
+     },
+     {
+      "fold": 4,
+      "k": 3,
+      "lam_v": 30,
+      "lam_b": 10,
+      "lam_u": 300,
+      "inner_r": 0.4733
+     }
+    ],
+    "n_known_5": {
+     "global_mean": {
+      "r": -0.1132,
+      "r_per_subject_mean": 0.0,
+      "rmse": 28.0609
+     },
+     "molecule_mean": {
+      "r": 0.4428,
+      "r_per_subject_mean": 0.4884,
+      "rmse": 25.1097
+     },
+     "personal_mean": {
+      "r": 0.1476,
+      "r_per_subject_mean": 0.0,
+      "rmse": 29.6041
+     },
+     "molecule_offset": {
+      "r": 0.4713,
+      "r_per_subject_mean": 0.4884,
+      "rmse": 24.7155
+     },
+     "molecule_offset_factors": {
+      "r": 0.4715,
+      "r_per_subject_mean": 0.4885,
+      "rmse": 24.7108
+     }
+    },
+    "curve": {
+     "1": {
+      "molecule_mean": {
+       "r": 0.4428,
+       "r_per_subject_mean": 0.4884,
+       "rmse": 25.1093
+      },
+      "personal_mean": {
+       "r": 0.0717,
+       "r_per_subject_mean": NaN,
+       "rmse": 38.1528
+      },
+      "molecule_offset": {
+       "r": 0.4471,
+       "r_per_subject_mean": 0.4884,
+       "rmse": 25.075
+      },
+      "molecule_offset_factors": {
+       "r": 0.4474,
+       "r_per_subject_mean": 0.4884,
+       "rmse": 25.0681
+      }
+     },
+     "3": {
+      "molecule_mean": {
+       "r": 0.4427,
+       "r_per_subject_mean": 0.4883,
+       "rmse": 25.1119
+      },
+      "personal_mean": {
+       "r": 0.106,
+       "r_per_subject_mean": 0.0,
+       "rmse": 31.0329
+      },
+      "molecule_offset": {
+       "r": 0.4576,
+       "r_per_subject_mean": 0.4883,
+       "rmse": 24.9236
+      },
+      "molecule_offset_factors": {
+       "r": 0.4578,
+       "r_per_subject_mean": 0.4883,
+       "rmse": 24.9198
+      }
+     },
+     "5": {
+      "molecule_mean": {
+       "r": 0.4428,
+       "r_per_subject_mean": 0.4884,
+       "rmse": 25.1097
+      },
+      "personal_mean": {
+       "r": 0.1476,
+       "r_per_subject_mean": 0.0,
+       "rmse": 29.6041
+      },
+      "molecule_offset": {
+       "r": 0.4713,
+       "r_per_subject_mean": 0.4884,
+       "rmse": 24.7155
+      },
+      "molecule_offset_factors": {
+       "r": 0.4715,
+       "r_per_subject_mean": 0.4885,
+       "rmse": 24.7108
+      }
+     },
+     "10": {
+      "molecule_mean": {
+       "r": 0.4428,
+       "r_per_subject_mean": 0.4884,
+       "rmse": 25.1102
+      },
+      "personal_mean": {
+       "r": 0.1822,
+       "r_per_subject_mean": 0.0,
+       "rmse": 28.1803
+      },
+      "molecule_offset": {
+       "r": 0.4866,
+       "r_per_subject_mean": 0.4884,
+       "rmse": 24.4689
+      },
+      "molecule_offset_factors": {
+       "r": 0.4868,
+       "r_per_subject_mean": 0.4885,
+       "rmse": 24.4644
+      }
+     },
+     "20": {
+      "molecule_mean": {
+       "r": 0.4426,
+       "r_per_subject_mean": 0.4883,
+       "rmse": 25.1106
+      },
+      "personal_mean": {
+       "r": 0.2194,
+       "r_per_subject_mean": 0.0,
+       "rmse": 27.5335
+      },
+      "molecule_offset": {
+       "r": 0.5024,
+       "r_per_subject_mean": 0.4883,
+       "rmse": 24.2063
+      },
+      "molecule_offset_factors": {
+       "r": 0.5032,
+       "r_per_subject_mean": 0.4886,
+       "rmse": 24.1928
+      }
+     },
+     "50": {
+      "molecule_mean": {
+       "r": 0.4426,
+       "r_per_subject_mean": 0.4884,
+       "rmse": 25.1146
+      },
+      "personal_mean": {
+       "r": 0.2459,
+       "r_per_subject_mean": 0.0,
+       "rmse": 27.1508
+      },
+      "molecule_offset": {
+       "r": 0.5148,
+       "r_per_subject_mean": 0.4884,
+       "rmse": 23.9974
+      },
+      "molecule_offset_factors": {
+       "r": 0.5168,
+       "r_per_subject_mean": 0.4892,
+       "rmse": 23.9629
+      }
+     }
+    },
+    "probe_set_5": {
+     "global_mean": {
+      "r": -0.1124,
+      "r_per_subject_mean": 0.0,
+      "rmse": 28.027
+     },
+     "molecule_mean": {
+      "r": 0.4432,
+      "r_per_subject_mean": 0.4892,
+      "rmse": 25.075
+     },
+     "personal_mean": {
+      "r": 0.1541,
+      "r_per_subject_mean": 0.0,
+      "rmse": 30.691
+     },
+     "molecule_offset": {
+      "r": 0.4664,
+      "r_per_subject_mean": 0.4892,
+      "rmse": 24.809
+     },
+     "molecule_offset_factors": {
+      "r": 0.4684,
+      "r_per_subject_mean": 0.4894,
+      "rmse": 24.772
+     }
+    },
+    "probe_sets": [
+     "104721_high,7762_high,31260_high,246728_high,8163_high",
+     "17898_high,104721_high,78925_high,61209_high,31260_high",
+     "17898_high,5363388_high,7762_high,78925_high,6114390_high",
+     "17898_high,7762_high,78925_high,246728_high,17898_low",
+     "31260_high,7762_high,61209_high,61204_high,17898_high"
+    ]
+   },
+   "comparisons": {
+    "A_gnn_vs_fingerprint_population": {
+     "diff": 0.0238,
+     "ci95": [
+      -0.0041,
+      0.0524
+     ]
+    },
+    "A_gnn_vs_fingerprint_full": {
+     "diff": 0.0352,
+     "ci95": [
+      0.0158,
+      0.0555
+     ]
+    },
+    "A_slopes_vs_offset": {
+     "diff": 0.0291,
+     "ci95": [
+      0.0244,
+      0.0337
+     ]
+    },
+    "A_offset_vs_population": {
+     "diff": 0.1075,
+     "ci95": [
+      0.0923,
+      0.1243
+     ]
+    },
+    "B5_factors_vs_offset": {
+     "diff": 0.0002,
+     "ci95": [
+      -0.0,
+      0.0005
+     ]
+    },
+    "B5_offset_vs_molecule_mean": {
+     "diff": 0.0283,
+     "ci95": [
+      0.0078,
+      0.0487
+     ]
+    },
+    "clusters": "A: molecules; B: subjects (all 20 draws pooled)"
+   }
+  },
+  "intensity": {
+   "ceiling": {
+    "test_retest_single_rating": {
+     "r": 0.5318,
+     "r_per_subject_mean": 0.4007,
+     "rmse": 31.491,
+     "n": 1405
+    },
+    "max_r_for_a_single_rating": 0.7292,
+    "note": "test-retest r = how well one noisy rating predicts another; sqrt(r) = the highest r any prediction can reach with a single noisy rating (prediction = the person's true score)",
+    "panel_mean_reliability": 0.962
+   },
+   "new_molecules": {
+    "chosen": [
+     {
+      "fold": 0,
+      "alpha": 1000,
+      "k": 40,
+      "lam": 1000,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 1,
+      "alpha": 1000,
+      "k": 40,
+      "lam": 1000,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 2,
+      "alpha": 1000,
+      "k": 40,
+      "lam": 1000,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 3,
+      "alpha": 1000,
+      "k": 40,
+      "lam": 1000,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 4,
+      "alpha": 1000,
+      "k": 40,
+      "lam": 1000,
+      "n_test_molecules": 96
+     }
+    ],
+    "rating_level": {
+     "global_mean": {
+      "r": -0.017,
+      "r_per_subject_mean": -0.0184,
+      "rmse": 33.118,
+      "n": 39624
+     },
+     "personal_mean": {
+      "r": 0.2883,
+      "r_per_subject_mean": -0.0677,
+      "rmse": 31.71,
+      "n": 39624
+     },
+     "population": {
+      "r": 0.4011,
+      "r_per_subject_mean": 0.4043,
+      "rmse": 30.338,
+      "n": 39624
+     },
+     "population_offset": {
+      "r": 0.4942,
+      "r_per_subject_mean": 0.4015,
+      "rmse": 28.799,
+      "n": 39624
+     },
+     "population_offset_slopes": {
+      "r": 0.5021,
+      "r_per_subject_mean": 0.4029,
+      "rmse": 28.657,
+      "n": 39624
+     },
+     "reference_panel_mean_offset": {
+      "r": 0.6613,
+      "r_per_subject_mean": 0.6058,
+      "rmse": 24.839,
+      "n": 39624
+     }
+    },
+    "subsets": {
+     "kind=acyclic": {
+      "population": {
+       "r": 0.4279,
+       "r_per_subject_mean": 0.4278,
+       "rmse": 30.284,
+       "n": 18230
+      },
+      "population_offset_slopes": {
+       "r": 0.5258,
+       "r_per_subject_mean": 0.4284,
+       "rmse": 28.492,
+       "n": 18230
+      }
+     },
+     "kind=benzene": {
+      "population": {
+       "r": 0.3617,
+       "r_per_subject_mean": 0.3675,
+       "rmse": 30.29,
+       "n": 8747
+      },
+      "population_offset_slopes": {
+       "r": 0.4716,
+       "r_per_subject_mean": 0.361,
+       "rmse": 28.666,
+       "n": 8747
+      }
+     },
+     "kind=cyclic": {
+      "population": {
+       "r": 0.3818,
+       "r_per_subject_mean": 0.3878,
+       "rmse": 30.448,
+       "n": 12647
+      },
+      "population_offset_slopes": {
+       "r": 0.4845,
+       "r_per_subject_mean": 0.3818,
+       "rmse": 28.887,
+       "n": 12647
+      }
+     },
+     "seen=train": {
+      "population": {
+       "r": 0.4061,
+       "r_per_subject_mean": 0.4119,
+       "rmse": 30.194,
+       "n": 32235
+      },
+      "population_offset_slopes": {
+       "r": 0.5084,
+       "r_per_subject_mean": 0.4103,
+       "rmse": 28.466,
+       "n": 32235
+      }
+     },
+     "seen=unseen": {
+      "population": {
+       "r": 0.3789,
+       "r_per_subject_mean": 0.3718,
+       "rmse": 30.957,
+       "n": 7389
+      },
+      "population_offset_slopes": {
+       "r": 0.4748,
+       "r_per_subject_mean": 0.3714,
+       "rmse": 29.477,
+       "n": 7389
+      }
+     }
+    },
+    "population_level": {
+     "r_stimulus_means": 0.6755,
+     "n_stimuli": 960,
+     "r_stimulus_means_train": 0.6829,
+     "n_train": 776,
+     "r_stimulus_means_unseen": 0.6441,
+     "n_unseen": 184
+    }
+   },
+   "new_molecules_fingerprint": {
+    "chosen": [
+     {
+      "fold": 0,
+      "alpha": 1000,
+      "k": 20,
+      "lam": 1000,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 1,
+      "alpha": 3000,
+      "k": 20,
+      "lam": 1000,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 2,
+      "alpha": 3000,
+      "k": 40,
+      "lam": 1000,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 3,
+      "alpha": 3000,
+      "k": 10,
+      "lam": 1000,
+      "n_test_molecules": 96
+     },
+     {
+      "fold": 4,
+      "alpha": 1000,
+      "k": 20,
+      "lam": 1000,
+      "n_test_molecules": 96
+     }
+    ],
+    "rating_level": {
+     "global_mean": {
+      "r": -0.017,
+      "r_per_subject_mean": -0.0184,
+      "rmse": 33.118,
+      "n": 39624
+     },
+     "personal_mean": {
+      "r": 0.2883,
+      "r_per_subject_mean": -0.0677,
+      "rmse": 31.71,
+      "n": 39624
+     },
+     "population": {
+      "r": 0.3502,
+      "r_per_subject_mean": 0.3518,
+      "rmse": 31.055,
+      "n": 39624
+     },
+     "population_offset": {
+      "r": 0.4511,
+      "r_per_subject_mean": 0.3483,
+      "rmse": 29.631,
+      "n": 39624
+     },
+     "population_offset_slopes": {
+      "r": 0.4522,
+      "r_per_subject_mean": 0.3495,
+      "rmse": 29.614,
+      "n": 39624
+     },
+     "reference_panel_mean_offset": {
+      "r": 0.6613,
+      "r_per_subject_mean": 0.6058,
+      "rmse": 24.839,
+      "n": 39624
+     }
+    },
+    "subsets": {
+     "kind=acyclic": {
+      "population": {
+       "r": 0.3323,
+       "r_per_subject_mean": 0.3282,
+       "rmse": 31.623,
+       "n": 18230
+      },
+      "population_offset_slopes": {
+       "r": 0.4336,
+       "r_per_subject_mean": 0.3228,
+       "rmse": 30.229,
+       "n": 18230
+      }
+     },
+     "kind=benzene": {
+      "population": {
+       "r": 0.3561,
+       "r_per_subject_mean": 0.3634,
+       "rmse": 30.347,
+       "n": 8747
+      },
+      "population_offset_slopes": {
+       "r": 0.4627,
+       "r_per_subject_mean": 0.3607,
+       "rmse": 28.809,
+       "n": 8747
+      }
+     },
+     "kind=cyclic": {
+      "population": {
+       "r": 0.3631,
+       "r_per_subject_mean": 0.3676,
+       "rmse": 30.709,
+       "n": 12647
+      },
+      "population_offset_slopes": {
+       "r": 0.4659,
+       "r_per_subject_mean": 0.3662,
+       "rmse": 29.265,
+       "n": 12647
+      }
+     },
+     "seen=train": {
+      "population": {
+       "r": 0.3453,
+       "r_per_subject_mean": 0.3482,
+       "rmse": 31.053,
+       "n": 32235
+      },
+      "population_offset_slopes": {
+       "r": 0.4498,
+       "r_per_subject_mean": 0.3452,
+       "rmse": 29.605,
+       "n": 32235
+      }
+     },
+     "seen=unseen": {
+      "population": {
+       "r": 0.3724,
+       "r_per_subject_mean": 0.3682,
+       "rmse": 31.062,
+       "n": 7389
+      },
+      "population_offset_slopes": {
+       "r": 0.4636,
+       "r_per_subject_mean": 0.3689,
+       "rmse": 29.652,
+       "n": 7389
+      }
+     }
+    },
+    "population_level": {
+     "r_stimulus_means": 0.5935,
+     "n_stimuli": 960,
+     "r_stimulus_means_train": 0.5879,
+     "n_train": 776,
+     "r_stimulus_means_unseen": 0.6181,
+     "n_unseen": 184
+    }
+   },
+   "new_consumers": {
+    "chosen": [
+     {
+      "fold": 0,
+      "k": 3,
+      "lam_v": 30,
+      "lam_b": 3,
+      "lam_u": 10000,
+      "inner_r": 0.614
+     },
+     {
+      "fold": 1,
+      "k": 2,
+      "lam_v": 100,
+      "lam_b": 3,
+      "lam_u": 1000,
+      "inner_r": 0.6252
+     },
+     {
+      "fold": 2,
+      "k": 3,
+      "lam_v": 100,
+      "lam_b": 3,
+      "lam_u": 3000,
+      "inner_r": 0.6208
+     },
+     {
+      "fold": 3,
+      "k": 1,
+      "lam_v": 100,
+      "lam_b": 3,
+      "lam_u": 3000,
+      "inner_r": 0.6128
+     },
+     {
+      "fold": 4,
+      "k": 5,
+      "lam_v": 10,
+      "lam_b": 3,
+      "lam_u": 3000,
+      "inner_r": 0.6309
+     }
+    ],
+    "n_known_5": {
+     "global_mean": {
+      "r": -0.0573,
+      "r_per_subject_mean": 0.0,
+      "rmse": 33.1494
+     },
+     "molecule_mean": {
+      "r": 0.5827,
+      "r_per_subject_mean": 0.6047,
+      "rmse": 26.9352
+     },
+     "personal_mean": {
+      "r": 0.1575,
+      "r_per_subject_mean": 0.0,
+      "rmse": 34.6891
+     },
+     "molecule_offset": {
+      "r": 0.6167,
+      "r_per_subject_mean": 0.6047,
+      "rmse": 26.1287
+     },
+     "molecule_offset_factors": {
+      "r": 0.6168,
+      "r_per_subject_mean": 0.6047,
+      "rmse": 26.1267
+     }
+    },
+    "curve": {
+     "1": {
+      "molecule_mean": {
+       "r": 0.5824,
+       "r_per_subject_mean": 0.6046,
+       "rmse": 26.9378
+      },
+      "personal_mean": {
+       "r": 0.1003,
+       "r_per_subject_mean": NaN,
+       "rmse": 44.8137
+      },
+      "molecule_offset": {
+       "r": 0.5926,
+       "r_per_subject_mean": 0.6046,
+       "rmse": 26.726
+      },
+      "molecule_offset_factors": {
+       "r": 0.5926,
+       "r_per_subject_mean": 0.6046,
+       "rmse": 26.725
+      }
+     },
+     "3": {
+      "molecule_mean": {
+       "r": 0.5826,
+       "r_per_subject_mean": 0.6046,
+       "rmse": 26.9364
+      },
+      "personal_mean": {
+       "r": 0.1402,
+       "r_per_subject_mean": 0.0,
+       "rmse": 36.1847
+      },
+      "molecule_offset": {
+       "r": 0.6077,
+       "r_per_subject_mean": 0.6046,
+       "rmse": 26.373
+      },
+      "molecule_offset_factors": {
+       "r": 0.6077,
+       "r_per_subject_mean": 0.6046,
+       "rmse": 26.3718
+      }
+     },
+     "5": {
+      "molecule_mean": {
+       "r": 0.5827,
+       "r_per_subject_mean": 0.6047,
+       "rmse": 26.9352
+      },
+      "personal_mean": {
+       "r": 0.1575,
+       "r_per_subject_mean": 0.0,
+       "rmse": 34.6891
+      },
+      "molecule_offset": {
+       "r": 0.6167,
+       "r_per_subject_mean": 0.6047,
+       "rmse": 26.1287
+      },
+      "molecule_offset_factors": {
+       "r": 0.6168,
+       "r_per_subject_mean": 0.6047,
+       "rmse": 26.1267
+      }
+     },
+     "10": {
+      "molecule_mean": {
+       "r": 0.5827,
+       "r_per_subject_mean": 0.6046,
+       "rmse": 26.9349
+      },
+      "personal_mean": {
+       "r": 0.2031,
+       "r_per_subject_mean": 0.0,
+       "rmse": 33.1646
+      },
+      "molecule_offset": {
+       "r": 0.6321,
+       "r_per_subject_mean": 0.6046,
+       "rmse": 25.7019
+      },
+      "molecule_offset_factors": {
+       "r": 0.6322,
+       "r_per_subject_mean": 0.6046,
+       "rmse": 25.6996
+      }
+     },
+     "20": {
+      "molecule_mean": {
+       "r": 0.5829,
+       "r_per_subject_mean": 0.6045,
+       "rmse": 26.9374
+      },
+      "personal_mean": {
+       "r": 0.232,
+       "r_per_subject_mean": 0.0,
+       "rmse": 32.5304
+      },
+      "molecule_offset": {
+       "r": 0.6417,
+       "r_per_subject_mean": 0.6045,
+       "rmse": 25.4282
+      },
+      "molecule_offset_factors": {
+       "r": 0.6419,
+       "r_per_subject_mean": 0.6046,
+       "rmse": 25.4248
+      }
+     },
+     "50": {
+      "molecule_mean": {
+       "r": 0.5839,
+       "r_per_subject_mean": 0.6044,
+       "rmse": 26.919
+      },
+      "personal_mean": {
+       "r": 0.2628,
+       "r_per_subject_mean": 0.0,
+       "rmse": 32.0439
+      },
+      "molecule_offset": {
+       "r": 0.6525,
+       "r_per_subject_mean": 0.6044,
+       "rmse": 25.1221
+      },
+      "molecule_offset_factors": {
+       "r": 0.6528,
+       "r_per_subject_mean": 0.6046,
+       "rmse": 25.1124
+      }
+     }
+    },
+    "probe_set_5": {
+     "global_mean": {
+      "r": -0.0572,
+      "r_per_subject_mean": 0.0,
+      "rmse": 33.16
+     },
+     "molecule_mean": {
+      "r": 0.5839,
+      "r_per_subject_mean": 0.6059,
+      "rmse": 26.916
+     },
+     "personal_mean": {
+      "r": 0.1977,
+      "r_per_subject_mean": 0.0,
+      "rmse": 34.471
+     },
+     "molecule_offset": {
+      "r": 0.6211,
+      "r_per_subject_mean": 0.6059,
+      "rmse": 26.076
+     },
+     "molecule_offset_factors": {
+      "r": 0.6211,
+      "r_per_subject_mean": 0.6059,
+      "rmse": 26.075
+     }
+    },
+    "probe_sets": [
+     "1068_high,2879_low,8180_low,31210_high,61325_low",
+     "1068_high,31209_low,159055_low,2879_low,31260_high",
+     "1068_high,31209_low,2879_low,637796_high,14525_high",
+     "31209_low,8180_low,31210_high,8094_low,637796_high",
+     "31210_high,637796_high,6386_high,61337_high,5962_low"
+    ]
+   },
+   "comparisons": {
+    "A_gnn_vs_fingerprint_population": {
+     "diff": 0.0509,
+     "ci95": [
+      0.0207,
+      0.0785
+     ]
+    },
+    "A_gnn_vs_fingerprint_full": {
+     "diff": 0.05,
+     "ci95": [
+      0.0275,
+      0.0726
+     ]
+    },
+    "A_slopes_vs_offset": {
+     "diff": 0.0079,
+     "ci95": [
+      0.006,
+      0.01
+     ]
+    },
+    "A_offset_vs_population": {
+     "diff": 0.093,
+     "ci95": [
+      0.0862,
+      0.0996
+     ]
+    },
+    "B5_factors_vs_offset": {
+     "diff": 0.0001,
+     "ci95": [
+      0.0,
+      0.0001
+     ]
+    },
+    "B5_offset_vs_molecule_mean": {
+     "diff": 0.0335,
+     "ci95": [
+      0.0111,
+      0.0553
+     ]
+    },
+    "clusters": "A: molecules; B: subjects (all 20 draws pooled)"
+   }
+  }
+ }
+}

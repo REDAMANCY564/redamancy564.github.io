@@ -1,0 +1,5 @@
+variable,question,range,slider_start,must_move,when_missing,conversion
+intensity,How strong is the smell?,0-100,50,True,not detected,none
+pleasantness,How pleasant is the smell?,0-100,50,True,not detected,none
+familiarity,How familiar is the smell?,0-100,50,True,not detected,"none (sheet header says 1-100, data 0-100)"
+20 descriptors,How well does <descriptor> apply?,0-100,0,False,blank = 0 if detected; missing if not detected,blank -> 0
