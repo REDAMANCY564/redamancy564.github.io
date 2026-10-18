@@ -171,6 +171,7 @@
     link.hidden = !current.pubchem_cid;
     if (current.pubchem_cid) link.href = "https://pubchem.ncbi.nlm.nih.gov/compound/" + current.pubchem_cid;
     $("mol-taste").href = "../taste-predictor/?q=" + encodeURIComponent(current.smiles) + "#demo";
+    $("mol-finder").href = "../ingredient-finder/?mode=b&smiles=" + encodeURIComponent(current.smiles);
     renderThreshold();
 
     const status = $("mol-status");
@@ -187,22 +188,23 @@
     status.appendChild(msg);
     status.classList.toggle("warn", split === "train");
 
-    if (current.true_labels && current.true_labels.length) {
-      const top = new Set(current.top.map(t => t.label));
+    // Raw dataset labels are not shown (no license allows it): the flavor knowledge base's
+    // odor description with its source is shown instead (user decision 2026-10-18)
+    const kb = current.kb_odor;
+    if (kb && kb.terms && kb.terms.length) {
+      const head = document.createElement("div");
+      head.style.marginTop = "6px";
+      head.textContent = I18N.t("status.kb_" + kb.source, { page: kb.page });
+      status.appendChild(head);
       const chips = document.createElement("div");
       chips.className = "chips";
-      current.true_labels.forEach(id => {
+      kb.terms.forEach(term => {
         const c = document.createElement("span");
-        c.className = "chip" + (top.has(id) ? " hit" : "");
-        c.textContent = labelName(id);
+        c.className = "chip";
+        c.textContent = term;
         chips.appendChild(c);
       });
       status.appendChild(chips);
-      const hint = document.createElement("div");
-      hint.className = "small muted";
-      hint.style.marginTop = "6px";
-      hint.textContent = I18N.t("status.match_hint");
-      status.appendChild(hint);
     }
   }
 

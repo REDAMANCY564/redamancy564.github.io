@@ -2,7 +2,6 @@
   "page.title": "气味预测 | 崔京伟",
   "hero.title": "从分子结构预测气味",
   "hero.intro": "一个分子闻起来是什么味道，很大程度上由它的结构决定：含有哪些原子，原子之间如何相连。本项目训练了一个 AI 模型（图神经网络），让它读懂分子结构，并预测调香师和调味师会用哪些词来描述它的气味，比如果香、黄油、烘烤。这类工具可以帮助风味研发人员在进实验室之前，先在电脑上对候选分子做初步筛选。",
-
   "demo.title": "试一试",
   "demo.select": "或者选择一个预设分子",
   "demo.select_placeholder": "（当前显示搜索结果）",
@@ -33,12 +32,10 @@
   "demo.prob_note": "每根条表示模型估计「这个描述词会被用来形容该分子」的概率。一个分子通常同时有多个描述词，所以各条概率相加不等于 100%。",
   "demo.taste_link": "查看它的味觉预测 →",
   "demo.pubchem": "在 PubChem 查看",
-  "status.train": "该分子在训练数据中，因此这里的结果不能用来检验模型。数据库中的描述词：",
-  "status.valid": "该分子在验证集中：它没有参与模型参数的学习，只用于决定何时停止训练。数据库中的描述词：",
-  "status.test": "该分子在留出的测试集中，训练过程中从未见过。数据库中的描述词：",
+  "status.train": "该分子在训练数据中，因此这里的结果不能用来检验模型。",
+  "status.valid": "该分子在验证集中：它没有参与模型参数的学习，只用于决定何时停止训练。",
+  "status.test": "该分子在留出的测试集中，训练过程中从未见过。",
   "status.none": "该分子完全不在数据集中，这是模型对一个从未见过的分子做出的真实预测。",
-  "status.match_hint": "高亮的描述词同时出现在预测的前 8 名中。",
-
   "method.title": "工作原理",
   "flow.1.title": "分子",
   "flow.1.sub": "用 SMILES 文本表示",
@@ -52,7 +49,6 @@
   "method.model": "<b>模型。</b>每个原子先用几项简单性质来描述：元素、相邻原子数和氢原子数、电荷、是否芳香、是否在环上。每一轮中，每个原子从与它成键的原子那里收集信息。最后把所有原子的信息汇总成整个分子的表示，再转换为 138 个概率。模型约有 14 万个参数，小到可以直接在网页浏览器中运行。",
   "method.eval": "<b>公平测试。</b>含环分子按环系骨架划分为训练集（80%）、验证集（10%）和测试集（10%），因此测试集中的环系骨架都是模型没见过的。这比完全随机划分更难，也更诚实。",
   "method.explain": "<b>原子贡献。</b>「试一试」中的着色用遮挡法计算：依次从分子中删去一个原子，重新运行模型，看该描述词的概率变化多少。删去后概率下降的原子（橙色）是模型判断的依据，删去后概率上升的原子（蓝色）在压低这一判断。这说明的是模型看重哪些结构，不等于这些结构在化学上确实决定了气味。",
-
   "results.title": "效果如何？",
   "results.intro": "模型效果用 AUROC 衡量：随机取一个具有某描述词的分子和一个不具有的分子，AUROC 就是模型给前者打分更高的概率。0.5 相当于随机猜测，1.0 为完美。下表是 488 个测试分子上、138 个描述词的平均值。",
   "results.col.model": "模型",
@@ -78,14 +74,15 @@
   "ablation.cfg.D": "两者都用",
   "ablation.note": "测试集 AUROC 为 3 次训练的平均值 ± 标准差。稀有描述词：训练集中阳性分子最少的三分之一（{n} 个）上的平均 AUROC。",
   "ablation.takeaway": "四组之间的差别都在随机波动范围内，稀有描述词反而略有下降，因此网页继续使用原模型。可能的原因：原文采用随机划分，本站采用更难的骨架划分；药效团标记与已有的元素、氢原子数特征有较多重叠；原文的模型结构也与本站不同。此外，非对称损失会让输出的概率整体偏高约 4 倍，不适合直接展示。",
-
   "limits.title": "局限",
   "limits.4": "对于和训练数据差异很大的环系骨架，预测效果明显变弱（AUROC 约 0.80）。",
   "limits.6": "<b>不可用于安全性判断。</b>模型不涉及毒性、致敏性或法规状态。",
-
-  "footer.data": "<b>数据来源：</b>The Good Scents Company；Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href=\"https://arxiv.org/abs/1910.10685\" target=\"_blank\" rel=\"noopener\">arXiv:1910.10685</a>，CC BY-NC 协议）；由 <a href=\"https://github.com/BioMachineLearning/openpom\" target=\"_blank\" rel=\"noopener\">OpenPOM</a>（Barsainyan et al., 2023）整理合并。仅用于非商业用途，本站不转载原始数据。",
+  "footer.data": "<b>数据与致谢：</b>模型用 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href=\"https://arxiv.org/abs/1910.10685\" target=\"_blank\" rel=\"noopener\">arXiv:1910.10685</a>，CC BY-NC 协议）的数据训练，由 <a href=\"https://github.com/BioMachineLearning/openpom\" target=\"_blank\" rel=\"noopener\">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅用于非商业学术展示。</b>",
   "footer.thr": "<b>气味阈值：</b>L.J. van Gemert, Odour Thresholds: Compilations of Odour Threshold Values in Air, Water and Other Media, 2nd ed., Oliemans Punter &amp; Partners, 2011。代表值优先取自其中收录的 Czerny et al., <i>Eur. Food Res. Technol.</i> 228, 265-273 (2008)。",
   "footer.ref": "<b>相关文献：</b>Lee et al., A principal odor map unifies diverse tasks in human olfactory perception, <i>Science</i> 381, 999-1006 (2023). <a href=\"https://doi.org/10.1126/science.ade4401\" target=\"_blank\" rel=\"noopener\">doi:10.1126/science.ade4401</a>；Liu et al., PharmaGNN: a model for odor prediction based on graph neural networks, <i>J Sci Food Agric</i> 106, 8114-8120 (2026). <a href=\"https://doi.org/10.1002/jsfa.70826\" target=\"_blank\" rel=\"noopener\">doi:10.1002/jsfa.70826</a>",
   "footer.fi": "<b>应用：</b>本模型的预测被用于<a href=\"../flavor-improver/\">项目 2：用贝叶斯优化改良乳品风味</a>。",
-  "footer.code": "<b>代码：</b><a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>"
+  "footer.code": "<b>代码：</b><a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>",
+  "status.kb_dunkel": "风味知识库中的气味描述（Dunkel et al. 2014, p. {page}）：",
+  "status.kb_flavordb": "风味知识库中的气味描述（FlavorDB）：",
+  "demo.finder_link": "查找替代原料 →"
 }

@@ -106,13 +106,13 @@
    ]
   },
   "dataset_split": "train",
-  "true_labels": [
-   "buttery",
-   "caramellic",
-   "creamy",
-   "pungent",
-   "sweet"
-  ],
+  "kb_odor": {
+   "source": "dunkel",
+   "terms": [
+    "buttery"
+   ],
+   "page": 7130
+  },
   "threshold_water": {
    "rep_ug_kg": 1.0,
    "type": "detection",
@@ -230,14 +230,19 @@
    ]
   },
   "dataset_split": "train",
-  "true_labels": [
-   "buttery",
-   "creamy",
-   "dairy",
-   "fatty",
-   "milky",
-   "sweet"
-  ],
+  "kb_odor": {
+   "source": "flavordb",
+   "terms": [
+    "butter",
+    "cream",
+    "milky",
+    "fatty",
+    "creamy",
+    "sweet",
+    "dairy",
+    "buttery"
+   ]
+  },
   "threshold_water": {
    "rep_ug_kg": 800.0,
    "type": "detection",
@@ -355,14 +360,13 @@
    ]
   },
   "dataset_split": "train",
-  "true_labels": [
-   "buttery",
-   "cheesy",
-   "dairy",
-   "fruity",
-   "sharp",
-   "sour"
-  ],
+  "kb_odor": {
+   "source": "dunkel",
+   "terms": [
+    "sweaty"
+   ],
+   "page": 7130
+  },
   "threshold_water": {
    "rep_ug_kg": 2400.0,
    "type": "detection",
@@ -496,20 +500,19 @@
    ]
   },
   "dataset_split": "train",
-  "true_labels": [
-   "banana",
-   "cheesy",
-   "cinnamon",
-   "coconut",
-   "creamy",
-   "fruity",
-   "green",
-   "herbal",
-   "ketonic",
-   "spicy",
-   "sweet",
-   "woody"
-  ],
+  "kb_odor": {
+   "source": "flavordb",
+   "terms": [
+    "coconut",
+    "soap",
+    "herbal",
+    "sweet",
+    "woody",
+    "fruity",
+    "spicy",
+    "cinnamon"
+   ]
+  },
   "threshold_water": {
    "rep_ug_kg": 140.0,
    "type": "detection",
@@ -675,21 +678,19 @@
    ]
   },
   "dataset_split": "valid",
-  "true_labels": [
-   "buttery",
-   "coconut",
-   "creamy",
-   "dairy",
-   "fatty",
-   "fresh",
-   "fruity",
-   "lactonic",
-   "milky",
-   "nutty",
-   "oily",
-   "peach",
-   "sweet"
-  ],
+  "kb_odor": {
+   "source": "flavordb",
+   "terms": [
+    "peach",
+    "butter",
+    "coconut",
+    "apricot",
+    "fresh",
+    "oily",
+    "creamy",
+    "plum"
+   ]
+  },
   "threshold_water": {
    "rep_ug_kg": 31.0,
    "type": "detection",
@@ -871,17 +872,19 @@
    ]
   },
   "dataset_split": "train",
-  "true_labels": [
-   "aldehydic",
-   "fatty",
-   "floral",
-   "fruity",
-   "metallic",
-   "milky",
-   "peach",
-   "sweet",
-   "woody"
-  ],
+  "kb_odor": {
+   "source": "flavordb",
+   "terms": [
+    "peach",
+    "fatty",
+    "musty",
+    "fruit",
+    "sweet",
+    "fruity",
+    "metallic",
+    "flower"
+   ]
+  },
   "threshold_water": {
    "rep_ug_kg": 0.43,
    "type": "detection",
@@ -1039,12 +1042,13 @@
    ]
   },
   "dataset_split": "train",
-  "true_labels": [
-   "chocolate",
-   "creamy",
-   "sweet",
-   "vanilla"
-  ],
+  "kb_odor": {
+   "source": "dunkel",
+   "terms": [
+    "vanilla-like"
+   ],
+   "page": 7130
+  },
   "threshold_water": {
    "rep_ug_kg": 53.0,
    "type": "detection",
@@ -1162,19 +1166,13 @@
    ]
   },
   "dataset_split": "train",
-  "true_labels": [
-   "cheesy",
-   "creamy",
-   "earthy",
-   "meaty",
-   "musty",
-   "oily",
-   "onion",
-   "potato",
-   "savory",
-   "tomato",
-   "vegetable"
-  ],
+  "kb_odor": {
+   "source": "dunkel",
+   "terms": [
+    "cooked potato-like"
+   ],
+   "page": 7130
+  },
   "threshold_water": {
    "rep_ug_kg": 0.43,
    "type": "detection",
@@ -1316,16 +1314,13 @@
    ]
   },
   "dataset_split": "train",
-  "true_labels": [
-   "burnt",
-   "caramellic",
-   "fruity",
-   "pineapple",
-   "roasted",
-   "savory",
-   "strawberry",
-   "sweet"
-  ],
+  "kb_odor": {
+   "source": "dunkel",
+   "terms": [
+    "caramel-like"
+   ],
+   "page": 7130
+  },
   "threshold_water": {
    "rep_ug_kg": 40.0,
    "type": "detection",
@@ -1459,7 +1454,13 @@
    ]
   },
   "dataset_split": null,
-  "true_labels": null,
+  "kb_odor": {
+   "source": "dunkel",
+   "terms": [
+    "roasty, popcorn-like"
+   ],
+   "page": 7130
+  },
   "threshold_water": {
    "rep_ug_kg": 0.053,
    "type": "detection",

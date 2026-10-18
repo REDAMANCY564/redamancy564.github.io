@@ -2,7 +2,6 @@
   "page.title": "Odor Predictor | Simon Cui",
   "hero.title": "Predicting smell from molecular structure",
   "hero.intro": "What a molecule smells like is largely decided by its structure: which atoms it contains and how they are connected. This project trains an AI model, a graph neural network, to read a molecule's structure and predict the words flavorists would use to describe its smell, such as fruity, buttery or roasted. Tools like this can help flavor developers screen candidate molecules on a computer before going into the lab.",
-
   "demo.title": "Try it",
   "demo.select": "Or pick a preset molecule",
   "demo.select_placeholder": "(showing search result)",
@@ -33,12 +32,10 @@
   "demo.prob_note": "Each bar is the model's estimated probability that the descriptor is used for this molecule. A molecule usually has several descriptors at once, so the bars do not add up to 100%.",
   "demo.taste_link": "See its predicted taste →",
   "demo.pubchem": "View on PubChem",
-  "status.train": "This molecule was in the training data, so it does not test the model. Its descriptors in the database:",
-  "status.valid": "This molecule was in the validation set: it was not used to fit the model, only to decide when to stop training. Its descriptors in the database:",
-  "status.test": "This molecule was in the held-out test set and was never seen during training. Its descriptors in the database:",
+  "status.train": "This molecule was in the training data, so it does not test the model.",
+  "status.valid": "This molecule was in the validation set: it was not used to fit the model, only to decide when to stop training.",
+  "status.test": "This molecule was in the held-out test set and was never seen during training.",
   "status.none": "This molecule is not in the dataset at all, so this is a genuine prediction for a molecule the model has never seen.",
-  "status.match_hint": "Highlighted descriptors also appear in the top 8 predictions.",
-
   "method.title": "How it works",
   "flow.1.title": "Molecule",
   "flow.1.sub": "written as SMILES text",
@@ -52,7 +49,6 @@
   "method.model": "<b>Model.</b> Each atom starts with a few simple properties: element, number of neighbors and hydrogens, charge, aromaticity and whether it is in a ring. In each round every atom collects information from the atoms bonded to it. The result is pooled into one summary of the whole molecule and turned into 138 probabilities. The model has about 140,000 parameters, small enough to run in a web browser.",
   "method.eval": "<b>Fair testing.</b> Molecules with rings were split into training (80%), validation (10%) and test (10%) sets by ring scaffold, so the test set contains ring systems the model never saw. This is harder, and more honest, than a purely random split.",
   "method.explain": "<b>Atom contributions.</b> The coloring in \"Try it\" uses occlusion: each atom is removed in turn, the model is run again, and the change in the descriptor's probability is recorded. Atoms whose removal lowers the probability (orange) are what the model relies on; atoms whose removal raises it (blue) hold the prediction down. This shows which structures the model weighs, not that they chemically determine the odor.",
-
   "results.title": "How well does it work?",
   "results.intro": "Performance is measured with AUROC. Take one molecule that has a descriptor and one that does not: AUROC is the chance that the model gives the first one a higher score. 0.5 is random guessing and 1.0 is perfect. The numbers below are averaged over all 138 descriptors on the 488 test molecules.",
   "results.col.model": "Model",
@@ -78,14 +74,15 @@
   "ablation.cfg.D": "Both",
   "ablation.note": "Test AUROC: mean ± standard deviation over 3 training runs. Rare descriptors: mean AUROC over the third of descriptors with the fewest positive training molecules ({n}).",
   "ablation.takeaway": "The differences between the four setups are within run-to-run noise, and rare descriptors got slightly worse, so this page keeps the original model. Possible reasons: the paper used a random split, while this site uses a harder scaffold split; the pharmacophore flags overlap with the existing element and hydrogen-count features; and the paper's model architecture differs. The asymmetric loss also inflates output probabilities about fourfold, which is unsuitable for display.",
-
   "limits.title": "Limitations",
   "limits.4": "Predictions for ring systems unlike anything in the training data are noticeably weaker (AUROC about 0.80).",
   "limits.6": "<b>Not for safety decisions.</b> It says nothing about toxicity, allergenicity or regulatory status.",
-
-  "footer.data": "<b>Data:</b> The Good Scents Company; Leffingwell &amp; Associates (Sanchez-Lengeling et al., 2019, <a href=\"https://arxiv.org/abs/1910.10685\" target=\"_blank\" rel=\"noopener\">arXiv:1910.10685</a>, CC BY-NC); curated and merged by <a href=\"https://github.com/BioMachineLearning/openpom\" target=\"_blank\" rel=\"noopener\">OpenPOM</a> (Barsainyan et al., 2023). Used for non-commercial purposes only; the raw data is not redistributed here.",
+  "footer.data": "<b>Data and acknowledgements:</b> the model was trained on data from The Good Scents Company and Leffingwell &amp; Associates (Sanchez-Lengeling et al., 2019, <a href=\"https://arxiv.org/abs/1910.10685\" target=\"_blank\" rel=\"noopener\">arXiv:1910.10685</a>, CC BY-NC), curated and merged by <a href=\"https://github.com/BioMachineLearning/openpom\" target=\"_blank\" rel=\"noopener\">OpenPOM</a> (Barsainyan et al., 2023); the raw data and odor labels are not redistributed here. <b>The model and its predictions are for non-commercial academic demonstration only.</b>",
   "footer.thr": "<b>Odor thresholds:</b> L.J. van Gemert, Odour Thresholds: Compilations of Odour Threshold Values in Air, Water and Other Media, 2nd ed., Oliemans Punter &amp; Partners, 2011. Representative values are taken where available from Czerny et al., <i>Eur. Food Res. Technol.</i> 228, 265-273 (2008), as listed there.",
   "footer.ref": "<b>Related work:</b> Lee et al., A principal odor map unifies diverse tasks in human olfactory perception, <i>Science</i> 381, 999-1006 (2023). <a href=\"https://doi.org/10.1126/science.ade4401\" target=\"_blank\" rel=\"noopener\">doi:10.1126/science.ade4401</a>; Liu et al., PharmaGNN: a model for odor prediction based on graph neural networks, <i>J Sci Food Agric</i> 106, 8114-8120 (2026). <a href=\"https://doi.org/10.1002/jsfa.70826\" target=\"_blank\" rel=\"noopener\">doi:10.1002/jsfa.70826</a>",
   "footer.fi": "<b>Used in:</b> the predictions of this model feed <a href=\"../flavor-improver/\">project 2: Improving dairy flavor with Bayesian optimization</a>.",
-  "footer.code": "<b>Code:</b> <a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>"
+  "footer.code": "<b>Code:</b> <a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>",
+  "status.kb_dunkel": "Odor description in the flavor knowledge base (Dunkel et al. 2014, p. {page}):",
+  "status.kb_flavordb": "Odor description in the flavor knowledge base (FlavorDB):",
+  "demo.finder_link": "Find substitutes →"
 }

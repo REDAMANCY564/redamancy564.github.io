@@ -57,5 +57,18 @@
   "home.gcms.title": "GC-MS Flavor Interpreter",
   "home.gcms.privacy": "Your data never leaves your computer: all analysis runs in your browser, even offline",
   "home.gcms.desc": "Upload one sample's GC-MS peak table and your standard file: the page recognizes different instrument formats, unifies compound names and CAS numbers, matches targets by explicit rules, then computes OAV or ROAV, ranks key aroma compounds and draws a flavor profile.",
-  "home.gcms.tags": "GC-MS · OAV / ROAV · In-browser processing"
+  "home.gcms.tags": "GC-MS · OAV / ROAV · In-browser processing",
+  "footer.odor_model": "<b>Odor model:</b> odor predictions on this page come from the graph neural network of this site's <a href=\"../odor-predictor/\">odor predictor</a>, trained on data from The Good Scents Company and Leffingwell &amp; Associates (Sanchez-Lengeling et al., 2019, <a href=\"https://arxiv.org/abs/1910.10685\" target=\"_blank\" rel=\"noopener\">arXiv:1910.10685</a>, CC BY-NC), curated and merged by <a href=\"https://github.com/BioMachineLearning/openpom\" target=\"_blank\" rel=\"noopener\">OpenPOM</a> (Barsainyan et al., 2023); the raw data and odor labels are not redistributed here. <b>The model and its predictions are for non-commercial academic demonstration only.</b>",
+  "wf.intro": "Four projects form one flavor development workflow:",
+  "wf.1.title": "Predict a molecule's odor",
+  "wf.1.desc": "Odor descriptors from molecular structure",
+  "wf.2.title": "Find ingredients / substitutes",
+  "wf.2.desc": "Search by target flavor, or find molecules that smell alike",
+  "wf.3.title": "Improve a formulation",
+  "wf.3.desc": "Bayesian optimization suggests which flavor compounds to add",
+  "wf.4.title": "Interpret GC-MS results",
+  "wf.4.desc": "Turn instrument data into key aroma compounds and a flavor profile",
+  "home.finder.title": "Flavor Ingredient Finder",
+  "home.finder.desc": "Two everyday flavorist tasks: search more than 5,000 molecules for a target flavor (such as creamy or coconut), or find substitutes that smell similar but differ in structure.",
+  "home.finder.tags": "Graph neural network · Odor similarity · Substitutes"
 }

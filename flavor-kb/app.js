@@ -145,6 +145,7 @@
       el("p", { class: "mono small muted", style: "word-break:break-all;margin:0", text: c.smiles }), svgBox,
       c.cid ? el("a", { class: "small", href: "https://pubchem.ncbi.nlm.nih.gov/compound/" + c.cid, target: "_blank", rel: "noopener", text: I18N.t("cmp.pubchem") }) : null,
       el("p", { class: "small" }, [el("a", { href: "../odor-predictor/?q=" + encodeURIComponent(c.smiles) + "#demo", text: I18N.t("cmp.predict") })]),
+      el("p", { class: "small" }, [el("a", { href: "../ingredient-finder/?mode=b&smiles=" + encodeURIComponent(c.smiles), text: I18N.t("cmp.finder") })]),
     ]);
     getRdkit().then(R => {
       const mol = R.get_mol(c.smiles);

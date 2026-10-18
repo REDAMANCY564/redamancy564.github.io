@@ -48,5 +48,6 @@
   "footer.apis": "<b>Literature services:</b> <a href=\"https://europepmc.org/\" target=\"_blank\" rel=\"noopener\">Europe PMC</a> and <a href=\"https://www.crossref.org/\" target=\"_blank\" rel=\"noopener\">Crossref</a> (free, no API key).",
   "footer.code": "<b>Code:</b> <a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>",
   "search.meta_kfo": "{n} key odorants (Dunkel 2014)",
-  "search.meta_det": "{c} · {n} compounds detected"
+  "search.meta_det": "{c} · {n} compounds detected",
+  "cmp.finder": "Find substitutes →"
 }

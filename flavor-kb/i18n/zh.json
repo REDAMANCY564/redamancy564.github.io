@@ -48,5 +48,6 @@
   "footer.apis": "<b>文献服务：</b><a href=\"https://europepmc.org/\" target=\"_blank\" rel=\"noopener\">Europe PMC</a>、<a href=\"https://www.crossref.org/\" target=\"_blank\" rel=\"noopener\">Crossref</a>（均免费，无需密钥）。",
   "footer.code": "<b>代码：</b><a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>",
   "search.meta_kfo": "{n} 个关键香气物质（Dunkel 2014）",
-  "search.meta_det": "{c} · 检出 {n} 种物质"
+  "search.meta_det": "{c} · 检出 {n} 种物质",
+  "cmp.finder": "查找替代原料 →"
 }

@@ -7,6 +7,9 @@ Outputs (under odor-predictor/):
                                used by tests/parity.html to check the JS featurizer;
                                plus occlusion contributions for 20 molecules
 Presets also carry per-atom occlusion contributions (occlusion.py) for their top-8 labels.
+Raw dataset labels are NOT published (no license explicitly allows it; user decision 2026-10-18):
+each preset carries its odor description from the flavor knowledge base instead (Dunkel et al.
+2014 with page number, else FlavorDB terms) plus whether it is in the training data.
 Predictions come from onnxruntime (the same model file the browser loads).
 """
 import json
@@ -52,6 +55,19 @@ EDGE_CASES = [
 ]
 
 
+def kb_odor(smi, kb):
+    """Odor description of a preset from the flavor knowledge base: Dunkel first, else FlavorDB."""
+    target = standardize(smi)
+    for comp in kb.values():
+        if standardize(comp["smiles"]) != target:
+            continue
+        if comp.get("dunkel", {}).get("odor"):
+            return {"source": "dunkel", "terms": [comp["dunkel"]["odor"]], "page": comp["dunkel"].get("page")}
+        if comp.get("flavor"):
+            return {"source": "flavordb", "terms": comp["flavor"][:8]}
+    return None
+
+
 def to_ug_per_kg(entry):
     """Convert one threshold entry from mg/kg to ug/kg (x1000), rounded to 4 significant digits."""
     conv = lambda v: float(f"{v * 1000:.4g}")
@@ -85,6 +101,7 @@ def main():
     thr = json.loads((Path(__file__).parent / "odor_thresholds.json").read_text(encoding="utf-8"))
     assert set(thr["compounds"]) == {p[0] for p in PRESETS}, "threshold table must cover all presets"
     index = {s: i for i, s in enumerate(smiles)}
+    kb = json.loads((ROOT / "flavor-kb" / "data" / "compounds.json").read_text(encoding="utf-8"))
     presets = []
     for pid, en, zh_name, smi, cid in PRESETS:
         probs, contrib = contributions(run, *featurize(smi))
@@ -96,7 +113,7 @@ def main():
             # contrib[label][atom]: probability change when that atom is removed (atom order of "smiles")
             "contrib": {labels[j]: [round(float(v), 4) for v in contrib[:, j]] for j in top},
             "dataset_split": None if i is None else str(split[i]),
-            "true_labels": None if i is None else [labels[j] for j in np.flatnonzero(Y[i])],
+            "kb_odor": kb_odor(smi, kb),
             "threshold_water": to_ug_per_kg(thr["compounds"][pid]),
         })
         where = "not in dataset" if i is None else f"in {split[i]}"
