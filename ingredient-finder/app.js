@@ -437,6 +437,7 @@
       [["results.random", a.random_expected, a.random_expected], ["results.gnn", a["gnn@10"], a["gnn@50"]], ["results.lr", a["lr@10"], a["lr@50"]]]
         .map(([k, p10, p50]) => "<tr><td>" + esc(I18N.t(k)) + '</td><td class="num">' + pct(p10) + '</td><td class="num">' + pct(p50) + "</td></tr>").join("") + "</tbody>";
     const b = metrics.mode_b_test;
+    $("res-intro").textContent = I18N.t("results.intro", { n: b.all.n });
     $("res-b").innerHTML = "<thead><tr><th>" + esc(I18N.t("results.col.queries")) + '</th><th class="num">' + esc(I18N.t("results.col.odor")) +
       '</th><th class="num">' + esc(I18N.t("results.col.struct")) + '</th><th class="num">' + esc(I18N.t("results.col.random")) + "</th></tr></thead><tbody>" +
       ["all", "cyclic", "acyclic"].map(k => "<tr><td>" + esc(I18N.t("results.q." + k)) + " (" + b[k].n + ')</td><td class="num"><b>' + b[k].gnn.toFixed(3) +
@@ -447,7 +448,17 @@
     });
   }
 
-  function renderAll() { renderA(); renderB(); renderMetrics(); }
+  // molecules removed from the library, with reasons (training/ingredient/build_library.py)
+  function renderExcluded() {
+    const ex = D.lib.excluded || [];
+    const by = {};
+    ex.forEach(e => { (by[e.category] = by[e.category] || []).push(e); });
+    $("excluded-note").textContent = I18N.t("excluded.note", { n: ex.length, total: D.n });
+    $("excluded-list").innerHTML = Object.keys(by).map(cat => "<li><b>" + esc(I18N.t("excluded.cat." + cat)) + "</b> (" + by[cat].length + "): " +
+      esc(by[cat].map(e => e.name || e.smiles).join(", ")) + "</li>").join("");
+  }
+
+  function renderAll() { renderA(); renderB(); renderMetrics(); renderExcluded(); }
   renderAll();
   I18N.onChange(renderAll);
   window.__finder = { D, A, B, runA, queryLibrary, querySmiles };   // tests and checks

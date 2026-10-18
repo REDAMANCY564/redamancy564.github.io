@@ -97,13 +97,14 @@ def main():
     labels = list(clean.columns[1:])
     lab_by_smiles = dict(zip(clean.smiles, clean[labels].to_numpy().astype(bool)))
     split = np.array([r["split"] for r in lib])
-    labelled = np.array([r["smiles"] in lab_by_smiles for r in lib])
-    assert labelled.sum() == len(clean) and not labelled[split == "kb"].any()
+    # molecules whose only labelled entries are mixtures (build_library.py) count as unlabelled
+    labelled = np.array([r["smiles"] in lab_by_smiles and not r.get("labels_from_mixture") for r in lib])
+    assert not labelled[split == "kb"].any()
     Y = np.zeros((len(lib), len(labels)), dtype=bool)
     for i, r in enumerate(lib):
         if labelled[i]:
             Y[i] = lab_by_smiles[r["smiles"]]
-    tr, va, te = (np.where(split == s)[0] for s in ("train", "valid", "test"))
+    tr, va, te = (np.where((split == s) & labelled)[0] for s in ("train", "valid", "test"))
     report = {"k": K}
 
     # ---- 1. choose the embedding on validation ----

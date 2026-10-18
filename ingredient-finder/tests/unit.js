@@ -12,9 +12,11 @@
   const lib = D.lib;
 
   check("data", "library, probabilities and fingerprints have matching sizes",
-    [D.n, D.L, D.probs.length === D.n * D.L, D.offsets.length === D.n + 1], [5119, 138, true, true]);
-  check("data", "groups: 3910 train, 488 valid, 488 test, 233 knowledge base only",
-    [0, 1, 2, 3].map(g => lib.molecules.filter(m => m[2] === g).length), [3910, 488, 488, 233]);
+    [D.n, D.L, D.probs.length === D.n * D.L, D.offsets.length === D.n + 1], [5072, 138, true, true]);
+  check("data", "47 excluded molecules listed with a reason", [lib.excluded.length, lib.excluded.every(e => e.reason && e.category)], [47, true]);
+  check("data", "no excluded molecule left in the library", lib.excluded.filter(e => lib.molecules.some(m => m[0] === e.smiles)).length, 0);
+  check("data", "groups: 3881 train, 479 valid, 486 test, 226 knowledge base only (47 non-flavor molecules excluded)",
+    [0, 1, 2, 3].map(g => lib.molecules.filter(m => m[2] === g).length), [3881, 479, 486, 226]);
 
   for (const c of fx.mode_a) {
     const hits = F.scoreA(D, c.want, c.avoid, null).slice(0, 20);
@@ -25,8 +27,8 @@
   const all = F.scoreA(D, want, [], null), nat = F.scoreA(D, want, [], { natural: true }), uns = F.scoreA(D, want, [], { unseen: true });
   check("filters", "natural: only molecules with food records", [nat.length, nat.every(h => lib.molecules[h.index][4].length > 0)],
     [lib.molecules.filter(m => m[4].length).length, true]);
-  check("filters", "not used in training: valid + test + knowledge base only (1209)", [uns.length, uns.every(h => lib.molecules[h.index][2] !== 0)], [1209, true]);
-  check("filters", "no filter: every molecule", all.length, 5119);
+  check("filters", "not used in training: valid + test + knowledge base only (1191)", [uns.length, uns.every(h => lib.molecules[h.index][2] !== 0)], [1191, true]);
+  check("filters", "no filter: every molecule", all.length, 5072);
   check("weights", "high / mid / low = 1 / 0.5 / 0.25", F.WEIGHTS, { high: 1, mid: 0.5, low: 0.25 });
   const j = D.labelIndex.creamy, i0 = all[0].index;
   check("weights", "medium weight halves the score", +F.scoreA(D, [["creamy", "mid"]], [], null)[0].score.toFixed(9), +(0.5 * F.prob(D, i0, j)).toFixed(9));
@@ -42,7 +44,7 @@
     check("mode B", c.preset + ": Tanimoto (6 decimals)", r.top.map(h => +h.tanimoto.toFixed(6)), c.tanimoto);
     check("mode B", c.preset + ": highlighted (odor >= threshold, Tanimoto < 0.3)", r.top.map(h => h.highlight), c.highlight);
   }
-  check("mode B", "threshold and rule from library.json", [lib.odor_threshold, lib.tanimoto_max_for_highlight, lib.highlight_top_n], [0.9458, 0.3, 20]);
+  check("mode B", "threshold and rule from library.json", [lib.odor_threshold, lib.tanimoto_max_for_highlight, lib.highlight_top_n], [0.9464, 0.3, 20]);
 
   // ---------- parity: RDKit.js fingerprints and the browser model vs Python ----------
   const rdkit = await initRDKitModule({ locateFile: () => "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.wasm" });

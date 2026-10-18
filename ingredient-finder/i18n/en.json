@@ -44,7 +44,7 @@
   "r.drawing": "Loading structure",
   "r.no_draw": "Cannot draw this structure",
   "results.title": "How well does it work?",
-  "results.intro": "Both modes are evaluated on the scaffold-split test set of odor-predictor (488 molecules), computed once at the end; the odor-similarity method was chosen beforehand on the validation set only.",
+  "results.intro": "Both modes are evaluated on the scaffold-split test set of odor-predictor ({n} labelled molecules), computed once at the end; the odor-similarity method was chosen beforehand on the validation set only.",
   "results.a_title": "Find by brief: do the top-ranked molecules really have the descriptor?",
   "results.a_text": "For each descriptor, test molecules are ranked by predicted probability; precision@10 / @50 is the share of the top 10 / 50 that are labelled with that descriptor, averaged over 138 descriptors.",
   "results.col.method": "Method",
@@ -111,5 +111,11 @@
   "b.compare": "Compare odor profiles",
   "b.compare_hide": "Hide comparison",
   "b.radar_note": "Probabilities of the union of each molecule's top 6 predicted descriptors, scale 0 to {max}%.",
-  "limits.upcoming": "Coming next: regulatory status by region (US FDA / FEMA GRAS, the EU Union list of flavourings, China's GB 2760) will be added by mid-November 2026. The page shows no regulatory information yet; check the official texts for any substitute's compliance."
+  "limits.upcoming": "Coming next: regulatory status by region (US FDA / FEMA GRAS, the EU Union list of flavourings, China's GB 2760) will be added by mid-November 2026. The page shows no regulatory information yet; check the official texts for any substitute's compliance.",
+  "excluded.note": "The library holds {total} organic molecules. {n} non-flavor molecules were removed: inorganic substances without carbon (including inorganic odorants such as hydrogen sulfide, ammonia and sulfur dioxide), organosilicon compounds (e.g. D6 siloxane, a common GC-MS column-bleed impurity), non-volatile substances, and entries that appear in the original data only as mixtures (their odor labels describe the mixture, not a single molecule).",
+  "excluded.summary": "See the removed molecules and why",
+  "excluded.cat.inorganic": "Inorganic (no carbon; plus carbonic acid)",
+  "excluded.cat.organosilicon": "Organosilicon",
+  "excluded.cat.non_volatile": "Non-volatile, not odor-related",
+  "excluded.cat.mixture": "Only mixtures in the original data"
 }

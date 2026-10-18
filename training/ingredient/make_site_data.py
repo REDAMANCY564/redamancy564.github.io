@@ -94,6 +94,8 @@ def main():
         "molecules": mols,
         "foods": [kb_foods[x]["name"] for x in food_ids],
         "labels": [{"id": l["id"], "en": l["en"], "zh": l["zh"]} for l in labels_full],
+        "excluded": [{k: e[k] for k in ("name", "smiles", "category", "reason")} for e in
+                     json.loads((DATA / "library.json").read_text(encoding="utf-8"))["excluded"]],
         "odor_threshold": ev["threshold"]["value"],
         "odor_threshold_rule": ev["threshold"]["rule"],
         "tanimoto_max_for_highlight": 0.3,

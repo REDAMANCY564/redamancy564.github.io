@@ -95,6 +95,24 @@ python taste/make_site_assets.py   # labels、presets、一致性测试数据
 
 **当前结果（测试集 AUROC，GNN 为 3 个种子均值）：** 甜 0.854 / 基线 0.866；苦 0.863 / 0.867；无味 0.889 / 0.826；鲜两者均为 1.000，但测试集鲜味以核苷酸为主且无含磷阴性样本，不可信（验证集无磷鲜味参考 0.943 / 0.950）。苦味中药物分子 AUROC 0.736，非药物 0.875。
 
+## 气味空间地图（odor-map/）
+
+把风味原料检索的候选库（5,072 个有机分子）用 UMAP 降到二维：气味地图按 GNN 的 138 维预测概率排列（余弦距离，邻居数 30，最小距离 0.3），结构地图按 Morgan 指纹排列（Jaccard 距离，15，0.1），随机种子 42。参数各取验证集上最好的一组（3 组中选），测试集定稿后只算一次。
+
+- **页面**：Canvas 2D 绘图，d3-zoom 缩放拖动，d3-quadtree 悬停查找（jsdelivr 固定版本）；两张地图平滑切换；按主要预测描述词或单个描述词的概率着色；自动区域标签；点击打开详情卡片（跳转气味预测、找替代原料、风味知识库）；搜索；食品高亮（Dunkel 2014 的 16 种食品为关键香气物质，其余 FlavorDB 食品为检出物质）。分子、名称和预测概率直接读取 `ingredient-finder/data/`，不重复存储。
+- **链接参数**：`?smiles=`、`?food=` / `?food2=`（知识库食品 id）、`?map=structure`、`?colour=<描述词 id>`。
+- **测试集结果**（486 个分子，二维地图上最近 15 个有标签邻居）：至少一个真实标签相同的比例，气味地图 0.752、结构地图 0.647、随机 0.387；平均 Jaccard 0.192 / 0.156 / 0.059；差值 95% 置信区间不含 0。
+
+**重新生成：**
+```powershell
+cd training
+.\.venv\Scripts\Activate.ps1
+python ingredient/build_library.py   # 候选库（含非风味分子的排除规则）
+python odormap/umap_compare.py      # 第 1 阶段：3 组参数对比（效果图和验证集指标）
+python odormap/build_maps.py        # 定稿地图 + 评估（测试集只算一次）
+python odormap/make_site_data.py    # odor-map/data/：坐标、区域标签、食品列表
+```
+
 ---
 
 ## 如何更新网站（最常用）
@@ -161,9 +179,11 @@ flavor-improver/        项目 2：乳品风味改良
   tests/                parity.html（一致性）、bo_check.html（浏览器版算法表现）
 flavor-kb/              风味知识库
 taste-predictor/        味觉预测（结构同 odor-predictor；engine.js 在气味引擎上加中和步骤）
+odor-map/               气味空间地图（data/：coords.bin、map.json、foods.json；分子数据读 ingredient-finder/data/）
 training/               训练代码（原始数据不上传）
   flavor_improver/      项目 2 的数据准备、贝叶斯优化实验与分析
   taste/                味觉预测的数据处理、训练、导出
+  odormap/              气味空间地图的 UMAP、评估和站点数据
 PLAN.md                 开发计划（项目 1）
 PLAN-formulation.md     开发计划（项目 2）
 ```
@@ -212,5 +232,6 @@ python ablation_to_site.py  # 把摘要写入 odor-predictor/data/metrics.json
 - 展示：气味空间二维可视化（UMAP），可点击浏览分子
 - 领域：加入乳品风味相关分子子集分析
 - 主页：完整个人主页（教育经历、论文、专利、其他项目）
+- 训练数据：原始数据中有记为混合物的条目（如羟基香茅醛 + 吲哚、吡嗪异构体混合物、甘油酯类），清洗时取了最大片段并合并标签，标签描述的是混合物；后续应在清洗阶段排除这类条目并重新训练（2026-10-18 已从 ingredient-finder / odor-map 候选库中移除只来自混合物的 11 个分子，模型未重新训练）
 - 味觉预测：纳入多肽（苦味肽、鲜味肽、kokumi 肽，需要适合长链的表示方法）；加入手性特征以区分 D/L 氨基酸和糖的异构体；补充酸、咸数据后再建模；对单一来源的可疑标签做人工复核（如丁酸、香兰素被记为甜）；预测强度或阈值（需要定量数据）
 - 乳品风味改良：前体物质推荐（「前体 → 风味物质 → 反应类型」对照表，作为规则查询）；引入掩蔽效应（参考混合物模型，或用 Snitz 2013、Ravia 2020 等公开数据校准，需核实许可）；加入成本、法规限量、溶解度约束做多目标优化；人在回路模式（用户为方案打分，替代虚拟评价函数）；自定义基底和改良方向

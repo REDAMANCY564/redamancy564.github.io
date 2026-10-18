@@ -81,11 +81,13 @@
       <div class="workflow">
         <a class="wf-step" href="../odor-predictor/"><span class="wf-no">1</span><b data-i18n="wf.1.title"></b><span data-i18n="wf.1.desc"></span></a>
         <span class="wf-arrow" aria-hidden="true">→</span>
-        <a class="wf-step current" href="../ingredient-finder/"><span class="wf-no">2</span><b data-i18n="wf.2.title"></b><span data-i18n="wf.2.desc"></span></a>
+        <a class="wf-step" href="../odor-map/"><span class="wf-no">2</span><b data-i18n="wf.2.title"></b><span data-i18n="wf.2.desc"></span></a>
         <span class="wf-arrow" aria-hidden="true">→</span>
-        <a class="wf-step" href="../flavor-improver/"><span class="wf-no">3</span><b data-i18n="wf.3.title"></b><span data-i18n="wf.3.desc"></span></a>
+        <a class="wf-step current" href="../ingredient-finder/"><span class="wf-no">3</span><b data-i18n="wf.3.title"></b><span data-i18n="wf.3.desc"></span></a>
         <span class="wf-arrow" aria-hidden="true">→</span>
-        <a class="wf-step" href="../gcms-interpreter/"><span class="wf-no">4</span><b data-i18n="wf.4.title"></b><span data-i18n="wf.4.desc"></span></a>
+        <a class="wf-step" href="../flavor-improver/"><span class="wf-no">4</span><b data-i18n="wf.4.title"></b><span data-i18n="wf.4.desc"></span></a>
+        <span class="wf-arrow" aria-hidden="true">→</span>
+        <a class="wf-step" href="../gcms-interpreter/"><span class="wf-no">5</span><b data-i18n="wf.5.title"></b><span data-i18n="wf.5.desc"></span></a>
       </div>
     </section>
 
@@ -165,7 +167,7 @@
 
     <section class="section" id="results">
       <h2 data-i18n="results.title">How well does it work?</h2>
-      <p data-i18n="results.intro"></p>
+      <p id="res-intro"></p>
       <h3 data-i18n="results.a_title"></h3>
       <p class="small" data-i18n="results.a_text"></p>
       <div class="table-wrap"><table id="res-a"></table></div>
@@ -184,6 +186,11 @@
         <li data-i18n="limits.3"></li>
         <li data-i18n="limits.4"></li>
       </ul>
+      <p class="small" id="excluded-note" style="margin-top:12px"></p>
+      <details class="small">
+        <summary data-i18n="excluded.summary">Molecules removed from the library</summary>
+        <ul id="excluded-list" style="margin-top:6px"></ul>
+      </details>
       <p class="note" data-i18n="limits.upcoming" style="margin-top:12px"></p>
     </section>
   </main>
@@ -199,9 +206,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.wasm.min.js"></script>
-  <script src="../odor-predictor/engine.js?v=20261018e"></script>
-  <script src="../assets/i18n.js?v=20261018e" data-page-dict="i18n/"></script>
-  <script src="finder.js?v=20261018e"></script>
-  <script src="app.js?v=20261018e"></script>
+  <script src="../odor-predictor/engine.js?v=20261018f"></script>
+  <script src="../assets/i18n.js?v=20261018g" data-page-dict="i18n/"></script>
+  <script src="finder.js?v=20261018f"></script>
+  <script src="app.js?v=20261018f"></script>
 </body>
 </html>
