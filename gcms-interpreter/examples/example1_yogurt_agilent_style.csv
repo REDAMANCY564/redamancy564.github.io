@@ -1,0 +1,26 @@
+﻿Data Path,C:\MassHunter\Data\Yogurt\
+Acq. Method,SPME_DBWAX_60m.M
+Library,NIST20 (simulated example; not a real export)
+Report Created,2026-10-17 10:15
+
+Data File,Peak,R.T. (min),Area,Pct Total,Library/ID,CAS#,Qual
+Yogurt_H_rep1.D,1,8.896,624443,3.27,"2,3-Butanedione",000431-03-8,85
+Yogurt_H_rep1.D,2,9.526,447952,2.35,"Cyclotetrasiloxane, octamethyl-",000556-67-2,90
+Yogurt_H_rep1.D,3,10.576,52979,0.28,"2,3-Pentanedione",000600-14-6,89
+Yogurt_H_rep1.D,4,11.062,9096,0.05,Hexanal,000066-25-1,94
+Yogurt_H_rep1.D,5,11.316,677427,3.55,"Cyclopentasiloxane, decamethyl-",000541-02-6,92
+Yogurt_H_rep1.D,6,13.158,40521,0.21,2-Heptanone,000110-43-0,83
+Yogurt_H_rep1.D,7,14.179,1265,0.01,"Furan, 2-pentyl-",003777-69-3,83
+Yogurt_H_rep1.D,7,14.179,1265,0.01,"Hexanoic acid, ethyl ester",000123-66-0,80
+Yogurt_H_rep1.D,8,15.303,8906616,46.69,"2-Butanone, 3-hydroxy-",000513-86-0,93
+Yogurt_H_rep1.D,9,15.401,12912,0.07,Octanal,000124-13-0,97
+Yogurt_H_rep1.D,10,17.553,257549,1.35,Nonanal,000124-19-6,95
+Yogurt_H_rep1.D,11,18.755,274168,1.44,Acetic acid,000064-19-7,91
+Yogurt_H_rep1.D,12,18.825,117501,0.62,Acetic acid,000064-19-7,86
+Yogurt_H_rep1.D,13,19.019,103305,0.54,Furfural,000098-01-1,82
+Yogurt_H_rep1.D,14,20.261,999,0.01,Benzaldehyde,000100-52-7,82
+Yogurt_H_rep1.D,15,21.909,170666,0.89,2-Undecanone,000112-12-9,91
+Yogurt_H_rep1.D,16,22.476,3391414,17.78,Butanoic acid,000107-92-6,94
+Yogurt_H_rep1.D,17,23.305,21000,0.11,Pentanoic acid,000109-52-4,74
+Yogurt_H_rep1.D,18,26.158,4337,0.02,Hexanal,000066-25-1,62
+Yogurt_H_rep1.D,19,27.127,3960876,20.76,Hexanoic acid,000142-62-1,85

@@ -12,6 +12,7 @@
   const script = document.currentScript;
   const sharedBase = new URL("i18n/", script.src);
   const pageBase = script.dataset.pageDict ? new URL(script.dataset.pageDict, document.baseURI) : null;
+  const version = new URL(script.src).search;   // e.g. "?v=20261018": passed on to the dictionaries (cache busting)
   const LANGS = ["zh", "en"];
   const STORAGE_KEY = "site-lang";
 
@@ -38,8 +39,8 @@
   }
   async function loadLang(lang) {
     if (dicts[lang]) return dicts[lang];
-    const parts = [loadJson(new URL(lang + ".json", sharedBase))];
-    if (pageBase) parts.push(loadJson(new URL(lang + ".json", pageBase)));
+    const parts = [loadJson(new URL(lang + ".json" + version, sharedBase))];
+    if (pageBase) parts.push(loadJson(new URL(lang + ".json" + version, pageBase)));
     const loaded = await Promise.all(parts);
     dicts[lang] = Object.assign({}, ...loaded);
     return dicts[lang];

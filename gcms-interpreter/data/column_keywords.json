@@ -1,0 +1,334 @@
+{
+ "_note": "Column header keywords for the mapping wizard. Headers and keywords are compared after normalization (lower case, full-width to half-width, spaces and most punctuation removed; % # . kept). 'exact' must equal the whole header; 'contains' may appear anywhere in it. Fields are tried in the order listed, so more specific fields come first. Reviewed by the user before use. Fields qion and note are only used for standard files (target lists). Added 2026-10-18 for Agilent MassHunter library-search reports (LibRes sheet): 化合物编号/Compound # = peak, 匹配项名称 = name, 定性 = match; 匹配项数量 (hit number) is left unmapped. Field thr (odor threshold, standard files only; added 2026-10-18 when thresholds moved into the standard file) is tried first so that 'Threshold (mg/kg)' is not read as an amount.",
+ "fields": [
+  {
+   "id": "thr",
+   "exact": [
+    "threshold",
+    "ot",
+    "odorthreshold",
+    "odourthreshold",
+    "阈值",
+    "气味阈值",
+    "嗅觉阈值"
+   ],
+   "contains": [
+    "threshold",
+    "阈值"
+   ]
+  },
+  {
+   "id": "rel",
+   "exact": [
+    "%",
+    "area%",
+    "%area",
+    "pct",
+    "pcttotal",
+    "relarea",
+    "relative%",
+    "norm%",
+    "amount%"
+   ],
+   "contains": [
+    "area%",
+    "%area",
+    "pcttotal",
+    "relativearea",
+    "relativecontent",
+    "relativeamount",
+    "relativeabundance",
+    "normalized",
+    "percentarea",
+    "areapercent",
+    "相对含量",
+    "相对峰面积",
+    "峰面积百分比",
+    "面积%",
+    "面积百分比",
+    "百分含量",
+    "相对百分含量"
+   ]
+  },
+  {
+   "id": "conc",
+   "exact": [
+    "conc",
+    "conc.",
+    "amount",
+    "concentration",
+    "μg/kg",
+    "ug/kg",
+    "mg/kg",
+    "ng/g",
+    "μg/l",
+    "ug/l",
+    "mg/l",
+    "浓度",
+    "含量"
+   ],
+   "contains": [
+    "concentration",
+    "conc.",
+    "calcamt",
+    "calculatedamount",
+    "μg/kg",
+    "ug/kg",
+    "mg/kg",
+    "ng/g",
+    "μg/l",
+    "ug/l",
+    "mg/l",
+    "ppb",
+    "ppm",
+    "浓度",
+    "含量(",
+    "绝对含量",
+    "定量结果"
+   ]
+  },
+  {
+   "id": "area",
+   "exact": [
+    "area",
+    "peakarea",
+    "峰面积",
+    "面积",
+    "absarea"
+   ],
+   "contains": [
+    "peakarea",
+    "area",
+    "峰面积",
+    "面积"
+   ]
+  },
+  {
+   "id": "ri",
+   "exact": [
+    "ri",
+    "lri",
+    "ki",
+    "rri",
+    "ri(calc)",
+    "ri(lit)"
+   ],
+   "contains": [
+    "retentionindex",
+    "ret.index",
+    "retindex",
+    "kovats",
+    "linearretentionindex",
+    "保留指数",
+    "保留指标"
+   ]
+  },
+  {
+   "id": "rt",
+   "exact": [
+    "rt",
+    "r.t.",
+    "time",
+    "time(min)",
+    "rt(min)",
+    "ret.time",
+    "rettime"
+   ],
+   "contains": [
+    "retentiontime",
+    "ret.time",
+    "rettime",
+    "r.t.",
+    "rt(min)",
+    "保留时间",
+    "出峰时间"
+   ]
+  },
+  {
+   "id": "cas",
+   "exact": [
+    "cas",
+    "cas#",
+    "casno",
+    "casno.",
+    "casrn",
+    "cas号",
+    "cas编号",
+    "cas登记号"
+   ],
+   "contains": [
+    "casnumber",
+    "cas#",
+    "casno",
+    "casrn",
+    "casregistry",
+    "cas号",
+    "cas编号"
+   ]
+  },
+  {
+   "id": "match",
+   "exact": [
+    "match",
+    "qual",
+    "quality",
+    "si",
+    "rsi",
+    "score",
+    "prob",
+    "prob.",
+    "匹配度",
+    "相似度",
+    "定性"
+   ],
+   "contains": [
+    "matchfactor",
+    "reversematch",
+    "match",
+    "quality",
+    "similarity",
+    "libraryscore",
+    "probability",
+    "匹配度",
+    "相似度",
+    "匹配因子"
+   ]
+  },
+  {
+   "id": "peak",
+   "exact": [
+    "peak",
+    "peak#",
+    "pk",
+    "pk#",
+    "peakno",
+    "peakno.",
+    "spectrum#",
+    "#",
+    "峰号",
+    "峰序号",
+    "序号",
+    "编号",
+    "化合物编号(#)",
+    "化合物编号",
+    "compound#",
+    "compoundno."
+   ],
+   "contains": [
+    "peak#",
+    "peakno",
+    "peaknumber",
+    "spectrum#",
+    "峰号",
+    "峰序号",
+    "化合物编号",
+    "compound#"
+   ]
+  },
+  {
+   "id": "sample",
+   "exact": [
+    "sample",
+    "samplename",
+    "sampleid",
+    "file",
+    "filename",
+    "datafile",
+    "injection",
+    "样品",
+    "样品名",
+    "样品名称",
+    "样品编号",
+    "文件名"
+   ],
+   "contains": [
+    "samplename",
+    "sampleid",
+    "datafile",
+    "filename",
+    "injection",
+    "样品名",
+    "样品编号",
+    "数据文件"
+   ]
+  },
+  {
+   "id": "qion",
+   "exact": [
+    "quantion",
+    "qion",
+    "quant",
+    "quantmass",
+    "targetion",
+    "m/z",
+    "定量离子",
+    "定量离子(m/z)"
+   ],
+   "contains": [
+    "quantion",
+    "quantitationion",
+    "quantifierion",
+    "targetion",
+    "quantmass",
+    "定量离子"
+   ]
+  },
+  {
+   "id": "note",
+   "exact": [
+    "note",
+    "notes",
+    "remark",
+    "remarks",
+    "comment",
+    "comments",
+    "备注",
+    "说明"
+   ],
+   "contains": [
+    "remark",
+    "comment",
+    "备注"
+   ]
+  },
+  {
+   "id": "name",
+   "exact": [
+    "name",
+    "compound",
+    "compoundname",
+    "library/id",
+    "libraryid",
+    "hit",
+    "hitname",
+    "analyte",
+    "component",
+    "componentname",
+    "identification",
+    "化合物",
+    "化合物名称",
+    "名称",
+    "物质",
+    "物质名称",
+    "成分",
+    "中文名",
+    "英文名",
+    "匹配项名称"
+   ],
+   "contains": [
+    "compoundname",
+    "compound",
+    "library/id",
+    "libraryid",
+    "hitname",
+    "analyte",
+    "componentname",
+    "identification",
+    "化合物",
+    "物质名",
+    "成分名",
+    "匹配项名称"
+   ]
+  }
+ ]
+}

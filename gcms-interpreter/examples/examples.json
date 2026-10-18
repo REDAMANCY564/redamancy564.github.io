@@ -1,0 +1,64 @@
+{
+ "note": "Simulated data. Compound sets and concentrations follow the cited studies; retention times, areas, replicate noise and format problems are simulated.",
+ "examples": {
+  "example1": {
+   "file": "example1_yogurt_agilent_style.csv",
+   "tolerances": {
+    "merge_min": 0.1,
+    "window_min": 0.15
+   },
+   "source": {
+    "citation": "Wang J, Zhang D, Li J, Zou T, Wen R, Hou Y, Song H, Li H, Ma H, Shi J. Aroma profiling of long shelf-life yoghurt from milk with varying acidity: insights from sensory evaluation and instrumental analysis. Food Chem X 2025.",
+    "doi": "10.1016/j.fochx.2025.102215",
+    "pmcid": "PMC11814515",
+    "license": "CC BY-NC",
+    "table": "Table 1",
+    "method": "GC-MS, standard addition"
+   },
+   "samples": [
+    "Yogurt_H_rep1.D"
+   ]
+  },
+  "example2": {
+   "file": "example2_milk_shimadzu_style.txt",
+   "tolerances": {
+    "merge_min": 0.1,
+    "window_min": 0.15
+   },
+   "source": {
+    "citation": "Xu K, Han H, Wang X, Zhang X, Yang X, Lu X, Han Z, Wang S, Wang Y, et al. Elucidation of key aroma-active compounds and sensory profiles in raw and thermally sterilized milks: perspective from molecular sensory science. Food Chem X 2026.",
+    "doi": "10.1016/j.fochx.2026.103696",
+    "pmcid": "PMC12950439",
+    "license": "CC BY-NC",
+    "table": "Table 3 (SIDA) where available, otherwise Table 2 (external standard)",
+    "method": "SIDA for 8 compounds; external standard for the others"
+   },
+   "samples": [
+    "巴氏奶_A_1"
+   ]
+  },
+  "example3": {
+   "file": "example3_gouda_thermo_style.xlsx",
+   "tolerances": {
+    "merge_min": 0.1,
+    "window_min": 0.15
+   },
+   "source": {
+    "citation": "Duensing PW, Hinrichs J, Schieberle P. Formation of key aroma compounds during 30 weeks of ripening in Gouda-type cheese produced from pasteurized and raw milk. J Agric Food Chem 2024.",
+    "doi": "10.1021/acs.jafc.4c01814",
+    "pmcid": "PMC11100003",
+    "license": "CC BY",
+    "table": "Table 1",
+    "method": "SIDA (stable isotope dilution assays)"
+   },
+   "samples": [
+    "Gouda_30w_rep1"
+   ]
+  }
+ },
+ "standards": {
+  "example1": "standard_example1_yogurt.csv",
+  "example2": "standard_example2_milk.csv",
+  "example3": "standard_example3_gouda.csv"
+ }
+}

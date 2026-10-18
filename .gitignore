@@ -20,3 +20,6 @@ Thumbs.db
 desktop.ini
 .DS_Store
 .vscode/
+
+# User's own lab data placed in the repo folder for testing : never publish
+/*.xlsx

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Unit tests | GC-MS Flavor Interpreter</title>
+  <link rel="stylesheet" href="../../assets/style.css">
+  <style>
+    .pass { color: #1a7f37; font-weight: 700; }
+    .fail { color: #c0392b; font-weight: 700; }
+    #summary { font-size: 1.25rem; margin: 16px 0; }
+    td { vertical-align: top; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1>Unit tests</h1>
+      <p class="muted">Tests for gcms-interpreter modules, run in the browser (no server-side code). Each module adds
+        its cases here as it is built: file reading and column mapping (stage 1), CAS normalization and compound identification (stage 2), standard file matching with rules 1 to 3 (stage 3), flavor calculation (stage 4).</p>
+      <div id="summary" data-status="running">Running...</div>
+    </section>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>group</th><th>case</th><th>result</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </main>
+  <script src="../../assets/vendor/sheetjs/xlsx.full.min.js"></script>
+  <script src="../io.js"></script>
+  <script src="../mapping.js"></script>
+  <script src="../cas.js"></script>
+  <script src="../names.js"></script>
+  <script src="../rules.js"></script>
+  <script src="../flavor.js"></script>
+  <script src="unit.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+  "_note": "Built-in instrument templates. Basis: the typical layout of each vendor's peak-table / library-search export as described in public material; they match this site's simulated example files and have NOT been checked against real exports. Mapping keys are normalized header texts (see mapping.js normHeader). 'optional' columns are mapped when present but are not needed for the template to match.",
+  "templates": [
+    {
+      "name": "Agilent 风格（库检索报告 CSV，模拟） / Agilent-style library search CSV (simulated)",
+      "builtin": true,
+      "byHeader": {
+        "datafile": "sample",
+        "peak": "peak",
+        "r.t.(min)": "rt",
+        "area": "area",
+        "pcttotal": "rel",
+        "library/id": "name",
+        "cas#": "cas",
+        "qual": "match"
+      }
+    },
+    {
+      "name": "岛津风格（相似度检索结果 TXT，模拟） / Shimadzu-style similarity search TXT (simulated)",
+      "builtin": true,
+      "byHeader": {
+        "样品名": "sample",
+        "峰号": "peak",
+        "保留时间": "rt",
+        "保留指数": "ri",
+        "峰面积": "area",
+        "面积%": "rel",
+        "化合物名称": "name",
+        "cas号": "cas",
+        "相似度": "match"
+      }
+    },
+    {
+      "name": "Thermo 风格（峰表 XLSX，模拟） / Thermo-style peak table XLSX (simulated)",
+      "builtin": true,
+      "byHeader": {
+        "peak": "peak",
+        "compound": "name",
+        "casno.": "cas",
+        "rt(min)": "rt",
+        "area": "area",
+        "area%": "rel"
+      },
+      "optional": {
+        "calc.amt.(μg/kg)": "conc",
+        "calc.amt.": "conc",
+        "calc.amt.(mg/kg)": "conc"
+      }
+    }
+  ]
+}

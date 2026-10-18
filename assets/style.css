@@ -160,3 +160,6 @@ tr.highlight td { font-weight: 700; }
 .contrib-bar { height: 10px; border-radius: 5px; border: 1px solid var(--border); }
 .contrib-scale { display: flex; justify-content: space-between; color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
 .contrib-note { margin: 6px 0 0; }
+
+/* Home card highlight for gcms-interpreter: data stays on the visitor's computer */
+.privacy-badge { display: inline-block; margin: 2px 0 8px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; font-size: .9rem; }

@@ -1,0 +1,25 @@
+[Header]
+Data File Name	D:\GCMSsolution\Data\milk.qgd
+Output Date	2026/10/17
+Note	模拟示例文件，并非真实仪器导出
+
+[MS Similarity Search Results for Spectrum Process Table]
+样品名	峰号	保留时间	保留指数	峰面积	面积%	化合物名称	CAS号	相似度
+巴氏奶_A_1	1	5.737	830	190328	4.79	Cyclotrisiloxane, hexamethyl-	541-05-9	85
+巴氏奶_A_1	2	8.895	980	7883	0.20	Diacetyl	431-03-8	96
+巴氏奶_A_1	3	11.063	1083	8488	0.21	Hexanal	66-25-1	80
+巴氏奶_A_1	4	11.316	1095	280730	7.06	Cyclopentasiloxane, decamethyl-	541-02-6	86
+巴氏奶_A_1	5	12.305	1142	58389	1.47	1-Butanol	71-36-4	96
+巴氏奶_A_1	6	15.337	1286	3471	0.09	Octanal	124-13-0	91
+巴氏奶_A_1	7	17.505	1389	12680	0.32	Nonanal	124-19-6	84
+巴氏奶_A_1	8	18.411	1432	3360	0.08	2-Octenal, (E)-	2548-87-0	80
+巴氏奶_A_1	9	18.832	1452	79234	1.99	Acetic acid	64-19-7	96
+巴氏奶_A_1	10	20.284	1521	19530	0.49	Benzaldehyde	100-52-7	89
+巴氏奶_A_1	11	22.411	1622	203779	5.12	Butanoic acid	107-92-6	82
+巴氏奶_A_1	12	28.368	1905	103062	2.59	Butylated Hydroxytoluene	128-37-0	88
+巴氏奶_A_1	13	30.768	2019	6487	0.16	γ-Nonalactone	104-61-0	96
+巴氏奶_A_1	14	31.653	2061	1014498	25.51	Octanoic acid	124-07-2	91
+巴氏奶_A_1	15	34.368	2190	157899	3.97	δ-Decalactone	705-86-2	85
+巴氏奶_A_1	16	36.032	2269	393606	9.90	n-Decanoic acid	334-48-5	91
+巴氏奶_A_1	17	38.305	2377	67618	1.70	γ-Dodecalactone	2305-05-7	87
+巴氏奶_A_1	18	39.211	2420	1365997	34.35	2H-Pyran-2-one, 6-heptyltetrahydro-	713-95-1	96
