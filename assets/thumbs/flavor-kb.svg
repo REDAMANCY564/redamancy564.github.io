@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img" aria-label="Look up key aroma compounds and detected compounds by food or compound">
+<title>Look up key aroma compounds and detected compounds by food or compound</title>
+<rect x="120" y="22" width="160" height="30" rx="15" fill="#ffffff" stroke="#2a7d6f" stroke-width="2.4"/>
+<circle cx="139" cy="36" r="6" fill="none" stroke="#2a7d6f" stroke-width="2.4"/>
+<line x1="143.5" y1="40.5" x2="148.0" y2="45.0" stroke="#2a7d6f" stroke-width="2.4" stroke-linecap="round"/>
+<rect x="158" y="33" width="64" height="6" rx="3" fill="#9bb2ac" opacity="0.55"/>
+<line x1="234.5" y1="87.6" x2="271.8" y2="125.0" stroke="#9bb2ac" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+<line x1="298.0" y1="189.2" x2="294.3" y2="233.8" stroke="#9bb2ac" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+<line x1="165.5" y1="256.4" x2="128.2" y2="219.0" stroke="#9bb2ac" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+<line x1="102.0" y1="154.8" x2="105.7" y2="110.2" stroke="#9bb2ac" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+<line x1="271.8" y1="125.0" x2="328.9" y2="149.4" stroke="#9bb2ac" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+<line x1="200.0" y1="172.0" x2="234.5" y2="87.6" stroke="#cf8a3c" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="200.0" y1="172.0" x2="271.8" y2="125.0" stroke="#9bb2ac" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+<line x1="200.0" y1="172.0" x2="328.9" y2="149.4" stroke="#9bb2ac" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+<line x1="200.0" y1="172.0" x2="298.0" y2="189.2" stroke="#cf8a3c" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="200.0" y1="172.0" x2="294.3" y2="233.8" stroke="#9bb2ac" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+<line x1="200.0" y1="172.0" x2="226.3" y2="236.2" stroke="#9bb2ac" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+<line x1="200.0" y1="172.0" x2="165.5" y2="256.4" stroke="#cf8a3c" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="200.0" y1="172.0" x2="128.2" y2="219.0" stroke="#9bb2ac" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+<line x1="200.0" y1="172.0" x2="71.1" y2="194.6" stroke="#9bb2ac" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+<line x1="200.0" y1="172.0" x2="102.0" y2="154.8" stroke="#cf8a3c" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="200.0" y1="172.0" x2="105.7" y2="110.2" stroke="#9bb2ac" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+<line x1="200.0" y1="172.0" x2="173.7" y2="107.8" stroke="#9bb2ac" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+<circle cx="200" cy="172" r="30" fill="#2a7d6f"/>
+<path d="M 189 160 L 211 160 L 208 185 L 192 185 Z" fill="#ffffff"/>
+<rect x="189" y="160" width="22" height="6" fill="#c2d8d2"/>
+<polygon points="234.5,77.6 243.2,82.6 243.2,92.6 234.5,97.6 225.9,92.6 225.9,82.6" fill="#ffffff" stroke="#cf8a3c" stroke-width="2.8"/>
+<circle cx="271.8" cy="125.0" r="6.5" fill="#ffffff" stroke="#2a7d6f" stroke-width="2.6"/>
+<circle cx="328.9" cy="149.4" r="6.5" fill="#ffffff" stroke="#2a7d6f" stroke-width="2.6"/>
+<polygon points="298.0,179.2 306.7,184.2 306.7,194.2 298.0,199.2 289.4,194.2 289.4,184.2" fill="#ffffff" stroke="#cf8a3c" stroke-width="2.8"/>
+<circle cx="294.3" cy="233.8" r="6.5" fill="#ffffff" stroke="#2a7d6f" stroke-width="2.6"/>
+<circle cx="226.3" cy="236.2" r="6.5" fill="#ffffff" stroke="#2a7d6f" stroke-width="2.6"/>
+<polygon points="165.5,246.4 174.1,251.4 174.1,261.4 165.5,266.4 156.8,261.4 156.8,251.4" fill="#ffffff" stroke="#cf8a3c" stroke-width="2.8"/>
+<circle cx="128.2" cy="219.0" r="6.5" fill="#ffffff" stroke="#2a7d6f" stroke-width="2.6"/>
+<circle cx="71.1" cy="194.6" r="6.5" fill="#ffffff" stroke="#2a7d6f" stroke-width="2.6"/>
+<polygon points="102.0,144.8 110.6,149.8 110.6,159.8 102.0,164.8 93.3,159.8 93.3,149.8" fill="#ffffff" stroke="#cf8a3c" stroke-width="2.8"/>
+<circle cx="105.7" cy="110.2" r="6.5" fill="#ffffff" stroke="#2a7d6f" stroke-width="2.6"/>
+<circle cx="173.7" cy="107.8" r="6.5" fill="#ffffff" stroke="#2a7d6f" stroke-width="2.6"/>
+</svg>

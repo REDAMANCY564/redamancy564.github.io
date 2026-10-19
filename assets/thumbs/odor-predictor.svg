@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img" aria-label="GNN predicts odor descriptors from molecular structure">
+<title>GNN predicts odor descriptors from molecular structure</title>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9bb2ac"/></marker></defs>
+<line x1="90.0" y1="110.0" x2="124.6" y2="130.0" stroke="#6f8f88" stroke-width="3.4" stroke-linecap="round"/>
+<line x1="124.6" y1="130.0" x2="124.6" y2="170.0" stroke="#6f8f88" stroke-width="3.4" stroke-linecap="round"/>
+<line x1="124.6" y1="170.0" x2="90.0" y2="190.0" stroke="#6f8f88" stroke-width="3.4" stroke-linecap="round"/>
+<line x1="90.0" y1="190.0" x2="55.4" y2="170.0" stroke="#6f8f88" stroke-width="3.4" stroke-linecap="round"/>
+<line x1="55.4" y1="170.0" x2="55.4" y2="130.0" stroke="#6f8f88" stroke-width="3.4" stroke-linecap="round"/>
+<line x1="55.4" y1="130.0" x2="90.0" y2="110.0" stroke="#6f8f88" stroke-width="3.4" stroke-linecap="round"/>
+<line x1="94.1" y1="120.5" x2="113.5" y2="131.7" stroke="#6f8f88" stroke-width="3" stroke-linecap="round"/>
+<line x1="124.6" y1="130.0" x2="159.3" y2="110.0" stroke="#6f8f88" stroke-width="3.4" stroke-linecap="round"/>
+<line x1="55.4" y1="130.0" x2="20.7" y2="110.0" stroke="#6f8f88" stroke-width="3.4" stroke-linecap="round"/>
+<line x1="90.0" y1="190.0" x2="90.0" y2="232.0" stroke="#6f8f88" stroke-width="3.4" stroke-linecap="round"/>
+<circle cx="90.0" cy="110.0" r="7" fill="#ffffff" stroke="#2a7d6f" stroke-width="3"/>
+<circle cx="124.6" cy="130.0" r="7" fill="#ffffff" stroke="#cf8a3c" stroke-width="3"/>
+<circle cx="124.6" cy="170.0" r="7" fill="#ffffff" stroke="#2a7d6f" stroke-width="3"/>
+<circle cx="90.0" cy="190.0" r="7" fill="#ffffff" stroke="#2a7d6f" stroke-width="3"/>
+<circle cx="55.4" cy="170.0" r="7" fill="#ffffff" stroke="#cf8a3c" stroke-width="3"/>
+<circle cx="55.4" cy="130.0" r="7" fill="#ffffff" stroke="#2a7d6f" stroke-width="3"/>
+<circle cx="159.3" cy="110.0" r="7" fill="#ffffff" stroke="#cf8a3c" stroke-width="3"/>
+<circle cx="20.7" cy="110.0" r="7" fill="#ffffff" stroke="#2a7d6f" stroke-width="3"/>
+<circle cx="90.0" cy="232.0" r="7" fill="#ffffff" stroke="#2a7d6f" stroke-width="3"/>
+<line x1="172" y1="150" x2="190" y2="150" stroke="#9bb2ac" stroke-width="2.4" marker-end="url(#ah)"/>
+<line x1="200" y1="110" x2="232" y2="110" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="200" y1="110" x2="232" y2="150" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="200" y1="110" x2="232" y2="190" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="200" y1="150" x2="232" y2="110" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="200" y1="150" x2="232" y2="150" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="200" y1="150" x2="232" y2="190" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="200" y1="190" x2="232" y2="110" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="200" y1="190" x2="232" y2="150" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="200" y1="190" x2="232" y2="190" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="232" y1="110" x2="264" y2="110" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="232" y1="110" x2="264" y2="150" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="232" y1="110" x2="264" y2="190" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="232" y1="150" x2="264" y2="110" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="232" y1="150" x2="264" y2="150" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="232" y1="150" x2="264" y2="190" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="232" y1="190" x2="264" y2="110" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="232" y1="190" x2="264" y2="150" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<line x1="232" y1="190" x2="264" y2="190" stroke="#2a7d6f" stroke-width="1.1" opacity="0.22"/>
+<circle cx="200" cy="110" r="5.4" fill="#2a7d6f" opacity="0.35"/>
+<circle cx="200" cy="150" r="5.4" fill="#2a7d6f" opacity="0.35"/>
+<circle cx="200" cy="190" r="5.4" fill="#2a7d6f" opacity="0.35"/>
+<circle cx="232" cy="110" r="5.4" fill="#2a7d6f" opacity="0.65"/>
+<circle cx="232" cy="150" r="5.4" fill="#2a7d6f" opacity="0.65"/>
+<circle cx="232" cy="190" r="5.4" fill="#2a7d6f" opacity="0.65"/>
+<circle cx="264" cy="110" r="5.4" fill="#2a7d6f" opacity="0.95"/>
+<circle cx="264" cy="150" r="5.4" fill="#2a7d6f" opacity="0.95"/>
+<circle cx="264" cy="190" r="5.4" fill="#2a7d6f" opacity="0.95"/>
+<line x1="276" y1="150" x2="290" y2="150" stroke="#9bb2ac" stroke-width="2.4" marker-end="url(#ah)"/>
+<rect x="292" y="116" width="88" height="13" rx="6.5" fill="#c2d8d2" opacity="0.55"/>
+<rect x="292" y="116" width="84" height="13" rx="6.5" fill="#2a7d6f" opacity="1.0"/>
+<rect x="292" y="149" width="88" height="13" rx="6.5" fill="#c2d8d2" opacity="0.55"/>
+<rect x="292" y="149" width="58" height="13" rx="6.5" fill="#2a7d6f" opacity="0.72"/>
+<rect x="292" y="182" width="88" height="13" rx="6.5" fill="#c2d8d2" opacity="0.55"/>
+<rect x="292" y="182" width="34" height="13" rx="6.5" fill="#2a7d6f" opacity="0.45"/>
+</svg>

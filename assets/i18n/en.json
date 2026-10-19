@@ -57,7 +57,7 @@
   "wf.5.title": "Interpret GC-MS results",
   "wf.5.desc": "Turn instrument data into key aroma compounds and a flavor profile",
   "home.map.title": "Odor Space Map",
-  "home.perc.title": "Why People Smell Differently",
+  "home.perc.title": "Odor Perception Differences",
   "nav.tool": "Tool",
   "nav.about": "About",
   "nav.code": "Code",
@@ -71,7 +71,7 @@
   "about.code": "Code",
   "about.back": "← Back to the tool",
   "src.more": "Method & sources →",
-  "home.hero": "I turn flavor-lab problems into tools a colleague can use.",
+  "home.hero": "Practical AI tools for flavor R&D",
   "home.cta": "See projects ↓",
   "home.cv_short": "CV",
   "home.gcms.privacy_short": "Runs offline in your browser",
@@ -81,6 +81,6 @@
   "home.fi.one": "Bayesian optimization for dairy flavor, and a comparison of your own sample with a target.",
   "home.map.one": "5,000+ molecules laid out by predicted odor, compared with a layout by structure.",
   "home.taste.one": "Predicts whether a small molecule is sweet, bitter, umami or tasteless.",
-  "home.perc.one": "How much of the difference in smell ratings comes from the molecule, personal taste or noise.",
+  "home.perc.one": "Why does the same odor feel different to different people? A breakdown of rating differences into the molecule, personal taste and noise.",
   "home.kb.one": "Key odorants and detected compounds, searchable by food or compound."
 }

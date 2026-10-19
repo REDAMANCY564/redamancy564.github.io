@@ -57,7 +57,7 @@
   "wf.5.title": "GC-MS 结果解读",
   "wf.5.desc": "把仪器数据整理成关键香气物质和风味轮廓",
   "home.map.title": "气味空间地图",
-  "home.perc.title": "同一个气味，为什么每个人感受不同",
+  "home.perc.title": "气味感知差异",
   "nav.tool": "工具",
   "nav.about": "方法与来源",
   "nav.code": "代码",
@@ -71,7 +71,7 @@
   "about.code": "代码",
   "about.back": "← 返回工具",
   "src.more": "方法与来源 →",
-  "home.hero": "把风味实验室里的问题，做成同事能直接用的工具。",
+  "home.hero": "为风味研发打造实用的 AI 工具",
   "home.cta": "查看项目 ↓",
   "home.cv_short": "简历",
   "home.gcms.privacy_short": "在浏览器本地运行，可离线",
@@ -81,6 +81,6 @@
   "home.fi.one": "用贝叶斯优化改良乳品风味，并把你自己的样品与目标对比。",
   "home.map.one": "5000 多个分子按预测气味排布，并与按结构排布对比。",
   "home.taste.one": "预测小分子是甜、苦、鲜还是无味。",
-  "home.perc.one": "嗅觉评分的差异有多少来自分子、个人口味和噪声。",
+  "home.perc.one": "同一个气味，为什么每个人感受不同？拆解评分差异中分子、个人口味和噪声各占多少。",
   "home.kb.one": "按食物或化合物查关键香气物和检出物。"
 }

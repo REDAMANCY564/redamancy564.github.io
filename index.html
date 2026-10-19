@@ -9,7 +9,7 @@
   <style>
     /* Thumbnail sits on top of a text placeholder; a missing image removes itself */
     .pub-item .thumb { position: relative; text-decoration: none; }
-    .pub-item .thumb img { position: absolute; inset: 0; }
+    .pub-item .thumb img { position: absolute; inset: 0; background: var(--surface); }
     .thumb-ph { width: 100%; height: 100%; display: grid; place-items: center; padding: 8px; text-align: center;
                 font-family: var(--font-serif); font-size: .85rem; color: var(--muted); }
   </style>
@@ -58,7 +58,7 @@
   <script src="assets/i18n.js?v=20261019r"></script>
   <script>
     (async function () {
-      // [directory, i18n key prefix, highlighted, has an about page]; thumbnails live in assets/thumbs/<directory>.webp
+      // [directory, i18n key prefix, highlighted, has an about page]; thumbnails live in assets/thumbs/<directory>.svg
       const PROJECTS = [
         ["gcms-interpreter", "gcms", true, true],
         ["ingredient-finder", "finder", true, true],
@@ -90,7 +90,7 @@
           return '<div class="pub-item' + (featured ? " featured" : "") + '">' +
             '<a class="thumb" href="' + dir + '/" tabindex="-1" aria-hidden="true">' +
               '<span class="thumb-ph">' + title + "</span>" +
-              '<img src="assets/thumbs/' + dir + '.webp" alt="" loading="lazy" onerror="this.remove()">' +
+              '<img src="assets/thumbs/' + dir + '.svg" alt="" onerror="this.remove()">' +
             "</a>" +
             "<div>" +
               '<a class="pub-title" href="' + dir + '/">' + title + "</a>" + badge +
