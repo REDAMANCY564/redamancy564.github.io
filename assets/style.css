@@ -1,4 +1,9 @@
 /* Shared site styles. Mobile first; no horizontal scrolling at 360px width. */
+@font-face {
+  font-family: "SiteSerif";
+  src: url("fonts/SiteSerif-Variable-Latin.woff2") format("woff2");
+  font-weight: 200 900; font-style: normal; font-display: swap;
+}
 :root {
   --bg: #fbfaf7;
   --surface: #ffffff;
@@ -11,9 +16,9 @@
   --warn: #8a5a00;
   --radius: 10px;
   --shadow: none;
-  /* Serif for headings (Osmo-style contrast with the sans body). System fonts only, so the
-     strict CSP pages need no font download; Chinese falls back to the system Song face. */
-  --font-serif: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+  /* Serif for headings (Osmo-style contrast with the sans body): a self-hosted Latin subset of
+     Source Serif 4 (assets/fonts, allowed by the strict CSP pages); Chinese uses the system Song face. */
+  --font-serif: "SiteSerif", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
                 "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", SimSun, serif;
   --sp-1: 4px; --sp-2: 8px; --sp-3: 16px; --sp-4: 24px; --sp-5: 40px; --sp-6: 64px; --sp-7: 96px;
   color-scheme: light;
@@ -228,16 +233,11 @@ a.help:hover { border-color: var(--accent); color: var(--accent); }
 .home-hero { min-height: calc(85vh - 56px); display: grid; place-content: center; justify-items: center;
              text-align: center; gap: var(--sp-5); padding: var(--sp-6) 0; }
 .home-hero h1 { font-size: clamp(2rem, 5.5vw, 3.6rem); line-height: 1.15; max-width: 15em; margin: 0; font-weight: 400; }
-.intro { display: grid; grid-template-columns: 1fr 160px; gap: var(--sp-5); align-items: center; padding: var(--sp-5) 0; }
+.intro { max-width: 720px; padding: var(--sp-5) 0; }
 .intro h2 { font-size: 1.8rem; margin-bottom: var(--sp-2); }
 .intro .tagline { color: var(--muted); margin-bottom: var(--sp-3); }
 .contact-row { margin: var(--sp-3) 0 0; }
 .contact-row a + a::before { content: " / "; color: var(--muted); }
-.avatar { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; display: block; }
-@media (max-width: 600px) {
-  .intro { grid-template-columns: 1fr; gap: var(--sp-3); }
-  .intro .avatar { order: -1; width: 120px; height: 120px; }
-}
 .pub-list { display: grid; gap: var(--sp-2); margin-top: var(--sp-3); }
 .pub-item { display: grid; grid-template-columns: 160px 1fr; gap: var(--sp-4); padding: var(--sp-3); border-radius: var(--radius); }
 .pub-item.featured { background: var(--accent-soft); }
