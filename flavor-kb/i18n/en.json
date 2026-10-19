@@ -1,13 +1,12 @@
 {
   "page.title": "Flavor Knowledge Base | Jingwei Cui",
-  "hero.title": "Flavor knowledge base",
-  "hero.intro": "Look up a food or a flavor compound: which compounds create a food's aroma, which foods a compound occurs in, and related research papers. Data are grouped into three tiers by strength of evidence, each marked with its own color.",
+  "hero.title": "Flavor Knowledge Base",
+  "hero.intro": "Look up a food or a flavor compound: which compounds create a food's aroma, which foods a compound occurs in, and related research papers. Data are grouped into three tiers by strength of evidence.",
   "legend.title": "Evidence tiers",
   "legend.t1k_desc": "From the main text of the review by Dunkel et al. (2014): compounds confirmed by GC-O, quantitation and recombination experiments to contribute to the food's aroma.",
   "legend.t1d_desc": "From the FlavorDB database: the compound has been detected in the food. Detection does not mean it contributes to the aroma.",
   "legend.t2_desc": "Related papers retrieved live from Europe PMC when you open a page. Listed only, not summarized.",
   "legend.t3_desc": "Fetches the abstract for a DOI you enter and marks the flavor compound names it contains. Text matching only, not the paper's conclusions.",
-  "search.title": "Search",
   "search.label": "Food or compound name",
   "search.placeholder": "e.g. butter, strawberry, vanillin, methional",
   "search.button": "Search",
@@ -49,5 +48,8 @@
   "footer.code": "<b>Code:</b> <a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>",
   "search.meta_kfo": "{n} key odorants (Dunkel 2014)",
   "search.meta_det": "{c} · {n} compounds detected",
-  "cmp.finder": "Find substitutes →"
+  "cmp.finder": "Find substitutes",
+  "hero.sub": "Key odorants, detected compounds and papers, by food or compound.",
+  "about.page_title": "Sources | Flavor Knowledge Base | Jingwei Cui",
+  "footer.short": "Key odorants from Dunkel et al. 2014; detection data from FlavorDB2 (CC BY-NC-SA 3.0, derived data shared alike); papers via Europe PMC and Crossref. See <a href=\"about.html\">sources</a>."
 }

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sources | Flavor Knowledge Base | Jingwei Cui</title>
+  <meta name="description" content="Evidence tiers and data sources of the flavor knowledge base.">
+  <link rel="stylesheet" href="../assets/style.css?v=20261019v">
+  <style>
+    .tier-list { list-style: none; padding: 0; margin: 0; }
+    .tier-list li { display: grid; grid-template-columns: 10em 1fr; gap: 12px; margin-bottom: var(--sp-3); }
+    @media (max-width: 520px) { .tier-list li { grid-template-columns: 1fr; gap: 2px; } }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../" data-i18n="site.name">崔京伟</a>
+      <nav class="site-nav" aria-label="Site">
+        <a href="../projects/" data-i18n="nav.projects" aria-current="page">项目</a>
+        <a href="../cv/" data-i18n="nav.cv">简历</a>
+        <button class="lang-toggle" id="lang-toggle" type="button">
+          <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container about">
+    <div class="hero">
+      <h1 data-i18n="hero.title">Flavor Knowledge Base</h1>
+      <nav class="proj-tabs" aria-label="Project">
+        <a href="./" data-i18n="nav.tool">工具</a>
+        <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
+      </nav>
+    </div>
+    <nav class="toc">
+      <a href="#overview" data-i18n="about.overview">Overview</a>
+      <a href="#tiers" data-i18n="legend.title">Evidence tiers</a>
+      <a href="#data" data-i18n="about.data">Data, licenses &amp; citations</a>
+    </nav>
+
+    <section id="overview">
+      <h2 data-i18n="about.overview">Overview</h2>
+      <p data-i18n="hero.intro"></p>
+    </section>
+
+    <section id="tiers">
+      <h2 data-i18n="legend.title">Evidence tiers</h2>
+      <ul class="tier-list">
+        <li><span><span class="tag t1k" data-i18n="legend.t1k"></span></span><span data-i18n="legend.t1k_desc"></span></li>
+        <li><span><span class="tag t1d" data-i18n="legend.t1d"></span></span><span data-i18n="legend.t1d_desc"></span></li>
+        <li><span><span class="tag t2" data-i18n="legend.t2"></span></span><span data-i18n="legend.t2_desc"></span></li>
+        <li><span><span class="tag t3" data-i18n="legend.t3"></span></span><span data-i18n="legend.t3_desc"></span></li>
+      </ul>
+    </section>
+
+    <section id="data">
+      <h2 data-i18n="about.data">Data, licenses &amp; citations</h2>
+      <p data-i18n-html="footer.data"></p>
+      <p data-i18n-html="footer.apis"></p>
+      <p data-i18n-html="footer.code"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n-html="footer.site"></p>
+    </div>
+  </footer>
+
+  <script src="../assets/i18n.js?v=20261019v" data-page-dict="i18n/"></script>
+  <script>
+    I18N.ready.then(() => {
+      const setTitle = () => { document.title = I18N.t("about.page_title"); };
+      setTitle();
+      I18N.onChange(setTitle);
+    });
+  </script>
+</body>
+</html>

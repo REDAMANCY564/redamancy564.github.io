@@ -247,7 +247,7 @@
     const q = $("search-input").value.trim();
     if (q) doSearch(q, true).catch(() => {});
   });
-  document.querySelectorAll(".chip-btn[data-q]").forEach(b => b.addEventListener("click", () => doSearch(b.dataset.q, true).catch(() => {})));
+  document.querySelectorAll("button[data-q]").forEach(b => b.addEventListener("click", () => doSearch(b.dataset.q, true).catch(() => {})));
   $("doi-form").addEventListener("submit", e => { e.preventDefault(); analyzeDoi($("doi-input").value, true); });
 
   function route() {

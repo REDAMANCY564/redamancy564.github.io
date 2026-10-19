@@ -7,34 +7,31 @@
   <meta name="description" content="Key food odorants, detected flavor compounds and related literature, searchable by food or compound.">
   <link rel="stylesheet" href="../assets/style.css?v=20261019v">
   <style>
-    .legend { display: grid; gap: 8px; margin-top: 12px; }
-    .legend div { display: grid; grid-template-columns: 9.5em 1fr; gap: 10px; align-items: start; font-size: .9rem; }
-    @media (max-width: 520px) { .legend div { grid-template-columns: 1fr; gap: 2px; } }
+    /* Evidence tiers in one line; the definitions are in the tooltips and on the method page */
+    .tiers { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: var(--sp-3) 0 0; font-size: .875rem; }
     .search-row { display: flex; gap: 8px; max-width: 560px; }
     .search-row input { flex: 1 1 auto; min-width: 0; max-width: none; }
-    .btn { font: inherit; font-weight: 600; padding: 8px 18px; border-radius: 8px; border: 0;
+    .btn { font: inherit; font-weight: 600; padding: 8px 18px; border-radius: 4px; border: 0;
            background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
     .btn:disabled { opacity: .6; cursor: progress; }
-    .examples { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
-    .chip-btn { font: inherit; font-size: .85rem; padding: 2px 10px; border-radius: 999px; cursor: pointer;
-                border: 1px solid var(--border); background: var(--surface); color: var(--accent); }
-    .status { min-height: 1.5em; margin: 8px 0 0; color: var(--muted); font-size: .9rem; }
-    .status.error { color: #b42318; }
+    .examples { margin-top: 8px; }
+    .status { min-height: 1.5em; margin: 8px 0 0; color: var(--muted); font-size: .875rem; }
+    .status.error { color: var(--error); }
     .results { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 12px; }
     @media (min-width: 700px) { .results { grid-template-columns: 1fr 1fr; } }
     .results ul { list-style: none; margin: 0; padding: 0; }
     .results li { padding: 6px 0; border-bottom: 1px solid var(--border); }
     .results li a { font-weight: 600; text-decoration: none; }
-    .results li .meta { font-size: .8rem; color: var(--muted); }
+    .results li .meta { font-size: .875rem; color: var(--muted); }
     .detail { margin-top: 16px; }
-    .detail h3 { font-size: 1.25rem; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .detail h3 { font-size: 1.375rem; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     .detail .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
     @media (min-width: 760px) { .detail .grid.cmp { grid-template-columns: 5fr 7fr; } }
     .mol-svg { aspect-ratio: 4 / 3; display: grid; place-items: center; color: var(--muted); font-size: .875rem; text-align: center; }
     .mol-svg svg { width: 100%; height: auto; }
-    .stmt { font-size: .9rem; margin: 4px 0 8px; }
-    .abstract { line-height: 1.8; font-size: .95rem; }
-    .back { font-size: .9rem; display: inline-block; margin-bottom: 8px; }
+    .stmt { font-size: .875rem; margin: 4px 0 8px; }
+    .abstract { line-height: 1.8; }
+    .back { font-size: .875rem; display: inline-block; margin-bottom: 8px; }
   </style>
 </head>
 <body>
@@ -53,19 +50,21 @@
 
   <main class="container">
     <section class="hero">
-      <h1 data-i18n="hero.title">Flavor knowledge base</h1>
-      <p data-i18n="hero.intro"></p>
-      <div class="card legend">
-        <strong data-i18n="legend.title">Evidence tiers</strong>
-        <div><span><span class="tag t1k" data-i18n="legend.t1k"></span></span><span data-i18n="legend.t1k_desc"></span></div>
-        <div><span><span class="tag t1d" data-i18n="legend.t1d"></span></span><span data-i18n="legend.t1d_desc"></span></div>
-        <div><span><span class="tag t2" data-i18n="legend.t2"></span></span><span data-i18n="legend.t2_desc"></span></div>
-        <div><span><span class="tag t3" data-i18n="legend.t3"></span></span><span data-i18n="legend.t3_desc"></span></div>
-      </div>
+      <h1 data-i18n="hero.title">Flavor Knowledge Base</h1>
+      <nav class="proj-tabs" aria-label="Project">
+        <a href="./" data-i18n="nav.tool" aria-current="page">工具</a>
+        <a href="about.html" data-i18n="nav.about">方法与来源</a>
+      </nav>
+      <p class="sub" data-i18n="hero.sub"></p>
+      <p class="tiers"><span class="muted" data-i18n="legend.title">Evidence tiers</span>
+        <span class="tag t1k" data-i18n="legend.t1k" data-i18n-attr="title:legend.t1k_desc"></span>
+        <span class="tag t1d" data-i18n="legend.t1d" data-i18n-attr="title:legend.t1d_desc"></span>
+        <span class="tag t2" data-i18n="legend.t2" data-i18n-attr="title:legend.t2_desc"></span>
+        <span class="tag t3" data-i18n="legend.t3" data-i18n-attr="title:legend.t3_desc"></span>
+        <a class="help" href="about.html#tiers" aria-label="?">?</a></p>
     </section>
 
     <section class="section" id="search">
-      <h2 data-i18n="search.title">Search</h2>
       <form id="search-form" novalidate>
         <label class="field" for="search-input" data-i18n="search.label">Food or compound name</label>
         <div class="search-row">
@@ -73,13 +72,8 @@
                  data-i18n-attr="placeholder:search.placeholder">
           <button type="submit" class="btn" data-i18n="search.button">Search</button>
         </div>
-        <div class="examples small">
-          <span class="muted" data-i18n="search.examples">Examples:</span>
-          <button type="button" class="chip-btn" data-q="cultured butter">cultured butter</button>
-          <button type="button" class="chip-btn" data-q="strawberry">strawberry</button>
-          <button type="button" class="chip-btn" data-q="diacetyl">diacetyl</button>
-          <button type="button" class="chip-btn" data-q="methional">methional</button>
-        </div>
+        <p class="examples small"><span class="muted" data-i18n="search.examples">Examples:</span>
+          <span class="ex-list"><button type="button" class="linklike" data-q="cultured butter">cultured butter</button><button type="button" class="linklike" data-q="strawberry">strawberry</button><button type="button" class="linklike" data-q="diacetyl">diacetyl</button><button type="button" class="linklike" data-q="methional">methional</button></span></p>
       </form>
       <p class="status" id="search-status" aria-live="polite"></p>
       <div id="results"></div>
@@ -104,18 +98,15 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p data-i18n-html="footer.data"></p>
-      <p data-i18n-html="footer.apis"></p>
-      <p data-i18n-html="footer.code"></p>
-      <p data-i18n="footer.updating"></p>
+      <p class="tool-src" data-i18n-html="footer.short"></p>
       <p data-i18n-html="footer.site"></p>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js"></script>
   <script src="../assets/i18n.js?v=20261019v" data-page-dict="i18n/"></script>
-  <script src="kb.js"></script>
-  <script src="kb-ui.js"></script>
-  <script src="app.js?v=20261018f"></script>
+  <script src="kb.js?v=20261019v"></script>
+  <script src="kb-ui.js?v=20261019v"></script>
+  <script src="app.js?v=20261019v"></script>
 </body>
 </html>
