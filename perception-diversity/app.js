@@ -92,7 +92,8 @@
   // ---------- 1. data processing ----------
   function renderProcessing() {
     const p = D.processing;
-    $("hero-data").innerHTML = t("hero.data", { s: p.subjects, m: p.molecules, n: p.rows.toLocaleString() });
+    if ($("hero-data")) $("hero-data").innerHTML = t("hero.data", { s: p.subjects, m: p.molecules, n: p.rows.toLocaleString() });
+    if (!$("flow")) return;
     const steps = [
       ["flow.1", { n: p.rows.toLocaleString() }],
       ["flow.2", { m: p.molecules, fix: (p.identity.cid_replaced || 0) + p.cid_repaired }],
@@ -100,9 +101,8 @@
       ["flow.4", {}],
       ["flow.5", {}],
     ];
-    $("flow").innerHTML = steps.map(([k, v], i) =>
-      (i ? '<span class="arrow" aria-hidden="true">→</span>' : "") +
-      `<div class="step"><b>${esc(t(k + ".t"))}</b><span>${esc(t(k + ".d", v))}</span></div>`).join("");
+    $("flow").innerHTML = steps.map(([k, v]) =>
+      `<li>${esc(t(k + ".t"))}<span class="sep"></span>${esc(t(k + ".d", v))}</li>`).join("");
     const rc = p.row_checks;
     const tiles = [
       [p.rows.toLocaleString(), t("tile.rows")],
@@ -110,7 +110,8 @@
       [p.id_problem_molecules, t("tile.id_problems")],
       [pct(p.not_detected / p.rows), t("tile.not_detected")],
     ];
-    $("qc-tiles").innerHTML = tiles.map(([v, l]) => `<div class="tile"><div class="v">${esc(v)}</div><div class="l">${esc(l)}</div></div>`).join("");
+    $("qc-tiles").innerHTML = '<table class="data"><tbody>' +
+      tiles.map(([v, l]) => `<tr><td class="num">${esc(v)}</td><td>${esc(l)}</td></tr>`).join("") + "</tbody></table>";
 
     const rows = [
       [p.cid_repaired_names.join(", "), t("issue.cas_in_cid.what"), t("issue.cas_in_cid.fix")],
@@ -159,8 +160,11 @@
 
   // ---------- 2. variance decomposition ----------
   function renderVariance() {
-    const svg = $("var-svg"), tip = tipFor(svg);
     const vars = ["pleasantness", "intensity"];
+    const hp = D.variance.pleasantness.all, hi = D.variance.intensity.all, k = "personal_of_stimulus_related";
+    renderVarianceTable(vars, k);
+    if (!$("var-svg")) return;
+    const svg = $("var-svg"), tip = tipFor(svg);
     const h = 112, w = setup(svg, h), L = 86, R = 8, bh = 24;
     const x = lin(0, 1, L, w - R);
     xAxis(svg, x, [0, 0.25, 0.5, 0.75, 1], 6, h - 22, v => pct(v));
@@ -180,10 +184,15 @@
       });
     });
     legend("var-legend", COMP.map(c => [COMP_COLOR[c], t("comp." + c)]));
-    const hp = D.variance.pleasantness.all, hi = D.variance.intensity.all, k = "personal_of_stimulus_related";
-    $("var-hero").innerHTML = [[hp, "pleasantness"], [hi, "intensity"]].map(([s, v]) =>
-      `<div class="tile"><div class="v">${pct(s.shares[k])}</div><div class="l">${esc(t("var.hero." + v, { lo: pct(s.ci95[k][0]), hi: pct(s.ci95[k][1]) }))}</div></div>`).join("");
+    // OWID-style: one sentence under the chart with the key numbers in bold (no big-number tiles)
+    $("var-hero").innerHTML = t("var.line", {
+      pl: "<b>" + pct(hp.shares[k]) + "</b>", plo: pct(hp.ci95[k][0]), phi: pct(hp.ci95[k][1]),
+      in: "<b>" + pct(hi.shares[k]) + "</b>", ilo: pct(hi.ci95[k][0]), ihi: pct(hi.ci95[k][1]) });
     $("var-take").textContent = t("var.take", { noise: pct(hp.shares.noise) });
+  }
+
+  function renderVarianceTable(vars, k) {
+    if (!$("var-table")) return;
     const variants = ["all", "excl_low_retest", "excl_P55", "zscore", "nondetect_zero"];
     let html = `<thead><tr><th>${t("var.col.variant")}</th><th>${t("var.col.var")}</th>` + COMP.map(c => `<th class="num">${t("comp." + c)}</th>`).join("") + `<th class="num">${t("var.col.personal")}</th></tr></thead><tbody>`;
     vars.forEach(v => variants.forEach(vr => {
@@ -202,6 +211,7 @@
 
   // ---------- 3. individual spread ----------
   function renderSpread() {
+    if (!$("spread-svg")) return;
     const P = D.spread.presets, p = P[state.spread];
     const sel = $("spread-select");
     sel.innerHTML = P.map((q, i) => `<option value="${i}"${i === state.spread ? " selected" : ""}>${esc(q.name)}</option>`).join("");
@@ -229,9 +239,11 @@
 
   // ---------- 4. new-consumer demo ----------
   function renderDemo() {
+    if (!$("demo-svg")) return;
     const S = D.demo.subjects, s = S[state.demo];
     $("demo-select").innerHTML = S.map((q, i) => `<option value="${i}"${i === state.demo ? " selected" : ""}>${esc(q.s)}</option>`).join("");
-    $("demo-known").innerHTML = s.known.map(k => `<span>${esc(k.name)} <b>${k.y}</b></span>`).join("");
+    $("demo-known").innerHTML = esc(t("pred.known")) + " " +
+      s.known.map(k => `${esc(k.name)} <b>${k.y}</b>`).join(I18N.lang === "zh" ? "、" : ", ");
     const model = state.demoMode === "model";
     $("btn-model").setAttribute("aria-pressed", model);
     $("btn-panel").setAttribute("aria-pressed", !model);
@@ -278,6 +290,7 @@
 
   // ---------- 5. results table + curve ----------
   function renderPred() {
+    if (!$("pred-table")) return;
     const v = state.predVar, P = D.prediction[v];
     $("btn-pl").setAttribute("aria-pressed", v === "pleasantness");
     $("btn-in").setAttribute("aria-pressed", v === "intensity");
@@ -343,7 +356,15 @@
   // ---------- 6. segments ----------
   function renderSegments() {
     const S = D.segments, a = S.axes[0];
-    $("seg-verdict").textContent = t(S.decision.segments_supported ? "seg.verdict.yes" : "seg.verdict.no", { r: f2(S.pairwise_deviation_r.mean) });
+    const verdict = S.decision.segments_supported ? "seg.verdict.yes" : "seg.verdict.no";
+    if ($("seg-verdict")) {
+      // tool page: the one-sentence verdict and the score strip; the method page has the full text
+      $("seg-verdict").textContent = t(S.decision.segments_supported ? "seg.verdict.yes" : "seg.verdict.short");
+      renderScores(a);
+      return;
+    }
+    if (!$("seg-table")) return;
+    $("seg-verdict-full").textContent = t(verdict, { r: f2(S.pairwise_deviation_r.mean) });
     const tab = S.table.all;
     let html = `<thead><tr><th>${t("seg.col.method")}</th><th class="num">k</th><th class="num">${t("seg.col.sil")}</th><th class="num">${t("seg.col.null")}</th><th class="num">${t("seg.col.ari")}</th><th>${t("seg.col.sizes")}</th><th>${t("seg.col.pass")}</th></tr></thead><tbody>`;
     ["hierarchical", "kmeans"].forEach(m => Object.entries(tab[m]).forEach(([k, r]) => {
@@ -353,7 +374,11 @@
     }));
     $("seg-table").innerHTML = html + "</tbody>";
     $("seg-axis-text").textContent = t("seg.axis.text", { v: pct(a.variance_share, 1), vn: pct(a.null_p95, 1), r: f2(a.split_half_abs_r), rn: f2(a.split_half_null_p95), ri: f2(a.rho_with_panel_intensity) });
-    // subject scores strip
+    renderAxis(S, a);
+  }
+
+  // subject scores strip
+  function renderScores(a) {
     const svg = $("scores-svg"), tip = tipFor(svg);
     const h = 110, w = setup(svg, h), L = 10, R = 10;
     const ext = Math.max(...a.scores.map(Math.abs)) * 1.05;
@@ -367,7 +392,10 @@
     txt(svg, w - R, h - 18, t("seg.end.pos"), { class: "ink", "text-anchor": "end" });
     txt(svg, L, h - 3, t("seg.end.neg2"), { "text-anchor": "start" });
     txt(svg, w - R, h - 3, t("seg.end.pos2"), { "text-anchor": "end" });
-    // descriptor bars (intensity partialled), diverging
+  }
+
+  // descriptor bars (intensity partialled), diverging
+  function renderAxis(S, a) {
     const ds = Object.entries(a.descriptor_rho_intensity_partialled).sort((p, q) => q[1] - p[1]);
     const svg2 = $("axis-svg"), tip2 = tipFor(svg2);
     const rowH = 18, h2 = ds.length * rowH + 30, w2 = setup(svg2, h2), L2 = 118, R2 = 10;
@@ -386,6 +414,7 @@
   }
 
   function renderAll() {
+    if ($("pred-table")) document.title = t("about.page_title");
     renderProcessing();
     renderVariance();
     renderSpread();
@@ -397,18 +426,19 @@
   async function main() {
     await I18N.ready;
     try {
-      D = await (await fetch("data/site.json?v=20261019a")).json();
+      D = await (await fetch("data/site.json?v=20261019v")).json();
     } catch (e) {
       $("load-status").textContent = t("load_error");
       return;
     }
     $("load-status").classList.add("hidden");
-    $("spread-select").addEventListener("change", e => { state.spread = +e.target.value; renderSpread(); });
-    $("demo-select").addEventListener("change", e => { state.demo = +e.target.value; renderDemo(); });
-    $("btn-model").addEventListener("click", () => { state.demoMode = "model"; renderDemo(); });
-    $("btn-panel").addEventListener("click", () => { state.demoMode = "panel"; renderDemo(); });
-    $("btn-pl").addEventListener("click", () => { state.predVar = "pleasantness"; renderPred(); });
-    $("btn-in").addEventListener("click", () => { state.predVar = "intensity"; renderPred(); });
+    const on = (id, ev, fn) => { if ($(id)) $(id).addEventListener(ev, fn); };
+    on("spread-select", "change", e => { state.spread = +e.target.value; renderSpread(); });
+    on("demo-select", "change", e => { state.demo = +e.target.value; renderDemo(); });
+    on("btn-model", "click", () => { state.demoMode = "model"; renderDemo(); });
+    on("btn-panel", "click", () => { state.demoMode = "panel"; renderDemo(); });
+    on("btn-pl", "click", () => { state.predVar = "pleasantness"; renderPred(); });
+    on("btn-in", "click", () => { state.predVar = "intensity"; renderPred(); });
     // deep links for checking: ?spread=<i>&demo=<i>
     const q = new URLSearchParams(location.search);
     if (q.has("spread")) state.spread = Math.min(+q.get("spread") || 0, D.spread.presets.length - 1);
