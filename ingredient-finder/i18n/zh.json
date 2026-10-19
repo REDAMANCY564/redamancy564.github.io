@@ -117,5 +117,13 @@
   "excluded.cat.inorganic": "无机物（不含碳，另含碳酸）",
   "excluded.cat.organosilicon": "有机硅",
   "excluded.cat.non_volatile": "非挥发性、与气味无关",
-  "excluded.cat.mixture": "原始数据只以混合物形式出现"
+  "excluded.cat.mixture": "原始数据只以混合物形式出现",
+  "hero.sub": "按目标风味检索 5000 多个分子，或寻找气味相近的替代物。",
+  "a.score_short": "得分 = 想要的描述词减去不想要的描述词，按预测概率加权。",
+  "b.intro_short": "选一个分子：列出预测气味最相近的 20 个，橙色表示结构不同。",
+  "b.bg_summary": "为什么要找替代物？",
+  "about.page_title": "方法与来源 | 风味原料检索 | 崔京伟",
+  "about.workflow": "本工具是站内五步风味工作流的一环：预测单分子气味、浏览气味空间、找原料或替代物（本工具）、配方改良、GC-MS 结果解读。",
+  "about.b_method": "气味相似度是两个分子 138 个描述词预测概率向量的余弦相似度（在验证集上选定）；结构相似度是两者 Morgan 指纹（半径 2，2048 位）的 Tanimoto 系数。散点图展示库中每个分子与查询分子在这两方面的相似度。",
+  "footer.short": "结果仅为候选清单；安全性与法规合规需另行核查（目前未显示法规状态）· 气味模型 CC BY-NC，仅限非商业学术演示 · <a href=\"about.html\">方法与来源 →</a>"
 }

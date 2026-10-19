@@ -117,5 +117,13 @@
   "excluded.cat.inorganic": "Inorganic (no carbon; plus carbonic acid)",
   "excluded.cat.organosilicon": "Organosilicon",
   "excluded.cat.non_volatile": "Non-volatile, not odor-related",
-  "excluded.cat.mixture": "Only mixtures in the original data"
+  "excluded.cat.mixture": "Only mixtures in the original data",
+  "hero.sub": "Search 5,000+ molecules by target flavor, or find substitutes that smell alike.",
+  "a.score_short": "Score = wanted minus unwanted descriptors, weighted by predicted probability.",
+  "b.intro_short": "Pick a molecule: the 20 most similar in predicted odor; orange ones differ in structure.",
+  "b.bg_summary": "Why look for a substitute?",
+  "about.page_title": "About | Flavor Ingredient Finder | Jingwei Cui",
+  "about.workflow": "Part of a five-step flavor workflow on this site: predict a molecule's odor, browse the odor space, find ingredients or substitutes (this tool), improve a formulation, interpret GC-MS results.",
+  "about.b_method": "Odor similarity is the cosine similarity of two molecules' predicted probabilities for 138 descriptors (chosen on the validation split); structure similarity is the Tanimoto coefficient of their Morgan fingerprints (radius 2, 2048 bits). The scatter plot shows both for every library molecule against the query.",
+  "footer.short": "Shortlist only; check safety and regulatory status separately (no regulatory status shown yet) · Odor model CC BY-NC, non-commercial academic demo only · <a href=\"about.html\">Method &amp; sources →</a>"
 }
