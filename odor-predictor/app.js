@@ -193,17 +193,8 @@
     if (kb && kb.terms && kb.terms.length) {
       const head = document.createElement("div");
       head.style.marginTop = "6px";
-      head.textContent = I18N.t("status.kb_" + kb.source, { page: kb.page });
+      head.textContent = I18N.t("status.kb_" + kb.source, { page: kb.page }) + " " + kb.terms.join(I18N.lang === "zh" ? "、" : ", ");
       status.appendChild(head);
-      const chips = document.createElement("div");
-      chips.className = "chips";
-      kb.terms.forEach(term => {
-        const c = document.createElement("span");
-        c.className = "chip";
-        c.textContent = term;
-        chips.appendChild(c);
-      });
-      status.appendChild(chips);
     }
   }
 
@@ -369,7 +360,7 @@
     e.preventDefault();
     runSearch($("search-input").value);
   });
-  document.querySelectorAll(".chip-btn[data-q]").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll("button[data-q]").forEach(b => b.addEventListener("click", () => {
     $("search-input").value = b.dataset.q;
     runSearch(b.dataset.q);
   }));
