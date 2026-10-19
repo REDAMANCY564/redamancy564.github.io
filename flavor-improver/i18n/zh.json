@@ -44,7 +44,7 @@
   "ctl.normal": "中",
   "ctl.fast": "快",
   "ctl.run_live": "用当前阈值重新优化",
-  "ctl.running": "正在浏览器中优化...",
+  "ctl.running": "正在浏览器中优化……",
   "step.info": "第 <b>{n}</b> / {total} 次试验 · 当前最优得分 <b>{score}</b> · 余弦相似度 {cos}",
   "step.ready": "共 {total} 次试验，点击「开始优化」播放。",
   "step.ready_live": "点击「用当前阈值重新优化」，在你的浏览器中运行 {total} 次试验。",

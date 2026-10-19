@@ -27,7 +27,7 @@
   "w.mid": "medium",
   "w.low": "low",
   "a.score_note": "Score = sum(weight x predicted probability of each wanted descriptor) - sum(weight x predicted probability of each unwanted descriptor); weights: high 1, medium 0.5, low 0.25.",
-  "f.natural": "Only molecules with a record of natural occurrence in food",
+  "f.natural": "Only molecules recorded as occurring naturally in food",
   "f.unseen": "Only molecules not used in training",
   "f.unseen_help": "Not used in training = validation, test and knowledge-base molecules that are not in the original dataset, {n} in total; the validation set was used to decide when to stop training.",
   "a.need_want": "Choose at least one wanted descriptor, or click an example.",
@@ -92,7 +92,7 @@
   "b.computing": "Computing...",
   "b.need_rdkit": "RDKit failed to load, so SMILES input is unavailable; please reload.",
   "b.query": "Query molecule",
-  "b.query_new": "Your molecule (not in the library; odor predicted live by the model)",
+  "b.query_new": "Your molecule (not in the library; odor predicted live)",
   "b.query_lib_match": "This structure is in the library; its library data are used.",
   "b.fragments": "Only the largest fragment was kept.",
   "b.scatter_title": "Odor similarity vs structure similarity",
@@ -119,11 +119,11 @@
   "excluded.cat.non_volatile": "Non-volatile, not odor-related",
   "excluded.cat.mixture": "Only mixtures in the original data",
   "hero.sub": "Search 5,000+ molecules by target flavor, or find substitutes that smell alike.",
-  "a.score_short": "Score = wanted minus unwanted descriptors, weighted by predicted probability.",
+  "a.score_short": "Score = sum of weight × predicted probability for wanted descriptors, minus the same for unwanted ones.",
   "b.intro_short": "Pick a molecule: the 20 most similar in predicted odor; orange ones differ in structure.",
   "b.bg_summary": "Why look for a substitute?",
   "about.page_title": "About | Flavor Ingredient Finder | Jingwei Cui",
   "about.workflow": "Part of a five-step flavor workflow on this site: predict a molecule's odor, browse the odor space, find ingredients or substitutes (this tool), improve a formulation, interpret GC-MS results.",
   "about.b_method": "Odor similarity is the cosine similarity of two molecules' predicted probabilities for 138 descriptors (chosen on the validation split); structure similarity is the Tanimoto coefficient of their Morgan fingerprints (radius 2, 2048 bits). The scatter plot shows both for every library molecule against the query.",
-  "footer.short": "Shortlist only; check safety and regulatory status separately (no regulatory status shown yet) · Odor model CC BY-NC, non-commercial academic demo only · <a href=\"about.html\">Method &amp; sources →</a>"
+  "footer.short": "Shortlist only; check safety and regulatory status separately (not shown here) · Odor model CC BY-NC, non-commercial academic demo only · <a href=\"about.html\">Method &amp; sources →</a>"
 }

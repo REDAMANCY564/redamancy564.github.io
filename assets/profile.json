@@ -5,12 +5,12 @@
     "zh": "崔京伟"
   },
   "tagline": {
-    "en": "Food Science PhD candidate | Flavor Chemistry × Machine Learning",
-    "zh": "食品科学博士研究生 | 风味化学 × 机器学习"
+    "en": "Food Science PhD candidate · Flavor chemistry and machine learning",
+    "zh": "食品科学博士在读 · 风味化学与机器学习"
   },
   "bio": {
-    "en": "I'm a Food Science PhD candidate at Jiangnan University, with joint PhD training at the National University of Singapore, graduating in June 2027. I work on flavor chemistry and machine learning: GC-MS and GC-O analysis, sensory evaluation, and models that link molecules to perception. In the lab I built a GC-MS processing system that has handled more than 3,000 samples; the tools below are browser versions of that kind of work.",
-    "zh": "江南大学食品科学与工程博士在读，在新加坡国立大学进行联合培养，2027 年 6 月毕业。研究方向是风味化学与机器学习：GC-MS / GC-O 分析、感官评价，以及把分子和感知联系起来的模型。在实验室里我开发过一套 GC-MS 数据处理系统，累计处理样品 3000 多个；下面这些工具是同类工作的浏览器版本。"
+    "en": "I'm a Food Science PhD candidate at Jiangnan University, with joint PhD training at the National University of Singapore, graduating in June 2027. My work combines flavor chemistry and machine learning: GC-MS and GC-O analysis, sensory evaluation, and models that predict perception from molecules. During my PhD I built a GC-MS data processing system that has handled more than 3,000 samples. The tools below run directly in your browser.",
+    "zh": "江南大学食品科学与工程博士在读，在新加坡国立大学联合培养，2027 年 6 月毕业。我的研究把风味化学和机器学习结合起来，包括 GC-MS / GC-O 分析、感官评价，以及从分子预测感知的模型。读博期间我开发了一套 GC-MS 数据处理系统，已处理 3000 多个样品。下面的工具都可以直接在浏览器里使用。"
   },
   "email": "e1719854@u.nus.edu",
   "github": "https://github.com/REDAMANCY564",

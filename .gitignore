@@ -33,3 +33,8 @@ desktop.ini
 
 # Review notes for the redesign: kept local only
 /REVIEW.md
+
+# Local working files: Word CV source, text export and edit list
+/简历-*.docx
+/site-text.md
+/TEXT-EDITS.md
