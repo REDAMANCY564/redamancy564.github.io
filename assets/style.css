@@ -14,7 +14,9 @@
   --accent-soft: #e3f1ef;
   --warn-soft: #fdf3e1;
   --warn: #8a5a00;
-  --radius: 10px;
+  --hi: #c2410c;      /* highlight only: "differs in structure", positive atom contribution */
+  --error: #b42318;
+  --radius: 4px;
   --shadow: none;
   /* Serif for headings (Osmo-style contrast with the sans body): a self-hosted Latin subset of
      Source Serif 4 (assets/fonts, allowed by the strict CSP pages); Chinese uses the system Song face. */
@@ -176,6 +178,12 @@ tr.highlight td { font-weight: 700; }
 
 /* Atom contribution view (assets/contrib.js), odor and taste pages */
 .contrib-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 4px 0 10px; font-size: .85rem; }
+/* Pill buttons: only for clickable toggles (chosen descriptor, mode, legend switch) */
+.chip-btn { font: inherit; font-size: .875rem; padding: 2px 10px; border-radius: 999px; cursor: pointer;
+            border: 1px solid var(--border); background: var(--surface); color: var(--text); max-width: 100%;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip-btn:hover { border-color: var(--accent); }
+.chip-btn.on, .chip-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .contrib-picker .chip-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .contrib-legend { margin-bottom: 10px; }
 .contrib-title { font-weight: 600; font-size: .9rem; margin-bottom: 4px; }
@@ -285,3 +293,18 @@ a.help:hover { border-color: var(--accent); color: var(--accent); }
 @media (max-width: 560px) {
   .cv-entry { grid-template-columns: 1fr; gap: 0; }
 }
+
+/* Method pages: numbered steps instead of icon cards with arrows */
+.steps { padding-left: 1.4em; margin: var(--sp-2) 0 var(--sp-4); }
+.steps li { margin-bottom: var(--sp-2); }
+.steps .sep::before { content: ": "; }
+:lang(zh) .steps .sep::before { content: "："; }
+
+/* Examples as plain text buttons: "Examples: linalool, 5989-27-5, CCOC(=O)CC(C)C" */
+button.linklike { font: inherit; border: 0; background: none; padding: 0; color: var(--accent); cursor: pointer;
+                  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+button.linklike:hover { text-decoration-thickness: 2px; }
+button.linklike.on { color: var(--text); font-weight: 600; text-decoration: none; }
+.ex-list .linklike + .linklike::before { content: ", "; display: inline-block; white-space: pre; color: var(--muted); }
+:lang(zh) .ex-list .linklike + .linklike::before { content: "、"; }
+.error-text { color: var(--error); }
