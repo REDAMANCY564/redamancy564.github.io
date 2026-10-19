@@ -81,5 +81,18 @@
   "home.group.perception": "Perception and consumer science",
   "home.perc.title": "Why People Smell Differently",
   "home.perc.desc": "Public smell ratings of 480 molecules by 55 people: how much of the differences comes from the molecule, personal taste or noise; whether a new consumer's preferences can be predicted from a few ratings; and whether consumer segments exist. Labels are standardized and the data quality-checked first.",
-  "home.perc.tags": "Variance decomposition · Personalized prediction · Data quality"
+  "home.perc.tags": "Variance decomposition · Personalized prediction · Data quality",
+  "nav.tool": "Tool",
+  "nav.about": "About",
+  "nav.code": "Code",
+  "nav.projects": "Projects",
+  "about.overview": "Overview",
+  "about.method": "Method",
+  "about.results": "Results",
+  "about.tried": "Tried, not adopted",
+  "about.limits": "Limitations",
+  "about.data": "Data, licenses & citations",
+  "about.code": "Code",
+  "about.back": "← Back to the tool",
+  "src.more": "Method & sources →"
 }

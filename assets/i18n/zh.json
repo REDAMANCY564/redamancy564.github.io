@@ -81,5 +81,18 @@
   "home.group.perception": "感知与消费者科学",
   "home.perc.title": "同一个气味，为什么每个人感受不同",
   "home.perc.desc": "用 55 人对 480 个分子的公开嗅觉评价数据，拆分评分差异来自分子、个人口味还是噪音，测试能否用少量评分预测新消费者的喜好，并检验是否存在消费者群体；数据先经过标签标准化和质量检查。",
-  "home.perc.tags": "方差分解 · 个性化预测 · 数据质量"
+  "home.perc.tags": "方差分解 · 个性化预测 · 数据质量",
+  "nav.tool": "工具",
+  "nav.about": "方法与来源",
+  "nav.code": "代码",
+  "nav.projects": "项目",
+  "about.overview": "概述",
+  "about.method": "方法",
+  "about.results": "结果",
+  "about.tried": "试过但未采用",
+  "about.limits": "局限",
+  "about.data": "数据、许可与引用",
+  "about.code": "代码",
+  "about.back": "← 返回工具",
+  "src.more": "方法与来源 →"
 }
