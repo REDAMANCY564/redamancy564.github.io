@@ -126,7 +126,7 @@
   "m.global_mean": "Overall mean (baseline; a constant, so r is meaningless)",
   "m.personal_mean": "Personal mean (baseline)",
   "m.personal_mean5": "Personal mean from the 5 ratings (baseline)",
-  "m.population": "Population model (odor-model features → panel mean)",
+  "m.population": "Population model (odor-model features predict the panel mean)",
   "m.population_offset": "+ personal offset",
   "m.population_offset_slopes": "+ personal preference for odor features",
   "m.fp_full": "Same, with structural fingerprints instead (control)",
