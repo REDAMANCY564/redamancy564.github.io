@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Simon Cui</title>
-  <meta name="description" content="Simon Cui: Food Science PhD candidate working on flavor chemistry and machine learning.">
+  <title>Jingwei Cui</title>
+  <meta name="description" content="Jingwei Cui: Food Science PhD candidate working on flavor chemistry and machine learning.">
   <link rel="stylesheet" href="assets/style.css?v=20261019a">
 </head>
 <body>
   <header class="site-header">
     <div class="container">
-      <a class="brand" href="./" id="brand-name">Simon Cui</a>
+      <a class="brand" href="./" id="brand-name">Jingwei Cui</a>
       <button class="lang-toggle" id="lang-toggle" type="button">
         <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
       </button>
@@ -19,7 +19,7 @@
 
   <main class="container">
     <section class="hero">
-      <h1 id="name">Simon Cui</h1>
+      <h1 id="name">Jingwei Cui</h1>
       <p class="muted" id="tagline"></p>
     </section>
 
@@ -122,8 +122,8 @@
       }
 
       function render() {
-        const name = I18N.pick(profile.name) || "Simon Cui";
-        document.getElementById("name").textContent = I18N.lang === "zh" ? name + " Simon Cui" : name;
+        const name = I18N.pick(profile.name) || "Jingwei Cui";
+        document.getElementById("name").textContent = I18N.lang === "zh" ? name + " Jingwei Cui" : name;
         document.getElementById("brand-name").textContent = name;
         document.getElementById("tagline").textContent = I18N.pick(profile.tagline) || "";
         document.title = I18N.t("home.page_title");

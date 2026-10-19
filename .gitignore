@@ -23,3 +23,10 @@ desktop.ini
 
 # User's own lab data placed in the repo folder for testing : never publish
 /*.xlsx
+
+# Personal source files kept out of the public repo: real photo, competitor screenshots,
+# original CV with phone number, full-size avatar source (only assets/avatar.webp is published)
+/个人照片.jpg
+/截图/
+/简历-*.pdf
+/肖像.png

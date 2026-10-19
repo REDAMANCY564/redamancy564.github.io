@@ -1,5 +1,5 @@
 {
-  "page.title": "Why People Smell Differently | Simon Cui",
+  "page.title": "Why People Smell Differently | Jingwei Cui",
   "hero.title": "Why people smell the same odor differently",
   "hero.intro": "The same odor can delight one person and repel another. This project uses public human smell ratings to find out where these differences come from, and tries to predict who will like an odor. This is a core question in fragrance development and consumer research.",
   "hero.data": "Data: {s} participants rated {m} molecules (each at two concentrations), {n} records in total (Keller &amp; Vosshall, 2016). All results are precomputed.",

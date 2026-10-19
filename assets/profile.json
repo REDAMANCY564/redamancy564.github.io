@@ -1,6 +1,6 @@
 {
   "_help": "Fill in your details here. Leave a field as \"\" to hide it on the page. cv_pdf is a path relative to the site root, e.g. assets/cv.pdf",
-  "name": { "en": "Simon Cui", "zh": "崔京伟" },
+  "name": { "en": "Jingwei Cui", "zh": "崔京伟" },
   "tagline": {
     "en": "Food Science PhD candidate | Flavor Chemistry × Machine Learning",
     "zh": "食品科学博士研究生 | 风味化学 × 机器学习"

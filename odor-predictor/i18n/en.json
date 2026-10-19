@@ -1,5 +1,5 @@
 {
-  "page.title": "Odor Predictor | Simon Cui",
+  "page.title": "Odor Predictor | Jingwei Cui",
   "hero.title": "Predicting smell from molecular structure",
   "hero.intro": "What a molecule smells like is largely decided by its structure: which atoms it contains and how they are connected. This project trains an AI model, a graph neural network, to read a molecule's structure and predict the words flavorists would use to describe its smell, such as fruity, buttery or roasted. Tools like this can help flavor developers screen candidate molecules on a computer before going into the lab.",
   "demo.title": "Try it",

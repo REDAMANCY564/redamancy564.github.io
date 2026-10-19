@@ -1,5 +1,5 @@
 {
-  "page.title": "Taste Predictor | Simon Cui",
+  "page.title": "Taste Predictor | Jingwei Cui",
   "hero.title": "Predicting taste from molecular structure",
   "hero.intro": "Whether a molecule tastes sweet, bitter or umami is closely linked to its structure. This project trains an AI model (a graph neural network) to read the structure of small molecules and estimate how likely each one is to be sweet, bitter, umami or tasteless. Tools like this can help food developers screen candidate molecules on a computer before sensory testing, for example to flag ingredients that may bring bitterness.",
 

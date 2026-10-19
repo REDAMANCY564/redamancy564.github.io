@@ -1,5 +1,5 @@
 {
-  "page.title": "Odor Space Map | Simon Cui",
+  "page.title": "Odor Space Map | Jingwei Cui",
   "hero.title": "Odor space map",
   "hero.intro": "Each dot is a molecule, {n} in total. Its position comes from the odor features that an AI model infers from the molecular structure: the closer two dots are, the more similar the model thinks they smell. Switch to the \"structure map\" to compare: arranged by structure alone, molecules that smell alike are often scattered.",
   "loading": "Loading the map...",

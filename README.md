@@ -1,4 +1,4 @@
-# Simon Cui 个人网站 + 分子气味预测（GNN）
+# Jingwei Cui 个人网站 + 分子气味预测（GNN）
 
 - 个人主页：https://redamancy564.github.io/
 - 项目页：https://redamancy564.github.io/odor-predictor/

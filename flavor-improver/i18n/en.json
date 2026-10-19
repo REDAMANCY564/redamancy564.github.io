@@ -1,5 +1,5 @@
 {
-  "page.title": "Flavor Improver | Simon Cui",
+  "page.title": "Flavor Improver | Jingwei Cui",
   "hero.title": "Improving dairy flavor with Bayesian optimization",
   "hero.intro": "Developing the flavor of a product means adjusting the recipe again and again, and every round needs a sensory evaluation, which is slow and expensive. Bayesian optimization is a search method that learns from every trial and tries to reach the target with as few trials as possible. This page demonstrates the idea with a virtual evaluation function in place of a sensory panel: pick a dairy product as the base, set a direction of improvement, and watch the algorithm decide which flavor compounds to add and how much.",
   "hero.disclaimer": "<b>This is a demonstration of a method, not a recipe recommendation.</b> The evaluation function is built from single-molecule odor predictions and a simplified additive rule, and it ignores masking, synergy and matrix effects. In real work it would be replaced by a sensory panel or GC-O experiments; the value of Bayesian optimization is reaching the target with as few trials as possible.",

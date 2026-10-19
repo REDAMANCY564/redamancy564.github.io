@@ -1,5 +1,5 @@
 {
-  "page.title": "GC-MS Flavor Interpreter | Simon Cui",
+  "page.title": "GC-MS Flavor Interpreter | Jingwei Cui",
   "hero.title": "GC-MS flavor interpreter",
   "hero.intro": "Upload the GC-MS peak table of one sample and your standard file (target list): the page recognizes the table format, unifies compound names and CAS numbers, handles duplicate peaks and peaks with several library hits by explicit rules, finds the relative content of every target, then uses odor thresholds to compute OAV or ROAV, rank key aroma compounds and draw a flavor profile. The focus is on aligning data from different instruments and naming habits accurately.",
   "scope.text": "This site is built for quickly processing a single sample: upload one file containing the peak table of one sample at a time. To process hundreds or thousands of samples in batch, please email",
