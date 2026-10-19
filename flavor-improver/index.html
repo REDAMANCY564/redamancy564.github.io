@@ -8,7 +8,7 @@
   <meta name="description" content="A demonstration of Bayesian optimization for dairy flavor improvement, with a virtual evaluation function.">
   <link rel="stylesheet" href="../assets/style.css?v=20261019v">
   <style>
-    .btn { font: inherit; font-weight: 600; padding: 8px 18px; border-radius: 8px; border: 1px solid var(--accent);
+    .btn { font: inherit; font-weight: 600; padding: 8px 18px; border-radius: 4px; border: 1px solid var(--accent);
            background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
     .btn.secondary { background: var(--surface); color: var(--accent); }
     .user-slots { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 12px 0; }
@@ -28,15 +28,15 @@
     .user-req summary { cursor: pointer; }
     .user-req li { margin-bottom: 4px; }
     .user-table input.thr { width: 7.5em; }
-    .user-table .smiles-in { width: 100%; min-width: 14em; max-width: none; padding: 4px 6px; font-size: .85rem; font-family: ui-monospace, Consolas, monospace; }
-    .error { color: #b42318; }
+    .user-table .smiles-in { width: 100%; min-width: 14em; max-width: none; padding: 4px 6px; font-size: .875rem; font-family: ui-monospace, Consolas, monospace; }
+    .error { color: var(--error); }
     .btn:disabled { opacity: .55; cursor: not-allowed; }
-    .btn-sm { font: inherit; font-size: .8rem; padding: 1px 8px; border-radius: 6px; border: 1px solid var(--border);
+    .btn-sm { font: inherit; font-size: .875rem; padding: 1px 8px; border-radius: 4px; border: 1px solid var(--border);
               background: var(--surface); color: var(--accent); cursor: pointer; }
     .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 16px 0 8px; }
-    .controls label { font-size: .9rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-    .controls select { width: auto; padding: 5px 8px; font-size: .9rem; }
-    .step-info { font-variant-numeric: tabular-nums; font-size: .95rem; }
+    .controls label { font-size: .875rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+    .controls select { width: auto; padding: 5px 8px; font-size: .875rem; }
+    .step-info { font-variant-numeric: tabular-nums; }
     .step-info b { color: var(--accent); }
 
     .base-meta { margin: 10px 0 0; }
@@ -44,38 +44,27 @@
     @media (min-width: 760px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
     .chart-box { position: relative; height: 340px; }
     .chart-box.line { height: 260px; }
-    .chart-cap { font-size: .85rem; color: var(--muted); margin: 8px 0 0; }
+    .chart-cap { font-size: .875rem; color: var(--muted); margin: 8px 0 0; }
 
-    .dirs { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
-    .dir { font-size: .85rem; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); }
-    .dir.up { border-color: var(--accent); color: var(--accent); font-weight: 600; }
-    .dir.down { border-color: #8a5a00; color: #8a5a00; font-weight: 600; }
+    /* Direction of improvement: plain text with arrows as data marks (not links) */
+    .dirs { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 8px 0 4px; }
+    .dir { font-weight: 600; }
+    .dir.up { color: var(--accent); }
+    .dir.down { color: var(--warn); }
+    .mode-pick { margin: 0 0 var(--sp-3); }
+    .ref-notice li:first-child { font-weight: 600; }
 
     input.thr { font: inherit; font-size: .875rem; width: 7.5em; padding: 3px 6px; border: 1px solid var(--border);
-                border-radius: 6px; text-align: right; font-variant-numeric: tabular-nums; background: var(--surface); }
+                border-radius: 4px; text-align: right; font-variant-numeric: tabular-nums; background: var(--surface); }
     input.thr:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
     tr.modified input.thr { border-color: #8a5a00; background: var(--warn-soft); }
-    td .sub { display: block; font-size: .78rem; color: var(--muted); white-space: nowrap; }
-    th .sub { display: block; font-weight: 400; font-size: .78rem; }
+    td .sub { display: block; font-size: .875rem; color: var(--muted); white-space: nowrap; }
+    th .sub { display: block; font-weight: 400; font-size: .875rem; }
     .thr-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0; }
     details.thr-more { margin-top: 12px; }
     details.thr-more summary { cursor: pointer; color: var(--accent); font-weight: 600; }
     .mode-note { margin-top: 12px; }
 
-    .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 8px 0 20px; }
-    .flow .step { flex: 1 1 120px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; }
-    .flow .step b { display: block; }
-    .flow .step span { font-size: .85rem; color: var(--muted); }
-    .flow .arrow { align-self: center; color: var(--accent); font-size: 1.4rem; }
-    .flow .loop { flex-basis: 100%; text-align: center; font-size: .85rem; color: var(--muted); }
-    @media (max-width: 699px) {
-      .flow { flex-direction: column; }
-      .flow .step { flex-basis: auto; }
-      .flow .arrow { transform: rotate(90deg); }
-    }
-    .formula { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
-               font-size: .9rem; overflow-x: auto; }
-    .formula p { margin: 0 0 4px; white-space: nowrap; }
     h3.sub-h { margin-top: 20px; }
     .grid-2 > * { min-width: 0; }   /* let wide tables scroll inside their card instead of widening the page */
     .pre-table { min-width: 700px; }
@@ -84,9 +73,6 @@
     .pre-table td:nth-child(4) { min-width: 9em; }
     .pre-table td:nth-child(5) { min-width: 9em; }
     .pre-table td:nth-child(6) { min-width: 9em; }
-    .results-table td:first-child { white-space: normal; min-width: 15em; }
-    .results-table td { white-space: normal; }
-    .results-table td.num { white-space: nowrap; }
   </style>
 </head>
 <body>
@@ -105,18 +91,27 @@
 
   <main class="container">
     <section class="hero">
-      <h1 data-i18n="hero.title">Improving dairy flavor with Bayesian optimization</h1>
-      <p data-i18n="hero.intro"></p>
+      <h1 data-i18n="hero.title">Flavor Improver</h1>
+      <nav class="proj-tabs" aria-label="Project">
+        <a href="./" data-i18n="nav.tool" aria-current="page">工具</a>
+        <a href="about.html" data-i18n="nav.about">方法与来源</a>
+      </nav>
+      <p class="sub" data-i18n="hero.sub"></p>
       <div class="note warn" data-i18n-html="hero.disclaimer"></div>
-      <p class="note" data-i18n-html="hero.own_data"></p>
     </section>
 
     <!-- Demo -->
     <section class="section" id="demo">
-      <h2 data-i18n="demo.title">Try it</h2>
-      <label class="field" for="preset" data-i18n="demo.select">Choose an example</label>
-      <select id="preset"></select>
+      <div class="mode-pick">
+        <span class="seg" id="mode-seg" role="group" data-i18n-attr="aria-label:mode.label">
+          <button type="button" data-mode="bo" aria-pressed="true" data-i18n="mode.bo">Bayesian optimization demo</button>
+          <button type="button" data-mode="ref" aria-pressed="false" data-i18n="ref.option_short">Formula vs human milk</button>
+          <button type="button" data-mode="user" aria-pressed="false" data-i18n="user.option_short">Your GC-MS data</button>
+        </span>
+      </div>
       <div id="bo-area">
+      <label class="field" for="preset" data-i18n="demo.select">Choose a dairy base</label>
+      <select id="preset"></select>
       <p class="small muted base-meta" id="base-meta"></p>
 
       <h3 class="sub-h" data-i18n="base.title">Base composition and odor thresholds</h3>
@@ -175,7 +170,7 @@
         </label>
         <span class="step-info" id="step-info" aria-live="polite"></span>
       </div>
-      <div class="note warn mode-note" id="mode-note" hidden></div>
+      <p class="small warn-text mode-note" id="mode-note" hidden></p>
 
       <div class="grid-2">
         <div class="card">
@@ -209,21 +204,18 @@
       <!-- Example 5: reference-food mode (gap analysis, precursor directions) -->
       <div id="ref-area" hidden>
         <p class="small muted base-meta" id="ref-meta"></p>
-        <div class="note warn" style="margin-top:12px">
-          <p style="margin:0 0 6px"><b data-i18n="ref.notice_title"></b></p>
-          <ul class="plain small">
-            <li data-i18n-html="ref.notice.1"></li>
-            <li data-i18n-html="ref.notice.2"></li>
-            <li data-i18n-html="ref.notice.3"></li>
-            <li data-i18n-html="ref.notice.4"></li>
-          </ul>
-        </div>
+        <ul class="plain small ref-notice" style="margin-top:12px">
+          <li data-i18n-html="ref.notice.1"></li>
+          <li data-i18n-html="ref.notice.2"></li>
+          <li data-i18n-html="ref.notice.3"></li>
+          <li data-i18n-html="ref.notice.4"></li>
+        </ul>
 
         <h3 class="sub-h" data-i18n="ref.input_title"></h3>
         <p class="small muted" data-i18n="ref.input_intro"></p>
         <div class="thr-tools">
           <label class="small"><span data-i18n="ref.cutoff"></span>
-            <select id="ref-cutoff" style="width:auto;padding:4px 8px;font-size:.875rem">
+            <select id="ref-cutoff" style="width:auto;padding:4px 8px">
               <option value="10">OAV ≥ 10</option>
               <option value="5">OAV ≥ 5</option>
             </select>
@@ -263,7 +255,7 @@
         <div class="card" style="margin-top:16px">
           <h3 data-i18n="ref.dir_title"></h3>
           <ul class="plain small" id="ref-dirs"></ul>
-          <div class="note" style="margin-top:12px" data-i18n-html="ref.no_amount"></div>
+          <p class="small" style="margin-top:12px" data-i18n-html="ref.no_amount"></p>
         </div>
 
         <h3 class="sub-h" data-i18n="ref.lower_title"></h3>
@@ -287,7 +279,7 @@
 
         <details class="thr-more" id="ref-sim">
           <summary data-i18n="ref.sim_title"></summary>
-          <div class="note warn" style="margin-top:8px" data-i18n-html="ref.sim_warning"></div>
+          <p class="small warn-text" style="margin-top:8px" data-i18n-html="ref.sim_warning"></p>
           <div class="controls">
             <button type="button" class="btn secondary" id="ref-sim-run" data-i18n="ref.sim_run"></button>
             <span class="step-info" id="ref-sim-info"></span>
@@ -311,11 +303,9 @@
 
       <!-- Use my own data (PLAN-userdata.md): sample vs target from gcms-interpreter -->
       <div id="user-area" hidden>
-        <div class="note" style="margin-top:12px">
-          <p style="margin:0 0 6px" data-i18n-html="user.intro"></p>
-          <p class="small" style="margin:0" data-i18n-html="user.privacy"></p>
-        </div>
-        <details class="card user-req" open>
+        <p style="margin-top:12px" data-i18n-html="user.intro"></p>
+        <p class="small" data-i18n-html="user.privacy"></p>
+        <details class="card user-req">
           <summary><b data-i18n="user.req_title">CSV file requirements</b></summary>
           <ul class="plain small" style="margin-top:8px">
             <li data-i18n-html="user.req.1"></li>
@@ -340,7 +330,7 @@
         <div id="user-cmp" hidden>
           <h3 class="sub-h" data-i18n="user.cmp_title">Comparison</h3>
           <label class="small"><span data-i18n="user.view">Profile dimensions</span>
-            <select id="user-view" style="width:auto;padding:4px 8px;font-size:.875rem">
+            <select id="user-view" style="width:auto;padding:4px 8px">
               <option value="dairy" data-i18n="user.view_dairy">12 dairy dimensions</option>
               <option value="ref" data-i18n="user.view_ref">12 dimensions of example 5</option>
               <option value="all" data-i18n="user.view_all">all 138 descriptors</option>
@@ -360,10 +350,8 @@
           </div>
 
           <h3 class="sub-h" data-i18n="user.rec_title">What to add</h3>
-          <div class="note warn">
-            <p class="small" style="margin:0 0 4px" data-i18n-html="user.rec_notice1"></p>
-            <p class="small" style="margin:0" data-i18n-html="user.rec_notice2"></p>
-          </div>
+          <p class="small" style="margin:0 0 4px" data-i18n-html="user.rec_notice1"></p>
+          <p class="small muted" style="margin:0" data-i18n-html="user.rec_notice2"></p>
           <div id="user-rec" style="margin-top:10px"></div>
         </div>
 
@@ -383,145 +371,23 @@
         </dialog>
       </div>
     </section>
-
-    <!-- Method -->
-    <section class="section" id="method">
-      <h2 data-i18n="method.title">How it works</h2>
-      <div class="flow">
-        <div class="step"><b data-i18n="flow.1.title"></b><span data-i18n="flow.1.sub"></span></div>
-        <div class="arrow" aria-hidden="true">→</div>
-        <div class="step"><b data-i18n="flow.2.title"></b><span data-i18n="flow.2.sub"></span></div>
-        <div class="arrow" aria-hidden="true">→</div>
-        <div class="step"><b data-i18n="flow.3.title"></b><span data-i18n="flow.3.sub"></span></div>
-        <div class="arrow" aria-hidden="true">→</div>
-        <div class="step"><b data-i18n="flow.4.title"></b><span data-i18n="flow.4.sub"></span></div>
-        <div class="arrow" aria-hidden="true">→</div>
-        <div class="step"><b data-i18n="flow.5.title"></b><span data-i18n="flow.5.sub"></span></div>
-        <div class="loop" data-i18n="flow.loop"></div>
-      </div>
-      <p data-i18n-html="method.gp"></p>
-      <p data-i18n-html="method.acq"></p>
-      <h3 class="sub-h" data-i18n="method.eval_title">The virtual evaluation function</h3>
-      <div class="formula">
-        <p data-i18n-html="formula.1"></p>
-        <p data-i18n-html="formula.2"></p>
-        <p data-i18n-html="formula.3"></p>
-        <p data-i18n-html="formula.4"></p>
-        <p data-i18n-html="formula.5"></p>
-      </div>
-      <p style="margin-top:12px" data-i18n-html="method.params"></p>
-      <p data-i18n-html="method.lift"></p>
-      <div class="note" data-i18n-html="method.no_decrease"></div>
-
-      <h3 class="sub-h" data-i18n="method.user_title">With your own data</h3>
-      <ol class="small" style="padding-left:1.4em">
-        <li data-i18n-html="method.user.1"></li>
-        <li data-i18n-html="method.user.2"></li>
-        <li data-i18n-html="method.user.3"></li>
-        <li data-i18n-html="method.user.4"></li>
-      </ol>
-    </section>
-
-    <!-- Results -->
-    <section class="section" id="results">
-      <h2 data-i18n="results.title">Does Bayesian optimization help?</h2>
-      <p data-i18n="results.intro"></p>
-      <div class="table-wrap">
-        <table class="results-table">
-          <thead id="res-head"></thead>
-          <tbody id="res-body"></tbody>
-        </table>
-      </div>
-      <p class="small muted" style="margin-top:8px" data-i18n="results.table_note"></p>
-      <p data-i18n-html="results.takeaway"></p>
-
-      <h3 class="sub-h" data-i18n="known.title">Known-answer test</h3>
-      <p data-i18n="known.intro"></p>
-      <div class="table-wrap">
-        <table class="results-table">
-          <thead>
-            <tr>
-              <th data-i18n="known.col.case">Case</th>
-              <th data-i18n="known.col.true">Compounds actually added</th>
-              <th class="num" data-i18n="known.col.cos">Profile match</th>
-              <th class="num" data-i18n="known.col.exact">Exact recovery</th>
-              <th class="num" data-i18n="known.col.jaccard">Overlap</th>
-            </tr>
-          </thead>
-          <tbody id="known-body"></tbody>
-        </table>
-      </div>
-      <p class="small muted" style="margin-top:8px" data-i18n="known.note"></p>
-      <p data-i18n-html="known.takeaway"></p>
-
-      <h3 class="sub-h" data-i18n="jsbo.title">The optimizer in your browser</h3>
-      <p id="jsbo-text"></p>
-
-      <h3 class="sub-h" data-i18n="history.title">Parameter changes during development</h3>
-      <ul class="plain">
-        <li data-i18n-html="history.1"></li>
-        <li data-i18n-html="history.2"></li>
-      </ul>
-    </section>
-
-    <!-- Limitations -->
-    <section class="section" id="limits">
-      <h2 data-i18n="limits.title">Limitations</h2>
-      <ul class="plain">
-        <li data-i18n-html="limits.1"></li>
-        <li data-i18n-html="limits.2"></li>
-        <li data-i18n-html="limits.3"></li>
-        <li data-i18n-html="limits.4"></li>
-        <li data-i18n-html="limits.5"></li>
-        <li data-i18n-html="limits.6"></li>
-        <li data-i18n-html="limits.7"></li>
-        <li data-i18n-html="limits.8"></li>
-        <li data-i18n-html="limits.9"></li>
-      </ul>
-      <p class="small muted" style="margin-top:12px" data-i18n="limits.future"></p>
-
-      <h3 style="margin-top:22px" data-i18n="mix.title">Tried: a mixture odor similarity model (not adopted)</h3>
-      <p class="small" data-i18n-html="mix.why"></p>
-      <p class="small" data-i18n-html="mix.how"></p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th data-i18n="mix.col.method">Method</th><th class="num">Pearson</th><th class="num">Spearman</th></tr></thead>
-          <tbody>
-          <tr class="highlight"><td data-i18n="mix.row.c"></td><td class="num">0.537</td><td class="num">0.516</td></tr>
-          <tr><td data-i18n="mix.row.a21"></td><td class="num">0.504</td><td class="num">0.563</td></tr>
-          <tr><td data-i18n="mix.row.a_all"></td><td class="num">0.472</td><td class="num">0.499</td></tr>
-          <tr><td data-i18n="mix.row.b12"></td><td class="num">0.315</td><td class="num">0.382</td></tr>
-          <tr><td data-i18n="mix.row.b138"></td><td class="num">0.449</td><td class="num">0.553</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="small" style="margin-top:8px" data-i18n-html="mix.result"></p>
-      <p class="small" data-i18n-html="mix.note"></p>
-    </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p data-i18n-html="footer.p1"></p>
-      <p><b data-i18n="footer.bases">Base compositions:</b></p>
-      <ul class="plain" id="footer-bases"></ul>
-      <p style="margin-top:8px" data-i18n-html="footer.thr"></p>
-      <p data-i18n-html="footer.ref5"></p>
-      <p data-i18n-html="footer.odor_model"></p>
-      <p data-i18n-html="footer.mix"></p>
-      <p data-i18n-html="footer.code"></p>
+      <p class="tool-src" data-i18n-html="footer.short"></p>
       <p data-i18n-html="footer.site"></p>
     </div>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
   <script src="../assets/i18n.js?v=20261019v" data-page-dict="i18n/"></script>
-  <script src="../assets/flavor-handoff.js?v=20261018p"></script>
-  <script src="mixture.js?v=20261018p"></script>
-  <script src="bo.js?v=20261018p"></script>
-  <script src="reference.js?v=20261018p"></script>
-  <script src="userdata-core.js?v=20261018p"></script>
-  <script src="userdata.js?v=20261018p"></script>
-  <script src="app.js?v=20261018p"></script>
+  <script src="../assets/flavor-handoff.js?v=20261019v"></script>
+  <script src="mixture.js?v=20261019v"></script>
+  <script src="bo.js?v=20261019v"></script>
+  <script src="reference.js?v=20261019v"></script>
+  <script src="userdata-core.js?v=20261019v"></script>
+  <script src="userdata.js?v=20261019v"></script>
+  <script src="app.js?v=20261019v"></script>
 </body>
 </html>

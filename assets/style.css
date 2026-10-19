@@ -287,3 +287,10 @@ button.linklike.on { color: var(--text); font-weight: 600; text-decoration: none
 .ex-list .linklike + .linklike::before { content: ", "; display: inline-block; white-space: pre; color: var(--muted); }
 :lang(zh) .ex-list .linklike + .linklike::before { content: "、"; }
 .error-text { color: var(--error); }
+.warn-text { color: var(--warn); }
+
+/* Segmented toggle (map switch, mode switch) */
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--accent); border-radius: 4px; overflow: hidden; }
+.seg button { font: inherit; font-size: .875rem; padding: 4px 14px; border: 0; background: var(--surface); color: var(--accent); cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--accent); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }

@@ -19,9 +19,9 @@
   const getJson = url => fetch(url).then(r => { if (!r.ok) throw new Error("Failed to load " + url); return r.json(); });
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-  const [palette, bases, presets, spec, traces, metrics, jsCheck, refData, precursors] = await Promise.all([
+  const [palette, bases, presets, spec, traces, metrics, refData, precursors] = await Promise.all([
     "data/palette.json", "data/bases.json", "data/presets.json", "data/mixture_spec.json",
-    "data/bo_traces.json", "data/bo_metrics.json", "data/bo_js_check.json",
+    "data/bo_traces.json", "data/bo_metrics.json",
     "data/reference.json", "data/precursors.json"].map(getJson));
   await I18N.ready;
   const t = (k, v) => I18N.t(k, v);
@@ -33,11 +33,12 @@
 
   // ---- state ----
   const thrOverride = {};              // compound -> ug/kg (only modified ones)
-  const REF_ID = "ref";               // example 5 (reference-food mode, reference.js)
+  // Three modes, chosen with the buttons above the demo (?mode=ref / ?mode=user open the other two):
+  // Bayesian optimization demo on a dairy base, example 5 (reference.js), the visitor's own data (userdata.js)
+  const startMode = new URLSearchParams(location.search).get("mode");
   let preset = presets[0];
-  let refMode = false;
-  const USER_ID = "user";             // the visitor's own data (userdata.js)
-  let userMode = new URLSearchParams(location.search).get("mode") === "user";
+  let refMode = startMode === "ref";
+  let userMode = startMode === "user";
   let problem = null;
   let player = { mode: "pre", steps: [], compare: null, pos: -1, timer: null, playing: false, done: false };
   let liveRunning = false;
@@ -64,20 +65,27 @@
   const baseName = b => (I18N.lang === "zh" ? b.name_zh : b.name_en);
   const unitOf = b => (/dry/.test(b.unit) ? t("base.unit_dm") : t("base.unit"));
 
-  // ---- preset select ----
+  // ---- mode buttons and base select ----
+  const currentMode = () => (userMode ? "user" : refMode ? "ref" : "bo");
   function renderPresetOptions() {
-    $("preset").innerHTML = presets.map(p => `<option value="${p.id}">${esc(baseName(baseById[p.base]))}</option>`).join("") +
-      `<option value="${REF_ID}">${esc(t("ref.option"))}</option>` +
-      `<option value="${USER_ID}">${esc(t("user.option"))}</option>`;
-    $("preset").value = userMode ? USER_ID : refMode ? REF_ID : preset.id;
+    $("preset").innerHTML = presets.map(p => `<option value="${p.id}">${esc(baseName(baseById[p.base]))}</option>`).join("");
+    $("preset").value = preset.id;
+    document.querySelectorAll("#mode-seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === currentMode())));
   }
-  $("preset").addEventListener("change", e => {
+  $("mode-seg").addEventListener("click", e => {
+    const b = e.target.closest("button[data-mode]");
+    if (!b || b.dataset.mode === currentMode()) return;
     stopPlayer();
-    refMode = e.target.value === REF_ID;
-    userMode = e.target.value === USER_ID;
+    refMode = b.dataset.mode === "ref";
+    userMode = b.dataset.mode === "user";
     showArea();
+    renderPresetOptions();
     if (refMode) { RefMode.render(); return; }
     if (userMode) { UserMode.render(); return; }
+    renderAll();
+  });
+  $("preset").addEventListener("change", e => {
+    stopPlayer();
     preset = presets.find(p => p.id === e.target.value);
     renderAll();
   });
@@ -364,42 +372,6 @@
     renderPlayer();
   });
 
-  // ---- results ----
-  const METHODS = ["bo_sparse_init", "bo", "random_sparse", "random_uniform"];
-  function renderResults() {
-    const ids = presets.map(p => p.id);
-    $("res-head").innerHTML = `<tr><th>${esc(t("results.col.method"))}</th>${presets.map(p => `<th class="num">${esc(t("short." + p.id))}</th>`).join("")}</tr>`;
-    const best = Object.fromEntries(ids.map(id => [id, METHODS.reduce((a, m) => (metrics.presets[id].methods[m].best_score.mean > metrics.presets[id].methods[a].best_score.mean ? m : a), METHODS[0])]));
-    const rows = [`<tr><td>${esc(t("results.no_add"))}</td>${ids.map(id => `<td class="num">${metrics.presets[id].no_addition.score.toFixed(4)}</td>`).join("")}</tr>`];
-    for (const m of METHODS) {
-      rows.push(`<tr><td>${esc(t("results.m." + m))}</td>${ids.map(id => {
-        const e = metrics.presets[id].methods[m];
-        const cell = `${e.best_score.mean.toFixed(4)} ± ${e.best_score.std.toFixed(4)} (${e.n_added.mean.toFixed(1)})`;
-        return `<td class="num">${best[id] === m ? `<b>${cell}</b>` : cell}</td>`;
-      }).join("")}</tr>`);
-    }
-    $("res-body").innerHTML = rows.join("");
-
-    const krows = [];
-    for (const [baseId, ks] of Object.entries(metrics.known_answer)) {
-      for (const [k, row] of Object.entries(ks)) {
-        const e = row.bo;
-        krows.push(`<tr><td>${esc(t("known.case", { base: t("short." + baseId), k }))}</td>
-          <td>${e.true.map(n => esc(nameOf(n))).join(I18N.lang === "zh" ? "、" : ", ")}</td>
-          <td class="num">${e.cos.mean.toFixed(4)}</td>
-          <td class="num">${e.exact_recovery}/${e.of}</td>
-          <td class="num">${e.jaccard.mean.toFixed(2)}</td></tr>`);
-      }
-    }
-    $("known-body").innerHTML = krows.join("");
-    const wins = Object.values(jsCheck.presets).reduce((a, p) => a + p.bo_wins, 0);
-    $("jsbo-text").innerHTML = t("jsbo.text", { wins });
-
-    const seen = new Set();
-    $("footer-bases").innerHTML = bases.filter(b => { const k = b.source.doi; if (seen.has(k)) return false; seen.add(k); return true; })
-      .map(b => `<li>${esc(b.source.citation)} <a href="https://doi.org/${esc(b.source.doi)}" target="_blank" rel="noopener">doi:${esc(b.source.doi)}</a> (${esc(b.source.license)})</li>`).join("");
-  }
-
   // ---- render all ----
   function renderAll() {
     problem = new Mixture.Problem({ palette, base: baseById[preset.base], direction: preset.direction, spec, thresholdsUg: thresholds() });
@@ -412,7 +384,6 @@
 
   makeCharts();
   renderAll();
-  renderResults();
   RefMode.init({ ref: refData, pre: precursors, spec, t, esc, fmt, pick: o => I18N.pick(o) });
   UserMode.init({ t, esc, fmt, pick: o => I18N.pick(o) });
   function showArea() {
@@ -420,10 +391,11 @@
     $("ref-area").hidden = !refMode;
     $("user-area").hidden = !userMode;
   }
-  if (userMode) {
+  if (refMode || userMode) {
     renderPresetOptions();
     showArea();
-    UserMode.render();
+    if (refMode) RefMode.render();
+    else UserMode.render();
   }
   I18N.onChange(() => {
     if (refMode) RefMode.render();
@@ -433,6 +405,5 @@
     renderThresholdTables();
     renderDirection();
     renderPlayer();
-    renderResults();
   });
 })();

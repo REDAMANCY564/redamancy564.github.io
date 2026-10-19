@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net https://pubchem.ncbi.nlm.nih.gov; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Method &amp; sources | Flavor Improver | Jingwei Cui</title>
+  <meta name="description" content="Method, results, limitations and data sources of the flavor improver (Bayesian optimization demo).">
+  <link rel="stylesheet" href="../assets/style.css?v=20261019v">
+  <style>
+    .formula { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 10px 14px; overflow-x: auto; }
+    .formula p { margin: 0 0 4px; white-space: nowrap; }
+    .results-table td:first-child { white-space: normal; min-width: 15em; }
+    .results-table td { white-space: normal; }
+    .results-table td.num { white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../" data-i18n="site.name">崔京伟</a>
+      <nav class="site-nav" aria-label="Site">
+        <a href="../projects/" data-i18n="nav.projects" aria-current="page">项目</a>
+        <a href="../cv/" data-i18n="nav.cv">简历</a>
+        <button class="lang-toggle" id="lang-toggle" type="button">
+          <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container about">
+    <div class="hero">
+      <h1 data-i18n="hero.title">Flavor Improver</h1>
+      <nav class="proj-tabs" aria-label="Project">
+        <a href="./" data-i18n="nav.tool">工具</a>
+        <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
+      </nav>
+    </div>
+    <nav class="toc">
+      <a href="#overview" data-i18n="about.overview">Overview</a>
+      <a href="#method" data-i18n="about.method">Method</a>
+      <a href="#results" data-i18n="about.results">Results</a>
+      <a href="#tried" data-i18n="about.tried">Tried, not adopted</a>
+      <a href="#limits" data-i18n="about.limits">Limitations</a>
+      <a href="#data" data-i18n="about.data">Data, licenses &amp; citations</a>
+    </nav>
+
+    <section id="overview">
+      <h2 data-i18n="about.overview">Overview</h2>
+      <p data-i18n="hero.intro"></p>
+      <p data-i18n-html="hero.disclaimer"></p>
+    </section>
+
+    <section id="method">
+      <h2 data-i18n="about.method">Method</h2>
+      <ol class="steps">
+        <li><span data-i18n="flow.1.title"></span><span class="sep"></span><span data-i18n="flow.1.sub"></span></li>
+        <li><span data-i18n="flow.2.title"></span><span class="sep"></span><span data-i18n="flow.2.sub"></span></li>
+        <li><span data-i18n="flow.3.title"></span><span class="sep"></span><span data-i18n="flow.3.sub"></span></li>
+        <li><span data-i18n="flow.4.title"></span><span class="sep"></span><span data-i18n="flow.4.sub"></span></li>
+        <li><span data-i18n="flow.5.title"></span><span class="sep"></span><span data-i18n="flow.5.sub"></span></li>
+      </ol>
+      <p data-i18n="flow.loop"></p>
+      <p data-i18n-html="method.gp"></p>
+      <p data-i18n-html="method.acq"></p>
+      <h3 data-i18n="method.eval_title">The virtual evaluation function</h3>
+      <div class="formula">
+        <p data-i18n-html="formula.1"></p>
+        <p data-i18n-html="formula.2"></p>
+        <p data-i18n-html="formula.3"></p>
+        <p data-i18n-html="formula.4"></p>
+        <p data-i18n-html="formula.5"></p>
+      </div>
+      <p style="margin-top:12px" data-i18n-html="method.params"></p>
+      <p data-i18n-html="method.lift"></p>
+      <p data-i18n-html="method.no_decrease"></p>
+
+      <h3 data-i18n="method.user_title">With your own data</h3>
+      <ol style="padding-left:1.4em">
+        <li data-i18n-html="method.user.1"></li>
+        <li data-i18n-html="method.user.2"></li>
+        <li data-i18n-html="method.user.3"></li>
+        <li data-i18n-html="method.user.4"></li>
+      </ol>
+    </section>
+
+    <section id="results">
+      <h2 data-i18n="about.results">Results</h2>
+      <h3 data-i18n="results.title">Compared with random search</h3>
+      <p data-i18n="results.intro"></p>
+      <div class="table-wrap">
+        <table class="results-table">
+          <thead id="res-head"></thead>
+          <tbody id="res-body"></tbody>
+        </table>
+      </div>
+      <p class="small muted" style="margin-top:8px" data-i18n="results.table_note"></p>
+      <p data-i18n-html="results.takeaway"></p>
+
+      <h3 data-i18n="known.title">Known-answer test</h3>
+      <p data-i18n="known.intro"></p>
+      <div class="table-wrap">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th data-i18n="known.col.case">Case</th>
+              <th data-i18n="known.col.true">Compounds actually added</th>
+              <th class="num" data-i18n="known.col.cos">Profile match</th>
+              <th class="num" data-i18n="known.col.exact">Exact recovery</th>
+              <th class="num" data-i18n="known.col.jaccard">Overlap</th>
+            </tr>
+          </thead>
+          <tbody id="known-body"></tbody>
+        </table>
+      </div>
+      <p class="small muted" style="margin-top:8px" data-i18n="known.note"></p>
+      <p data-i18n-html="known.takeaway"></p>
+
+      <h3 data-i18n="jsbo.title">The optimizer in your browser</h3>
+      <p id="jsbo-text"></p>
+
+      <h3 data-i18n="history.title">Parameter changes during development</h3>
+      <ul class="plain">
+        <li data-i18n-html="history.1"></li>
+        <li data-i18n-html="history.2"></li>
+      </ul>
+    </section>
+
+    <section id="tried">
+      <h2 data-i18n="about.tried">Tried, not adopted</h2>
+      <h3 data-i18n="mix.title">Mixture odor similarity model (not adopted)</h3>
+      <p data-i18n-html="mix.why"></p>
+      <p data-i18n-html="mix.how"></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th data-i18n="mix.col.method">Method</th><th class="num">Pearson</th><th class="num">Spearman</th></tr></thead>
+          <tbody>
+          <tr class="highlight"><td data-i18n="mix.row.c"></td><td class="num">0.537</td><td class="num">0.516</td></tr>
+          <tr><td data-i18n="mix.row.a21"></td><td class="num">0.504</td><td class="num">0.563</td></tr>
+          <tr><td data-i18n="mix.row.a_all"></td><td class="num">0.472</td><td class="num">0.499</td></tr>
+          <tr><td data-i18n="mix.row.b12"></td><td class="num">0.315</td><td class="num">0.382</td></tr>
+          <tr><td data-i18n="mix.row.b138"></td><td class="num">0.449</td><td class="num">0.553</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:8px" data-i18n-html="mix.result"></p>
+      <p class="small muted" data-i18n-html="mix.note"></p>
+    </section>
+
+    <section id="limits">
+      <h2 data-i18n="about.limits">Limitations</h2>
+      <ul class="plain">
+        <li data-i18n-html="limits.1"></li>
+        <li data-i18n-html="limits.2"></li>
+        <li data-i18n-html="limits.3"></li>
+        <li data-i18n-html="limits.4"></li>
+        <li data-i18n-html="limits.5"></li>
+        <li data-i18n-html="limits.6"></li>
+        <li data-i18n-html="limits.7"></li>
+        <li data-i18n-html="limits.8"></li>
+        <li data-i18n-html="limits.9"></li>
+      </ul>
+      <p class="small muted" style="margin-top:12px" data-i18n="limits.future"></p>
+    </section>
+
+    <section id="data">
+      <h2 data-i18n="about.data">Data, licenses &amp; citations</h2>
+      <p data-i18n-html="footer.p1"></p>
+      <p><b data-i18n="footer.bases">Base compositions:</b></p>
+      <ul class="plain" id="footer-bases"></ul>
+      <p style="margin-top:8px" data-i18n-html="footer.thr"></p>
+      <p data-i18n-html="footer.ref5"></p>
+      <p data-i18n-html="footer.odor_model"></p>
+      <p data-i18n-html="footer.mix"></p>
+      <p data-i18n-html="footer.code"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n-html="footer.site"></p>
+    </div>
+  </footer>
+
+  <script src="../assets/i18n.js?v=20261019v" data-page-dict="i18n/"></script>
+  <script src="about.js?v=20261019v"></script>
+</body>
+</html>
