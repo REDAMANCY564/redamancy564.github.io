@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Method &amp; sources | Odor Space Map | Jingwei Cui</title>
+  <meta name="description" content="How the odor space map was made, how well it groups similar-smelling molecules, its limitations and data sources.">
+  <link rel="stylesheet" href="../assets/style.css?v=20261019v">
+  <style>
+    #params-table th, #params-table td, #res-table th, #res-table td { white-space: normal; }
+    details.supp { margin-top: 14px; }
+    details.supp summary { cursor: pointer; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../" data-i18n="site.name">崔京伟</a>
+      <nav class="site-nav" aria-label="Site">
+        <a href="../projects/" data-i18n="nav.projects" aria-current="page">项目</a>
+        <a href="../cv/" data-i18n="nav.cv">简历</a>
+        <button class="lang-toggle" id="lang-toggle" type="button">
+          <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container about">
+    <div class="hero">
+      <h1 data-i18n="hero.title">Odor Space Map</h1>
+      <nav class="proj-tabs" aria-label="Project">
+        <a href="./" data-i18n="nav.tool">工具</a>
+        <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
+      </nav>
+    </div>
+    <nav class="toc">
+      <a href="#overview" data-i18n="about.overview">Overview</a>
+      <a href="#method" data-i18n="about.method">Method</a>
+      <a href="#results" data-i18n="about.results">Results</a>
+      <a href="#limits" data-i18n="about.limits">Limitations</a>
+      <a href="#data" data-i18n="about.data">Data, licenses &amp; citations</a>
+    </nav>
+
+    <section id="overview">
+      <h2 data-i18n="about.overview">Overview</h2>
+      <p id="hero-intro"></p>
+    </section>
+
+    <section id="method">
+      <h2 data-i18n="about.method">Method</h2>
+      <p id="desc-odor"></p>
+      <p id="desc-structure"></p>
+      <p id="colour-note"></p>
+      <p id="region-note"></p>
+      <p data-i18n="food.legend_more"></p>
+      <h3 data-i18n="params.title">Map settings</h3>
+      <p data-i18n="params.text"></p>
+      <div class="table-wrap"><table id="params-table"></table></div>
+    </section>
+
+    <section id="results">
+      <h2 data-i18n="about.results">Results</h2>
+      <h3 data-i18n="results.title">Odor overlap of map neighbors</h3>
+      <p id="res-intro"></p>
+      <div class="table-wrap"><table id="res-table"></table></div>
+      <p id="res-take" style="margin-top:10px"></p>
+      <details class="supp small">
+        <summary data-i18n="supp.summary"></summary>
+        <p id="supp-text" style="margin-top:8px"></p>
+      </details>
+    </section>
+
+    <section id="limits">
+      <h2 data-i18n="about.limits">Limitations</h2>
+      <ul class="plain">
+        <li data-i18n="limits.1"></li>
+        <li data-i18n="limits.2"></li>
+        <li data-i18n="limits.3"></li>
+        <li data-i18n="limits.4"></li>
+        <li data-i18n="limits.5"></li>
+      </ul>
+    </section>
+
+    <section id="data">
+      <h2 data-i18n="about.data">Data, licenses &amp; citations</h2>
+      <p data-i18n-html="footer.data"></p>
+      <p data-i18n-html="footer.ref"></p>
+      <p data-i18n-html="footer.kb"></p>
+      <p id="excluded-note"></p>
+      <details class="small">
+        <summary data-i18n="excluded.summary">Molecules removed from the library</summary>
+        <ul id="excluded-list" style="margin-top:6px"></ul>
+      </details>
+      <p data-i18n-html="footer.code" style="margin-top:12px"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n-html="footer.site"></p>
+    </div>
+  </footer>
+
+  <script src="../assets/i18n.js?v=20261019v" data-page-dict="i18n/"></script>
+  <script src="about.js?v=20261019v"></script>
+</body>
+</html>

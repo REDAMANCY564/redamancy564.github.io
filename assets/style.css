@@ -191,27 +191,6 @@ tr.highlight td { font-weight: 700; }
 .contrib-scale { display: flex; justify-content: space-between; color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
 .contrib-note { margin: 6px 0 0; }
 
-/* Home card highlight for gcms-interpreter: data stays on the visitor's computer */
-.privacy-badge { display: inline-block; margin: 2px 0 8px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; font-size: .9rem; }
-
-/* Workflow of the flavor projects (odor map page) */
-.workflow { display: flex; align-items: stretch; gap: 6px; margin: 10px 0 18px; }
-.wf-step { flex: 1 1 0; display: block; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius);
-           background: var(--surface); color: var(--text); text-decoration: none; }
-.wf-step:hover { border-color: var(--accent); }
-.wf-step.current { border-color: var(--accent); background: var(--accent-soft); }
-.wf-step b { display: block; font-size: .95rem; }
-.wf-step span:not(.wf-no) { display: block; font-size: .8rem; color: var(--muted); margin-top: 2px; }
-.wf-no { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--accent);
-         color: #fff; font-size: .75rem; font-weight: 700; margin-bottom: 4px; }
-.wf-arrow { align-self: center; color: var(--accent); font-size: 1.2rem; }
-@media (max-width: 699px) {
-  .workflow { flex-direction: column; }
-  .wf-arrow { transform: rotate(90deg); align-self: center; line-height: 1; }
-}
-
-/* Homepage: project cards grouped by theme */
-.group-title { font-size: .95rem; color: var(--muted); font-weight: 600; margin: 22px 0 10px; letter-spacing: .02em; }
 
 /* Small "?" link to the method page */
 a.help { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border);

@@ -4,85 +4,82 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Odor Space Map | Jingwei Cui</title>
-  <meta name="description" content="A zoomable map of about 5,000 flavor molecules arranged by AI-predicted odor, compared with a map arranged by molecular structure.">
+  <meta name="description" content="A zoomable map of about 5,000 flavor molecules arranged by predicted odor, compared with a map arranged by molecular structure.">
   <link rel="stylesheet" href="../assets/style.css?v=20261019v">
   <style>
     .hidden { display: none !important; }
     .status { color: var(--muted); min-height: 1.4em; }
     .ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 6px 0 10px; }
     .ctl .grp { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-    .ctl .lbl { font-size: .85rem; color: var(--muted); }
-    .seg { display: inline-flex; border: 1px solid var(--accent); border-radius: 8px; overflow: hidden; }
-    .seg button { font: inherit; font-size: .9rem; padding: 4px 14px; border: 0; background: var(--surface); color: var(--accent); cursor: pointer; }
+    .ctl .lbl { font-size: .875rem; color: var(--muted); }
+    .seg { display: inline-flex; border: 1px solid var(--accent); border-radius: 4px; overflow: hidden; }
+    .seg button { font: inherit; font-size: .875rem; padding: 4px 14px; border: 0; background: var(--surface); color: var(--accent); cursor: pointer; }
     .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
-    .ctl select { width: auto; max-width: 100%; padding: 4px 8px; font-size: .9rem; }
-    .chip-btn { font: inherit; font-size: .85rem; padding: 2px 10px; border-radius: 999px; cursor: pointer;
-                border: 1px solid var(--border); background: var(--surface); color: var(--accent); }
-    .chip-btn:hover, .chip-btn.on { border-color: var(--accent); }
-    .chip-btn.on { background: var(--accent); color: #fff; }
+    .ctl select { width: auto; max-width: 100%; padding: 4px 8px; font-size: .875rem; }
+
+    /* Projector-style layout: side panel + map filling the rest of the window */
+    .map-layout { display: grid; grid-template-columns: 300px 1fr; gap: 16px; height: calc(100vh - 57px); padding: 12px 16px; }
+    .map-layout .panel { overflow-y: auto; padding-right: 4px; min-width: 0; }
+    .panel h1 { font-size: 1.375rem; margin: 4px 0 0; }
+    .panel .proj-tabs { margin-bottom: var(--sp-3); }
+    .panel .sub { color: var(--muted); margin-bottom: var(--sp-3); }
+    .panel .tool-src { font-size: .875rem; color: var(--muted); margin-top: var(--sp-4); }
     .map-wrap { position: relative; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);
-                box-shadow: var(--shadow); overflow: hidden; height: min(82vw, 620px); min-height: 300px; }
-    @media (max-width: 699px) { .map-wrap { height: min(100vw, 64vh); } }
+                overflow: hidden; height: 100%; min-height: 300px; }
+    #detail { position: absolute; top: 12px; right: 52px; width: 320px; max-height: calc(100% - 24px); overflow: auto; z-index: 4; }
+    @media (max-width: 899px) {
+      .map-layout { grid-template-columns: 1fr; height: auto; }
+      .map-layout .map-wrap { height: min(120vw, 72vh); }
+      #detail { top: auto; bottom: 8px; left: 8px; right: 8px; width: auto; max-height: 62%; }
+    }
     #map { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
     #map:active { cursor: grabbing; }
-    .map-name { position: absolute; left: 10px; top: 8px; font-size: .85rem; font-weight: 700; color: var(--muted);
-                background: rgba(255, 255, 255, .85); padding: 1px 8px; border-radius: 6px; pointer-events: none; }
+    .map-name { position: absolute; left: 10px; top: 8px; font-size: .875rem; font-weight: 700; color: var(--muted);
+                background: rgba(255, 255, 255, .85); padding: 1px 8px; border-radius: 4px; pointer-events: none; }
     .map-btns { position: absolute; right: 8px; top: 8px; display: flex; flex-direction: column; gap: 4px; }
-    .map-btns button { font: inherit; width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
+    .map-btns button { font: inherit; width: 32px; height: 32px; border-radius: 4px; border: 1px solid var(--border);
                        background: rgba(255, 255, 255, .92); color: var(--text); cursor: pointer; font-size: 1.05rem; line-height: 1; }
     .map-btns button:hover { border-color: var(--accent); color: var(--accent); }
     .tip { position: absolute; z-index: 3; pointer-events: none; max-width: 260px; background: var(--surface); border: 1px solid var(--border);
-           border-radius: 8px; box-shadow: 0 4px 14px rgba(0, 0, 0, .14); padding: 6px 10px; font-size: .85rem; line-height: 1.45; }
+           border-radius: 4px; box-shadow: 0 4px 14px rgba(0, 0, 0, .14); padding: 6px 10px; font-size: .875rem; line-height: 1.45; }
     .tip b { display: block; word-break: break-word; }
-    .tip .muted { font-size: .78rem; }
     .legend { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-top: 10px; }
-    .legend button { font: inherit; font-size: .82rem; display: inline-flex; align-items: center; gap: 5px; padding: 1px 9px;
+    .legend button { font: inherit; font-size: .875rem; display: inline-flex; align-items: center; gap: 5px; padding: 1px 9px;
                      border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; }
     .legend button:hover { border-color: var(--accent); }
     .legend button.on { border-color: var(--text); font-weight: 700; }
     .legend button.off { opacity: .45; }
     .legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-    .heat-legend { margin-top: 10px; max-width: 360px; font-size: .82rem; }
+    .heat-legend { margin-top: 10px; max-width: 360px; font-size: .875rem; }
     .heat-bar { height: 10px; border-radius: 5px; border: 1px solid var(--border); }
     .heat-scale { display: flex; justify-content: space-between; color: var(--muted); font-variant-numeric: tabular-nums; }
-    .badge { display: inline-block; font-size: .72rem; font-weight: 600; padding: 0 7px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
-    .badge.unseen { color: #5f3dc4; border-color: #b197fc; background: #f3f0ff; }
-    details.supp { margin-top: 14px; }
-    details.supp summary { cursor: pointer; font-weight: 600; }
-    td.num, th.num { text-align: right; }
     .find { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 4px 0 12px; }
-    @media (min-width: 760px) { .find { grid-template-columns: 1fr 1fr; } }
-    .find label.field { font-size: .85rem; margin-bottom: 4px; }
+    .find label.field { font-size: .875rem; margin-bottom: 4px; }
     .find .box { position: relative; }
-    .find input[type="text"], .find select { max-width: none; padding: 6px 9px; font-size: .9rem; }
+    .find input[type="text"], .find select { max-width: none; padding: 6px 9px; font-size: .875rem; }
     .food-row { display: flex; gap: 6px; align-items: center; }
     .food-row select { flex: 1 1 0; min-width: 0; }
     .food-row i { flex: none; width: 12px; height: 12px; border-radius: 50%; }
     .suggest { position: absolute; top: 100%; left: 0; right: 0; z-index: 6; background: var(--surface); border: 1px solid var(--border);
-               border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.12); max-height: 280px; overflow-y: auto; }
-    .suggest button { display: block; width: 100%; text-align: left; font: inherit; font-size: .9rem; padding: 6px 10px; border: 0; background: none; cursor: pointer; color: var(--text); }
+               border-radius: 4px; box-shadow: 0 6px 18px rgba(0,0,0,.12); max-height: 280px; overflow-y: auto; }
+    .suggest button { display: block; width: 100%; text-align: left; font: inherit; font-size: .875rem; padding: 6px 10px; border: 0; background: none; cursor: pointer; color: var(--text); }
     .suggest button:hover, .suggest button.active { background: var(--accent-soft); }
-    .suggest .smi { color: var(--muted); font-size: .78rem; margin-left: 6px; word-break: break-all; }
+    .suggest .smi { color: var(--muted); font-size: .875rem; margin-left: 6px; word-break: break-all; }
     .food-note { margin-top: 10px; }
-    .food-note .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-    .food-note .chips button { font: inherit; font-size: .8rem; padding: 0 8px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; color: var(--text); }
-    .food-note .chips button:hover { border-color: var(--accent); }
-    .food-note .chips button.key { font-weight: 700; }
-    #detail { margin-top: 14px; }
-    .det { display: grid; grid-template-columns: 1fr; gap: 14px; }
-    @media (min-width: 700px) { .det { grid-template-columns: 260px 1fr; } }
-    .det .svg { width: 100%; max-width: 260px; min-height: 120px; display: grid; place-items: center; color: var(--muted); font-size: .85rem; }
+    .food-note .ex-list { display: block; margin-top: 4px; }
+    .food-note .linklike.key { font-weight: 700; }
+    .det { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .det .svg { width: 100%; max-width: 200px; min-height: 100px; display: grid; place-items: center; color: var(--muted); font-size: .875rem; }
     .det .svg svg { width: 100%; height: auto; }
     .det h3 { margin: 0 0 2px; word-break: break-word; }
-    .det .smi { font-size: .8rem; color: var(--muted); word-break: break-all; margin: 0 0 8px; }
-    .bars { display: grid; grid-template-columns: auto 1fr auto; gap: 3px 8px; align-items: center; font-size: .85rem; margin: 6px 0 10px; }
+    .det .smi { font-size: .875rem; color: var(--muted); word-break: break-all; margin: 0 0 8px; }
+    .bars { display: grid; grid-template-columns: auto 1fr auto; gap: 3px 8px; align-items: center; font-size: .875rem; margin: 6px 0 10px; }
     .bars .bar { height: 9px; border-radius: 5px; background: var(--accent); }
     .bars .v { color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
-    .det .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    .det .links a, .det .links span { font-size: .875rem; font-weight: 600; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--accent); text-decoration: none; }
-    .det .links span { border-color: var(--border); color: var(--muted); font-weight: 400; }
+    .det .links { font-size: .875rem; margin-top: 10px; }
+    .det .links > * + *::before { content: " / "; color: var(--muted); display: inline-block; white-space: pre; }
+    .det .links span { color: var(--muted); }
     .det-card .close { float: right; font: inherit; border: 0; background: none; cursor: pointer; color: var(--muted); font-size: 1.3rem; line-height: 1; }
-    #params-table th, #params-table td, #res-table th, #res-table td { white-space: normal; }
   </style>
 </head>
 <body>
@@ -99,25 +96,14 @@
     </div>
   </header>
 
-  <main class="container">
-    <section class="hero">
-      <h1 data-i18n="hero.title">Odor space map</h1>
-      <p id="hero-intro"></p>
-      <p class="small muted" data-i18n="wf.intro" style="margin-bottom:6px"></p>
-      <div class="workflow">
-        <a class="wf-step" href="../odor-predictor/"><span class="wf-no">1</span><b data-i18n="wf.1.title"></b><span data-i18n="wf.1.desc"></span></a>
-        <span class="wf-arrow" aria-hidden="true">→</span>
-        <a class="wf-step current" href="../odor-map/"><span class="wf-no">2</span><b data-i18n="wf.2.title"></b><span data-i18n="wf.2.desc"></span></a>
-        <span class="wf-arrow" aria-hidden="true">→</span>
-        <a class="wf-step" href="../ingredient-finder/"><span class="wf-no">3</span><b data-i18n="wf.3.title"></b><span data-i18n="wf.3.desc"></span></a>
-        <span class="wf-arrow" aria-hidden="true">→</span>
-        <a class="wf-step" href="../flavor-improver/"><span class="wf-no">4</span><b data-i18n="wf.4.title"></b><span data-i18n="wf.4.desc"></span></a>
-        <span class="wf-arrow" aria-hidden="true">→</span>
-        <a class="wf-step" href="../gcms-interpreter/"><span class="wf-no">5</span><b data-i18n="wf.5.title"></b><span data-i18n="wf.5.desc"></span></a>
-      </div>
-    </section>
-
-    <section class="section" id="map-section">
+  <main class="container-wide map-layout">
+    <aside class="panel">
+      <h1 data-i18n="hero.title">Odor Space Map</h1>
+      <nav class="proj-tabs" aria-label="Project">
+        <a href="./" data-i18n="nav.tool" aria-current="page">工具</a>
+        <a href="about.html" data-i18n="nav.about">方法与来源</a>
+      </nav>
+      <p class="sub" id="hero-sub"></p>
       <div class="ctl">
         <div class="grp">
           <span class="seg" role="group" data-i18n-attr="aria-label:ctl.map">
@@ -126,7 +112,7 @@
           </span>
         </div>
         <div class="grp">
-          <label class="lbl" for="colour-by" data-i18n="ctl.colour">Colour</label>
+          <label class="lbl" for="colour-by" data-i18n="ctl.colour">Color</label>
           <select id="colour-by"></select>
         </div>
         <div class="grp">
@@ -152,16 +138,6 @@
         </div>
       </div>
       <p class="status" id="load-status" data-i18n="loading" aria-live="polite">Loading...</p>
-      <div class="map-wrap" id="map-wrap">
-        <canvas id="map" role="img" data-i18n-attr="aria-label:map.aria"></canvas>
-        <span class="map-name" id="map-name"></span>
-        <div class="map-btns">
-          <button type="button" id="zoom-in" data-i18n-attr="aria-label:ctl.zoom_in;title:ctl.zoom_in">+</button>
-          <button type="button" id="zoom-out" data-i18n-attr="aria-label:ctl.zoom_out;title:ctl.zoom_out">−</button>
-          <button type="button" id="zoom-reset" data-i18n-attr="aria-label:ctl.reset;title:ctl.reset">⟲</button>
-        </div>
-        <div class="tip hidden" id="tip"></div>
-      </div>
       <div class="legend" id="legend"></div>
       <div class="heat-legend hidden" id="heat-legend">
         <div class="contrib-title" id="heat-title"></div>
@@ -170,53 +146,25 @@
         <p class="muted" id="heat-note" style="margin:4px 0 0"></p>
       </div>
       <div class="food-note small hidden" id="food-note"></div>
+      <p class="tool-src" data-i18n-html="footer.short"></p>
+    </aside>
+
+    <div class="map-wrap" id="map-wrap">
+      <canvas id="map" role="img" data-i18n-attr="aria-label:map.aria"></canvas>
+      <span class="map-name" id="map-name"></span>
+      <div class="map-btns">
+        <button type="button" id="zoom-in" data-i18n-attr="aria-label:ctl.zoom_in;title:ctl.zoom_in">+</button>
+        <button type="button" id="zoom-out" data-i18n-attr="aria-label:ctl.zoom_out;title:ctl.zoom_out">−</button>
+        <button type="button" id="zoom-reset" data-i18n-attr="aria-label:ctl.reset;title:ctl.reset">⟲</button>
+        <button type="button" id="map-help" data-i18n-attr="aria-label:map.hint;title:map.hint">?</button>
+      </div>
+      <div class="tip hidden" id="tip"></div>
       <div id="detail"></div>
-      <p class="small muted" data-i18n="map.hint" style="margin-top:10px"></p>
-      <p class="small" id="map-desc"></p>
-      <p class="small" id="colour-note"></p>
-      <p class="small" id="region-note"></p>
-    </section>
-
-    <section class="section" id="params">
-      <h2 data-i18n="params.title">How the two maps were made</h2>
-      <p data-i18n="params.text"></p>
-      <div class="table-wrap"><table id="params-table"></table></div>
-    </section>
-
-    <section class="section" id="results">
-      <h2 data-i18n="results.title">Does the odor map put similar-smelling molecules together?</h2>
-      <p id="res-intro"></p>
-      <div class="table-wrap"><table id="res-table"></table></div>
-      <p id="res-take" style="margin-top:10px"></p>
-      <details class="supp small">
-        <summary data-i18n="supp.summary"></summary>
-        <p id="supp-text" style="margin-top:8px"></p>
-      </details>
-    </section>
-
-    <section class="section" id="limits">
-      <h2 data-i18n="limits.title">Limitations</h2>
-      <ul class="plain">
-        <li data-i18n="limits.1"></li>
-        <li data-i18n="limits.2"></li>
-        <li data-i18n="limits.3"></li>
-        <li data-i18n="limits.4"></li>
-        <li data-i18n="limits.5"></li>
-      </ul>
-      <p class="small" id="excluded-note" style="margin-top:12px"></p>
-      <details class="small">
-        <summary data-i18n="excluded.summary">Molecules removed from the library</summary>
-        <ul id="excluded-list" style="margin-top:6px"></ul>
-      </details>
-    </section>
+    </div>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p data-i18n-html="footer.data"></p>
-      <p data-i18n-html="footer.ref"></p>
-      <p data-i18n-html="footer.kb"></p>
-      <p data-i18n-html="footer.code"></p>
       <p data-i18n-html="footer.site"></p>
     </div>
   </footer>
@@ -232,6 +180,6 @@
   <script src="https://cdn.jsdelivr.net/npm/d3-zoom@3.0.0/dist/d3-zoom.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/d3-quadtree@3.0.1/dist/d3-quadtree.min.js"></script>
   <script src="../assets/i18n.js?v=20261019v" data-page-dict="i18n/"></script>
-  <script src="app.js?v=20261018i"></script>
+  <script src="app.js?v=20261019v"></script>
 </body>
 </html>

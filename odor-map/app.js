@@ -249,7 +249,7 @@
     const m = lib.molecules[i];
     tip.innerHTML = "<b>" + esc(m[1] || m[0]) + "</b>" +
       topLabels(i, 3).map(([j, p]) => esc(labelName(j)) + " " + Math.round(100 * p) + "%").join(" · ") +
-      '<div class="muted">' + (m[2] === 0 ? esc(I18N.t("g.train")) : '<span class="badge unseen">' + esc(I18N.t("g.unseen")) + "</span>") + "</div>";
+      '<div class="muted">' + esc(I18N.t(m[2] === 0 ? "g.train" : "g.unseen")) + "</div>";
     tip.classList.remove("hidden");
     const tw = tip.offsetWidth, th = tip.offsetHeight;
     tip.style.left = Math.max(4, Math.min(W - tw - 4, px + 12)) + "px";
@@ -361,7 +361,6 @@
     $("btn-odor").setAttribute("aria-pressed", String(S.map === 0));
     $("btn-structure").setAttribute("aria-pressed", String(S.map === 1));
     $("map-name").textContent = I18N.t("ctl." + MAPS[S.map]);
-    $("map-desc").textContent = I18N.t("map.desc." + MAPS[S.map], { n: meta.k });
     const opts = lib.labels.map((l, j) => j).sort((a, b) => labelName(a).localeCompare(labelName(b), I18N.lang === "zh" ? "zh" : "en"));
     $("colour-by").innerHTML = '<option value="top1">' + esc(I18N.t("ctl.colour_top1")) + '</option><optgroup label="' + esc(I18N.t("ctl.colour_heat")) + '">' +
       opts.map(j => '<option value="' + esc(lib.labels[j].id) + '">' + esc(labelName(j)) + "</option>").join("") + "</optgroup>";
@@ -428,8 +427,7 @@
     box.innerHTML = '<div class="card det-card"><button type="button" class="close" id="card-close" aria-label="' + esc(I18N.t("card.close")) + '">×</button>' +
       '<div class="det"><div class="svg" id="card-svg" data-smiles="' + esc(smiles) + '"></div><div>' +
       "<h3>" + esc(m[1] || smiles) + "</h3>" + '<p class="smi mono">' + esc(smiles) + "</p>" +
-      (m[2] === 0 ? '<span class="badge">' + esc(I18N.t("g.train")) + "</span>" : '<span class="badge unseen">' + esc(I18N.t("g.unseen")) + "</span>") +
-      ' <span class="small muted">' + esc(I18N.t(m[2] === 0 ? "card.train_help" : "card.unseen_help")) + "</span>" +
+      '<p class="small muted" style="margin:0">' + esc(I18N.t(m[2] === 0 ? "card.train_help" : "card.unseen_help")) + "</p>" +
       '<p class="small" style="margin:10px 0 0"><b>' + esc(I18N.t("card.profile")) + "</b></p>" +
       '<div class="bars">' + tops.map(([j, p]) => "<span>" + esc(labelName(j)) + '</span><span><span class="bar" style="display:block;width:' +
         Math.max(1, Math.round(100 * p)) + '%"></span></span><span class="v">' + Math.round(100 * p) + "%</span>").join("") + "</div>" +
@@ -548,9 +546,9 @@
         : I18N.t("food.det_note", { food: f.name, n: f.det.length, m: f.n_kb });
       return '<div style="margin-top:8px"><b style="color:' + FOOD_COLOURS[k] + '">● </b>' + esc(head) +
         ' <a href="../flavor-kb/?food=' + encodeURIComponent(f.id) + '">' + esc(I18N.t("food.to_kb")) + "</a>" +
-        '<div class="chips">' + ids.slice(0, FOOD_CHIPS).map(i => '<button type="button" data-mol="' + i + '" class="' + (f.key.includes(i) ? "key" : "") + '">' +
-          esc(lib.molecules[i][1] || lib.molecules[i][0]) + "</button>").join("") +
-        (ids.length > FOOD_CHIPS ? '<span class="muted">' + esc(I18N.t("food.more", { n: ids.length - FOOD_CHIPS })) + "</span>" : "") + "</div></div>";
+        '<span class="ex-list">' + ids.slice(0, FOOD_CHIPS).map(i => '<button type="button" data-mol="' + i + '" class="linklike' + (f.key.includes(i) ? " key" : "") + '">' +
+          esc(lib.molecules[i][1] || lib.molecules[i][0]) + "</button>").join("") + "</span>" +
+        (ids.length > FOOD_CHIPS ? ' <span class="muted">' + esc(I18N.t("food.more", { n: ids.length - FOOD_CHIPS })) + "</span>" : "") + "</div>";
     }).join("") + '<p class="muted" style="margin:8px 0 0">' + esc(I18N.t("food.legend")) + "</p>";
   }
   $("food-note").addEventListener("click", e => {
@@ -558,50 +556,9 @@
     if (b) focus(+b.dataset.mol);
   });
 
-  // ---------- Text sections ----------
-  const f3 = x => Number(x).toFixed(3);
-  const pct = x => Math.round(100 * x) + "%";
-
+  // ---------- Subtitle ----------
   function renderText() {
-    $("hero-intro").textContent = I18N.t("hero.intro", { n: n.toLocaleString(I18N.lang === "zh" ? "zh-CN" : "en") });
-    const fr = meta.top1_counts.fruity || 0;
-    $("colour-note").textContent = I18N.t("colour.note", { k: nCat, fruity: labelName(labelIndex.fruity), p: pct(fr / n) });
-    $("region-note").textContent = I18N.t("region.note", { o: meta.regions.odor.length, s: meta.regions.structure.length, k: meta.region_rule.k_clusters });
-
-    const P = meta.params, V = meta.eval.valid;
-    $("params-table").innerHTML = "<thead><tr><th></th><th>" + esc(I18N.t("ctl.odor")) + "</th><th>" + esc(I18N.t("ctl.structure")) + "</th></tr></thead><tbody>" +
-      [["params.input", I18N.t("params.input.odor"), I18N.t("params.input.structure")],
-       ["params.metric", I18N.t("params.metric.cosine"), I18N.t("params.metric.jaccard")],
-       ["params.nn", P.odor.n_neighbors, P.structure.n_neighbors],
-       ["params.md", P.odor.min_dist, P.structure.min_dist],
-       ["params.seed", meta.seed, meta.seed],
-       ["params.valid", f3(V.odor_map.share_common_label) + " / " + f3(V.odor_map.mean_jaccard),
-        f3(V.structure_map.share_common_label) + " / " + f3(V.structure_map.mean_jaccard)]]
-        .map(([k, a, b]) => "<tr><th>" + esc(I18N.t(k)) + "</th><td>" + esc(a) + "</td><td>" + esc(b) + "</td></tr>").join("") + "</tbody>";
-
-    const T = meta.eval.test;
-    $("res-intro").textContent = I18N.t("results.intro", { n: T.n, k: meta.k });
-    const row = (key, r, cls) => '<tr class="' + (cls || "") + '"><td>' + esc(I18N.t(key)) + '</td><td class="num">' + f3(r.share_common_label) +
-      '</td><td class="num">' + f3(r.mean_jaccard) + "</td></tr>";
-    const ci = T.map_diff_ci95;
-    $("res-table").innerHTML = "<thead><tr><th></th><th class=\"num\">" + esc(I18N.t("res.share")) + "</th><th class=\"num\">" + esc(I18N.t("res.jaccard")) + "</th></tr></thead><tbody>" +
-      row("res.odor_map", T.odor_map, "highlight") + row("res.structure_map", T.structure_map) +
-      '<tr><td>' + esc(I18N.t("res.diff")) + '</td><td class="num">' + f3(T.odor_map.share_common_label - T.structure_map.share_common_label) +
-      " [" + f3(ci.share_common_label[0]) + ", " + f3(ci.share_common_label[1]) + ']</td><td class="num">' +
-      f3(T.odor_map.mean_jaccard - T.structure_map.mean_jaccard) + " [" + f3(ci.mean_jaccard[0]) + ", " + f3(ci.mean_jaccard[1]) + "]</td></tr>" +
-      row("res.random", T.random) + row("res.odor_hd", T.odor_highdim) + row("res.structure_hd", T.structure_highdim) + "</tbody>";
-    $("res-take").textContent = I18N.t("results.take", {
-      oh: f3(T.odor_highdim.share_common_label), om: f3(T.odor_map.share_common_label),
-      sh: f3(T.structure_highdim.share_common_label), sm: f3(T.structure_map.share_common_label),
-      rnd: f3(T.random.share_common_label) });
-    const sup = meta.eval.supplementary_top1_agreement;
-    $("supp-text").textContent = I18N.t("supp.text", { n, k: meta.k, o: f3(sup.odor), s: f3(sup.structure) });
-
-    const ex = lib.excluded || [], by = {};
-    ex.forEach(e => { (by[e.category] = by[e.category] || []).push(e); });
-    $("excluded-note").textContent = I18N.t("excluded.note", { n: ex.length, total: n });
-    $("excluded-list").innerHTML = Object.keys(by).map(c => "<li><b>" + esc(I18N.t("excluded.cat." + c)) + "</b> (" + by[c].length + "): " +
-      esc(by[c].map(e => e.name || e.smiles).join(", ")) + "</li>").join("");
+    $("hero-sub").textContent = I18N.t("hero.sub", { n: n.toLocaleString(I18N.lang === "zh" ? "zh-CN" : "en") });
   }
 
   function renderAll() { renderControls(); renderText(); renderFoodSelects(); renderFoodNote(); renderCard(); request(); }
