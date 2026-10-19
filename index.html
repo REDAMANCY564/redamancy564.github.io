@@ -4,108 +4,75 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jingwei Cui</title>
-  <meta name="description" content="Jingwei Cui: Food Science PhD candidate working on flavor chemistry and machine learning.">
-  <link rel="stylesheet" href="assets/style.css?v=20261019a">
+  <meta name="description" content="Jingwei Cui: Food Science PhD candidate building browser tools for flavor chemistry and machine learning.">
+  <link rel="stylesheet" href="assets/style.css?v=20261019r">
+  <style>
+    /* Thumbnail sits on top of a text placeholder; a missing image removes itself */
+    .pub-item .thumb { position: relative; text-decoration: none; }
+    .pub-item .thumb img { position: absolute; inset: 0; }
+    .thumb-ph { width: 100%; height: 100%; display: grid; place-items: center; padding: 8px; text-align: center;
+                font-family: var(--font-serif); font-size: .85rem; color: var(--muted); }
+  </style>
 </head>
 <body>
   <header class="site-header">
     <div class="container">
       <a class="brand" href="./" id="brand-name">Jingwei Cui</a>
-      <button class="lang-toggle" id="lang-toggle" type="button">
-        <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
-      </button>
+      <nav class="proj-nav">
+        <a href="#projects" data-i18n="nav.projects">Projects</a>
+        <button class="lang-toggle" id="lang-toggle" type="button">
+          <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
+        </button>
+      </nav>
     </div>
   </header>
 
   <main class="container">
-    <section class="hero">
-      <h1 id="name">Jingwei Cui</h1>
-      <p class="muted" id="tagline"></p>
+    <!-- One sentence and one button (Osmo-style first screen) -->
+    <section class="home-hero">
+      <h1 class="display" data-i18n="home.hero"></h1>
+      <a class="btn-primary" href="#projects" data-i18n="home.cta">See projects</a>
     </section>
 
-    <section class="section">
-      <h2 data-i18n="home.projects">Projects</h2>
-      <p data-i18n="wf.intro"></p>
-      <div class="workflow">
-        <a class="wf-step" href="odor-predictor/"><span class="wf-no">1</span><b data-i18n="wf.1.title"></b><span data-i18n="wf.1.desc"></span></a>
-        <span class="wf-arrow" aria-hidden="true">→</span>
-        <a class="wf-step" href="odor-map/"><span class="wf-no">2</span><b data-i18n="wf.2.title"></b><span data-i18n="wf.2.desc"></span></a>
-        <span class="wf-arrow" aria-hidden="true">→</span>
-        <a class="wf-step" href="ingredient-finder/"><span class="wf-no">3</span><b data-i18n="wf.3.title"></b><span data-i18n="wf.3.desc"></span></a>
-        <span class="wf-arrow" aria-hidden="true">→</span>
-        <a class="wf-step" href="flavor-improver/"><span class="wf-no">4</span><b data-i18n="wf.4.title"></b><span data-i18n="wf.4.desc"></span></a>
-        <span class="wf-arrow" aria-hidden="true">→</span>
-        <a class="wf-step" href="gcms-interpreter/"><span class="wf-no">5</span><b data-i18n="wf.5.title"></b><span data-i18n="wf.5.desc"></span></a>
+    <!-- Short bio, one contact line, avatar (Barron-style) -->
+    <section class="intro" id="about">
+      <div>
+        <h2 id="name">Jingwei Cui</h2>
+        <p class="tagline" id="tagline"></p>
+        <p id="bio"></p>
+        <p class="contact-row" id="contact"></p>
       </div>
-      <h3 class="group-title" data-i18n="home.group.molecule">Molecules and Odor Prediction</h3>
-      <a class="card" href="odor-predictor/">
-        <h3 data-i18n="home.odor.title">Predicting Smell from Molecular Structure</h3>
-        <p class="muted" data-i18n="home.odor.desc"></p>
-        <div class="tags" data-i18n="home.odor.tags"></div>
-        <span class="cta"><span data-i18n="home.view">View project</span> →</span>
-      </a>
-      <a class="card" href="taste-predictor/" style="margin-top:12px">
-        <h3 data-i18n="home.taste.title">Predicting Taste from Molecular Structure</h3>
-        <p class="muted" data-i18n="home.taste.desc"></p>
-        <div class="tags" data-i18n="home.taste.tags"></div>
-        <span class="cta"><span data-i18n="home.view">View project</span> →</span>
-      </a>
-      <a class="card" href="odor-map/" style="margin-top:12px">
-        <h3 data-i18n="home.map.title">Odor Space Map</h3>
-        <p class="muted" data-i18n="home.map.desc"></p>
-        <div class="tags" data-i18n="home.map.tags"></div>
-        <span class="cta"><span data-i18n="home.view">View project</span> →</span>
-      </a>
-      <a class="card" href="ingredient-finder/" style="margin-top:12px">
-        <h3 data-i18n="home.finder.title">Flavor Ingredient Finder</h3>
-        <p class="muted" data-i18n="home.finder.desc"></p>
-        <div class="tags" data-i18n="home.finder.tags"></div>
-        <span class="cta"><span data-i18n="home.view">View project</span> →</span>
-      </a>
-      <h3 class="group-title" data-i18n="home.group.flavor">Flavor Analysis and Formulation</h3>
-      <a class="card" href="gcms-interpreter/">
-        <h3 data-i18n="home.gcms.title">GC-MS Flavor Interpreter</h3>
-        <p class="privacy-badge" data-i18n="home.gcms.privacy">Your data never leaves your computer</p>
-        <p class="muted" data-i18n="home.gcms.desc"></p>
-        <div class="tags" data-i18n="home.gcms.tags"></div>
-        <span class="cta"><span data-i18n="home.view">View project</span> →</span>
-      </a>
-      <a class="card" href="flavor-improver/" style="margin-top:12px">
-        <h3 data-i18n="home.fi.title">Improving Dairy Flavor with Bayesian Optimization</h3>
-        <p class="muted" data-i18n="home.fi.desc"></p>
-        <div class="tags" data-i18n="home.fi.tags"></div>
-        <span class="cta"><span data-i18n="home.view">View project</span> →</span>
-      </a>
-      <a class="card" href="flavor-kb/" style="margin-top:12px">
-        <h3 data-i18n="home.kb.title">Flavor Knowledge Base</h3>
-        <p class="muted" data-i18n="home.kb.desc"></p>
-        <div class="tags" data-i18n="home.kb.tags"></div>
-        <span class="cta"><span data-i18n="home.view">View project</span> →</span>
-      </a>
-      <h3 class="group-title" data-i18n="home.group.perception">Perception and Consumer Science</h3>
-      <a class="card" href="perception-diversity/">
-        <h3 data-i18n="home.perc.title">Why People Smell Differently</h3>
-        <p class="muted" data-i18n="home.perc.desc"></p>
-        <div class="tags" data-i18n="home.perc.tags"></div>
-        <span class="cta"><span data-i18n="home.view">View project</span> →</span>
-      </a>
+      <img class="avatar" src="assets/avatar.webp" alt="" width="160" height="160">
     </section>
 
-    <section class="section">
-      <h2 data-i18n="home.contact">Contact</h2>
-      <ul class="contact-list" id="contact"></ul>
+    <!-- Projects: one list, flagships first and highlighted -->
+    <section class="section" id="projects">
+      <h2 data-i18n="home.projects">Projects</h2>
+      <div class="pub-list" id="pub-list"></div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p data-i18n="footer.updating">This website is continuously updated.</p>
+      <p>© 2026 Jingwei Cui · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener" data-i18n="nav.code">Code</a></p>
     </div>
   </footer>
 
-  <script src="assets/i18n.js?v=20261019a"></script>
+  <script src="assets/i18n.js?v=20261019r"></script>
   <script>
     (async function () {
+      // [directory, i18n key prefix, highlighted, has an about page]; thumbnails live in assets/thumbs/<directory>.webp
+      const PROJECTS = [
+        ["gcms-interpreter", "gcms", true, true],
+        ["ingredient-finder", "finder", true, true],
+        ["odor-predictor", "odor", true, true],
+        ["flavor-improver", "fi", false, false],
+        ["odor-map", "map", false, false],
+        ["taste-predictor", "taste", false, false],
+        ["perception-diversity", "perc", false, false],
+        ["flavor-kb", "kb", false, false],
+      ];
+
       let profile = {};
       try {
         profile = await (await fetch("assets/profile.json")).json();
@@ -114,11 +81,27 @@
       }
       await I18N.ready;
 
-      function li(labelKey, html) {
-        return '<li><span class="label">' + I18N.t(labelKey) + '</span> ' + html + '</li>';
-      }
       function esc(s) {
         return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      }
+
+      function renderProjects() {
+        const t = I18N.t;
+        document.getElementById("pub-list").innerHTML = PROJECTS.map(([dir, key, featured, hasAbout]) => {
+          const title = esc(t("home." + key + ".title"));
+          const badge = key === "gcms" ? ' <span class="tag-mini">' + esc(t("home.gcms.privacy_short")) + "</span>" : "";
+          return '<div class="pub-item' + (featured ? " featured" : "") + '">' +
+            '<a class="thumb" href="' + dir + '/" tabindex="-1" aria-hidden="true">' +
+              '<span class="thumb-ph">' + title + "</span>" +
+              '<img src="assets/thumbs/' + dir + '.webp" alt="" loading="lazy" onerror="this.remove()">' +
+            "</a>" +
+            "<div>" +
+              '<a class="pub-title" href="' + dir + '/">' + title + "</a>" + badge +
+              "<p>" + esc(t("home." + key + ".one")) + "</p>" +
+              '<p class="links"><a href="' + dir + '/">' + esc(t("nav.tool")) + "</a>" +
+                (hasAbout ? '<a href="' + dir + '/about.html">' + esc(t("nav.about")) + "</a>" : "") + "</p>" +
+            "</div></div>";
+        }).join("");
       }
 
       function render() {
@@ -126,19 +109,17 @@
         document.getElementById("name").textContent = I18N.lang === "zh" ? name + " Jingwei Cui" : name;
         document.getElementById("brand-name").textContent = name;
         document.getElementById("tagline").textContent = I18N.pick(profile.tagline) || "";
+        document.getElementById("bio").textContent = I18N.pick(profile.bio) || "";
         document.title = I18N.t("home.page_title");
 
-        const items = [];
-        if (profile.email) {
-          items.push(li("home.email", '<a href="mailto:' + esc(profile.email) + '">' + esc(profile.email) + '</a>'));
-        }
-        if (profile.linkedin) {
-          items.push(li("home.linkedin", '<a href="' + esc(profile.linkedin) + '" target="_blank" rel="noopener">' + esc(profile.linkedin.replace(/^https?:\/\/(www\.)?/, "")) + '</a>'));
-        }
-        if (profile.cv_pdf) {
-          items.push('<li><a href="' + esc(profile.cv_pdf) + '" download>' + I18N.t("home.cv") + '</a></li>');
-        }
-        document.getElementById("contact").innerHTML = items.join("");
+        // One contact line: Email / CV / GitHub (CV appears only when cv_pdf is set)
+        const links = [];
+        if (profile.email) links.push('<a href="mailto:' + esc(profile.email) + '">' + esc(I18N.t("home.email")) + "</a>");
+        if (profile.cv_pdf) links.push('<a href="' + esc(profile.cv_pdf) + '" target="_blank" rel="noopener">' + esc(I18N.t("home.cv_short")) + "</a>");
+        if (profile.github) links.push('<a href="' + esc(profile.github) + '" target="_blank" rel="noopener">GitHub</a>');
+        if (profile.linkedin) links.push('<a href="' + esc(profile.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
+        document.getElementById("contact").innerHTML = links.join("");
+        renderProjects();
       }
 
       render();
