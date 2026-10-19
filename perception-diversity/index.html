@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>7 Odor Perception Differences | Jingwei Cui</title>
-  <meta name="description" content="Where do differences in human odor ratings come from? Variance decomposition, personalized prediction and consumer segmentation on the Keller and Vosshall 2016 data, with label standardization and quality checks.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261019w">
+  <meta name="description" content="How much of the difference in human odor ratings comes from the molecule, personal taste and noise: variance decomposition, personalized prediction and consumer segmentation on the Keller and Vosshall 2016 data.">
+  <link rel="stylesheet" href="../assets/style.css?v=20261019x">
   <style>
     .viz { --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #b9b7b0;
            --pos: #2a78d6; --neg: #e34948; --grid: #ece9e2; --axis: #c9c5bc; }
@@ -56,7 +56,6 @@
         <a href="./" data-i18n="nav.tool" aria-current="page">工具</a>
         <a href="about.html" data-i18n="nav.about">方法与来源</a>
       </nav>
-      <p class="sub" data-i18n="hero.sub"></p>
       <p class="small muted" id="hero-data" style="margin-top:8px"></p>
       <p class="status muted" id="load-status" data-i18n="loading" aria-live="polite"></p>
     </section>
@@ -64,14 +63,12 @@
     <section class="section" id="variance">
       <h2 data-sec="1" data-i18n="var.title">Sources of rating differences</h2>
       <div class="viz-box">
-        <p class="viz-title" data-i18n="var.chart"></p>
         <p class="viz-sub" data-i18n="var.sub"></p>
         <svg id="var-svg" role="img" data-i18n-attr="aria-label:var.chart"></svg>
         <div class="legend" id="var-legend"></div>
       </div>
       <p id="var-hero"></p>
       <p id="var-take"></p>
-      <p class="src-line"><span data-i18n="src.keller"></span> · <a href="about.html#method" data-i18n="nav.about"></a></p>
     </section>
 
     <section class="section" id="spread">
@@ -87,7 +84,6 @@
         <svg id="spread-svg" role="img" data-i18n-attr="aria-label:spread.aria"></svg>
       </div>
       <p class="small" id="spread-note"></p>
-      <p class="src-line"><span data-i18n="src.keller"></span> · <a href="about.html#method" data-i18n="nav.about"></a></p>
     </section>
 
     <section class="section" id="predict">
@@ -108,7 +104,6 @@
         <svg id="demo-svg" role="img" data-i18n-attr="aria-label:pred.aria"></svg>
       </div>
       <p class="small muted" id="demo-rule"></p>
-      <p class="src-line"><span data-i18n="src.keller"></span> · <a href="about.html#results" data-i18n="nav.about"></a></p>
     </section>
 
     <section class="section" id="segments">
@@ -119,7 +114,6 @@
         <p class="viz-sub" data-i18n="seg.scores.sub"></p>
         <svg id="scores-svg" role="img" data-i18n-attr="aria-label:seg.scores.title"></svg>
       </div>
-      <p class="src-line"><span data-i18n="src.keller"></span> · <a href="about.html#results" data-i18n="nav.about"></a></p>
     </section>
   </main>
 
@@ -130,8 +124,8 @@
     </div>
   </footer>
 
-  <script src="../assets/i18n.js?v=20261019w" data-page-dict="i18n/"></script>
-  <script src="../assets/projects.js?v=20261019w"></script>
-  <script src="app.js?v=20261019w"></script>
+  <script src="../assets/i18n.js?v=20261019x" data-page-dict="i18n/"></script>
+  <script src="../assets/projects.js?v=20261019x"></script>
+  <script src="app.js?v=20261019x"></script>
 </body>
 </html>

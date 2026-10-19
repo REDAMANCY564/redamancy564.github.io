@@ -1,6 +1,6 @@
 {
   "hero.title": "味觉预测",
-  "hero.intro": "一个分子尝起来是甜、苦还是鲜，和它的结构密切相关。这里用图神经网络，根据小分子的结构估计它是甜、苦、鲜或无味的概率。",
+  "hero.intro": "这里用图神经网络，根据小分子的结构估计它是甜、苦、鲜或无味的概率。",
   "taste.sweet": "甜",
   "taste.bitter": "苦",
   "taste.umami": "鲜",
@@ -32,7 +32,7 @@
   "demo.loading_rdkit": "正在加载结构绘图工具（约 7 MB，仅首次访问需要）……",
   "demo.rdkit_failed": "结构图加载失败，预测结果仍正常显示。",
   "demo.chart_title": "预测的味觉",
-  "demo.prob_note": "每根条表示模型估计该分子具有这种味觉的概率。一个分子可以同时又甜又苦，所以各条概率相加不等于 100%。",
+  "demo.prob_note": "一个分子可以同时又甜又苦，各条概率相加不等于 100%。",
   "demo.heldout_note": "浅色条来自只用训练集训练的模型，这个模型训练时没见过该分子。",
   "demo.sour_note": "数据中该分子还被记载为{tastes}味。本模型不预测酸味和咸味，上图的概率不包含它们。",
   "demo.pubchem": "在 PubChem 查看",
@@ -81,8 +81,6 @@
   "limits.safety": "<b>不可用于安全性判断。</b>模型不涉及毒性、致敏性或法规状态。苦味不代表有毒，甜味也不代表安全。",
   "footer.data": "<b>数据来源：</b>ChemTastesDB v2.1（Rojas et al., <i>Food Chemistry: Molecular Sciences</i> 4, 100090, 2022；<a href=\"https://doi.org/10.5281/zenodo.15051366\" target=\"_blank\" rel=\"noopener\">Zenodo</a>，CC BY 4.0）；VirtuousMultiTaste（Androutsos et al., <i>npj Science of Food</i>, 2024；<a href=\"https://github.com/lorenzopallante/VirtuousMultiTaste\" target=\"_blank\" rel=\"noopener\">GitHub</a>，MIT）。本站不转载原始数据。",
   "footer.chembl": "<b>药物标记：</b>ChEMBL（EMBL-EBI），仅用于评估数据偏差。",
-  "footer.related": "<b>相关项目：</b><a href=\"../odor-predictor/\">气味预测</a>（同样的模型结构）",
-  "footer.code": "<b>代码：</b><a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>",
   "hero.sub": "输入分子，图神经网络估计它是甜、苦、鲜还是无味。",
   "list.comma": "、",
   "footer.short": "数据来自 ChemTastesDB（CC BY 4.0）和 VirtuousMultiTaste（MIT）。不能用于安全性评估。详见<a href=\"about.html\">方法与来源</a>。"

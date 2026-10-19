@@ -47,3 +47,6 @@ desktop.ini
 # Round-3 plan and review lists: kept local only
 /PLAN-round3.md
 /ROUND3-*.md
+
+# Development plans: kept local only
+/PLAN*.md

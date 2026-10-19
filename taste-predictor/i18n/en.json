@@ -1,6 +1,6 @@
 {
   "hero.title": "Taste Predictor",
-  "hero.intro": "Whether a molecule tastes sweet, bitter or umami is closely linked to its structure. This project uses a graph neural network to estimate, from the structure, how likely a small molecule is to be sweet, bitter, umami or tasteless.",
+  "hero.intro": "This project uses a graph neural network to estimate, from the structure, how likely a small molecule is to be sweet, bitter, umami or tasteless.",
   "taste.sweet": "sweet",
   "taste.bitter": "bitter",
   "taste.umami": "umami",
@@ -32,7 +32,7 @@
   "demo.loading_rdkit": "Loading the structure drawing tool (about 7 MB, first visit only)...",
   "demo.rdkit_failed": "The structure drawing could not be loaded. Predictions are still shown.",
   "demo.chart_title": "Predicted taste",
-  "demo.prob_note": "Each bar is the model's estimated probability that the molecule has this taste. A molecule can be both sweet and bitter, so the bars do not add up to 100%.",
+  "demo.prob_note": "A molecule can be both sweet and bitter, so the bars need not add up to 100%.",
   "demo.heldout_note": "Light bars come from the model trained on the training split only, which never saw this molecule.",
   "demo.sour_note": "The data also records this molecule as {tastes}. The model does not predict sour or salty taste, so the chart leaves them out.",
   "demo.pubchem": "View on PubChem",
@@ -81,8 +81,6 @@
   "limits.safety": "<b>Not for safety assessment.</b> The model says nothing about toxicity, allergenicity or regulatory status. Bitter does not mean toxic, and sweet does not mean safe.",
   "footer.data": "<b>Data:</b> ChemTastesDB v2.1 (Rojas et al., <i>Food Chemistry: Molecular Sciences</i> 4, 100090, 2022; <a href=\"https://doi.org/10.5281/zenodo.15051366\" target=\"_blank\" rel=\"noopener\">Zenodo</a>, CC BY 4.0); VirtuousMultiTaste (Androutsos et al., <i>npj Science of Food</i>, 2024; <a href=\"https://github.com/lorenzopallante/VirtuousMultiTaste\" target=\"_blank\" rel=\"noopener\">GitHub</a>, MIT). The raw data is not redistributed here.",
   "footer.chembl": "<b>Drug flags:</b> ChEMBL (EMBL-EBI), used only to assess data bias.",
-  "footer.related": "<b>Related:</b> <a href=\"../odor-predictor/\">Odor Predictor</a> (same model design)",
-  "footer.code": "<b>Code:</b> <a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>",
   "hero.sub": "Enter a molecule; a graph neural network estimates whether it is sweet, bitter, umami or tasteless.",
   "list.comma": ", ",
   "footer.short": "Data: ChemTastesDB (CC BY 4.0) and VirtuousMultiTaste (MIT). Not for safety assessment. See <a href=\"about.html\">method &amp; sources</a>."

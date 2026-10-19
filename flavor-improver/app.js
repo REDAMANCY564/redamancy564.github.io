@@ -182,7 +182,7 @@
     const s = b.source;
     $("base-meta").innerHTML = esc(t("base.meta", { citation: s.citation, table: s.table, method: s.method })) +
       ` <a href="https://doi.org/${esc(s.doi)}" target="_blank" rel="noopener">doi:${esc(s.doi)}</a>` +
-      (b.note ? `<br>${esc(t("base.note_label"))} ${esc(b.note)}` : "");
+      (b.note ? `<br>${esc(t("base.note_label"))} ${esc(I18N.pick({ zh: b.note_zh || b.note, en: b.note }))}` : "");
   }
 
   // ---- charts ----

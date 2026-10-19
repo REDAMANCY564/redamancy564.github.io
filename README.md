@@ -1,10 +1,18 @@
 # Jingwei Cui 个人网站 + 分子气味预测（GNN）
 
 - 个人主页：https://redamancy564.github.io/
-- 项目页：https://redamancy564.github.io/odor-predictor/
-- 风味知识库：https://redamancy564.github.io/flavor-kb/
-- 项目 2 乳品风味改良（贝叶斯优化）：https://redamancy564.github.io/flavor-improver/
-- 味觉预测：https://redamancy564.github.io/taste-predictor/
+- 项目目录：https://redamancy564.github.io/projects/
+
+项目编号与网站一致（顺序定义在 `assets/projects.js`）：
+
+1. GC-MS 风味解读：https://redamancy564.github.io/gcms-interpreter/
+2. 风味原料检索：https://redamancy564.github.io/ingredient-finder/
+3. 气味预测：https://redamancy564.github.io/odor-predictor/
+4. 风味改良（贝叶斯优化）：https://redamancy564.github.io/flavor-improver/
+5. 气味空间地图：https://redamancy564.github.io/odor-map/
+6. 味觉预测：https://redamancy564.github.io/taste-predictor/
+7. 气味感知差异：https://redamancy564.github.io/perception-diversity/
+8. 风味知识库：https://redamancy564.github.io/flavor-kb/
 
 ## 风味知识库（flavor-kb/）
 
@@ -28,28 +36,28 @@ python knowledge/build_kb.py         # 生成 flavor-kb/data/*.json
 ```
 原文 PDF（Dunkel 2014、van Gemert 2011）有版权，已加入 `.gitignore`，不会上传。
 
-## 乳品风味改良推荐（flavor-improver/）
+## 4 风味改良（flavor-improver/）
 
-方法框架演示：选择一种乳制品基底和改良方向，用贝叶斯优化搜索「添加哪些风味物质、加多少」。评价函数是虚拟的（OAV → log 强度 → 描述词「提升度」向量加和 → 与目标轮廓的余弦相似度，减去种数和用量惩罚），不含掩蔽、协同、基质效应。计划见 `PLAN-formulation.md`。
+方法框架演示：选择一种乳制品基底和改良方向，用贝叶斯优化搜索「添加哪些风味物质、加多少」。评价函数是虚拟的（OAV → log 强度 → 描述词「提升度」向量加和 → 与目标轮廓的余弦相似度，减去种数和用量惩罚），不含掩蔽、协同、基质效应。
 
-- **数据**：18 种候选添加物 + 基底物质，阈值取自 van Gemert 2011（固定规则：Czerny 2008 > Buttery > Karagül-Yüceer），基底浓度来自 3 篇定量文献（出处见网页页脚和 `flavor-improver/data/bases.json`）。单分子气味向量来自项目 1 的模型。
+- **数据**：18 种候选添加物 + 基底物质，阈值取自 van Gemert 2011（固定规则：Czerny 2008 > Buttery > Karagül-Yüceer），基底浓度来自 3 篇定量文献（出处见网页页脚和 `flavor-improver/data/bases.json`）。单分子气味向量来自 3 气味预测的模型。
 - **参数**：K = 5，λ₁ = 0.05，λ₂ = 0.002，α = 0.1，添加量为阈值的 0.01 至 100 倍（`flavor-improver/data/mixture_spec.json`）。λ₂ 和上限的调整过程记录在 `training/flavor_improver/mixture.py` 注释和网页「结果」部分。
 - **网页**：默认阈值下播放预计算的优化过程（Python / BoTorch）；访客修改阈值后，可在浏览器中重新运行简化版贝叶斯优化（`bo.js`）。
 - **一致性测试**：https://redamancy564.github.io/flavor-improver/tests/parity.html ，检查 `mixture.js` 与 Python 的混合规则、目标函数完全一致。浏览器版算法的表现见 `tests/bo_check.html`（运行约需几十秒）。**修改 `mixture.py` 或数据后，必须重新生成测试数据并确认全部 PASS。**
 
-**示例 5：婴儿配方奶粉与母乳的风味差距分析（参照食品模式）**：数据来自 Zhang et al. 2022（*Food Chem* 382:132348，表 2、表 3，录入后已与 PDF 逐格核对），奶粉浓度按奶粉计并除以 8 换算为冲调后；两侧都以论文中的单个样本为起点，访客可修改浓度、增删物质。只分析 OAV ≥ 10（可选 ≥ 5）的关键风味物质，输出轮廓对比、差距排序和前体方向（`flavor-improver/reference.js`），不给出添加量；另有标明“仅为方法演示、不适用于婴儿配方食品”的添加量模拟。前体对照表在 `flavor-improver/data/precursors.json`，每行注明文献位置；GB 10765-2021 的条款内容须对照官方原文核实。
+**配方奶粉对比母乳：婴儿配方奶粉与母乳的风味差距分析（参照食品模式）**：数据来自 Zhang et al. 2022（*Food Chem* 382:132348，表 2、表 3，录入后已与 PDF 逐格核对），奶粉浓度按奶粉计并除以 8 换算为冲调后；两侧都以论文中的单个样本为起点，访客可修改浓度、增删物质。只分析 OAV ≥ 10（可选 ≥ 5）的关键香气物质，输出轮廓对比、差距排序和前体方向（`flavor-improver/reference.js`），不给出添加量；另有标明“仅为方法演示、不适用于婴儿配方食品”的添加量模拟。前体对照表在 `flavor-improver/data/precursors.json`，每行注明文献位置；GB 10765-2021 的条款内容须对照官方原文核实。
 ```powershell
 cd training
 .\.venv\Scripts\Activate.ps1
 pip install pymupdf                                                    # 仅提取 PDF 文本时需要
 python flavor_improver/extract_vangemert.py "<van Gemert PDF>" vg.txt  # 提取阈值汇编文本（PDF 有版权，不上传）
 python flavor_improver/prepare_reference.py vg.txt --final             # 生成 flavor-improver/data/reference.json
-python flavor_improver/make_parity_fixtures.py                         # 更新一致性测试数据（含示例 5）
+python flavor_improver/make_parity_fixtures.py                         # 更新一致性测试数据（含配方奶粉对比母乳）
 ```
 
-**用自己的数据（2026-10-18）**：计划见 `PLAN-userdata.md`。在 GC-MS 风味解读中分别处理当前样品和目标样品，点「作为当前样品发送 / 作为目标发送」（`assets/flavor-handoff.js`，浏览器本地存储，不上传），或上传其导出的排名 CSV（也接受自己整理的 CSV：物质名称列 + 浓度、相对含量 / 峰面积、OAV 或 ROAV 中至少一列，列名中英文均可，单位写在列名里；页面上有「上传 CSV 的要求」和模板 `flavor-improver/examples/userdata_template.csv`）；在配方改良的示例列表中选「用我自己的 GC-MS 数据」（或打开 `flavor-improver/?mode=user`）。页面按化合物合并两边（阈值可改），两边都定量时按 OAV 比较，否则按 ROAV（贡献占比）；轮廓维度默认母乳 / 奶粉 12 维，可切换；「一方较高」的标准默认 2 倍 / 2 个百分点，可在设置窗口调整；只推荐添加哪些物质（OAV 模式按补到目标水平后的轮廓相似度排序），不给添加量。不在风味知识库中的物质可提供 SMILES（或点击后从 PubChem 按 CAS / 名称查询）由 odor-predictor 模型在浏览器中预测气味。页面有内容安全策略（脚本只来自本站、cdnjs、jsdelivr；数据只能发往本站、jsdelivr 和用户点击时的 PubChem）。逻辑在 `userdata-core.js`，单元测试 `flavor-improver/tests/userdata.html`；示例数据 `flavor-improver/examples/` 由 `training/flavor_improver/make_userdata_examples.py` 从示例 5 的已发表数据生成。
+**用自己的数据（2026-10-18）**：在 GC-MS 风味解读中分别处理当前样品和目标样品，点「作为当前样品发送 / 作为目标发送」（`assets/flavor-handoff.js`，浏览器本地存储，不上传），或上传其导出的排名 CSV（也接受自己整理的 CSV：物质名称列 + 浓度、相对含量 / 峰面积、OAV 或 ROAV 中至少一列，列名中英文均可，单位写在列名里；页面上有「上传 CSV 的要求」和模板 `flavor-improver/examples/userdata_template.csv`）；在风味改良页面选「我的 GC-MS 数据」（或打开 `flavor-improver/?mode=user`）。页面按化合物合并两边（阈值可改），两边都定量时按 OAV 比较，否则按 ROAV（贡献占比）；轮廓维度默认母乳 / 奶粉 12 维，可切换；「一方较高」的标准默认 2 倍 / 2 个百分点，可在设置窗口调整；只推荐添加哪些物质（OAV 模式按补到目标水平后的轮廓相似度排序），不给添加量。不在风味知识库中的物质可提供 SMILES（或点击后从 PubChem 按 CAS / 名称查询）由 odor-predictor 模型在浏览器中预测气味。页面有内容安全策略（脚本只来自本站、cdnjs、jsdelivr；数据只能发往本站、jsdelivr 和用户点击时的 PubChem）。逻辑在 `userdata-core.js`，单元测试 `flavor-improver/tests/userdata.html`；示例数据 `flavor-improver/examples/` 由 `training/flavor_improver/make_userdata_examples.py` 从「配方奶粉对比母乳」的已发表数据生成。
 
-**尝试过的改进：混合物气味相似度模型（2026-10-18，未采用）**：计划见 `PLAN-mixture.md`。借鉴 Satarifard et al., *PNAS* 2026（doi:10.1073/pnas.2611057123），想用一个比较两个混合物的小模型替换参照食品模式的加和规则。DREAM 挑战赛整理的数据没有开放许可（Synapse 条款禁止用于其他目的），只用了 Snitz et al. 2013（*PLoS Comput Biol*，CC BY 4.0）的相似度评分。按混合物分组：实验 2、3 共 165 对训练和交叉验证，实验 1 的 141 对不重叠比较作测试集（只算一次；实验 1 的 11 号混合物在补充表中组成被截断，已去掉）。测试集 Pearson / Spearman：新模型（GNN 预测概率幂平均 + 138 维权重的角距离）0.537 / 0.516，Snitz 21 描述符角距离 0.504 / 0.563，现用加和规则（12 维）0.315 / 0.382，138 维加和 0.449 / 0.553；与各基线的 Pearson 差值置信区间都包含 0，未达到替换条件，评价函数不变，只在网页「局限」部分报告。
+**尝试过的改进：混合物气味相似度模型（2026-10-18，未采用）**：借鉴 Satarifard et al., *PNAS* 2026（doi:10.1073/pnas.2611057123），想用一个比较两个混合物的小模型替换参照食品模式的加和规则。DREAM 挑战赛整理的数据没有开放许可（Synapse 条款禁止用于其他目的），只用了 Snitz et al. 2013（*PLoS Comput Biol*，CC BY 4.0）的相似度评分。按混合物分组：实验 2、3 共 165 对训练和交叉验证，实验 1 的 141 对不重叠比较作测试集（只算一次；实验 1 的 11 号混合物在补充表中组成被截断，已去掉）。测试集 Pearson / Spearman：新模型（GNN 预测概率幂平均 + 138 维权重的角距离）0.537 / 0.516，Snitz 21 描述符角距离 0.504 / 0.563，现用加和规则（12 维）0.315 / 0.382，138 维加和 0.449 / 0.553；与各基线的 Pearson 差值置信区间都包含 0，未达到替换条件，评价函数不变，只在网页「局限」部分报告。
 ```powershell
 cd training
 .\.venv\Scripts\Activate.ps1
@@ -197,30 +205,28 @@ python -m http.server 8000
 ```
 index.html              个人主页
 assets/                 全站共用：样式、中英切换、个人信息、原子贡献绘图（contrib.js）
-odor-predictor/         项目页
+odor-predictor/         3 气味预测
   index.html, app.js    页面与交互逻辑
   i18n/                 页面中英文案
   model/                odor_gnn.onnx、labels.json、feature_spec.json
   data/                 presets.json（预设分子预测）、metrics.json（评估结果）
   engine.js             浏览器端特征提取 + ONNX 推理（须与 training/featurize.py 一致）
   tests/                一致性测试页 parity.html 及测试数据
-flavor-improver/        项目 2：乳品风味改良
+flavor-improver/        4 风味改良
   index.html, app.js    页面与交互逻辑
   mixture.js, bo.js     浏览器端评价函数（须与 training/flavor_improver/mixture.py 一致）与贝叶斯优化
-  reference.js          示例 5：参照食品模式（差距分析、前体方向）
-  data/                 palette、bases、presets、mixture_spec、bo_traces、bo_metrics、reference（示例 5）、precursors（前体对照表）
+  reference.js          配方奶粉对比母乳：参照食品模式（差距分析、前体方向）
+  data/                 palette、bases、presets、mixture_spec、bo_traces、bo_metrics、reference（配方奶粉对比母乳）、precursors（前体对照表）
   tests/                parity.html（一致性）、bo_check.html（浏览器版算法表现）
 flavor-kb/              风味知识库
 taste-predictor/        味觉预测（结构同 odor-predictor；engine.js 在气味引擎上加中和步骤）
 odor-map/               气味空间地图（data/：coords.bin、map.json、foods.json；分子数据读 ingredient-finder/data/）
 perception-diversity/   气味感知的个体差异（data/：site.json、映射表、质量检查、处理日志）
 training/               训练代码（原始数据不上传）
-  flavor_improver/      项目 2 的数据准备、贝叶斯优化实验与分析
+  flavor_improver/      风味改良的数据准备、贝叶斯优化实验与分析
   taste/                味觉预测的数据处理、训练、导出
   odormap/              气味空间地图的 UMAP、评估和站点数据
   perception/           个体差异项目：标准化与质量检查、差异分解、预测、分群
-PLAN.md                 开发计划（项目 1）
-PLAN-formulation.md     开发计划（项目 2）
 ```
 
 ## 重新训练模型
@@ -251,7 +257,7 @@ python ablation_to_site.py  # 把摘要写入 odor-predictor/data/metrics.json
 | Morgan 指纹 + 随机森林 | 0.841 | 0.781 | 0.816 |
 | Morgan 指纹 + 逻辑回归 | 0.837 | 0.779 | 0.814 |
 
-无环分子采用随机划分，分数可能因同系物泄漏而偏乐观，详见 `PLAN.md` 阶段 1 的说明。
+无环分子采用随机划分，分数可能因同系物泄漏而偏乐观。
 
 ## 数据与引用
 
@@ -271,4 +277,4 @@ python ablation_to_site.py  # 把摘要写入 odor-predictor/data/metrics.json
 - 主页：完整个人主页（教育经历、论文、专利、其他项目）
 - 训练数据：原始数据中有记为混合物的条目（如羟基香茅醛 + 吲哚、吡嗪异构体混合物、甘油酯类），清洗时取了最大片段并合并标签，标签描述的是混合物；后续应在清洗阶段排除这类条目并重新训练（2026-10-18 已从 ingredient-finder / odor-map 候选库中移除只来自混合物的 11 个分子，模型未重新训练）
 - 味觉预测：纳入多肽（苦味肽、鲜味肽、kokumi 肽，需要适合长链的表示方法）；加入手性特征以区分 D/L 氨基酸和糖的异构体；补充酸、咸数据后再建模；对单一来源的可疑标签做人工复核（如丁酸、香兰素被记为甜）；预测强度或阈值（需要定量数据）
-- 乳品风味改良：前体物质推荐（「前体 → 风味物质 → 反应类型」对照表，作为规则查询）；引入掩蔽效应（参考混合物模型，或用 Snitz 2013、Ravia 2020 等公开数据校准，需核实许可）；加入成本、法规限量、溶解度约束做多目标优化；人在回路模式（用户为方案打分，替代虚拟评价函数）；自定义基底和改良方向
+- 风味改良（原网页「局限」末尾「后续可能的改进」移到这里）：前体物质推荐（基于反应路径知识，「前体 → 风味物质 → 反应类型」对照表，作为规则查询）；更好的混合物模型；引入掩蔽效应（参考混合物模型，或用 Snitz 2013、Ravia 2020 等公开数据校准，需核实许可）；加入成本、法规限量、溶解度约束做多目标优化；人在回路模式（用户为方案打分，替代虚拟评价函数）；自定义基底和改良方向

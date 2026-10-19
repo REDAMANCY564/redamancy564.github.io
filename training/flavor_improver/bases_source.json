@@ -13,6 +13,7 @@
         "table": "Table 1", "method": "GC-MS, standard addition"
       },
       "note": "Acetaldehyde was not quantified in this study.",
+      "note_zh": "本研究未定量乙醛。",
       "compounds": {
         "diacetyl": 826.52, "2,3-pentanedione": 45.67, "hexanal": 10.23, "2-heptanone": 107.75,
         "2-pentylfuran": 3.08, "styrene": 1.58, "acetoin": 15530.88, "octanal": 19.06, "acetic acid": 402.29,
@@ -35,6 +36,7 @@
       "method_by_compound": {"hexanal": "SIDA", "octanal": "SIDA", "nonanal": "SIDA", "1-octen-3-ol": "SIDA",
                              "benzaldehyde": "SIDA", "butanoic acid": "SIDA", "octanoic acid": "SIDA", "decanoic acid": "SIDA"},
       "note": "For compounds measured by both methods the two values differ by up to ~9x (e.g. butanoic acid in raw milk); SIDA values are used where available.",
+      "note_zh": "两种方法都测定的物质，两个值最多相差约 9 倍（如生乳中的丁酸）；有 SIDA 值时采用 SIDA 值。",
       "compounds": {
         "hexanal": 13.00, "octanal": 2.36, "nonanal": 5.61, "1-octen-3-ol": 3.29, "benzaldehyde": 34.19,
         "butanoic acid": 245.29, "octanoic acid": 1119.83, "decanoic acid": 263.01,
@@ -55,7 +57,8 @@
         "doi": "10.1021/acs.jafc.4c01814", "pmcid": "PMC11100003", "license": "CC BY",
         "table": "Table 1", "method": "SIDA (stable isotope dilution assays)"
       },
-      "note": "Concentrations are on a dry-matter basis; the paper does not report the water content needed to convert them. Replaces the plant-based yoghurt example (user decision): the only available quantitative study (Nijdam et al. 2025) quantified three compounds and none of the plant-derived odorants.",
+      "note": "Concentrations are on a dry-matter basis; the paper does not report the water content needed to convert them.",
+      "note_zh": "浓度以干物质计；原文未给出换算所需的水分含量。",
       "compounds": {
         "butanoic acid": 13915, "hexanoic acid": 9782, "pentanoic acid": 147, "ethyl butanoate": 17,
         "ethyl hexanoate": 4, "delta-dodecalactone": 3096, "delta-decalactone": 2484, "diacetyl": 3668,
@@ -76,6 +79,7 @@
         "table": "Table 1", "method": "SIDA (stable isotope dilution assays)"
       },
       "note": "Concentrations are on a dry-matter basis; the paper does not report the water content needed to convert them.",
+      "note_zh": "浓度以干物质计；原文未给出换算所需的水分含量。",
       "compounds": {
         "butanoic acid": 86811, "hexanoic acid": 14931, "pentanoic acid": 572, "ethyl butanoate": 51,
         "ethyl hexanoate": 23, "delta-dodecalactone": 3762, "delta-decalactone": 2372, "diacetyl": 1856,

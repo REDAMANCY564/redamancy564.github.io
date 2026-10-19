@@ -149,7 +149,7 @@ def write_final(compounds, bases, draft_bases, prior):
     for b, d in zip(bases, draft_bases):
         out_bases.append({
             "id": b["id"], "name_en": b["name_en"], "name_zh": b["name_zh"], "sample": b["sample"], "unit": b["unit"],
-            "source": b["source"], "note": b.get("note", ""), "method_by_compound": b.get("method_by_compound", {}),
+            "source": b["source"], "note": b.get("note", ""), "note_zh": b.get("note_zh", ""), "method_by_compound": b.get("method_by_compound", {}),
             "composition_ug_kg": {u["compound"]: u["conc"] for u in d["used"]},
             "excluded_no_threshold": d["excluded_no_threshold"],
             "profile": d["profile"],

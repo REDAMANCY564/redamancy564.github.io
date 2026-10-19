@@ -45,10 +45,9 @@
   "doi.disclaimer": "仅分析摘要，基于文字匹配，不代表文献结论。物质名称写法不同（如缩写、商品名）时可能漏掉。",
   "footer.data": "<b>数据来源：</b>关键香气物质摘自 Dunkel A, et al. <i>Angew. Chem. Int. Ed.</i> 2014, 53, 7124-7143 (<a href=\"https://doi.org/10.1002/anie.201309508\" target=\"_blank\" rel=\"noopener\">doi:10.1002/anie.201309508</a>) 正文，并注明页码；完整的食品与关键香气物质对照见该文补充材料。检出数据来自 <a href=\"https://cosylab.iiitd.edu.in/flavordb2/\" target=\"_blank\" rel=\"noopener\">FlavorDB2</a>（Garg N, et al. <i>Nucleic Acids Res.</i> 2018），CC BY-NC-SA 3.0，本站衍生数据以相同协议共享。物质名称和结构来自 PubChem。",
   "footer.apis": "<b>文献服务：</b><a href=\"https://europepmc.org/\" target=\"_blank\" rel=\"noopener\">Europe PMC</a>、<a href=\"https://www.crossref.org/\" target=\"_blank\" rel=\"noopener\">Crossref</a>（均免费，无需密钥）。",
-  "footer.code": "<b>代码：</b><a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>",
   "search.meta_kfo": "{n} 个关键香气物质（Dunkel 2014）",
   "search.meta_det": "{c} · 检出 {n} 种物质",
   "cmp.finder": "查找替代原料",
   "hero.sub": "按食品或化合物查关键香气物质、检出物质和相关文献。",
-  "footer.short": "关键香气物质引自 Dunkel 等 2014；检出数据来自 FlavorDB2（CC BY-NC-SA 3.0，本站衍生数据按同一协议共享）；文献来自 Europe PMC 和 Crossref。详见<a href=\"about.html\">来源</a>。"
+  "footer.short": "关键香气物质引自 Dunkel 等 2014；检出数据来自 FlavorDB2（CC BY-NC-SA 3.0，本站衍生数据按同一协议共享）；文献来自 Europe PMC 和 Crossref。详见<a href=\"about.html\">方法与来源</a>。"
 }
