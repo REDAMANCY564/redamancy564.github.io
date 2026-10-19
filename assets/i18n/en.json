@@ -53,7 +53,7 @@
   "contrib.lower": "lowers",
   "contrib.none": "Removing any single atom changes this probability by less than 0.5 percentage points, so no atom is colored.",
   "contrib.unavailable": "No atom contribution data.",
-  "contrib.note": "Colors show how the predicted probability changes when that atom is removed (occlusion, in percentage points): orange atoms raise it, blue atoms lower it, darker means a larger effect. The highlighting shows what the model relies on, not a proven structure-activity cause.",
+  "contrib.note": "Orange atoms raise the probability, blue atoms lower it. This shows what the model relies on, not a proven structure-activity cause.",
   "home.gcms.title": "GC-MS Flavor Interpreter",
   "home.gcms.privacy": "Your data never leaves your computer: all analysis runs in your browser, even offline",
   "home.gcms.desc": "Upload one sample's GC-MS peak table and your standard file: the page recognizes different instrument formats, unifies compound names and CAS numbers, matches targets by explicit rules, then computes OAV or ROAV, ranks key aroma compounds and draws a flavor profile.",

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Odor Predictor | Jingwei Cui</title>
   <meta name="description" content="A graph neural network that predicts odor descriptors of flavor molecules from their structure.">
-  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/style.css?v=20261019r">
   <style>
     .demo-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 16px; }
     @media (min-width: 760px) { .demo-grid { grid-template-columns: 5fr 7fr; } }
@@ -31,48 +31,37 @@
     .chip-btn:hover { border-color: var(--accent); }
     .search-status { min-height: 1.5em; margin: 8px 0 0; color: var(--muted); }
     .search-status.error { color: #b42318; }
+    .mol-links { margin: 6px 0 0; }
+    .mol-links a + a::before { content: " / "; color: var(--muted); }
     .threshold { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); font-size: .9rem; }
     .threshold .thr-title { font-weight: 600; margin-bottom: 2px; }
     .threshold .thr-value { font-size: 1.05rem; }
 
-    .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 8px 0 20px; }
-    .flow .step { flex: 1 1 150px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; }
-    .flow .step .ico { display: block; height: 44px; margin: 0 auto 6px; }
-    .flow .step b { display: block; }
-    .flow .step span { font-size: .85rem; color: var(--muted); }
-    .flow .arrow { align-self: center; color: var(--accent); font-size: 1.4rem; }
-    @media (max-width: 699px) {
-      .flow { flex-direction: column; }
-      .flow .step { flex-basis: auto; }
-      .flow .arrow { transform: rotate(90deg); }
-    }
-    .method-text p { margin-bottom: 10px; }
-
-    .label-lists { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 16px; }
-    @media (min-width: 600px) { .label-lists { grid-template-columns: 1fr 1fr; } }
-    .label-lists ol { margin: 0; padding-left: 1.4em; }
-    .label-lists li { font-variant-numeric: tabular-nums; }
   </style>
 </head>
 <body>
   <header class="site-header">
     <div class="container">
-      <a class="brand" href="../">← <span data-i18n="nav.home">Home</span></a>
-      <button class="lang-toggle" id="lang-toggle" type="button">
-        <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
-      </button>
+      <a class="brand" href="../">Jingwei Cui</a>
+      <nav class="proj-nav">
+        <a href="./" data-i18n="nav.tool" aria-current="page">Tool</a>
+        <a href="about.html" data-i18n="nav.about">About</a>
+        <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener" data-i18n="nav.code">Code</a>
+        <button class="lang-toggle" id="lang-toggle" type="button">
+          <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
+        </button>
+      </nav>
     </div>
   </header>
 
   <main class="container">
     <section class="hero">
-      <h1 data-i18n="hero.title">Predicting smell from molecular structure</h1>
-      <p data-i18n="hero.intro"></p>
+      <h1 data-i18n="hero.title">Odor Predictor</h1>
+      <p class="sub" data-i18n="hero.sub"></p>
     </section>
 
     <!-- Demo -->
     <section class="section" id="demo">
-      <h2 data-i18n="demo.title">Try it</h2>
       <form id="search-form" class="search" novalidate>
         <label class="field" for="search-input" data-i18n="search.label">Search any molecule</label>
         <div class="search-row">
@@ -99,9 +88,11 @@
           <div class="mol-svg" id="mol-svg"></div>
           <div class="contrib-picker" id="contrib-picker"></div>
           <div class="contrib-legend" id="contrib-legend"></div>
-          <a class="small" id="mol-pubchem" target="_blank" rel="noopener" data-i18n="demo.pubchem">View on PubChem</a>
-          <a class="small" id="mol-taste" data-i18n="demo.taste_link" style="margin-left:16px">See its predicted taste</a>
-          <a class="small" id="mol-finder" data-i18n="demo.finder_link" style="margin-left:16px">Find substitutes</a>
+          <p class="small mol-links">
+            <a id="mol-pubchem" target="_blank" rel="noopener" data-i18n="demo.pubchem">View on PubChem</a>
+            <a id="mol-taste" data-i18n="demo.taste_link">See its predicted taste</a>
+            <a id="mol-finder" data-i18n="demo.finder_link">Find substitutes</a>
+          </p>
           <div class="threshold" id="mol-threshold" hidden></div>
         </div>
         <div class="card">
@@ -117,107 +108,11 @@
       </div>
     </section>
 
-    <!-- Method -->
-    <section class="section" id="method">
-      <h2 data-i18n="method.title">How it works</h2>
-      <div class="flow" aria-hidden="false">
-        <div class="step">
-          <svg class="ico" viewBox="0 0 80 44" aria-hidden="true"><text x="40" y="28" text-anchor="middle" font-family="monospace" font-size="12" fill="currentColor">CC(=O)C</text></svg>
-          <b data-i18n="flow.1.title">Molecule</b><span data-i18n="flow.1.sub"></span>
-        </div>
-        <div class="arrow" aria-hidden="true">→</div>
-        <div class="step">
-          <svg class="ico" viewBox="0 0 80 44" aria-hidden="true" stroke="currentColor" stroke-width="2" fill="none">
-            <path d="M14 30 L30 16 L46 30 L62 16 M30 16 L30 4"/>
-            <g fill="#0f6e6e" stroke="none"><circle cx="14" cy="30" r="4"/><circle cx="30" cy="16" r="4"/><circle cx="46" cy="30" r="4"/><circle cx="62" cy="16" r="4"/><circle cx="30" cy="4" r="4" fill="#c0392b"/></g>
-          </svg>
-          <b data-i18n="flow.2.title">Graph</b><span data-i18n="flow.2.sub"></span>
-        </div>
-        <div class="arrow" aria-hidden="true">→</div>
-        <div class="step">
-          <svg class="ico" viewBox="0 0 80 44" aria-hidden="true" fill="#0f6e6e">
-            <g stroke="#9aa5a5" stroke-width="1"><path d="M12 10 L40 22 L68 10 M12 34 L40 22 L68 34 M12 10 L40 6 L68 10 M12 34 L40 38 L68 34"/></g>
-            <circle cx="12" cy="10" r="4"/><circle cx="12" cy="34" r="4"/><circle cx="40" cy="6" r="4"/><circle cx="40" cy="22" r="4"/><circle cx="40" cy="38" r="4"/><circle cx="68" cy="10" r="4"/><circle cx="68" cy="34" r="4"/>
-          </svg>
-          <b data-i18n="flow.3.title">Graph neural network</b><span data-i18n="flow.3.sub"></span>
-        </div>
-        <div class="arrow" aria-hidden="true">→</div>
-        <div class="step">
-          <svg class="ico" viewBox="0 0 80 44" aria-hidden="true" fill="#0f6e6e">
-            <rect x="10" y="6" width="56" height="8" rx="2"/><rect x="10" y="18" width="40" height="8" rx="2" opacity=".75"/><rect x="10" y="30" width="24" height="8" rx="2" opacity=".5"/>
-          </svg>
-          <b data-i18n="flow.4.title">Odor descriptors</b><span data-i18n="flow.4.sub"></span>
-        </div>
-      </div>
-      <div class="method-text">
-        <p data-i18n-html="method.data"></p>
-        <p data-i18n-html="method.model"></p>
-        <p data-i18n-html="method.eval"></p>
-        <p data-i18n-html="method.explain"></p>
-      </div>
-    </section>
-
-    <!-- Results -->
-    <section class="section" id="results">
-      <h2 data-i18n="results.title">How well does it work?</h2>
-      <p data-i18n="results.intro"></p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th data-i18n="results.col.model">Model</th>
-              <th class="num" data-i18n="results.col.all">All test molecules</th>
-              <th class="num" data-i18n="results.col.cyclic">With rings</th>
-              <th class="num" data-i18n="results.col.acyclic">Without rings</th>
-            </tr>
-          </thead>
-          <tbody id="results-body"></tbody>
-        </table>
-      </div>
-      <p class="small muted" id="seed-note" style="margin-top:8px"></p>
-      <p data-i18n="results.takeaway"></p>
-      <div class="label-lists">
-        <div class="card"><h3 data-i18n="results.best">Easiest to predict</h3><ol id="best-labels"></ol></div>
-        <div class="card"><h3 data-i18n="results.worst">Hardest to predict</h3><ol id="worst-labels"></ol></div>
-      </div>
-      <p class="small muted" data-i18n="results.label_note" style="margin-top:8px"></p>
-
-      <h3 data-i18n="ablation.title" style="margin-top:24px">Tried but not adopted</h3>
-      <p data-i18n-html="ablation.intro"></p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th data-i18n="ablation.col.setup">Setup</th>
-              <th class="num" data-i18n="ablation.col.test">Test AUROC</th>
-              <th class="num" data-i18n="ablation.col.rare">Rare descriptors</th>
-            </tr>
-          </thead>
-          <tbody id="ablation-body"></tbody>
-        </table>
-      </div>
-      <p class="small muted" id="ablation-note" style="margin-top:8px"></p>
-      <p data-i18n="ablation.takeaway"></p>
-    </section>
-
-    <!-- Limitations -->
-    <section class="section" id="limits">
-      <h2 data-i18n="limits.title">Limitations</h2>
-      <ul class="plain">
-        <li data-i18n-html="limits.4"></li>
-        <li data-i18n-html="limits.6"></li>
-      </ul>
-    </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p data-i18n-html="footer.data"></p>
-      <p data-i18n-html="footer.thr"></p>
-      <p data-i18n-html="footer.ref"></p>
-      <p data-i18n-html="footer.code"></p>
-      <p data-i18n-html="footer.fi"></p>
-      <p data-i18n="footer.updating"></p>
+      <p data-i18n-html="footer.short"></p>
     </div>
   </footer>
 
@@ -225,10 +120,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.wasm.min.js"></script>
   <script src="engine.js"></script>
-  <script src="../assets/i18n.js?v=20261018g" data-page-dict="i18n/"></script>
+  <script src="../assets/i18n.js?v=20261019r" data-page-dict="i18n/"></script>
   <script src="../flavor-kb/kb.js"></script>
   <script src="../flavor-kb/kb-ui.js"></script>
   <script src="../assets/contrib.js"></script>
-  <script src="app.js?v=20261018f"></script>
+  <script src="app.js?v=20261019r"></script>
 </body>
 </html>

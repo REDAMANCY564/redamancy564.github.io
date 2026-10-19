@@ -1,6 +1,6 @@
 {
   "page.title": "Odor Predictor | Jingwei Cui",
-  "hero.title": "Predicting smell from molecular structure",
+  "hero.title": "Odor Predictor",
   "hero.intro": "What a molecule smells like is largely decided by its structure: which atoms it contains and how they are connected. This project trains an AI model, a graph neural network, to read a molecule's structure and predict the words flavorists would use to describe its smell, such as fruity, buttery or roasted. Tools like this can help flavor developers screen candidate molecules on a computer before going into the lab.",
   "demo.title": "Try it",
   "demo.select": "Or pick a preset molecule",
@@ -29,7 +29,7 @@
   "demo.loading_rdkit": "Loading the structure drawing engine (about 7 MB, first visit only)...",
   "demo.rdkit_failed": "The structure drawing could not be loaded. Predictions are still shown.",
   "demo.chart_title": "Top 8 predicted odor descriptors",
-  "demo.prob_note": "Each bar is the model's estimated probability that the descriptor is used for this molecule. A molecule usually has several descriptors at once, so the bars do not add up to 100%.",
+  "demo.prob_note": "Probability per descriptor; a molecule has several, so they don't sum to 100%.",
   "demo.taste_link": "See its predicted taste →",
   "demo.pubchem": "View on PubChem",
   "status.train": "This molecule was in the training data, so it does not test the model.",
@@ -84,5 +84,8 @@
   "footer.code": "<b>Code:</b> <a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>",
   "status.kb_dunkel": "Odor description in the flavor knowledge base (Dunkel et al. 2014, p. {page}):",
   "status.kb_flavordb": "Odor description in the flavor knowledge base (FlavorDB):",
-  "demo.finder_link": "Find substitutes →"
+  "demo.finder_link": "Find substitutes →",
+  "hero.sub": "Enter a molecule; a graph neural network predicts its odor descriptors.",
+  "about.page_title": "About | Odor Predictor | Jingwei Cui",
+  "footer.short": "Trained on The Good Scents Company &amp; Leffingwell data via OpenPOM (CC BY-NC) · Non-commercial academic demo only · Not for safety decisions · <a href=\"about.html\">Method &amp; sources →</a>"
 }

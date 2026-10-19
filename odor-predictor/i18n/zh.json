@@ -1,6 +1,6 @@
 {
   "page.title": "气味预测 | 崔京伟",
-  "hero.title": "从分子结构预测气味",
+  "hero.title": "气味预测",
   "hero.intro": "一个分子闻起来是什么味道，很大程度上由它的结构决定：含有哪些原子，原子之间如何相连。本项目训练了一个 AI 模型（图神经网络），让它读懂分子结构，并预测调香师和调味师会用哪些词来描述它的气味，比如果香、黄油、烘烤。这类工具可以帮助风味研发人员在进实验室之前，先在电脑上对候选分子做初步筛选。",
   "demo.title": "试一试",
   "demo.select": "或者选择一个预设分子",
@@ -29,7 +29,7 @@
   "demo.loading_rdkit": "正在加载结构绘图工具（约 7 MB，仅首次访问需要）...",
   "demo.rdkit_failed": "结构图加载失败，预测结果仍正常显示。",
   "demo.chart_title": "预测概率最高的 8 个气味描述词",
-  "demo.prob_note": "每根条表示模型估计「这个描述词会被用来形容该分子」的概率。一个分子通常同时有多个描述词，所以各条概率相加不等于 100%。",
+  "demo.prob_note": "每个描述词各自的概率；一个分子有多个描述词，总和不是 100%。",
   "demo.taste_link": "查看它的味觉预测 →",
   "demo.pubchem": "在 PubChem 查看",
   "status.train": "该分子在训练数据中，因此这里的结果不能用来检验模型。",
@@ -84,5 +84,8 @@
   "footer.code": "<b>代码：</b><a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>",
   "status.kb_dunkel": "风味知识库中的气味描述（Dunkel et al. 2014, p. {page}）：",
   "status.kb_flavordb": "风味知识库中的气味描述（FlavorDB）：",
-  "demo.finder_link": "查找替代原料 →"
+  "demo.finder_link": "查找替代原料 →",
+  "hero.sub": "输入分子，图神经网络预测它的气味描述词。",
+  "about.page_title": "方法与来源 | 气味预测 | 崔京伟",
+  "footer.short": "训练数据来自 The Good Scents Company 与 Leffingwell，经 OpenPOM 整理（CC BY-NC）· 仅限非商业学术演示 · 不可用于安全性判断 · <a href=\"about.html\">方法与来源 →</a>"
 }
