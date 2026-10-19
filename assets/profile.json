@@ -1,19 +1,107 @@
 {
-  "_help": "Fill in your details here. Leave a field as \"\" to hide it on the page. cv_pdf is a path relative to the site root, e.g. assets/cv.pdf",
+  "_help": "Fill in your details here. Leave a field as \"\" to hide it on the page. cv_pdf is a path relative to the site root, e.g. assets/cv.pdf. papers / patents / talks feed both the homepage and the CV page; keep them identical to assets/cv.pdf.",
   "name": {
     "en": "Jingwei Cui",
     "zh": "崔京伟"
   },
-  "tagline": {
-    "en": "Food Science PhD candidate · Flavor chemistry and machine learning",
-    "zh": "食品科学博士在读 · 风味化学与机器学习"
+  "role": {
+    "en": "PhD candidate in Food Science and Engineering at Jiangnan University, on a joint PhD program at the National University of Singapore since 2025. Graduating in June 2027.",
+    "zh": "江南大学食品科学与工程博士在读，2025 年起在新加坡国立大学联合培养，2027 年 6 月毕业。"
   },
   "bio": {
-    "en": "I'm a Food Science PhD candidate at Jiangnan University, with joint PhD training at the National University of Singapore, graduating in June 2027. My work combines flavor chemistry and machine learning: GC-MS and GC-O analysis, sensory evaluation, and models that predict perception from molecules. During my PhD I built a GC-MS data processing system that has handled more than 3,000 samples. The tools below run directly in your browser.",
-    "zh": "江南大学食品科学与工程博士在读，在新加坡国立大学联合培养，2027 年 6 月毕业。我的研究把风味化学和机器学习结合起来，包括 GC-MS / GC-O 分析、感官评价，以及从分子预测感知的模型。读博期间我开发了一套 GC-MS 数据处理系统，已处理 3000 多个样品。下面的工具都可以直接在浏览器里使用。"
+    "en": "My PhD project is on the flavor of human milk; my master's project was on beef flavor from Maillard reactions of beef tallow residue. I analyse samples with GC-MS, GC-O, electronic nose and sensory panels, and model the data with machine learning. During my PhD I wrote a GC-MS data-processing program that is now used routinely for research data; it has processed more than 3,000 samples.",
+    "zh": "我的博士课题是母乳风味，硕士做的是牛油渣美拉德反应产生的牛肉风味。平时用 GC-MS、GC-O、电子鼻和感官评价做分析，再用机器学习建模。读博期间我写了一套 GC-MS 数据处理程序，已用于日常科研数据处理，累计处理 3000 多个样品。"
   },
   "email": "e1719854@u.nus.edu",
   "github": "https://github.com/REDAMANCY564",
   "linkedin": "",
-  "cv_pdf": "assets/cv.pdf"
+  "cv_pdf": "assets/cv.pdf",
+  "papers": [
+    {
+      "title": "Comparative analysis and aroma identification of key flavor components in breast milk, other mammalian milk, and infant formula",
+      "venue": "Food Chemistry",
+      "rank": { "zh": "中科院一区 Top，IF 10.4", "en": "JCR Q1, IF 10.4" }
+    },
+    {
+      "title": "Differentiating breast milk and animal milk flavors and investigating influencing factors using electronic nose and machine learning",
+      "venue": "Food Bioscience",
+      "rank": { "zh": "中科院一区，IF 6.2", "en": "JCR Q1, IF 6.2" }
+    },
+    {
+      "title": "Prediction of flavor of Maillard reaction product of beef tallow residue based on artificial neural network",
+      "venue": "Food Chemistry: X",
+      "rank": { "zh": "中科院一区，IF 9.2", "en": "JCR Q1, IF 9.2" }
+    },
+    {
+      "title": "Process modeling and simulation of key volatile compounds of Maillard reaction products derived from beef tallow residue hydrolysate based on proxy model",
+      "venue": "Foods",
+      "rank": { "zh": "中科院一区，IF 6.0", "en": "JCR Q1, IF 6.0" }
+    },
+    {
+      "title": "Quantitative analysis of fatty acids and amino acids as precursors to human milk flavor through importance ranking modeling",
+      "venue": "Food Bioscience",
+      "rank": { "zh": "中科院一区，IF 6.2", "en": "JCR Q1, IF 6.2" }
+    }
+  ],
+  "submitted": [
+    "An ensemble learning framework for predicting flavor-active compounds in breast milk based on electronic nose analysis",
+    "Artificial neural networks in food flavor analysis: A review",
+    "A novel method for simultaneous optimization of multiple processes"
+  ],
+  "cn_papers": [
+    {
+      "title": {
+        "zh": "牛乳与母乳的脂肪酸组成及关键香气化合物的对比分析",
+        "en": "Comparative analysis of fatty acid composition and key aroma compounds in bovine milk and human milk"
+      },
+      "venue": { "zh": "中国油脂", "en": "China Oils and Fats" },
+      "note": { "zh": "第二作者，2025", "en": "Second author, 2025" }
+    }
+  ],
+  "patents": [
+    {
+      "title": {
+        "zh": "一种牛油渣美拉德反应产物的牛肉风味改善方法",
+        "en": "A method for improving the beef flavor of Maillard reaction products derived from beef tallow residue"
+      },
+      "note": {
+        "zh": "发明专利 CN114868897B，2023 年 10 月授权，第二发明人",
+        "en": "Invention patent CN114868897B, granted Oct 2023, second inventor"
+      }
+    },
+    {
+      "title": {
+        "zh": "一种脂肪酶位置选择性变化规律的评价方法及装置",
+        "en": "A method and device for evaluating the positional selectivity of lipases"
+      },
+      "note": {
+        "zh": "发明专利，申请号 CN202310612528.3，2026 年 6 月授权，第二发明人",
+        "en": "Invention patent, Application No. CN202310612528.3, granted June 2026, second inventor"
+      }
+    }
+  ],
+  "patent_apps": [
+    {
+      "title": {
+        "zh": "一种基于曲线预测模型的牛油美拉德反应产物挥发性成分预测方法",
+        "en": "A method for predicting volatile components in beef tallow Maillard reaction products based on a curve prediction model"
+      },
+      "note": {
+        "zh": "申请号 CN202210864905.8",
+        "en": "Application No. CN202210864905.8"
+      }
+    }
+  ],
+  "talks": [
+    {
+      "title": {
+        "zh": "第 23 届国际食品科学技术联盟世界大会（IUFoST 2026）",
+        "en": "23rd IUFoST World Congress of Food Science and Technology"
+      },
+      "note": {
+        "zh": "中国香港，2026 年 10 月，英文口头报告 2 项，均已录用",
+        "en": "Hong Kong, October 2026, two oral presentations accepted (first author)"
+      }
+    }
+  ]
 }

@@ -4,23 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jingwei Cui</title>
-  <meta name="description" content="Jingwei Cui: Food Science PhD candidate building browser tools for flavor chemistry and machine learning.">
-  <link rel="stylesheet" href="assets/style.css?v=20261019u">
-  <style>
-    /* Thumbnail sits on top of a text placeholder; a missing image removes itself */
-    .pub-item .thumb { position: relative; text-decoration: none; }
-    .pub-item .thumb img { position: absolute; inset: 0; background: var(--surface); }
-    .thumb-ph { width: 100%; height: 100%; display: grid; place-items: center; padding: 8px; text-align: center;
-                font-family: var(--font-serif); font-size: .85rem; color: var(--muted); }
-  </style>
+  <meta name="description" content="Jingwei Cui: PhD candidate in Food Science and Engineering (Jiangnan University, joint PhD at NUS). Flavor research, papers and browser tools for flavor and perception research.">
+  <link rel="stylesheet" href="assets/style.css?v=20261019v">
 </head>
 <body>
   <header class="site-header">
     <div class="container">
-      <span class="brand" id="brand-name">Jingwei Cui</span>
-      <nav class="proj-nav">
-        <a href="./" data-i18n="nav.home" aria-current="page">Home</a>
-        <a href="#projects" data-i18n="nav.projects">Projects</a>
+      <a class="brand" href="./" data-i18n="site.name">崔京伟</a>
+      <nav class="site-nav" aria-label="Site">
+        <a href="./projects/" data-i18n="nav.projects">项目</a>
+        <a href="./cv/" data-i18n="nav.cv">简历</a>
         <button class="lang-toggle" id="lang-toggle" type="button">
           <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
         </button>
@@ -28,96 +21,73 @@
     </div>
   </header>
 
-  <main class="container">
-    <!-- One sentence and one button (Osmo-style first screen) -->
-    <section class="home-hero">
-      <h1 class="display" data-i18n="home.hero"></h1>
-      <a class="btn-primary" href="#projects" data-i18n="home.cta">See projects</a>
-    </section>
-
-    <!-- Short bio and one contact line (Barron-style) -->
-    <section class="intro" id="about">
-      <h2 id="name">Jingwei Cui</h2>
-      <p class="tagline" id="tagline"></p>
+  <main class="container home">
+    <!-- Screen 1: who I am -->
+    <section class="who">
+      <h1 data-i18n="site.name">崔京伟</h1>
+      <p class="role" id="role"></p>
       <p id="bio"></p>
       <p class="contact-row" id="contact"></p>
     </section>
 
-    <!-- Projects: one list, flagships first and highlighted -->
-    <section class="section" id="projects">
-      <h2 data-i18n="home.projects">Projects</h2>
+    <!-- Screen 2: featured projects -->
+    <section class="home-block" id="featured">
+      <h2 data-i18n="home.projects">项目</h2>
       <div class="pub-list" id="pub-list"></div>
+      <p class="more"><a href="projects/" data-i18n="home.all_projects">全部 8 个项目</a></p>
+    </section>
+
+    <!-- Screen 3: papers, patents and talks -->
+    <section class="home-block" id="papers">
+      <h2 data-i18n="home.papers">论文</h2>
+      <ol class="paper-list" id="paper-list"></ol>
+      <h2 data-i18n="home.patents">专利与会议报告</h2>
+      <ul class="paper-list" id="patent-list"></ul>
+      <p class="more"><a href="cv/#pubs" data-i18n="home.full_list">完整列表见简历</a></p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p>© 2026 Jingwei Cui · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener" data-i18n="nav.code">Code</a></p>
+      <p data-i18n-html="footer.site"></p>
     </div>
   </footer>
 
-  <script src="assets/i18n.js?v=20261019u"></script>
+  <script src="assets/i18n.js?v=20261019v"></script>
+  <script src="assets/projects.js?v=20261019v"></script>
   <script>
     (async function () {
-      // [directory, i18n key prefix, highlighted, has an about page]; thumbnails live in assets/thumbs/<directory>.svg
-      const PROJECTS = [
-        ["gcms-interpreter", "gcms", true, true],
-        ["ingredient-finder", "finder", true, true],
-        ["odor-predictor", "odor", true, true],
-        ["flavor-improver", "fi", false, false],
-        ["odor-map", "map", false, false],
-        ["taste-predictor", "taste", false, false],
-        ["perception-diversity", "perc", false, false],
-        ["flavor-kb", "kb", false, false],
-      ];
-
       let profile = {};
       try {
-        profile = await (await fetch("assets/profile.json")).json();
+        profile = await (await fetch("assets/profile.json?v=20261019v")).json();
       } catch (e) {
         console.error("Could not load profile.json", e);
       }
       await I18N.ready;
-
-      function esc(s) {
-        return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-      }
-
-      function renderProjects() {
-        const t = I18N.t;
-        document.getElementById("pub-list").innerHTML = PROJECTS.map(([dir, key, featured, hasAbout]) => {
-          const title = esc(t("home." + key + ".title"));
-          const badge = key === "gcms" ? ' <span class="tag-mini">' + esc(t("home.gcms.privacy_short")) + "</span>" : "";
-          return '<div class="pub-item' + (featured ? " featured" : "") + '">' +
-            '<a class="thumb" href="' + dir + '/" tabindex="-1" aria-hidden="true">' +
-              '<span class="thumb-ph">' + title + "</span>" +
-              '<img src="assets/thumbs/' + dir + '.svg" alt="" onerror="this.remove()">' +
-            "</a>" +
-            "<div>" +
-              '<a class="pub-title" href="' + dir + '/">' + title + "</a>" + badge +
-              "<p>" + esc(t("home." + key + ".one")) + "</p>" +
-              '<p class="links"><a href="' + dir + '/">' + esc(t("nav.tool")) + "</a>" +
-                (hasAbout ? '<a href="' + dir + '/about.html">' + esc(t("nav.about")) + "</a>" : "") + "</p>" +
-            "</div></div>";
-        }).join("");
-      }
+      const esc = SITE.esc;
 
       function render() {
-        const name = I18N.pick(profile.name) || "Jingwei Cui";
-        document.getElementById("name").textContent = I18N.lang === "zh" ? name + " Jingwei Cui" : name;
-        document.getElementById("brand-name").textContent = name;
-        document.getElementById("tagline").textContent = I18N.pick(profile.tagline) || "";
+        const t = I18N.t;
+        document.title = t("home.page_title");
+        document.getElementById("role").textContent = I18N.pick(profile.role) || "";
         document.getElementById("bio").textContent = I18N.pick(profile.bio) || "";
-        document.title = I18N.t("home.page_title");
 
-        // One contact line: Email / CV / GitHub (CV appears only when cv_pdf is set)
+        // One contact line: Email / CV (PDF) / GitHub
         const links = [];
-        if (profile.email) links.push('<a href="mailto:' + esc(profile.email) + '">' + esc(I18N.t("home.email")) + "</a>");
-        if (profile.cv_pdf) links.push('<a href="' + esc(profile.cv_pdf) + '" target="_blank" rel="noopener">' + esc(I18N.t("home.cv_short")) + "</a>");
+        if (profile.email) links.push('<a href="mailto:' + esc(profile.email) + '">' + esc(t("home.email")) + "</a>");
+        if (profile.cv_pdf) links.push('<a href="' + esc(profile.cv_pdf) + '" target="_blank" rel="noopener">' + esc(t("home.cv_pdf")) + "</a>");
         if (profile.github) links.push('<a href="' + esc(profile.github) + '" target="_blank" rel="noopener">GitHub</a>');
         if (profile.linkedin) links.push('<a href="' + esc(profile.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
         document.getElementById("contact").innerHTML = links.join("");
-        renderProjects();
+
+        SITE.renderProjects(document.getElementById("pub-list"), "", true);
+
+        document.getElementById("paper-list").innerHTML = (profile.papers || []).map(p =>
+          "<li>" + esc(p.title) + '<br><span class="venue"><i>' + esc(p.venue) + "</i> · " + esc(t("home.first_author")) + "</span></li>"
+        ).join("");
+        document.getElementById("patent-list").innerHTML = (profile.patents || []).concat(profile.talks || []).map(p =>
+          "<li>" + esc(I18N.pick(p.title)) + '<br><span class="venue">' + esc(I18N.pick(p.note)) + "</span></li>"
+        ).join("");
       }
 
       render();

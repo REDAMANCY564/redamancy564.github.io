@@ -33,8 +33,13 @@ desktop.ini
 
 # Review notes for the redesign: kept local only
 /REVIEW.md
+/REVIEW-2.md
 
-# Local working files: Word CV source, text export and edit list
+# Local working files: Word CV source, text export and edit lists
 /简历-*.docx
 /site-text.md
 /TEXT-EDITS.md
+/CV-EDITS.md
+
+# Claude Code worktrees
+/.claude/
