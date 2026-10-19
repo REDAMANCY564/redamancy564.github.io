@@ -9,6 +9,7 @@
   <style>
     .demo-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 16px; }
     @media (min-width: 760px) { .demo-grid { grid-template-columns: 5fr 7fr; } }
+    .demo-grid > * { min-width: 0; }   /* let cards shrink on phones instead of widening the page */
     .mol-name { font-size: 1.15rem; font-weight: 700; margin: 0; }
     .mol-smiles { color: var(--muted); font-size: .875rem; word-break: break-all; margin: 2px 0 8px; }
     .mol-svg { aspect-ratio: 4 / 3; display: grid; place-items: center; color: var(--muted); font-size: .875rem; text-align: center; }

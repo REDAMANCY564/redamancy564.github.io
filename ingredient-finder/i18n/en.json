@@ -1,7 +1,7 @@
 {
   "page.title": "Flavor Ingredient Finder | Jingwei Cui",
   "nav.home": "Home",
-  "hero.title": "Flavor ingredient finder",
+  "hero.title": "Flavor Ingredient Finder",
   "hero.intro": "Flavorists choose from thousands of ingredient molecules: for a client brief they look for ingredients with the target flavor, and when an ingredient is restricted or unavailable they look for one that smells similar. This tool does both with AI-predicted odor profiles: search ingredients by target flavor, or find substitutes for a molecule. The results are a shortlist; a flavorist's judgment and sensory testing still decide.",
   "tab.a": "Find by flavor brief",
   "tab.b": "Find substitutes",
