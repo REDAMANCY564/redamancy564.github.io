@@ -425,7 +425,7 @@
   async function main() {
     await I18N.ready;
     try {
-      D = await (await fetch("data/site.json?v=20261019x")).json();
+      D = await (await fetch("data/site.json?v=20261019y")).json();
     } catch (e) {
       $("load-status").textContent = t("load_error");
       return;
