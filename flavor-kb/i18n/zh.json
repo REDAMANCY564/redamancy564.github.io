@@ -1,5 +1,4 @@
 {
-  "page.title": "风味知识库 | 崔京伟",
   "hero.title": "风味知识库",
   "hero.intro": "按食品或风味物质查询：某个食品由哪些物质构成香气，某个物质出现在哪些食品中，以及相关的研究文献。数据按证据强弱分为三级。物质和食品名称使用英文。",
   "legend.title": "数据分级",
@@ -7,6 +6,7 @@
   "legend.t1d_desc": "来自 FlavorDB 数据库：该物质在该食品中被检出过。检出不代表它对气味有贡献。",
   "legend.t2_desc": "打开页面时从 Europe PMC 实时检索的相关论文，只列出文献，不做总结。",
   "legend.t3_desc": "根据你输入的 DOI 获取摘要，标出其中出现的风味物质名称。仅基于文字匹配，不代表文献结论。",
+  "search.title": "食品与物质检索",
   "search.label": "输入食品或物质名称（英文）",
   "search.placeholder": "例如 butter、strawberry、vanillin、methional",
   "search.button": "查询",
@@ -50,6 +50,5 @@
   "search.meta_det": "{c} · 检出 {n} 种物质",
   "cmp.finder": "查找替代原料",
   "hero.sub": "按食品或化合物查关键香气物质、检出物质和相关文献。",
-  "about.page_title": "来源 | 风味知识库 | 崔京伟",
   "footer.short": "关键香气物质引自 Dunkel 等 2014；检出数据来自 FlavorDB2（CC BY-NC-SA 3.0，本站衍生数据按同一协议共享）；文献来自 Europe PMC 和 Crossref。详见<a href=\"about.html\">来源</a>。"
 }

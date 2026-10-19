@@ -1,5 +1,4 @@
 {
-  "page.title": "Odor Perception Differences | Jingwei Cui",
   "hero.title": "Odor Perception Differences",
   "hero.intro": "The same odor can delight one person and repel another. This project uses public human smell ratings to find out where these differences come from, and tries to predict who will like an odor.",
   "hero.data": "Data: {s} participants rated {m} molecules (each at two concentrations), {n} records in total (Keller &amp; Vosshall, 2016). All results are precomputed.",
@@ -194,6 +193,5 @@
   "var.line": "Of the reproducible differences in pleasantness, {pl} come from personal preference (95% CI {plo} to {phi}); for intensity only {in} (95% CI {ilo} to {ihi}).",
   "seg.verdict.short": "No reliable consumer segments in these data: individual differences look continuous.",
   "src.keller": "Data: Keller & Vosshall 2016 (CC0)",
-  "about.page_title": "Method & sources | Odor Perception Differences | Jingwei Cui",
   "footer.short": "Data CC0; participants anonymized and demographics dropped. Ethics, method and limitations: <a href=\"about.html#ethics\">method &amp; sources</a>."
 }

@@ -1,5 +1,4 @@
 {
-  "page.title": "Flavor Ingredient Finder | Jingwei Cui",
   "hero.title": "Flavor Ingredient Finder",
   "hero.intro": "Flavorists choose from thousands of ingredient molecules: for a client brief they look for ingredients with the target flavor, and when an ingredient is restricted or unavailable they look for one that smells similar. This tool does both with odor profiles predicted by the odor model: search ingredients by target flavor, or find substitutes for a molecule. The results are a shortlist; a flavorist's judgment and sensory testing still decide.",
   "tab.a": "Find by flavor brief",
@@ -120,7 +119,6 @@
   "a.score_short": "Score = sum of weight × predicted probability for wanted descriptors, minus the same for unwanted ones.",
   "b.intro_short": "Pick a molecule: the 20 most similar in predicted odor; orange ones differ in structure.",
   "b.bg_summary": "Why look for a substitute?",
-  "about.page_title": "Method & sources | Flavor Ingredient Finder | Jingwei Cui",
   "about.b_method": "Odor similarity is the cosine similarity of two molecules' predicted probabilities for 138 descriptors (chosen on the validation split); structure similarity is the Tanimoto coefficient of their Morgan fingerprints (radius 2, 2048 bits). The scatter plot shows both for every library molecule against the query.",
   "footer.short": "Results are a shortlist. No regulatory status is shown here; check safety and compliance separately. The odor model is CC BY-NC, non-commercial academic demo only. See <a href=\"about.html\">method &amp; sources</a>."
 }

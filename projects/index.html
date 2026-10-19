@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Projects | Jingwei Cui</title>
   <meta name="description" content="Eight browser tools for flavor and perception research by Jingwei Cui.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261019v">
+  <link rel="stylesheet" href="../assets/style.css?v=20261019w">
 </head>
 <body>
   <header class="site-header">
@@ -24,7 +24,6 @@
   <main class="container">
     <section class="page-head">
       <h1 data-i18n="nav.projects">项目</h1>
-      <p class="muted" data-i18n="projects.intro"></p>
       <div class="pub-list" id="pub-list"></div>
     </section>
   </main>
@@ -35,14 +34,14 @@
     </div>
   </footer>
 
-  <script src="../assets/i18n.js?v=20261019v"></script>
-  <script src="../assets/projects.js?v=20261019v"></script>
+  <script src="../assets/i18n.js?v=20261019w"></script>
+  <script src="../assets/projects.js?v=20261019w"></script>
   <script>
     (async function () {
       await I18N.ready;
       function render() {
         document.title = I18N.t("projects.page_title");
-        SITE.renderProjects(document.getElementById("pub-list"), "../", false);
+        SITE.renderProjects(document.getElementById("pub-list"), "../");
       }
       render();
       I18N.onChange(render);

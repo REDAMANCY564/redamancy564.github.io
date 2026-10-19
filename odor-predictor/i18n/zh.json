@@ -1,5 +1,4 @@
 {
-  "page.title": "气味预测 | 崔京伟",
   "hero.title": "气味预测",
   "hero.intro": "一个分子闻起来像什么，很大程度上取决于它的结构。这里用图神经网络，根据分子结构预测调香师会用哪些词描述它的气味，比如果香、黄油、烘烤。",
   "demo.select": "或者选择一个预设分子",
@@ -83,6 +82,5 @@
   "status.kb_flavordb": "风味知识库中的气味描述（FlavorDB）：",
   "demo.finder_link": "查找替代原料",
   "hero.sub": "输入分子，图神经网络预测它的气味描述词。",
-  "about.page_title": "方法与来源 | 气味预测 | 崔京伟",
   "footer.short": "训练数据来自 The Good Scents Company 和 Leffingwell，经 OpenPOM 整理（CC BY-NC）。仅供非商业学术演示，不能用于安全性判断。详见<a href=\"about.html\">方法与来源</a>。"
 }

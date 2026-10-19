@@ -1,5 +1,4 @@
 {
-  "page.title": "味觉预测 | 崔京伟",
   "hero.title": "味觉预测",
   "hero.intro": "一个分子尝起来是甜、苦还是鲜，和它的结构密切相关。这里用图神经网络，根据小分子的结构估计它是甜、苦、鲜或无味的概率。",
   "taste.sweet": "甜",
@@ -86,6 +85,5 @@
   "footer.code": "<b>代码：</b><a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>",
   "hero.sub": "输入分子，图神经网络估计它是甜、苦、鲜还是无味。",
   "list.comma": "、",
-  "about.page_title": "方法与来源 | 味觉预测 | 崔京伟",
   "footer.short": "数据来自 ChemTastesDB（CC BY 4.0）和 VirtuousMultiTaste（MIT）。不能用于安全性评估。详见<a href=\"about.html\">方法与来源</a>。"
 }

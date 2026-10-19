@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Flavor Knowledge Base | Jingwei Cui</title>
+  <title>8 Flavor Knowledge Base | Jingwei Cui</title>
   <meta name="description" content="Key food odorants, detected flavor compounds and related literature, searchable by food or compound.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261019v">
+  <link rel="stylesheet" href="../assets/style.css?v=20261019w">
   <style>
     /* Evidence tiers in one line; the definitions are in the tooltips and on the method page */
     .tiers { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: var(--sp-3) 0 0; font-size: .875rem; }
@@ -65,6 +65,7 @@
     </section>
 
     <section class="section" id="search">
+      <h2 data-sec="1" data-i18n="search.title">Search by food or compound</h2>
       <form id="search-form" novalidate>
         <label class="field" for="search-input" data-i18n="search.label">Food or compound name</label>
         <div class="search-row">
@@ -81,7 +82,7 @@
     </section>
 
     <section class="section" id="doi">
-      <h2 data-i18n="doi.title">DOI abstract analysis</h2>
+      <h2 data-sec="1" data-i18n="doi.title">DOI abstract analysis</h2>
       <form id="doi-form" novalidate>
         <label class="field" for="doi-input" data-i18n="doi.label">Paper DOI</label>
         <div class="search-row">
@@ -104,9 +105,10 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js"></script>
-  <script src="../assets/i18n.js?v=20261019v" data-page-dict="i18n/"></script>
-  <script src="kb.js?v=20261019v"></script>
-  <script src="kb-ui.js?v=20261019v"></script>
-  <script src="app.js?v=20261019v"></script>
+  <script src="../assets/i18n.js?v=20261019w" data-page-dict="i18n/"></script>
+  <script src="../assets/projects.js?v=20261019w"></script>
+  <script src="kb.js?v=20261019w"></script>
+  <script src="kb-ui.js?v=20261019w"></script>
+  <script src="app.js?v=20261019w"></script>
 </body>
 </html>

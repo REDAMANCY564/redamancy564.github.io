@@ -67,12 +67,10 @@
   "nav.cv": "CV",
   "footer.site": "© 2026 Jingwei Cui · <a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">Code (GitHub)</a>",
   "home.cv_pdf": "CV (PDF)",
-  "home.all_projects": "All 8 projects",
   "home.papers": "Papers",
   "home.patents": "Patents and talks",
   "home.full_list": "Full list in the CV",
   "home.first_author": "First author",
   "projects.page_title": "Projects | Jingwei Cui",
-  "projects.intro": "Eight browser tools for flavor and perception research. The first three are the main ones.",
   "home.thumb_alt": "{name} screenshot"
 }

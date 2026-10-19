@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jingwei Cui</title>
   <meta name="description" content="Jingwei Cui: PhD candidate in Food Science and Engineering (Jiangnan University, joint PhD at NUS). Flavor research, papers and browser tools for flavor and perception research.">
-  <link rel="stylesheet" href="assets/style.css?v=20261019v">
+  <link rel="stylesheet" href="assets/style.css?v=20261019w">
 </head>
 <body>
   <header class="site-header">
@@ -30,11 +30,10 @@
       <p class="contact-row" id="contact"></p>
     </section>
 
-    <!-- Screen 2: featured projects -->
-    <section class="home-block" id="featured">
+    <!-- Screen 2: all projects as a table of contents -->
+    <section class="home-block" id="projects">
       <h2 data-i18n="home.projects">项目</h2>
-      <div class="pub-list" id="pub-list"></div>
-      <p class="more"><a href="projects/" data-i18n="home.all_projects">全部 8 个项目</a></p>
+      <ol class="dir-list" id="dir-list"></ol>
     </section>
 
     <!-- Screen 3: papers, patents and talks -->
@@ -53,13 +52,13 @@
     </div>
   </footer>
 
-  <script src="assets/i18n.js?v=20261019v"></script>
-  <script src="assets/projects.js?v=20261019v"></script>
+  <script src="assets/i18n.js?v=20261019w"></script>
+  <script src="assets/projects.js?v=20261019w"></script>
   <script>
     (async function () {
       let profile = {};
       try {
-        profile = await (await fetch("assets/profile.json?v=20261019v")).json();
+        profile = await (await fetch("assets/profile.json?v=20261019w")).json();
       } catch (e) {
         console.error("Could not load profile.json", e);
       }
@@ -80,7 +79,7 @@
         if (profile.linkedin) links.push('<a href="' + esc(profile.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
         document.getElementById("contact").innerHTML = links.join("");
 
-        SITE.renderProjects(document.getElementById("pub-list"), "", true);
+        SITE.renderDirectory(document.getElementById("dir-list"), "");
 
         document.getElementById("paper-list").innerHTML = (profile.papers || []).map(p =>
           "<li>" + esc(p.title) + '<br><span class="venue"><i>' + esc(p.venue) + "</i> · " + esc(t("home.first_author")) + "</span></li>"

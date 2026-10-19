@@ -49,7 +49,6 @@
     renderMetrics();
     renderExcluded();
     $("unseen-note").textContent = I18N.t("f.unseen_help", { n: nUnseen });
-    document.title = I18N.t("about.page_title");
   }
   renderAll();
   I18N.onChange(renderAll);

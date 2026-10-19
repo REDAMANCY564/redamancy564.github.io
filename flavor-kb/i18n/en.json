@@ -1,5 +1,4 @@
 {
-  "page.title": "Flavor Knowledge Base | Jingwei Cui",
   "hero.title": "Flavor Knowledge Base",
   "hero.intro": "Look up a food or a flavor compound: which compounds create a food's aroma, which foods a compound occurs in, and related research papers. Data are grouped into three tiers by strength of evidence.",
   "legend.title": "Evidence tiers",
@@ -7,6 +6,7 @@
   "legend.t1d_desc": "From the FlavorDB database: the compound has been detected in the food. Detection does not mean it contributes to the aroma.",
   "legend.t2_desc": "Related papers retrieved live from Europe PMC when you open a page. Listed only, not summarized.",
   "legend.t3_desc": "Fetches the abstract for a DOI you enter and marks the flavor compound names it contains. Text matching only, not the paper's conclusions.",
+  "search.title": "Search by food or compound",
   "search.label": "Food or compound name",
   "search.placeholder": "e.g. butter, strawberry, vanillin, methional",
   "search.button": "Search",
@@ -50,6 +50,5 @@
   "search.meta_det": "{c} · {n} compounds detected",
   "cmp.finder": "Find substitutes",
   "hero.sub": "Key odorants, detected compounds and papers, by food or compound.",
-  "about.page_title": "Sources | Flavor Knowledge Base | Jingwei Cui",
   "footer.short": "Key odorants from Dunkel et al. 2014; detection data from FlavorDB2 (CC BY-NC-SA 3.0, derived data shared alike); papers via Europe PMC and Crossref. See <a href=\"about.html\">sources</a>."
 }

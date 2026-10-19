@@ -66,7 +66,6 @@
 
   function renderAll() {
     renderText();
-    document.title = I18N.t("about.page_title");
   }
   renderAll();
   I18N.onChange(renderAll);

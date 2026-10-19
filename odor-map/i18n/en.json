@@ -1,5 +1,4 @@
 {
-  "page.title": "Odor Space Map | Jingwei Cui",
   "hero.title": "Odor Space Map",
   "hero.intro": "Each dot is a molecule, {n} in total. Its position comes from the odor model's predicted probabilities for 138 descriptors: the closer two dots are, the more similar the model thinks they smell. Switch to the \"structure map\" to compare: arranged by structure alone, molecules that smell alike are often scattered.",
   "loading": "Loading the map...",
@@ -95,6 +94,5 @@
   "card.no_kb": "Not in the flavor knowledge base",
   "hero.sub": "{n} molecules placed by predicted odor; switch to the structure map to compare.",
   "food.legend_more": "Food highlighting: large dots are key aroma compounds, small dots are detected compounds, gray dots are other molecules. Only 16 foods have key aroma compound data (the knowledge base has none for coffee); for other foods the detected-compound lists come from FlavorDB and do not say which compounds matter for the odor.",
-  "about.page_title": "Method & sources | Odor Space Map | Jingwei Cui",
   "footer.short": "Positions and colors are predictions, not measurements. Odor model CC BY-NC, non-commercial academic demo only. See <a href=\"about.html\">method &amp; sources</a>."
 }

@@ -1,5 +1,4 @@
 {
-  "page.title": "Odor Predictor | Jingwei Cui",
   "hero.title": "Odor Predictor",
   "hero.intro": "What a molecule smells like depends largely on its structure. This project uses a graph neural network to predict, from the structure, the words flavorists would use for its smell, such as fruity, buttery or roasted.",
   "demo.select": "Or pick a preset molecule",
@@ -83,6 +82,5 @@
   "status.kb_flavordb": "Odor description in the flavor knowledge base (FlavorDB):",
   "demo.finder_link": "Find substitutes",
   "hero.sub": "Enter a molecule; a graph neural network predicts its odor descriptors.",
-  "about.page_title": "Method & sources | Odor Predictor | Jingwei Cui",
   "footer.short": "Trained on The Good Scents Company and Leffingwell data curated by OpenPOM (CC BY-NC). Non-commercial academic demo only; not for safety decisions. See <a href=\"about.html\">method &amp; sources</a>."
 }

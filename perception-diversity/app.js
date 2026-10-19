@@ -414,7 +414,6 @@
   }
 
   function renderAll() {
-    if ($("pred-table")) document.title = t("about.page_title");
     renderProcessing();
     renderVariance();
     renderSpread();
@@ -426,7 +425,7 @@
   async function main() {
     await I18N.ready;
     try {
-      D = await (await fetch("data/site.json?v=20261019v")).json();
+      D = await (await fetch("data/site.json?v=20261019w")).json();
     } catch (e) {
       $("load-status").textContent = t("load_error");
       return;

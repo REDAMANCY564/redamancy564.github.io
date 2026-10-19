@@ -1,5 +1,4 @@
 {
-  "page.title": "GC-MS Flavor Interpreter | Jingwei Cui",
   "hero.title": "GC-MS Flavor Interpreter",
   "hero.intro": "Upload one sample's GC-MS peak table and a standard file (target list). The page detects the table format, unifies compound names and CAS numbers, handles duplicate peaks and peaks with several library hits by fixed rules, finds the relative content of each target, then uses odor thresholds to compute OAV or ROAV, rank the key aroma compounds and draw a flavor profile. It reads exports from different instruments and naming habits.",
   "scope.text": "This site is built for quickly processing a single sample: upload one file containing the peak table of one sample at a time. To process hundreds or thousands of samples in batch, please email",
@@ -220,7 +219,6 @@
   "thr.intro_short": "Thresholds of the {n} compounds found (mg/kg); {miss} have none. Your standard file first, then built-in water values (van Gemert 2011); edits stay in this browser.",
   "radar.note_short": "Profile from model-predicted odor labels of {n} compounds, weighted by log10({score}); 12 dairy dimensions.",
   "radar.note_all_short": "Profile from model-predicted odor labels of {n} compounds, weighted by log10({score}); 10 largest of 138 labels.",
-  "about.page_title": "Method & sources | GC-MS Flavor Interpreter | Jingwei Cui",
   "about.tol_title": "Matching tolerances",
   "about.oav_title": "OAV and ROAV",
   "about.thr": "Odor thresholds of the compounds found are converted to mg/kg. Values from your standard file come first; where it has none, the built-in value is used (the 53 water thresholds already used by this site's Flavor Improver, cited in L.J. van Gemert (2011) Odour Thresholds, Part II). You can also change or add values on the tool page; your changes are kept in your browser only. Compounds without a threshold are not estimated and are left out.",

@@ -84,6 +84,11 @@ h1 { font-size: 1.75rem; line-height: 1.25; margin: 0 0 12px; letter-spacing: -.
 h2 { font-size: 1.375rem; margin: 0 0 12px; }
 h1, h2, .display { font-family: var(--font-serif); font-weight: 500; }
 h3 { font-size: 1rem; margin: 0 0 6px; }
+/* Numbering (assets/projects.js): project number before the project title, section numbers before
+   marked headings and the method-page contents */
+[data-no]::before { content: attr(data-no); display: inline-block; margin-right: .6em; color: var(--muted);
+                    font-variant-numeric: tabular-nums; text-decoration: none; font-weight: 400; }
+h1[data-no]::before { margin-right: .75em; }
 p { margin: 0 0 12px; }
 .muted { color: var(--muted); }
 .small { font-size: .875rem; }
@@ -223,6 +228,18 @@ a.help:hover { border-color: var(--accent); color: var(--accent); }
 .home-block { padding: var(--sp-5) 0; }
 .home-block h2 { font-size: 1.375rem; margin: 0 0 var(--sp-3); }
 .paper-list { padding-left: 1.4em; margin: 0 0 var(--sp-4); max-width: 760px; }
+/* Homepage: projects as a table of contents (number, name, one sentence); papers numbered [1] and
+   patents aligned to the same text column. No cards, borders or images. */
+.dir-list, .home .paper-list { list-style: none; padding-left: 2em; margin: 0 0 var(--sp-4); max-width: 760px; }
+.dir-list { margin-bottom: 0; }
+.dir-list li, .home .paper-list li { position: relative; margin-bottom: var(--sp-3); }
+.dir-list .no, .home #paper-list li::before { position: absolute; left: -2em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.home #paper-list { counter-reset: paper; }
+.home #paper-list li { counter-increment: paper; }
+.home #paper-list li::before { content: "[" counter(paper) "]"; }
+.dir-list .toc-title { font-weight: 600; text-decoration: none; }
+.dir-list .toc-title:hover { text-decoration: underline; }
+.dir-list p { margin: 2px 0 0; }
 .paper-list li { margin-bottom: var(--sp-3); }
 .paper-list .venue { color: var(--muted); font-size: .875rem; }
 .paper-list .venue i { color: var(--text); }
@@ -273,9 +290,12 @@ a.help:hover { border-color: var(--accent); color: var(--accent); }
   .cv-entry { grid-template-columns: 1fr; gap: 0; }
 }
 
-/* Method pages: numbered steps instead of icon cards with arrows */
-.steps { padding-left: 1.4em; margin: var(--sp-2) 0 var(--sp-4); }
-.steps li { margin-bottom: var(--sp-2); }
+/* Method pages: steps numbered (1) (2), one level below the section numbers */
+.steps { list-style: none; counter-reset: step; padding-left: 2.2em; margin: var(--sp-2) 0 var(--sp-4); }
+.steps > li { counter-increment: step; position: relative; margin-bottom: var(--sp-2); }
+.steps > li::before { content: "(" counter(step) ")"; position: absolute; left: -2.2em; color: var(--muted);
+                      font-variant-numeric: tabular-nums; }
+:lang(zh) .steps > li::before { content: "（" counter(step) "）"; left: -2.5em; }
 .steps .sep::before { content: ": "; }
 :lang(zh) .steps .sep::before { content: "："; }
 

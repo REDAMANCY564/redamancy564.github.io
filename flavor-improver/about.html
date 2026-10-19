@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net https://pubchem.ncbi.nlm.nih.gov; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>Method &amp; sources | Flavor Improver | Jingwei Cui</title>
+  <title>Method &amp; sources | 4 Flavor Improver | Jingwei Cui</title>
   <meta name="description" content="Method, results, limitations and data sources of the flavor improver (Bayesian optimization demo).">
-  <link rel="stylesheet" href="../assets/style.css?v=20261019v">
+  <link rel="stylesheet" href="../assets/style.css?v=20261019w">
   <style>
     .formula { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 10px 14px; overflow-x: auto; }
     .formula p { margin: 0 0 4px; white-space: nowrap; }
@@ -47,13 +47,13 @@
     </nav>
 
     <section id="overview">
-      <h2 data-i18n="about.overview">Overview</h2>
+      <h2 data-sec="1" data-i18n="about.overview">Overview</h2>
       <p data-i18n="hero.intro"></p>
       <p data-i18n-html="hero.disclaimer"></p>
     </section>
 
     <section id="method">
-      <h2 data-i18n="about.method">Method</h2>
+      <h2 data-sec="1" data-i18n="about.method">Method</h2>
       <ol class="steps">
         <li><span data-i18n="flow.1.title"></span><span class="sep"></span><span data-i18n="flow.1.sub"></span></li>
         <li><span data-i18n="flow.2.title"></span><span class="sep"></span><span data-i18n="flow.2.sub"></span></li>
@@ -64,7 +64,7 @@
       <p data-i18n="flow.loop"></p>
       <p data-i18n-html="method.gp"></p>
       <p data-i18n-html="method.acq"></p>
-      <h3 data-i18n="method.eval_title">The virtual evaluation function</h3>
+      <h3 data-sec="2" data-i18n="method.eval_title">The virtual evaluation function</h3>
       <div class="formula">
         <p data-i18n-html="formula.1"></p>
         <p data-i18n-html="formula.2"></p>
@@ -76,8 +76,8 @@
       <p data-i18n-html="method.lift"></p>
       <p data-i18n-html="method.no_decrease"></p>
 
-      <h3 data-i18n="method.user_title">With your own data</h3>
-      <ol style="padding-left:1.4em">
+      <h3 data-sec="2" data-i18n="method.user_title">With your own data</h3>
+      <ol class="steps">
         <li data-i18n-html="method.user.1"></li>
         <li data-i18n-html="method.user.2"></li>
         <li data-i18n-html="method.user.3"></li>
@@ -86,8 +86,8 @@
     </section>
 
     <section id="results">
-      <h2 data-i18n="about.results">Results</h2>
-      <h3 data-i18n="results.title">Compared with random search</h3>
+      <h2 data-sec="1" data-i18n="about.results">Results</h2>
+      <h3 data-sec="2" data-i18n="results.title">Compared with random search</h3>
       <p data-i18n="results.intro"></p>
       <div class="table-wrap">
         <table class="results-table">
@@ -98,7 +98,7 @@
       <p class="small muted" style="margin-top:8px" data-i18n="results.table_note"></p>
       <p data-i18n-html="results.takeaway"></p>
 
-      <h3 data-i18n="known.title">Known-answer test</h3>
+      <h3 data-sec="2" data-i18n="known.title">Known-answer test</h3>
       <p data-i18n="known.intro"></p>
       <div class="table-wrap">
         <table class="results-table">
@@ -117,10 +117,10 @@
       <p class="small muted" style="margin-top:8px" data-i18n="known.note"></p>
       <p data-i18n-html="known.takeaway"></p>
 
-      <h3 data-i18n="jsbo.title">The optimizer in your browser</h3>
+      <h3 data-sec="2" data-i18n="jsbo.title">The optimizer in your browser</h3>
       <p id="jsbo-text"></p>
 
-      <h3 data-i18n="history.title">Parameter changes during development</h3>
+      <h3 data-sec="2" data-i18n="history.title">Parameter changes during development</h3>
       <ul class="plain">
         <li data-i18n-html="history.1"></li>
         <li data-i18n-html="history.2"></li>
@@ -128,8 +128,8 @@
     </section>
 
     <section id="tried">
-      <h2 data-i18n="about.tried">Tried, not adopted</h2>
-      <h3 data-i18n="mix.title">Mixture odor similarity model (not adopted)</h3>
+      <h2 data-sec="1" data-i18n="about.tried">Tried, not adopted</h2>
+      <h3 data-sec="2" data-i18n="mix.title">Mixture odor similarity model (not adopted)</h3>
       <p data-i18n-html="mix.why"></p>
       <p data-i18n-html="mix.how"></p>
       <div class="table-wrap">
@@ -149,7 +149,7 @@
     </section>
 
     <section id="limits">
-      <h2 data-i18n="about.limits">Limitations</h2>
+      <h2 data-sec="1" data-i18n="about.limits">Limitations</h2>
       <ul class="plain">
         <li data-i18n-html="limits.1"></li>
         <li data-i18n-html="limits.2"></li>
@@ -165,7 +165,7 @@
     </section>
 
     <section id="data">
-      <h2 data-i18n="about.data">Data, licenses &amp; citations</h2>
+      <h2 data-sec="1" data-i18n="about.data">Data, licenses &amp; citations</h2>
       <p data-i18n-html="footer.p1"></p>
       <p><b data-i18n="footer.bases">Base compositions:</b></p>
       <ul class="plain" id="footer-bases"></ul>
@@ -183,7 +183,8 @@
     </div>
   </footer>
 
-  <script src="../assets/i18n.js?v=20261019v" data-page-dict="i18n/"></script>
-  <script src="about.js?v=20261019v"></script>
+  <script src="../assets/i18n.js?v=20261019w" data-page-dict="i18n/"></script>
+  <script src="../assets/projects.js?v=20261019w"></script>
+  <script src="about.js?v=20261019w"></script>
 </body>
 </html>

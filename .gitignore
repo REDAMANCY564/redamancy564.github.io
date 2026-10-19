@@ -43,3 +43,7 @@ desktop.ini
 
 # Claude Code worktrees
 /.claude/
+
+# Round-3 plan and review lists: kept local only
+/PLAN-round3.md
+/ROUND3-*.md

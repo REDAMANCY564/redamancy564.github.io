@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net https://pubchem.ncbi.nlm.nih.gov; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>Flavor Improver | Jingwei Cui</title>
+  <title>4 Flavor Improver | Jingwei Cui</title>
   <meta name="description" content="A demonstration of Bayesian optimization for dairy flavor improvement, with a virtual evaluation function.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261019v">
+  <link rel="stylesheet" href="../assets/style.css?v=20261019w">
   <style>
     .btn { font: inherit; font-weight: 600; padding: 8px 18px; border-radius: 4px; border: 1px solid var(--accent);
            background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
@@ -109,12 +109,12 @@
           <button type="button" data-mode="user" aria-pressed="false" data-i18n="user.option_short">Your GC-MS data</button>
         </span>
       </div>
-      <div id="bo-area">
+      <div data-sec-scope id="bo-area">
       <label class="field" for="preset" data-i18n="demo.select">Choose a dairy base</label>
       <select id="preset"></select>
       <p class="small muted base-meta" id="base-meta"></p>
 
-      <h3 class="sub-h" data-i18n="base.title">Base composition and odor thresholds</h3>
+      <h3 class="sub-h" data-sec="1" data-i18n="base.title">Base composition and odor thresholds</h3>
       <p class="small muted" data-i18n="base.intro"></p>
       <div class="thr-tools">
         <button type="button" class="btn-sm" id="thr-reset-all" data-i18n="thr.reset_all">Reset all thresholds</button>
@@ -154,7 +154,7 @@
         </div>
       </details>
 
-      <h3 class="sub-h" data-i18n="dir.title">Direction of improvement</h3>
+      <h3 class="sub-h" data-sec="1" data-i18n="dir.title">Direction of improvement</h3>
       <p class="small muted" id="dir-rationale"></p>
       <div class="dirs" id="dirs"></div>
 
@@ -202,7 +202,7 @@
       </div>
 
       <!-- Example 5: reference-food mode (gap analysis, precursor directions) -->
-      <div id="ref-area" hidden>
+      <div data-sec-scope id="ref-area" hidden>
         <p class="small muted base-meta" id="ref-meta"></p>
         <ul class="plain small ref-notice" style="margin-top:12px">
           <li data-i18n-html="ref.notice.1"></li>
@@ -211,7 +211,7 @@
           <li data-i18n-html="ref.notice.4"></li>
         </ul>
 
-        <h3 class="sub-h" data-i18n="ref.input_title"></h3>
+        <h3 class="sub-h" data-sec="1" data-i18n="ref.input_title"></h3>
         <p class="small muted" data-i18n="ref.input_intro"></p>
         <div class="thr-tools">
           <label class="small"><span data-i18n="ref.cutoff"></span>
@@ -226,7 +226,7 @@
           <div class="card" id="ref-side-if"></div>
         </div>
 
-        <h3 class="sub-h" data-i18n="ref.upper_title"></h3>
+        <h3 class="sub-h" data-sec="1" data-i18n="ref.upper_title"></h3>
         <div class="grid-2">
           <div class="card">
             <h3 data-i18n="ref.radar_title"></h3>
@@ -258,7 +258,7 @@
           <p class="small" style="margin-top:12px" data-i18n-html="ref.no_amount"></p>
         </div>
 
-        <h3 class="sub-h" data-i18n="ref.lower_title"></h3>
+        <h3 class="sub-h" data-sec="1" data-i18n="ref.lower_title"></h3>
         <p class="small muted" data-i18n="ref.lower_intro"></p>
         <div class="table-wrap">
           <table class="pre-table">
@@ -302,7 +302,7 @@
       </div>
 
       <!-- Use my own data (PLAN-userdata.md): sample vs target from gcms-interpreter -->
-      <div id="user-area" hidden>
+      <div data-sec-scope id="user-area" hidden>
         <p style="margin-top:12px" data-i18n-html="user.intro"></p>
         <p class="small" data-i18n-html="user.privacy"></p>
         <details class="card user-req">
@@ -324,11 +324,11 @@
           <button type="button" class="btn-sm" id="user-example" data-i18n="user.example">Load the example pair</button>
           <span class="small muted" data-i18n="user.example_note"></span>
         </div>
-        <h3 class="sub-h" data-i18n="user.merge_title">Data check</h3>
+        <h3 class="sub-h" data-sec="1" data-i18n="user.merge_title">Data check</h3>
         <div id="user-merge"></div>
 
         <div id="user-cmp" hidden>
-          <h3 class="sub-h" data-i18n="user.cmp_title">Comparison</h3>
+          <h3 class="sub-h" data-sec="1" data-i18n="user.cmp_title">Comparison</h3>
           <label class="small"><span data-i18n="user.view">Profile dimensions</span>
             <select id="user-view" style="width:auto;padding:4px 8px">
               <option value="dairy" data-i18n="user.view_dairy">12 dairy dimensions</option>
@@ -349,7 +349,7 @@
             <div class="card"><h4 data-i18n="user.list_t_title">Higher in the target</h4><p class="small muted" id="user-list-t-intro"></p><ul class="plain small" id="user-higher-t"></ul></div>
           </div>
 
-          <h3 class="sub-h" data-i18n="user.rec_title">What to add</h3>
+          <h3 class="sub-h" data-sec="1" data-i18n="user.rec_title">What to add</h3>
           <p class="small" style="margin:0 0 4px" data-i18n-html="user.rec_notice1"></p>
           <p class="small muted" style="margin:0" data-i18n-html="user.rec_notice2"></p>
           <div id="user-rec" style="margin-top:10px"></div>
@@ -381,13 +381,14 @@
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
-  <script src="../assets/i18n.js?v=20261019v" data-page-dict="i18n/"></script>
-  <script src="../assets/flavor-handoff.js?v=20261019v"></script>
-  <script src="mixture.js?v=20261019v"></script>
-  <script src="bo.js?v=20261019v"></script>
-  <script src="reference.js?v=20261019v"></script>
-  <script src="userdata-core.js?v=20261019v"></script>
-  <script src="userdata.js?v=20261019v"></script>
-  <script src="app.js?v=20261019v"></script>
+  <script src="../assets/i18n.js?v=20261019w" data-page-dict="i18n/"></script>
+  <script src="../assets/projects.js?v=20261019w"></script>
+  <script src="../assets/flavor-handoff.js?v=20261019w"></script>
+  <script src="mixture.js?v=20261019w"></script>
+  <script src="bo.js?v=20261019w"></script>
+  <script src="reference.js?v=20261019w"></script>
+  <script src="userdata-core.js?v=20261019w"></script>
+  <script src="userdata.js?v=20261019w"></script>
+  <script src="app.js?v=20261019w"></script>
 </body>
 </html>

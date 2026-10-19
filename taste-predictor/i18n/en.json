@@ -1,5 +1,4 @@
 {
-  "page.title": "Taste Predictor | Jingwei Cui",
   "hero.title": "Taste Predictor",
   "hero.intro": "Whether a molecule tastes sweet, bitter or umami is closely linked to its structure. This project uses a graph neural network to estimate, from the structure, how likely a small molecule is to be sweet, bitter, umami or tasteless.",
   "taste.sweet": "sweet",
@@ -86,6 +85,5 @@
   "footer.code": "<b>Code:</b> <a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">github.com/REDAMANCY564/redamancy564.github.io</a>",
   "hero.sub": "Enter a molecule; a graph neural network estimates whether it is sweet, bitter, umami or tasteless.",
   "list.comma": ", ",
-  "about.page_title": "Method & sources | Taste Predictor | Jingwei Cui",
   "footer.short": "Data: ChemTastesDB (CC BY 4.0) and VirtuousMultiTaste (MIT). Not for safety assessment. See <a href=\"about.html\">method &amp; sources</a>."
 }

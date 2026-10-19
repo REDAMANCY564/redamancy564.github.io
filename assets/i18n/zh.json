@@ -67,12 +67,10 @@
   "nav.cv": "简历",
   "footer.site": "© 2026 崔京伟 · <a href=\"https://github.com/REDAMANCY564/redamancy564.github.io\" target=\"_blank\" rel=\"noopener\">代码（GitHub）</a>",
   "home.cv_pdf": "简历（PDF）",
-  "home.all_projects": "全部 8 个项目",
   "home.papers": "论文",
   "home.patents": "专利与会议报告",
   "home.full_list": "完整列表见简历",
   "home.first_author": "第一作者",
   "projects.page_title": "项目 | 崔京伟",
-  "projects.intro": "8 个在浏览器里运行的风味和感知研究工具。前 3 个是主打项目。",
   "home.thumb_alt": "{name} 截图"
 }

@@ -1,5 +1,4 @@
 {
-  "page.title": "Flavor Improver | Jingwei Cui",
   "hero.title": "Flavor Improver",
   "hero.intro": "Developing a product's flavor means adjusting the recipe again and again, with a sensory evaluation after every change, which is slow and expensive. Bayesian optimization learns from the result of each trial and tries to reach the target with fewer trials. This page uses a virtual evaluation function in place of a sensory panel: pick a dairy base and a direction, and the page shows, trial by trial, which compounds the algorithm adds and how much.",
   "hero.disclaimer": "<b>A method demonstration, not a recipe.</b> The evaluation function is built from single-molecule odor predictions and a simple additive rule, and ignores masking, synergy and matrix effects; in real work a sensory panel or GC-O would replace it.",
@@ -363,6 +362,5 @@
   "mode.bo": "Bayesian optimization demo",
   "ref.option_short": "Formula vs human milk",
   "user.option_short": "Your GC-MS data",
-  "about.page_title": "Method & sources | Flavor Improver | Jingwei Cui",
   "footer.short": "The evaluation function is virtual, not sensory data. Odor model CC BY-NC, non-commercial academic demo only. See <a href=\"about.html\">method &amp; sources</a>."
 }
