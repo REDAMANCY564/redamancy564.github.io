@@ -85,11 +85,8 @@
     STD.targets = null;
   }
 
-  // ---------- Scope notice (single sample; batch by email) ----------
+  // ---------- Scope notice (single sample; the batch-by-email note is on the about page) ----------
   function renderScope() {
-    const email = profile.email || "";
-    $("scope-top").innerHTML = esc(I18N.t("scope.text")) + (email
-      ? ' <a href="mailto:' + esc(email) + '">' + esc(email) + "</a>" + esc(I18N.t("scope.end")) : "");
     $("scope-upload").innerHTML = esc(I18N.t("scope.upload"));
   }
 
@@ -721,7 +718,7 @@
     $("fl-mode-note").textContent = note;
 
     // thresholds, in standard-file order, editable
-    $("thr-intro").textContent = I18N.t("thr.intro", { n: F.items.length, miss: F.items.filter(x => !(x.thr > 0)).length });
+    $("thr-intro").textContent = I18N.t("thr.intro_short", { n: F.items.length, miss: F.items.filter(x => !(x.thr > 0)).length });
     let th = "<thead><tr>" + ["result.col.target", "result.col.cas", "thr.col.value", "thr.col.source", "thr.col.range", ""]
       .map(k => "<th>" + (k ? esc(I18N.t(k)) : "") + "</th>").join("") + "</tr></thead><tbody>";
     F.items.forEach(x => {
@@ -774,7 +771,8 @@
     }
     // compounds outside the knowledge base have no model prediction: say so and point to the odor predictor
     const noLift = F.items.filter(x => !x.lift).map(x => x.t.label);
-    $("radar-note").innerHTML = esc(I18N.t(FLV.view === "all" ? "radar.note_all" : "radar.note", { n: calc.nProfile, score: scoreCol })) +
+    $("radar-note").innerHTML = esc(I18N.t(FLV.view === "all" ? "radar.note_all_short" : "radar.note_short", { n: calc.nProfile, score: scoreCol })) +
+      ' <a class="help" href="about.html#profile" aria-label="?">?</a>' +
       (noLift.length ? " " + esc(I18N.t("radar.no_lift", { list: noLift.join(", ") })) + " " + odorLink(I18N.t("radar.no_lift_link")) : "");
     FLV.last = { F, calc, order };
   }
@@ -854,12 +852,6 @@
     $("handoff-status").classList.toggle("error", !ok);
   }));
 
-  function renderLimits() {
-    const items = [];
-    for (let k = 1; I18N.t("lim." + k) !== "lim." + k; k++) items.push("<li>" + esc(I18N.t("lim." + k)) + "</li>");
-    $("lim-list").innerHTML = items.join("");
-  }
-
   // ---------- Render ----------
   function renderFileInfo() {
     const box = $("file-info");
@@ -896,7 +888,6 @@
     renderStd();
     renderConfirm();
     renderMatch();
-    renderLimits();
   }
 
   renderAll();
