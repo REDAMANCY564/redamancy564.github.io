@@ -50,13 +50,22 @@
   // ---------- Mode A state ----------
   const A = { want: [], avoid: [], addTo: "want", shown: PAGE, filters: { natural: false, unseen: false } };
 
+  // Training status as small muted text (no colored badge)
+  const trainNote = used => '<span class="muted">' + esc(I18N.lang === "zh" ? "（" + I18N.t(used ? "g.train" : "g.unseen") + "）"
+    : "(" + I18N.t(used ? "g.train" : "g.unseen") + ")") + "</span>";
+  // Predicted descriptors as comma-separated text; bold where bold(j) is true
+  const predText = (list, bold) => list.map(([j, p]) => {
+    const s = esc(labelName(j)) + " " + Math.round(100 * p) + "%";
+    return bold && bold(j) ? "<b>" + s + "</b>" : s;
+  }).join(I18N.lang === "zh" ? "、" : ", ");
+
   function renderPresets() {
     const box = $("presets-a");
     box.querySelectorAll("button").forEach(b => b.remove());
     presets.mode_a.forEach(p => {
       const b = document.createElement("button");
       b.type = "button";
-      b.className = "chip-btn";
+      b.className = "linklike";
       b.textContent = I18N.t("preset." + p.id);
       b.addEventListener("click", () => {
         A.want = p.want.map(x => x.slice());
@@ -148,14 +157,13 @@
       ? esc(I18N.t("r.foods")) + ": " + esc(m.foods.slice(0, FOODS_SHOWN).join(", ")) +
         (m.foods.length > FOODS_SHOWN ? " " + esc(I18N.t("r.foods_more", { n: m.foods.length - FOODS_SHOWN })) : "")
       : '<span class="muted">' + esc(I18N.t("r.no_foods")) + "</span>";
-    const badge = m.group === 0 ? '<span class="badge">' + esc(I18N.t("g.train")) + "</span>"
-      : '<span class="badge unseen">' + esc(I18N.t("g.unseen")) + "</span>";
+    const badge = trainNote(m.group === 0);
     return '<div class="card res"><div class="svg" data-smiles="' + esc(m.smiles) + '"></div><div>' +
       '<p class="small muted" style="margin:0">' + esc(I18N.t("r.rank", { n: rank })) + " · " + esc(I18N.t("r.score")) + " <b>" + hit.score.toFixed(3) + "</b> " + badge + "</p>" +
       '<p class="name">' + esc(m.name || m.smiles) + "</p>" +
       (m.name ? '<p class="smi mono">' + esc(m.smiles) + "</p>" : "") +
       '<div class="meta"><span class="muted">' + esc(I18N.t("r.top")) + '</span><div class="preds">' +
-      top.map(([j, p]) => '<span class="pred' + (wantIds.has(D.lib.labels[j].id) ? " want" : "") + '">' + esc(labelName(j)) + " " + Math.round(100 * p) + "%</span>").join("") +
+      predText(top, j => wantIds.has(D.lib.labels[j].id)) +
       "</div>" + foods + "</div></div></div>";
   }
 
@@ -185,7 +193,7 @@
   }
 
   // ---------- Mode B: substitutes ----------
-  const HI_COLOR = "#e8590c";
+  const HI_COLOR = "#c2410c";   // = --hi in style.css
   const B = { query: null, result: null, open: new Set(), preset: null, suggest: [], active: -1 };
   const nameIndex = D.lib.molecules.map((m, i) => ({ i, name: (m[1] || "").toLowerCase(), smiles: m[0] }));
   let engine = null;   // {spec, session} for SMILES input, loaded on first use
@@ -196,7 +204,7 @@
     presets.mode_b.forEach(p => {
       const b = document.createElement("button");
       b.type = "button";
-      b.className = "chip-btn" + (B.preset === p.id ? " on" : "");
+      b.className = "linklike" + (B.preset === p.id ? " on" : "");
       b.textContent = I18N.t("presetb." + p.id);
       b.addEventListener("click", () => { B.preset = p.id; $("b-input").value = D.lib.molecules[p.index][1]; queryLibrary(p.index); });
       box.appendChild(b);
@@ -379,11 +387,10 @@
     const q = B.query, res = B.result;
     const qName = q.name || I18N.t("b.query_new");
     const top = F.topLabelsOf(q.vec, TOP_PRED);
-    const qBadge = q.index < 0 ? "" : D.lib.molecules[q.index][2] === 0 ? ' <span class="badge">' + esc(I18N.t("g.train")) + "</span>"
-      : ' <span class="badge unseen">' + esc(I18N.t("g.unseen")) + "</span>";
+    const qBadge = q.index < 0 ? "" : " " + trainNote(D.lib.molecules[q.index][2] === 0);
     $("b-query").innerHTML = '<h3 style="margin-top:0">' + esc(I18N.t("b.query")) + '</h3><div class="qsvg svg" data-smiles="' + esc(q.smiles) + '" data-big="1"></div>' +
       '<p class="name" style="font-weight:700;margin:6px 0 0">' + esc(qName) + qBadge + '</p><p class="smi mono small muted" style="word-break:break-all;margin:2px 0 6px">' + esc(q.smiles) + "</p>" +
-      '<div class="preds">' + top.map(([j, p]) => '<span class="pred">' + esc(labelName(j)) + " " + Math.round(100 * p) + "%</span>").join("") + "</div>" +
+      '<div class="preds">' + predText(top) + "</div>" +
       (q.note ? '<p class="small muted">' + esc(I18N.t(q.note)) + "</p>" : "");
     drawInto($("b-query").querySelector(".svg"), q.smiles, true);
     $("b-scatter").innerHTML = scatterSvg(res, q.index);
@@ -399,15 +406,15 @@
       const foods = m.foods.length
         ? esc(I18N.t("r.foods")) + ": " + esc(m.foods.slice(0, FOODS_SHOWN).join(", ")) + (m.foods.length > FOODS_SHOWN ? " " + esc(I18N.t("r.foods_more", { n: m.foods.length - FOODS_SHOWN })) : "")
         : '<span class="muted">' + esc(I18N.t("r.no_foods")) + "</span>";
-      const badge = m.group === 0 ? '<span class="badge">' + esc(I18N.t("g.train")) + "</span>" : '<span class="badge unseen">' + esc(I18N.t("g.unseen")) + "</span>";
+      const badge = trainNote(m.group === 0);
       const open = B.open.has(h.index);
       return '<div class="card res' + (h.highlight ? " hi" : "") + '"><div class="svg" data-smiles="' + esc(m.smiles) + '"></div><div>' +
         '<p class="small muted" style="margin:0">' + esc(I18N.t("r.rank", { n: k + 1 })) + " · " + esc(I18N.t("b.odor")) + " <b>" + h.odor.toFixed(3) + "</b> · " +
         esc(I18N.t("b.struct")) + " <b>" + h.tanimoto.toFixed(2) + "</b></p>" +
-        (h.highlight ? '<span class="badge hi">' + esc(I18N.t("b.hi_badge")) + "</span> " : "") + badge +
+        (h.highlight ? '<span class="hi-text">' + esc(I18N.t("b.hi_badge")) + "</span> " : "") + badge +
         '<p class="name">' + esc(m.name || m.smiles) + "</p>" + (m.name ? '<p class="smi mono">' + esc(m.smiles) + "</p>" : "") +
-        '<div class="meta"><div class="preds">' + preds.map(([j, p]) => '<span class="pred">' + esc(labelName(j)) + " " + Math.round(100 * p) + "%</span>").join("") + "</div>" + foods +
-        '<div><button type="button" class="chip-btn" data-cmp="' + h.index + '" style="margin-top:6px">' + esc(I18N.t(open ? "b.compare_hide" : "b.compare")) + "</button></div></div></div>" +
+        '<div class="meta"><div class="preds">' + predText(preds) + "</div>" + foods +
+        '<div><button type="button" class="linklike small" data-cmp="' + h.index + '" style="margin-top:6px">' + esc(I18N.t(open ? "b.compare_hide" : "b.compare")) + "</button></div></div></div>" +
         (open ? '<div class="radar">' + radarSvg(q.vec, F.vector(D, h.index), qName, m.name || m.smiles) + "</div>" : "") + "</div>";
     }).join("");
     $("b-results").querySelectorAll(".svg").forEach(el => drawInto(el, el.dataset.smiles));
