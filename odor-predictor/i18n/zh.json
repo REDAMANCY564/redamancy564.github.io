@@ -1,5 +1,6 @@
 {
-  "hero.title": "气味预测",
+  "hero.title": "基于图神经网络的分子气味描述词预测",
+  "hero.short": "气味预测",
   "hero.intro": "这里用图神经网络，根据分子结构预测调香师会用哪些词描述它的气味，比如果香、黄油、烘烤。",
   "demo.select": "或者选择一个预设分子",
   "demo.select_placeholder": "（当前显示搜索结果）",

@@ -1,5 +1,6 @@
 {
-  "hero.title": "Flavor Knowledge Base",
+  "hero.title": "Tiered Literature Knowledge Base of Food Key Aroma Compounds",
+  "hero.short": "Flavor Knowledge Base",
   "hero.intro": "Look up a food or a flavor compound: which compounds create a food's aroma, which foods a compound occurs in, and related research papers. Data are grouped into three tiers by strength of evidence.",
   "legend.title": "Evidence tiers",
   "legend.t1k_desc": "From the main text of the review by Dunkel et al. (2014): compounds confirmed by GC-O, quantitation and recombination experiments to contribute to the food's aroma.",

@@ -1,5 +1,6 @@
 {
-  "hero.title": "味觉预测",
+  "hero.title": "基于图神经网络的小分子甜、苦、鲜味预测",
+  "hero.short": "味觉预测",
   "hero.intro": "这里用图神经网络，根据小分子的结构估计它是甜、苦、鲜或无味的概率。",
   "taste.sweet": "甜",
   "taste.bitter": "苦",

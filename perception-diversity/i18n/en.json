@@ -1,5 +1,6 @@
 {
-  "hero.title": "Odor Perception Differences",
+  "hero.title": "Decomposing Individual Differences in Odor Ratings",
+  "hero.short": "Odor Perception Differences",
   "hero.intro": "This project uses public human smell ratings to find out where these differences come from, and tries to predict who will like an odor.",
   "hero.data": "Data: {s} participants rated {m} molecules (each at two concentrations), {n} records in total (Keller &amp; Vosshall, 2016). All results are precomputed.",
   "loading": "Loading data...",

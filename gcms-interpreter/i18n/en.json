@@ -1,5 +1,6 @@
 {
-  "hero.title": "GC-MS Flavor Interpreter",
+  "hero.title": "GC-MS Key Aroma Compound Interpreter for Multi-Instrument Peak Tables",
+  "hero.short": "GC-MS Flavor Interpreter",
   "hero.intro": "Upload one sample's GC-MS peak table and a standard file (target list). The page detects the table format, unifies compound names and CAS numbers, handles duplicate peaks and peaks with several library hits by fixed rules, finds the relative content of each target, then uses odor thresholds to compute OAV or ROAV, rank the key aroma compounds and draw a flavor profile.",
   "scope.text": "This site is built for quickly processing a single sample: upload one file containing the peak table of one sample at a time. To process hundreds or thousands of samples in batch, please email",
   "scope.end": ".",

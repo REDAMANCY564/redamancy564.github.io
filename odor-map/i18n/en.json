@@ -1,5 +1,6 @@
 {
-  "hero.title": "Odor Space Map",
+  "hero.title": "Odor Space vs Structure Space Map of 5,000+ Flavor Molecules",
+  "hero.short": "Odor Space Map",
   "hero.intro": "Each dot is a molecule, {n} in total. Its position comes from the odor model's predicted probabilities for 138 descriptors: the closer two dots are, the more similar the model thinks they smell.",
   "loading": "Loading the map...",
   "load_error": "Failed to load the data. Please reload the page.",

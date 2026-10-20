@@ -1,5 +1,6 @@
 {
-  "hero.title": "Odor Predictor",
+  "hero.title": "Molecular Odor Descriptor Prediction with Graph Neural Networks",
+  "hero.short": "Odor Predictor",
   "hero.intro": "This project uses a graph neural network to predict, from the structure, the words flavorists would use for its smell, such as fruity, buttery or roasted.",
   "demo.select": "Or pick a preset molecule",
   "demo.select_placeholder": "(showing search result)",
