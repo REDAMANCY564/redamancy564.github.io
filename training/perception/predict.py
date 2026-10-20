@@ -26,7 +26,8 @@ detect); the rest of the subject's ratings are predicted.
   + offset: molecule mean + subject offset (shrunk)
   + factors: molecule mean + offset + u_s . v_i (ridge from the n ratings)
 
-Metrics: Pearson r over all predicted ratings (pooled), mean per-subject r, RMSE.
+Metrics: Pearson r over all predicted ratings (pooled), mean per-subject r, RMSE; for the scenario B curve,
+the difference factors - molecule mean in pooled r with a subject-bootstrap CI for every n.
 Ceilings: test-retest of single ratings (repeat pairs, pooled r and RMSE); for the population
 model, reliability of the panel mean (split-half, Spearman-Brown).
 
@@ -391,7 +392,7 @@ def run_scenario_b(df, var, n_stim, rng):
            "probe_set_5": b_metrics(pd.concat(probe_rows), cols),
            "probe_sets": sorted({p for R in probe_rows for p in R["probes"].unique()})}
     print("B", var, {c: out["n_known_5"][c]["r"] for c in cols}, "probe:", {c: out["probe_set_5"][c]["r"] for c in cols})
-    return out, pd.concat(curve[5])
+    return out, pd.concat(curve[5]), {n: pd.concat(curve[n]) for n in N_KNOWN}
 
 
 def ceilings(df_all, var):
@@ -425,7 +426,7 @@ def main():
         res["ceiling"]["panel_mean_reliability"] = rel
         res["new_molecules"], PA, TA = run_scenario_a(df, mol, var, feats, stim_index, fold_of, kind, odor_split, rng, "A-gnn")
         res["new_molecules_fingerprint"], PF, _ = run_scenario_a(df, mol, var, feats_fp, stim_index, fold_of, kind, odor_split, rng, "A-fp")
-        res["new_consumers"], RB = run_scenario_b(df, var, len(stims), rng)
+        res["new_consumers"], RB, RC = run_scenario_b(df, var, len(stims), rng)
         PF = PF.loc[PA.index]
         y, cl = TA[var].values, TA["cid"].values
         res["comparisons"] = {
@@ -436,6 +437,11 @@ def main():
             "B5_factors_vs_offset": boot_diff(RB["y"], RB["molecule_offset_factors"], RB["molecule_offset"], RB["subject"], rng),
             "B5_offset_vs_molecule_mean": boot_diff(RB["y"], RB["molecule_offset"], RB["molecule_mean"], RB["subject"], rng),
             "clusters": "A: molecules; B: subjects (all 20 draws pooled)"}
+        # added 2026-10-20: the curve with a CI per n. Own generator, so the shared rng (and every result
+        # computed before this was added) is unchanged.
+        rng_ci = np.random.default_rng([SEED, len(var)])
+        res["comparisons"]["B_curve_factors_vs_molecule_mean"] = {
+            n: boot_diff(R["y"], R["molecule_offset_factors"], R["molecule_mean"], R["subject"], rng_ci) for n, R in RC.items()}
         print(var, res["comparisons"])
         out["results"][var] = res
         if var == "pleasantness":

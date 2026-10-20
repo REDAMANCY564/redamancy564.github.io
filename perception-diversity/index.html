@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>7 Odor Perception Differences | Jingwei Cui</title>
   <meta name="description" content="Using public ratings of 480 molecules by 55 people: how much of the variation comes from the molecule, personal preference and measurement noise.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261020a">
+  <link rel="stylesheet" href="../assets/style.css?v=20261020b">
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -75,7 +75,6 @@
 
     <section class="section" id="spread">
       <h2 data-sec="1" data-i18n="spread.title">Ratings of one molecule across people</h2>
-      <p data-i18n="spread.intro"></p>
       <div class="ctl">
         <label for="spread-select" data-i18n="spread.pick">Molecule</label>
         <select id="spread-select"></select>
@@ -89,7 +88,7 @@
     </section>
 
     <section class="section" id="predict">
-      <h2 data-sec="1" data-i18n="pred.title">Predicting a new consumer's ratings</h2>
+      <h2 data-sec="1" data-i18n="pred.title">Predicting a new participant's ratings</h2>
       <p data-i18n="pred.intro"></p>
       <div class="ctl">
         <label for="demo-select" data-i18n="pred.pick">Anonymous test participant</label>
@@ -100,6 +99,7 @@
         </span>
       </div>
       <p class="small" style="margin:6px 0 0" id="demo-known"></p>
+      <p data-i18n="pred.conclusion" style="margin-top:12px"></p>
       <div class="viz-box">
         <p class="viz-title" id="demo-title"></p>
         <p class="viz-sub" id="demo-sub"></p>
@@ -109,13 +109,14 @@
     </section>
 
     <section class="section" id="segments">
-      <h2 data-sec="1" data-i18n="seg.title">Consumer segments</h2>
+      <h2 data-sec="1" data-i18n="seg.title">Participant segments</h2>
       <p id="seg-verdict"></p>
       <div class="viz-box">
         <p class="viz-title" data-i18n="seg.scores.title"></p>
         <p class="viz-sub" data-i18n="seg.scores.sub"></p>
         <svg id="scores-svg" role="img" data-i18n-attr="aria-label:seg.scores.title"></svg>
       </div>
+      <p data-i18n="seg.scores.note"></p>
     </section>
   </main>
 
@@ -126,8 +127,8 @@
     </div>
   </footer>
 
-  <script src="../assets/i18n.js?v=20261020a" data-page-dict="i18n/"></script>
-  <script src="../assets/projects.js?v=20261020a"></script>
-  <script src="app.js?v=20261020a"></script>
+  <script src="../assets/i18n.js?v=20261020b" data-page-dict="i18n/"></script>
+  <script src="../assets/projects.js?v=20261020b"></script>
+  <script src="app.js?v=20261020b"></script>
 </body>
 </html>

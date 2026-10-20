@@ -1,5 +1,5 @@
 {
- "method": "Stage C of PLAN-perception.md: personalized prediction of odor ratings.\n\nTarget: pleasantness (main) and intensity, raw 0-100, first presentation, detected ratings only.\nMolecule features: the odor model's 138 predicted probabilities (the embedding chosen for\ningredient-finder) + log10 dilution + high/low flag. For comparison, the population model is also\nfitted on Morgan fingerprints (radius 2, 2048 bits).\n\nScenario A, new molecules (known subjects): 5-fold CV over molecules. Cyclic molecules are grouped\nby Murcko scaffold, except the benzene scaffold (104 molecules, more than a fold) which is split\nlike acyclic molecules (one by one); stereo pairs stay together; both concentrations of a molecule\nstay together. Hyperparameters by inner 4-fold CV on the training molecules only.\n  baselines: global mean; personal mean (subject's mean on training molecules)\n  population: ridge on the stimulus mean rating\n  + offset: population + subject's mean residual\n  + personal slopes: per-subject ridge of the residual on the first k principal components of\n    the features (k and penalty chosen in the inner CV)\n  reference (not a model): panel mean of the test stimulus from the other subjects + offset\n    (\"if the population model were perfect\")\n\nScenario B, new consumers: 5-fold CV over subjects. From the training subjects: stimulus means and\nk latent factors of the residuals (matrix factorization, ALS with ridge). A test subject gives n\nknown ratings (n = 5 main; curve 1..50), drawn at random 20 times, or a fixed probe set (the 5\nstimuli with the largest between-subject spread of the residual among those most training subjects\ndetect); the rest of the subject's ratings are predicted.\n  baselines: global mean; molecule mean (training subjects); personal mean (mean of the n ratings)\n  + offset: molecule mean + subject offset (shrunk)\n  + factors: molecule mean + offset + u_s . v_i (ridge from the n ratings)\n\nMetrics: Pearson r over all predicted ratings (pooled), mean per-subject r, RMSE.\nCeilings: test-retest of single ratings (repeat pairs, pooled r and RMSE); for the population\nmodel, reliability of the panel mean (split-half, Spearman-Brown).",
+ "method": "Stage C of PLAN-perception.md: personalized prediction of odor ratings.\n\nTarget: pleasantness (main) and intensity, raw 0-100, first presentation, detected ratings only.\nMolecule features: the odor model's 138 predicted probabilities (the embedding chosen for\ningredient-finder) + log10 dilution + high/low flag. For comparison, the population model is also\nfitted on Morgan fingerprints (radius 2, 2048 bits).\n\nScenario A, new molecules (known subjects): 5-fold CV over molecules. Cyclic molecules are grouped\nby Murcko scaffold, except the benzene scaffold (104 molecules, more than a fold) which is split\nlike acyclic molecules (one by one); stereo pairs stay together; both concentrations of a molecule\nstay together. Hyperparameters by inner 4-fold CV on the training molecules only.\n  baselines: global mean; personal mean (subject's mean on training molecules)\n  population: ridge on the stimulus mean rating\n  + offset: population + subject's mean residual\n  + personal slopes: per-subject ridge of the residual on the first k principal components of\n    the features (k and penalty chosen in the inner CV)\n  reference (not a model): panel mean of the test stimulus from the other subjects + offset\n    (\"if the population model were perfect\")\n\nScenario B, new consumers: 5-fold CV over subjects. From the training subjects: stimulus means and\nk latent factors of the residuals (matrix factorization, ALS with ridge). A test subject gives n\nknown ratings (n = 5 main; curve 1..50), drawn at random 20 times, or a fixed probe set (the 5\nstimuli with the largest between-subject spread of the residual among those most training subjects\ndetect); the rest of the subject's ratings are predicted.\n  baselines: global mean; molecule mean (training subjects); personal mean (mean of the n ratings)\n  + offset: molecule mean + subject offset (shrunk)\n  + factors: molecule mean + offset + u_s . v_i (ridge from the n ratings)\n\nMetrics: Pearson r over all predicted ratings (pooled), mean per-subject r, RMSE; for the scenario B curve,\nthe difference factors - molecule mean in pooled r with a subject-bootstrap CI for every n.\nCeilings: test-retest of single ratings (repeat pairs, pooled r and RMSE); for the population\nmodel, reliability of the panel mean (split-half, Spearman-Brown).",
  "folds": {
   "molecules_per_fold": [
    96,
@@ -623,7 +623,51 @@
       0.0487
      ]
     },
-    "clusters": "A: molecules; B: subjects (all 20 draws pooled)"
+    "clusters": "A: molecules; B: subjects (all 20 draws pooled)",
+    "B_curve_factors_vs_molecule_mean": {
+     "1": {
+      "diff": 0.0044,
+      "ci95": [
+       -0.005,
+       0.0127
+      ]
+     },
+     "3": {
+      "diff": 0.0148,
+      "ci95": [
+       -0.0002,
+       0.0289
+      ]
+     },
+     "5": {
+      "diff": 0.0285,
+      "ci95": [
+       0.009,
+       0.0502
+      ]
+     },
+     "10": {
+      "diff": 0.0436,
+      "ci95": [
+       0.0191,
+       0.0681
+      ]
+     },
+     "20": {
+      "diff": 0.0603,
+      "ci95": [
+       0.0311,
+       0.0908
+      ]
+     },
+     "50": {
+      "diff": 0.074,
+      "ci95": [
+       0.0424,
+       0.104
+      ]
+     }
+    }
    }
   },
   "intensity": {
@@ -1234,7 +1278,51 @@
       0.0553
      ]
     },
-    "clusters": "A: molecules; B: subjects (all 20 draws pooled)"
+    "clusters": "A: molecules; B: subjects (all 20 draws pooled)",
+    "B_curve_factors_vs_molecule_mean": {
+     "1": {
+      "diff": 0.0099,
+      "ci95": [
+       -0.003,
+       0.022
+      ]
+     },
+     "3": {
+      "diff": 0.0245,
+      "ci95": [
+       0.0044,
+       0.0459
+      ]
+     },
+     "5": {
+      "diff": 0.0336,
+      "ci95": [
+       0.0116,
+       0.055
+      ]
+     },
+     "10": {
+      "diff": 0.049,
+      "ci95": [
+       0.0264,
+       0.0716
+      ]
+     },
+     "20": {
+      "diff": 0.0587,
+      "ci95": [
+       0.0347,
+       0.0818
+      ]
+     },
+     "50": {
+      "diff": 0.0688,
+      "ci95": [
+       0.0458,
+       0.0922
+      ]
+     }
+    }
    }
   }
  }

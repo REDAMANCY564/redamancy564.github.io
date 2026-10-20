@@ -351,6 +351,23 @@
       });
     });
     legend("curve-legend", series.map(([m, col]) => [col, t("m." + m), true]));
+    renderCurveTable(P, ns);
+  }
+
+  // the curve as a table: difference model - panel average with a 95% CI (subject bootstrap), RMSE, per-subject r
+  function renderCurveTable(P, ns) {
+    const C = P.B_curve, ci = P.cmp.B_curve_factors_vs_molecule_mean, mm = "molecule_mean", mf = "molecule_offset_factors";
+    // signed, 3 decimals; a value that rounds to 0 keeps 4 so a bound just below 0 stays visible
+    const sgn = v => { const d = Math.abs(v) < 0.0005 && v !== 0 ? 4 : 3; return (v > 0 ? "+" : "") + Number(v).toFixed(d); };
+    const th = k => `<th style="text-align:right">${esc(t(k))}</th>`;
+    $("curve-table").innerHTML = `<thead><tr>${th("pred.curve.x")}${th("ct.r_mean")}${th("ct.r_model")}${th("ct.diff")}${th("ct.rmse")}${th("ct.r_within")}</tr></thead><tbody>` +
+      ns.map(n => `<tr><td class="num">${n}</td><td class="num">${f3(C[n][mm].r)}</td><td class="num">${f3(C[n][mf].r)}</td>` +
+        `<td class="num">${sgn(ci[n].diff)}<br><span class="small muted">${sgn(ci[n].ci95[0])} ${t("ct.to")} ${sgn(ci[n].ci95[1])}</span></td>` +
+        `<td class="num">${C[n][mm].rmse.toFixed(1)} → ${C[n][mf].rmse.toFixed(1)}</td>` +
+        `<td class="num">${f3(C[n][mm].r_per_subject_mean)} / ${f3(C[n][mf].r_per_subject_mean)}</td></tr>`).join("") + "</tbody>";
+    const within = ns.map(n => C[n][mf].r_per_subject_mean - C[n][mm].r_per_subject_mean);
+    $("curve-note").textContent = t("pred.curve.note", { lo: sgn(Math.min(...within)), hi: sgn(Math.max(...within)),
+      m: f3(C[ns[0]][mm].r_per_subject_mean) });
   }
 
   // ---------- 6. segments ----------
@@ -378,9 +395,10 @@
   }
 
   // subject scores strip
-  function renderScores(a) {
+  // stacked: the end labels on two lines (narrow screens, where they do not fit side by side)
+  function renderScores(a, stacked) {
     const svg = $("scores-svg"), tip = tipFor(svg);
-    const h = 110, w = setup(svg, h), L = 10, R = 10;
+    const h = stacked ? 112 : 95, w = setup(svg, h), L = 10, R = 10;
     const ext = Math.max(...a.scores.map(Math.abs)) * 1.05;
     const x = lin(-ext, ext, L, w - R), base = 66;
     el("line", { x1: x(0), x2: x(0), y1: 8, y2: base + 4, stroke: "var(--axis)" }, svg);
@@ -388,10 +406,9 @@
       const c = el("circle", { cx: pt.cx, cy: base - pt.k * 9, r: 4, fill: "var(--s1)", stroke: "var(--surface)", "stroke-width": 2 }, svg);
       hover(c, tip, () => t("tip.score", { v: pt.v.toFixed(1) }));
     });
-    txt(svg, L, h - 18, t("seg.end.neg"), { class: "ink", "text-anchor": "start" });
-    txt(svg, w - R, h - 18, t("seg.end.pos"), { class: "ink", "text-anchor": "end" });
-    txt(svg, L, h - 3, t("seg.end.neg2"), { "text-anchor": "start" });
-    txt(svg, w - R, h - 3, t("seg.end.pos2"), { "text-anchor": "end" });
+    const neg = txt(svg, L, stacked ? h - 21 : h - 3, t("seg.end.neg"), { class: "ink", "text-anchor": "start" });
+    const pos = txt(svg, w - R, h - 3, t("seg.end.pos"), { class: "ink", "text-anchor": "end" });
+    if (!stacked && neg.getComputedTextLength() + pos.getComputedTextLength() + 16 > w - L - R) renderScores(a, true);
   }
 
   // descriptor bars (intensity partialled), diverging
@@ -425,7 +442,7 @@
   async function main() {
     await I18N.ready;
     try {
-      D = await (await fetch("data/site.json?v=20261020a")).json();
+      D = await (await fetch("data/site.json?v=20261020b")).json();
     } catch (e) {
       $("load-status").textContent = t("load_error");
       return;
