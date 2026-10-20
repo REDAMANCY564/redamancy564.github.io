@@ -11,7 +11,8 @@ Order fixed in advance (user decision 2026-10-18):
              embedding vs Morgan-Tanimoto neighbours vs random neighbours (paired bootstrap CI)
      Mode A: within the test split, rank molecules by the predicted probability of each descriptor;
              precision@10 / @50 vs random ranking (expected = positive rate) and vs a Morgan + logistic
-             regression baseline (C = 0.1, chosen on validation in baseline.py); the 5 page presets too.
+             regression baseline (C = 0.1, chosen on validation in baseline.py); the 5 page presets too
+             (ranked by the page's mode A score; since 2026-10-20 the weighted geometric mean).
 All similarities are computed from the quantized values the page uses.
 Output: training/data/ingredient/eval.json (+ printed report)
 """
@@ -25,6 +26,8 @@ from rdkit import Chem
 from rdkit.Chem import rdFingerprintGenerator, rdMolDescriptors
 from sklearn.linear_model import LogisticRegression
 from sklearn.multiclass import OneVsRestClassifier
+
+from make_site_data import score as score_a   # the page's mode A score
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "training" / "data"
@@ -188,7 +191,7 @@ def main():
     pres = {}
     for name, labs in PRESETS.items():
         ids = [labels.index(l) for l in labs]
-        score = Pt[:, ids].sum(1)
+        score = score_a(Pt, labels, [[l, "high"] for l in labs])
         top = np.argsort(-score)[:K]
         any_r, all_r = Yt[:, ids].any(1), Yt[:, ids].all(1)
         pres[name] = {"top10_has_any": float(any_r[top].mean()), "random_any": round(float(any_r.mean()), 4),

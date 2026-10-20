@@ -159,21 +159,21 @@
    "random_all": 0.0041
   },
   "coconut+creamy": {
-   "top10_has_any": 0.1,
+   "top10_has_any": 0.2,
    "random_any": 0.0432,
    "top10_has_all": 0.0,
    "random_all": 0.0021
   },
   "caramellic+nutty": {
-   "top10_has_any": 0.4,
+   "top10_has_any": 0.2,
    "random_any": 0.072,
    "top10_has_all": 0.0,
    "random_all": 0.0062
   },
   "milky+fatty": {
-   "top10_has_any": 0.6,
+   "top10_has_any": 0.7,
    "random_any": 0.1502,
-   "top10_has_all": 0.0,
+   "top10_has_all": 0.1,
    "random_all": 0.0021
   },
   "fruity+green": {

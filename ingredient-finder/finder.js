@@ -6,8 +6,9 @@
  *   probs.bin     uint8 [n, L]: predicted probability x 255 (odor-predictor model)
  *   fps.bin       uint32 offsets [n + 1], then uint16 on-bit indices (Morgan r = 2, 2048 bits)
  *
- * Mode A score = sum(weight x probability of a wanted descriptor) - sum(weight x probability of an
- * unwanted descriptor), weights high 1 / mid 0.5 / low 0.25 (user decision 2026-10-18).
+ * Mode A score = weighted geometric mean of the wanted descriptors' probabilities x weighted geometric
+ * mean of (1 - probability) of the unwanted ones (1 when there are none), 0 to 1, weights high 1 /
+ * mid 0.5 / low 0.25 (user decision 2026-10-20; until then an unnormalized weighted sum).
  * Mode B odor similarity = cosine of the predicted probability vectors (chosen on the validation
  * split, stage 3); structure similarity = Tanimoto of the Morgan fingerprints.
  */
@@ -51,15 +52,18 @@
    * score (ties keep library order), only molecules passing the filters.
    */
   function scoreA(d, want, avoid, filters) {
-    const terms = want.map(([id, w]) => [d.labelIndex[id], WEIGHTS[w]])
-      .concat((avoid || []).map(([id, w]) => [d.labelIndex[id], -WEIGHTS[w]]))
-      .filter(([j]) => j != null);
+    const terms = list => (list || []).map(([id, w]) => [d.labelIndex[id], WEIGHTS[w]]).filter(([j]) => j != null);
+    const tw = terms(want), ta = terms(avoid);
+    const total = t => t.reduce((s, [, w]) => s + w, 0);
+    const Ww = total(tw), Wa = total(ta);
     const out = [];
     for (let i = 0; i < d.n; i++) {
       if (!passes(d, i, filters)) continue;
-      let s = 0;
-      for (const [j, w] of terms) s += w * prob(d, i, j);
-      out.push({ index: i, score: s });
+      // sums of weight x log in the same order as training/ingredient/make_site_data.py (log 0 = -Infinity gives 0)
+      let lw = 0, la = 0;
+      for (const [j, w] of tw) lw += w * Math.log(prob(d, i, j));
+      for (const [j, w] of ta) la += w * Math.log(1 - prob(d, i, j));
+      out.push({ index: i, score: Math.exp((Ww ? lw / Ww : 0) + (Wa ? la / Wa : 0)) });
     }
     return out.sort((a, b) => b.score - a.score);
   }

@@ -56,6 +56,22 @@ def neighbours(P, bits, q, thr, top_n=20, tan_max=0.3):
 
 
 def score(P, labels, want, avoid=()):
+    """Mode A: weighted geometric mean of the wanted probabilities x weighted geometric mean of
+    (1 - probability) of the unwanted ones (1 when there are none); 0 to 1. Same arithmetic order
+    as finder.js scoreA, so the scores agree to 6 decimals."""
+    def log_mean(terms, unwanted):
+        acc, total = np.zeros(len(P)), 0.0
+        for lab, w in terms:
+            p = P[:, labels.index(lab)]
+            with np.errstate(divide="ignore"):
+                acc += WEIGHTS[w] * np.log(1 - p if unwanted else p)
+            total += WEIGHTS[w]
+        return acc / total if total else acc
+    return np.exp(log_mean(want, False) + log_mean(avoid, True))
+
+
+def score_sum(P, labels, want, avoid=()):
+    """Mode A score used until 2026-10-20 (unnormalized weighted sum), kept for the before/after comparison."""
     s = np.zeros(len(P))
     for lab, w in want:
         s += WEIGHTS[w] * P[:, labels.index(lab)]

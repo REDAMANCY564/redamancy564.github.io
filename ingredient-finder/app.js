@@ -159,7 +159,7 @@
       : '<span class="muted">' + esc(I18N.t("r.no_foods")) + "</span>";
     const badge = trainNote(m.group === 0);
     return '<div class="card res"><div class="svg" data-smiles="' + esc(m.smiles) + '"></div><div>' +
-      '<p class="small muted" style="margin:0">' + esc(I18N.t("r.rank", { n: rank })) + " · " + esc(I18N.t("r.score")) + " <b>" + hit.score.toFixed(3) + "</b> " + badge + "</p>" +
+      '<p class="small muted" style="margin:0">' + esc(I18N.t("r.rank", { n: rank })) + " · " + esc(I18N.t("r.score")) + " <b>" + (100 * hit.score).toFixed(1) + "</b> " + badge + "</p>" +
       '<p class="name">' + esc(m.name || m.smiles) + "</p>" +
       (m.name ? '<p class="smi mono">' + esc(m.smiles) + "</p>" : "") +
       '<div class="meta"><span class="muted">' + esc(I18N.t("r.top")) + '</span><div class="preds">' +

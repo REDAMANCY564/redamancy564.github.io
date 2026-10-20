@@ -31,7 +31,25 @@
   check("filters", "no filter: every molecule", all.length, 5072);
   check("weights", "high / mid / low = 1 / 0.5 / 0.25", F.WEIGHTS, { high: 1, mid: 0.5, low: 0.25 });
   const j = D.labelIndex.creamy, i0 = all[0].index;
-  check("weights", "medium weight halves the score", +F.scoreA(D, [["creamy", "mid"]], [], null)[0].score.toFixed(9), +(0.5 * F.prob(D, i0, j)).toFixed(9));
+  const scoreOf = (want, avoid, i) => F.scoreA(D, want, avoid, null).find(h => h.index === i).score;
+
+  // ---------- mode A score: weighted geometric means (0 to 1) ----------
+  check("score", "one wanted descriptor: score = its probability, whatever the weight",
+    [+scoreOf([["creamy", "high"]], [], i0).toFixed(9), +scoreOf([["creamy", "low"]], [], i0).toFixed(9)], [+F.prob(D, i0, j).toFixed(9), +F.prob(D, i0, j).toFixed(9)]);
+  const byProb = [...Array(D.n).keys()].sort((a, b) => F.prob(D, b, j) - F.prob(D, a, j));
+  check("score", "one wanted descriptor: ranking = ranking by predicted probability (top 100)", all.slice(0, 100).map(h => h.index), byProb.slice(0, 100));
+  const big = F.scoreA(D, [["creamy", "high"], ["fruity", "mid"], ["green", "low"]], [["musty", "high"], ["sweet", "mid"]], null);
+  check("score", "scores lie between 0 and 1", big.every(h => h.score >= 0 && h.score <= 1), true);
+  const jb = D.labelIndex.buttery;
+  check("score", "two wanted (high, high), no unwanted: geometric mean, unwanted factor 1",
+    [+scoreOf([["creamy", "high"], ["buttery", "high"]], [], i0).toFixed(9), +scoreOf([["creamy", "high"], ["buttery", "high"]], undefined, i0).toFixed(9)],
+    Array(2).fill(+Math.sqrt(F.prob(D, i0, j) * F.prob(D, i0, jb)).toFixed(9)));
+  check("score", "unwanted descriptor: factor (1 - probability)",
+    +scoreOf([["creamy", "high"]], [["buttery", "high"]], i0).toFixed(9), +(F.prob(D, i0, j) * (1 - F.prob(D, i0, jb))).toFixed(9));
+  // the descriptor this molecule is least likely to have
+  const unrelated = lib.labels.map((l, k) => [l.id, F.prob(D, i0, k)]).filter(([id]) => id !== "creamy").sort((a, b) => a[1] - b[1])[0][0];
+  check("score", "adding a descriptor unrelated to the molecule (" + unrelated + ") lowers its score",
+    scoreOf([["creamy", "high"], [unrelated, "high"]], [], i0) < scoreOf([["creamy", "high"]], [], i0), true);
   check("similarity", "Tanimoto of identical / disjoint bit lists", [F.tanimoto(new Uint16Array([1, 5, 9]), new Uint16Array([1, 5, 9])), F.tanimoto(new Uint16Array([1]), new Uint16Array([2]))], [1, 0]);
   check("similarity", "Tanimoto 2 shared of 4 bits", F.tanimoto(new Uint16Array([1, 2, 3]), new Uint16Array([2, 3, 4])), 0.5);
   check("similarity", "cosine of a vector with itself", +F.cosine(F.vector(D, 0), F.vector(D, 0)).toFixed(12), 1);
