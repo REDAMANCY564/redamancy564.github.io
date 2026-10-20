@@ -16,7 +16,7 @@
   "privacy.mini": "Read in your browser only, never uploaded",
   "import.title": "Import data",
   "import.peak_title": "GC-MS peak table (one sample)",
-  "import.peak_short": "Columns: compound name or CAS · retention time · peak area or relative content; add an amount column if quantified (used for OAV).",
+  "import.peak_short": "Columns: compound name or CAS · retention time · peak area or relative content (%); add a concentration column if quantified (used for OAV).",
   "about.peak_required": "The peak table needs three columns: (1) compound name or CAS number; (2) retention time; (3) peak area or relative content (%). If the sample was quantified, add a concentration column; it is used when OAV is chosen. Retention index, match score and peak number columns are optional. Columns are recognized from header keywords or instrument templates, and you can correct them in the step \"Check the header and columns\".",
   "import.drop": "Drop a file here, or click to choose one (CSV, TSV, TXT, XLSX, XLS)",
   "import.examples": "Or try an example (loads a peak table and its standard file):",

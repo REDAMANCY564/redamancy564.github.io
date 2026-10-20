@@ -233,6 +233,7 @@ a.help:hover { border-color: var(--accent); color: var(--accent); }
 .dir-list, .home .paper-list { list-style: none; padding-left: 2em; margin: 0 0 var(--sp-4); max-width: 760px; }
 .dir-list { margin-bottom: 0; }
 .dir-list li, .home .paper-list li { position: relative; margin-bottom: var(--sp-3); }
+.dir-list li { margin-bottom: var(--sp-2); }
 .dir-list .no, .home #paper-list li::before { position: absolute; left: -2em; color: var(--muted); font-variant-numeric: tabular-nums; }
 .home #paper-list { counter-reset: paper; }
 .home #paper-list li { counter-increment: paper; }
