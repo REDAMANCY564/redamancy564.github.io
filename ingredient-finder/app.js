@@ -167,16 +167,21 @@
       "</div>" + foods + "</div></div></div>";
   }
 
+  const LOW_SCORE = 0.1;
+
   function runA() {
     if (!A.want.length) {
       $("a-summary").textContent = I18N.t("a.need_want");
       $("a-results").innerHTML = "";
+      $("a-low").classList.add("hidden");
       $("a-more").classList.add("hidden");
       return;
     }
     const hits = F.scoreA(D, A.want, A.avoid, A.filters);
     const shown = Math.min(A.shown, hits.length);
     $("a-summary").textContent = I18N.t("a.summary", { n: hits.length, shown });
+    // best score below 10 (of 100): no molecule has all the wanted descriptors
+    $("a-low").classList.toggle("hidden", !(hits.length && hits[0].score < LOW_SCORE));
     const wantIds = new Set(A.want.map(x => x[0]));
     $("a-results").innerHTML = hits.slice(0, shown).map((h, k) => resultCard(k + 1, h, wantIds)).join("");
     $("a-results").querySelectorAll(".svg").forEach(el => drawInto(el, el.dataset.smiles));
