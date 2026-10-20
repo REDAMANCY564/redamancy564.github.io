@@ -50,3 +50,12 @@ desktop.ini
 
 # Development plans: kept local only
 /PLAN*.md
+
+# Depth review notes: kept local only
+/DEPTH-*.md
+
+# Feasibility notes: kept local only
+/REG-FEASIBILITY.md
+
+# Regulatory raw downloads (FDA, EU, GB 2760 copy): already covered by training/data/, listed explicitly
+/training/data/regulatory/
