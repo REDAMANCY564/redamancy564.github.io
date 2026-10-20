@@ -104,7 +104,7 @@
   "pred.btn.model": "Model",
   "pred.btn.panel": "Panel average only",
   "pred.known": "The 5 known ratings (pleasantness, 0 to 100):",
-  "pred.conclusion": "With 5 ratings, the model is almost the same as the group average. With 50 ratings the error drops by about 5%, but nearly all of the gain comes from estimating whether this person rates high or low overall; the model still does not learn which odors they like.",
+  "pred.conclusion": "With 5 ratings, the model is only slightly better than the group average (about 1.6% lower error); with 50 ratings, about 5% lower. Nearly all of the gain comes from estimating whether this person rates high or low overall; the model still does not learn which odors they like.",
   "pred.chart.model": "Model predictions vs actual ratings ({n} odors)",
   "pred.chart.panel": "Panel average vs actual ratings ({n} odors)",
   "pred.chart.sub": "Correlation r = {r}, error RMSE = {e}; for comparison, {other}: r = {r2}",
