@@ -5,22 +5,22 @@
 
 项目编号与网站一致（顺序定义在 `assets/projects.js`）。项目全称用于主页、项目目录页和页面标题；括号里的简称用于浏览器标签和站内互相引用：
 
-1. 兼容多仪器格式的 GC-MS 关键香气物质解读（GC-MS 风味解读）：https://redamancy564.github.io/gcms-interpreter/
-2. 基于气味预测的风味原料检索与替代物筛选（风味原料检索）：https://redamancy564.github.io/ingredient-finder/
+1. 兼容多仪器格式的 GC-MS 数据自动分析（GC-MS 风味解读）：https://redamancy564.github.io/gcms-interpreter/
+2. 基于气味描述词预测的风味原料检索及其替代物的筛选（风味原料检索）：https://redamancy564.github.io/ingredient-finder/
 3. 基于图神经网络的分子气味描述词预测（气味预测）：https://redamancy564.github.io/odor-predictor/
-4. 基于贝叶斯优化的乳品风味改良与样品差距分析（风味改良）：https://redamancy564.github.io/flavor-improver/
-5. 5000 余种风味分子的气味空间与结构空间对比图谱（气味空间地图）：https://redamancy564.github.io/odor-map/
-6. 基于图神经网络的小分子甜、苦、鲜味预测（味觉预测）：https://redamancy564.github.io/taste-predictor/
-7. 人群嗅觉评价差异的来源分解（气味感知差异）：https://redamancy564.github.io/perception-diversity/
-8. 文献分级的食品关键香气物质知识库（风味知识库）：https://redamancy564.github.io/flavor-kb/
+4. 基于贝叶斯优化的乳品风味改良与差距分析（风味改良）：https://redamancy564.github.io/flavor-improver/
+5. 风味分子的气味空间与结构空间对比图谱（气味空间地图）：https://redamancy564.github.io/odor-map/
+6. 基于图神经网络的小分子味觉预测（味觉预测）：https://redamancy564.github.io/taste-predictor/
+7. 人群嗅觉评分差异的来源分解（气味感知差异）：https://redamancy564.github.io/perception-diversity/
+8. 食品关键风味物质知识库（风味知识库）：https://redamancy564.github.io/flavor-kb/
 
-## 8 文献分级的食品关键香气物质知识库（flavor-kb/）
+## 8 食品关键风味物质知识库（flavor-kb/）
 
 三级数据，网页上用颜色标签区分：
 
 | 级别 | 来源 | 说明 |
 |---|---|---|
-| 第一级·关键香气物质（深绿） | Dunkel et al., Angew. Chem. Int. Ed. 2014, 53, 7124（doi:10.1002/anie.201309508） | 只摘录正文中明确写出的食品与关键香气物质，附页码，见 `training/knowledge/dunkel2014_main_text.json`。完整对照在补充材料中，未收录 |
+| 第一级·关键风味物质（深绿） | Dunkel et al., Angew. Chem. Int. Ed. 2014, 53, 7124（doi:10.1002/anie.201309508） | 只摘录正文中明确写出的食品与关键风味物质，附页码，见 `training/knowledge/dunkel2014_main_text.json`。完整对照在补充材料中，未收录 |
 | 第一级·检出（浅绿） | FlavorDB2（Garg et al., NAR 2018），CC BY-NC-SA 3.0 | 「检出」不等于对气味有贡献；衍生数据按同一协议共享，见 `flavor-kb/data/LICENSE.md` |
 | 第二级·实时文献（蓝） | Europe PMC（免费、无需密钥） | 标题和摘要中检索「物质名 + 食品 + aroma 等词」，只列文献 |
 | 第三级·摘要文字匹配（橙） | Europe PMC，查不到时用 Crossref | 按 DOI 获取摘要，高亮其中的物质名，仅为文字匹配 |
@@ -36,7 +36,7 @@ python knowledge/build_kb.py         # 生成 flavor-kb/data/*.json
 ```
 原文 PDF（Dunkel 2014、van Gemert 2011）有版权，已加入 `.gitignore`，不会上传。
 
-## 4 基于贝叶斯优化的乳品风味改良与样品差距分析（flavor-improver/）
+## 4 基于贝叶斯优化的乳品风味改良与差距分析（flavor-improver/）
 
 方法框架演示：选择一种乳制品基底和改良方向，用贝叶斯优化搜索「添加哪些风味物质、加多少」。评价函数是虚拟的（OAV → log 强度 → 描述词「提升度」向量加和 → 与目标轮廓的余弦相似度，减去种数和用量惩罚），不含掩蔽、协同、基质效应。
 
@@ -45,7 +45,7 @@ python knowledge/build_kb.py         # 生成 flavor-kb/data/*.json
 - **网页**：默认阈值下播放预计算的优化过程（Python / BoTorch）；访客修改阈值后，可在浏览器中重新运行简化版贝叶斯优化（`bo.js`）。
 - **一致性测试**：https://redamancy564.github.io/flavor-improver/tests/parity.html ，检查 `mixture.js` 与 Python 的混合规则、目标函数完全一致。浏览器版算法的表现见 `tests/bo_check.html`（运行约需几十秒）。**修改 `mixture.py` 或数据后，必须重新生成测试数据并确认全部 PASS。**
 
-**配方奶粉对比母乳：婴儿配方奶粉与母乳的风味差距分析（参照食品模式）**：数据来自 Zhang et al. 2022（*Food Chem* 382:132348，表 2、表 3，录入后已与 PDF 逐格核对），奶粉浓度按奶粉计并除以 8 换算为冲调后；两侧都以论文中的单个样本为起点，访客可修改浓度、增删物质。只分析 OAV ≥ 10（可选 ≥ 5）的关键香气物质，输出轮廓对比、差距排序和前体方向（`flavor-improver/reference.js`），不给出添加量；另有标明“仅为方法演示、不适用于婴儿配方食品”的添加量模拟。前体对照表在 `flavor-improver/data/precursors.json`，每行注明文献位置；GB 10765-2021 的条款内容须对照官方原文核实。
+**配方奶粉对比母乳：婴儿配方奶粉与母乳的风味差距分析（参照食品模式）**：数据来自 Zhang et al. 2022（*Food Chem* 382:132348，表 2、表 3，录入后已与 PDF 逐格核对），奶粉浓度按奶粉计并除以 8 换算为冲调后；两侧都以论文中的单个样本为起点，访客可修改浓度、增删物质。只分析 OAV ≥ 10（可选 ≥ 5）的关键风味物质，输出轮廓对比、差距排序和前体方向（`flavor-improver/reference.js`），不给出添加量；另有标明“仅为方法演示、不适用于婴儿配方食品”的添加量模拟。前体对照表在 `flavor-improver/data/precursors.json`，每行注明文献位置；GB 10765-2021 的条款内容须对照官方原文核实。
 ```powershell
 cd training
 .\.venv\Scripts\Activate.ps1
@@ -87,7 +87,7 @@ python flavor_improver/make_parity_fixtures.py  # 生成一致性测试数据
 - **尝试过的改进（未采用，2026-10-17）**：参考 PharmaGNN（Liu et al., J Sci Food Agric 106, 8114-8120, 2026, doi:10.1002/jsfa.70826），在同一骨架划分上做消融：非对称损失、原子药效团标记（供体 / 受体 / 疏水，RDKit BaseFeatures 定义，冻结在 `training/pharmacophore_smarts.json`）及两者组合。测试集 macro AUROC：原模型 0.860 ± 0.0003，ASL 0.8615 ± 0.0029，药效团 0.8606 ± 0.0017，两者 0.8595 ± 0.0013；稀有标签未改善，未达到事先约定的替换条件（提升 ≥ 0.005、3 个种子都更好、稀有标签不下降），线上模型不变。详见 `training/ablation_results.json`。
 - **气味阈值**：仅 10 个预设分子显示水中阈值文献值（van Gemert 2011 汇编；数据在 `training/odor_thresholds.json`）。该书有版权，PDF 已加入 `.gitignore`，不会上传。
 
-## 6 基于图神经网络的小分子甜、苦、鲜味预测（taste-predictor/）
+## 6 基于图神经网络的小分子味觉预测（taste-predictor/）
 
 沿用气味预测的 GNN 结构、原子特征和 ONNX 流程，预测小分子的甜、苦、鲜、无味四类（多标签，各一个概率）。酸、咸样本太少，不建模；数据中记载为酸或咸的预设分子在页面上单独提示。
 
@@ -115,11 +115,11 @@ python taste/make_site_assets.py   # labels、presets、一致性测试数据
 
 **当前结果（测试集 AUROC，GNN 为 3 个种子均值）：** 甜 0.854 / 基线 0.866；苦 0.863 / 0.867；无味 0.889 / 0.826；鲜两者均为 1.000，但测试集鲜味以核苷酸为主且无含磷阴性样本，不可信（验证集无磷鲜味参考 0.943 / 0.950）。苦味中药物分子 AUROC 0.736，非药物 0.875。
 
-## 5 5000 余种风味分子的气味空间与结构空间对比图谱（odor-map/）
+## 5 风味分子的气味空间与结构空间对比图谱（odor-map/）
 
 把风味原料检索的候选库（5,072 个有机分子）用 UMAP 降到二维：气味地图按 GNN 的 138 维预测概率排列（余弦距离，邻居数 30，最小距离 0.3），结构地图按 Morgan 指纹排列（Jaccard 距离，15，0.1），随机种子 42。参数各取验证集上最好的一组（3 组中选），测试集定稿后只算一次。
 
-- **页面**：Canvas 2D 绘图，d3-zoom 缩放拖动，d3-quadtree 悬停查找（jsdelivr 固定版本）；两张地图平滑切换；按主要预测描述词或单个描述词的概率着色；自动区域标签；点击打开详情卡片（跳转气味预测、找替代原料、风味知识库）；搜索；食品高亮（Dunkel 2014 的 16 种食品为关键香气物质，其余 FlavorDB 食品为检出物质）。分子、名称和预测概率直接读取 `ingredient-finder/data/`，不重复存储。
+- **页面**：Canvas 2D 绘图，d3-zoom 缩放拖动，d3-quadtree 悬停查找（jsdelivr 固定版本）；两张地图平滑切换；按主要预测描述词或单个描述词的概率着色；自动区域标签；点击打开详情卡片（跳转气味预测、找替代原料、风味知识库）；搜索；食品高亮（Dunkel 2014 的 16 种食品为关键风味物质，其余 FlavorDB 食品为检出物质）。分子、名称和预测概率直接读取 `ingredient-finder/data/`，不重复存储。
 - **链接参数**：`?smiles=`、`?food=` / `?food2=`（知识库食品 id）、`?map=structure`、`?colour=<描述词 id>`。
 - **测试集结果**（486 个分子，二维地图上最近 15 个有标签邻居）：至少一个真实标签相同的比例，气味地图 0.752、结构地图 0.647、随机 0.387；平均 Jaccard 0.192 / 0.156 / 0.059；差值 95% 置信区间不含 0。
 
@@ -133,7 +133,7 @@ python odormap/build_maps.py        # 定稿地图 + 评估（测试集只算一
 python odormap/make_site_data.py    # odor-map/data/：坐标、区域标签、食品列表
 ```
 
-## 7 人群嗅觉评价差异的来源分解（perception-diversity/）
+## 7 人群嗅觉评分差异的来源分解（perception-diversity/）
 
 用 Keller & Vosshall 2016（BMC Neuroscience 17:55，数据 CC0）中 55 人对 480 个分子（每个两个浓度）的嗅觉评价，回答「同一个气味，为什么每个人感受不同」。人口学信息在导入时丢弃，受试者随机重新编码为 P01 到 P55。
 

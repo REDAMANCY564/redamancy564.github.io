@@ -13,7 +13,7 @@
   "sum.3.h": "Data integration and automation",
   "sum.3": "Combine instrument data (electronic nose, electronic tongue, GC-MS) with sensory panel and consumer preference data in one model. Wrote, on my own, an automated GC-MS data-processing system (3,000+ samples) and electronic-nose data extraction code (5,000+ samples) that turn raw instrument output into model-ready data. Designed and managed an analytical database.",
   "sum.4.h": "Flavor chemistry and instruments",
-  "sum.4": "Operate GC-MS, GC-O, GC×GC-MS, electronic nose and electronic tongue independently. Familiar with identifying and quantifying key aroma compounds and with OAV/ROAV analysis, and with relating instrument results to sensory findings.",
+  "sum.4": "Operate GC-MS, GC-O, GC×GC-MS, electronic nose and electronic tongue independently. Familiar with identifying and quantifying key flavor compounds and with OAV/ROAV analysis, and with relating instrument results to sensory findings.",
   "sum.5.h": "Publications and communication",
   "sum.5": "8 first-author SCI papers (5 published, 3 submitted), 2 granted invention patents, and 2 English oral presentations accepted at the IUFoST 2026 World Congress. Present results in English to technical and non-technical audiences, including senior managers.",
 
@@ -31,7 +31,7 @@
   "cv.dev": "Software development",
   "dev.1.h": "Flavor AI Toolkit (personal website)",
   "dev.1.meta": "Sole developer · <a href=\"../\">redamancy564.github.io</a>",
-  "dev.1": "Designed and built 8 browser-based tools for flavor and perception research: odor and taste prediction from molecular structure; an odor-space map of 5,000 aroma molecules; ingredient and substitute search from a flavor brief; GC-MS peak-table parsing with OAV/ROAV ranking of key aroma compounds; analysis of individual perception differences (including a test for consumer segments). All computation runs locally in the browser; raw data are not uploaded.",
+  "dev.1": "Designed and built 8 browser-based tools for flavor and perception research: odor and taste prediction from molecular structure; an odor-space map of 5,000 aroma molecules; ingredient and substitute search from a flavor brief; GC-MS peak-table parsing with OAV/ROAV ranking of key flavor compounds; analysis of individual perception differences (including a test for consumer segments). All computation runs locally in the browser; raw data are not uploaded.",
   "dev.2.h": "Automated GC-MS Data Processing System",
   "dev.2.meta": "Sole developer",
   "dev.2": "Designed, built and maintain a program that extracts and analyses GC-MS data after manual peak integration: automatic retention-time matching, merging of adjacent peaks, and rule-based choice of the flavor compound when one peak has several library candidates. Cut secondary data processing from hours to minutes and removed manual transcription errors; in routine research use, 3,000+ samples so far.",
@@ -90,7 +90,7 @@
   "sk.3.h": "Software development & workflow automation",
   "sk.3": "Visual Studio; Python automation scripts and browser-based tool development; ECharts; MS Office; technical writing and presentation slides.",
   "sk.4.h": "Instrumental analysis & flavor profiling",
-  "sk.4": "Electronic nose, electronic tongue, GC, GC-O, GC-MS, GC×GC-MS; HS-SPME sample preparation; OAV / ROAV characterization of key aroma compounds; fatty acid and amino acid quantification.",
+  "sk.4": "Electronic nose, electronic tongue, GC, GC-O, GC-MS, GC×GC-MS; HS-SPME sample preparation; OAV / ROAV characterization of key flavor compounds; fatty acid and amino acid quantification.",
 
   "cv.lang": "Languages",
   "lang.body": "Chinese (native). English (working proficiency): full-English research environment at the National University of Singapore since 2025.09, with English publication and international conference presentation experience; CET-6."

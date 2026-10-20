@@ -7,7 +7,7 @@
  * Flow: import peak table + standard file -> check the columns of both -> one confirmation
  * ("the two files above are read correctly") -> tolerances -> run -> result table (CSV export;
  * a target that was not found can be assigned a free peak of its window by hand) and processing log -> flavor: OAV or ROAV with editable odor
- * thresholds, key aroma compound ranking (CSV export), flavor profile radar.
+ * thresholds, key flavor compound ranking (CSV export), flavor profile radar.
  * All data the page needs is fetched from this site when the page loads, so it keeps
  * working offline; user files are only read in memory.
  */

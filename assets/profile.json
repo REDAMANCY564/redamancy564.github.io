@@ -9,8 +9,8 @@
     "zh": "江南大学食品科学与工程博士在读；新加坡国立大学联合培养。"
   },
   "bio": {
-    "en": "My PhD project is on the flavor of human milk; my master's project was on beef flavor from Maillard reactions of beef tallow residue. I analyse samples with GC-MS, GC-O, electronic nose and sensory panels, and model the data with machine learning. During my PhD I wrote a GC-MS data-processing program that is now used routinely for research data; it has processed more than 3,000 samples.",
-    "zh": "我的博士课题是母乳风味，硕士做的是牛油渣美拉德反应产生的牛肉风味。平时用 GC-MS、GC-O、电子鼻和感官评价做分析，再用机器学习建模。读博期间我写了一套 GC-MS 数据处理程序，已用于日常科研数据处理，累计处理 3000 多个样品。"
+    "en": "My PhD research is on the flavor of human milk; my master's work was on the Maillard reaction of beef tallow residue. I analyze samples with GC-MS, GC-O, an electronic nose and sensory evaluation, and build models with machine learning. During my PhD I wrote a GC-MS automation program that is used in daily research and has processed more than 3,000 samples.",
+    "zh": "我的博士课题是母乳风味研究，硕士做的是牛油渣美拉德反应。平时用 GC-MS、GC-O、电子鼻和感官评价做分析，并通过机器学习进行建模。读博期间我写了一套 GC-MS 自动化处理程序，已用于日常科研，累计处理 3000 多个样品。"
   },
   "email": "e1719854@u.nus.edu",
   "github": "https://github.com/REDAMANCY564",

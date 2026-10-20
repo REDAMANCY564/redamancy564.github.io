@@ -1,5 +1,5 @@
 {
-  "hero.title": "Odor Space vs Structure Space Map of 5,000+ Flavor Molecules",
+  "hero.title": "Odor Space vs Structure Space Map of Flavor Molecules",
   "hero.short": "Odor Space Map",
   "hero.intro": "Each dot is a molecule, {n} in total. Its position comes from the odor model's predicted probabilities for 138 descriptors: the closer two dots are, the more similar the model thinks they smell.",
   "loading": "Loading the map...",
@@ -73,13 +73,13 @@
   "find.food_none": "No food highlighted",
   "find.food_none_b": "Compare: no second food",
   "find.food_loading": "Loading the food list...",
-  "find.group_key": "Key aroma compounds (Dunkel et al. 2014)",
-  "find.group_det": "Detected compounds (FlavorDB, not key aroma compounds)",
-  "food.key_note": "{food}: the knowledge base lists {m} key aroma compounds (Dunkel et al. 2014); {n} of them are in the library and shown as large dots.",
-  "food.det_note": "{food}: compounds detected in this food (not key aroma compounds); the knowledge base lists {m}, of which {n} are in the library.",
+  "find.group_key": "Key flavor compounds (Dunkel et al. 2014)",
+  "find.group_det": "Detected compounds (FlavorDB, not key flavor compounds)",
+  "food.key_note": "{food}: the knowledge base lists {m} key flavor compounds (Dunkel et al. 2014); {n} of them are in the library and shown as large dots.",
+  "food.det_note": "{food}: compounds detected in this food (not key flavor compounds); the knowledge base lists {m}, of which {n} are in the library.",
   "food.to_kb": "View in the flavor knowledge base",
   "food.more": "{n} more",
-  "food.legend": "Large dots are key aroma compounds, small dots are detected compounds, gray dots are other molecules.",
+  "food.legend": "Large dots are key flavor compounds, small dots are detected compounds, gray dots are other molecules.",
   "card.drawing": "Drawing the structure...",
   "card.no_draw": "Cannot draw the structure",
   "card.close": "Close",
@@ -93,6 +93,6 @@
   "card.to_kb": "Sources in the flavor knowledge base",
   "card.no_kb": "Not in the flavor knowledge base",
   "hero.sub": "{n} molecules placed by predicted odor; switch to the structure map to compare.",
-  "food.legend_more": "Food highlighting: large dots are key aroma compounds, small dots are detected compounds, gray dots are other molecules. Only 16 foods have key aroma compound data (the knowledge base has none for coffee); for other foods the detected-compound lists come from FlavorDB and do not say which compounds matter for the odor.",
+  "food.legend_more": "Food highlighting: large dots are key flavor compounds, small dots are detected compounds, gray dots are other molecules. Only 16 foods have key flavor compound data (the knowledge base has none for coffee); for other foods the detected-compound lists come from FlavorDB and do not say which compounds matter for the odor.",
   "footer.short": "Positions and colors are predictions, not measurements. Odor model CC BY-NC, non-commercial academic demo only. See <a href=\"about.html\">method &amp; sources</a>."
 }

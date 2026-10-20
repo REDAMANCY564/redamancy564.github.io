@@ -1,5 +1,5 @@
 {
-  "hero.title": "Sweet, Bitter and Umami Prediction for Small Molecules with Graph Neural Networks",
+  "hero.title": "Taste Prediction for Small Molecules with Graph Neural Networks",
   "hero.short": "Taste Predictor",
   "hero.intro": "This project uses a graph neural network to estimate, from the structure, how likely a small molecule is to be sweet, bitter, umami or tasteless.",
   "taste.sweet": "sweet",

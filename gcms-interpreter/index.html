@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
   <title>1 GC-MS Flavor Interpreter | Jingwei Cui</title>
-  <meta name="description" content="Upload a GC-MS peak table and a target list to get key aroma compounds, OAV or ROAV and a flavor profile. Everything runs in your browser; your data never leaves your computer.">
+  <meta name="description" content="Upload one sample's GC-MS peak table to rank key flavor compounds by OAV or ROAV. Data stay in your browser.">
   <link rel="stylesheet" href="../assets/style.css?v=20261020a">
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -88,7 +88,7 @@
 
   <main class="container">
     <section class="hero">
-      <h1 data-i18n="hero.title">GC-MS Key Aroma Compound Interpreter for Multi-Instrument Peak Tables</h1>
+      <h1 data-i18n="hero.title">Automated GC-MS Data Analysis Across Instrument Formats</h1>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool" aria-current="page">工具</a>
         <a href="about.html" data-i18n="nav.about">方法与来源</a>
@@ -113,6 +113,7 @@
       <div class="inputs">
         <div class="card">
           <h3 data-sec="2" data-i18n="import.peak_title">GC-MS peak table (one sample)</h3>
+          <p class="small"><span data-i18n="import.peak_short"></span> <a class="help" href="about.html#peak-table" aria-label="?">?</a></p>
           <label class="drop" id="drop">
             <input type="file" id="file-input" accept=".csv,.tsv,.txt,.xlsx,.xls">
             <div data-i18n="import.drop">Drop a file here, or click to choose (CSV, TSV, TXT, XLSX, XLS)</div>
@@ -235,7 +236,7 @@
       </div>
     </section>
 
-    <!-- Step 4: flavor (OAV or ROAV, key aroma compounds, profile) -->
+    <!-- Step 4: flavor (OAV or ROAV, key flavor compounds, profile) -->
     <section class="section hidden" id="step-flavor">
       <h2 data-sec="1" data-i18n="fl.title">Flavor interpretation</h2>
       <p class="small"><span data-i18n="fl.intro_short"></span> <a class="help" href="about.html#oav-roav" aria-label="?">?</a></p>
@@ -247,7 +248,7 @@
       </div>
       <p class="small muted" id="fl-mode-note" style="margin-top:6px"></p>
 
-      <h3 data-sec="2" style="margin-top:20px" data-i18n="rank.title">Key aroma compounds</h3>
+      <h3 data-sec="2" style="margin-top:20px" data-i18n="rank.title">Key flavor compounds</h3>
       <p id="rank-summary"></p>
       <div class="table-wrap"><table class="preview ident" id="rank-table"></table></div>
       <div class="row-wrap"><button type="button" class="btn secondary" id="rank-export" data-i18n="rank.export">Export the ranking (CSV)</button></div>

@@ -1,5 +1,5 @@
 {
-  "hero.title": "文献分级的食品关键香气物质知识库",
+  "hero.title": "食品关键风味物质知识库",
   "hero.short": "风味知识库",
   "hero.intro": "按食品或风味物质查询：某个食品由哪些物质构成香气，某个物质出现在哪些食品中，以及相关的研究文献。数据按证据强弱分为三级。物质和食品名称使用英文。",
   "legend.title": "数据分级",
@@ -17,7 +17,7 @@
   "search.foods": "食品（{n}）",
   "search.compounds": "物质（{n}）",
   "search.load_failed": "知识库数据加载失败，请刷新页面重试。",
-  "food.kfo": "关键香气物质",
+  "food.kfo": "关键风味物质",
   "food.kfo_complete": "原文指出该食品的气味完全由这些物质构成。",
   "food.detected": "检出的物质（{n}）",
   "food.detected_note": "FlavorDB 记录在该食品中检出过的物质，多数并不影响气味。",
@@ -26,7 +26,7 @@
   "cmp.title_struct": "结构",
   "cmp.flavor": "风味描述（FlavorDB）",
   "cmp.fema": "FEMA 风味描述",
-  "cmp.no_kfo": "Dunkel 2014 正文中没有提到该物质作为某个食品的关键香气物质。",
+  "cmp.no_kfo": "Dunkel 2014 正文中没有提到该物质作为某个食品的关键风味物质。",
   "cmp.synonyms": "别名",
   "cmp.predict": "查看图神经网络对该物质的气味预测",
   "cmp.pubchem": "在 PubChem 查看",
@@ -44,11 +44,11 @@
   "doi.matches": "摘要中出现的风味物质（{n}）",
   "doi.no_matches": "摘要中没有匹配到知识库中的风味物质。",
   "doi.disclaimer": "仅分析摘要，基于文字匹配，不代表文献结论。物质名称写法不同（如缩写、商品名）时可能漏掉。",
-  "footer.data": "<b>数据来源：</b>关键香气物质摘自 Dunkel A, et al. <i>Angew. Chem. Int. Ed.</i> 2014, 53, 7124-7143 (<a href=\"https://doi.org/10.1002/anie.201309508\" target=\"_blank\" rel=\"noopener\">doi:10.1002/anie.201309508</a>) 正文，并注明页码；完整的食品与关键香气物质对照见该文补充材料。检出数据来自 <a href=\"https://cosylab.iiitd.edu.in/flavordb2/\" target=\"_blank\" rel=\"noopener\">FlavorDB2</a>（Garg N, et al. <i>Nucleic Acids Res.</i> 2018），CC BY-NC-SA 3.0，本站衍生数据以相同协议共享。物质名称和结构来自 PubChem。",
+  "footer.data": "<b>数据来源：</b>关键风味物质摘自 Dunkel A, et al. <i>Angew. Chem. Int. Ed.</i> 2014, 53, 7124-7143 (<a href=\"https://doi.org/10.1002/anie.201309508\" target=\"_blank\" rel=\"noopener\">doi:10.1002/anie.201309508</a>) 正文，并注明页码；完整的食品与关键风味物质对照见该文补充材料。检出数据来自 <a href=\"https://cosylab.iiitd.edu.in/flavordb2/\" target=\"_blank\" rel=\"noopener\">FlavorDB2</a>（Garg N, et al. <i>Nucleic Acids Res.</i> 2018），CC BY-NC-SA 3.0，本站衍生数据以相同协议共享。物质名称和结构来自 PubChem。",
   "footer.apis": "<b>文献服务：</b><a href=\"https://europepmc.org/\" target=\"_blank\" rel=\"noopener\">Europe PMC</a>、<a href=\"https://www.crossref.org/\" target=\"_blank\" rel=\"noopener\">Crossref</a>（均免费，无需密钥）。",
-  "search.meta_kfo": "{n} 个关键香气物质（Dunkel 2014）",
+  "search.meta_kfo": "{n} 个关键风味物质（Dunkel 2014）",
   "search.meta_det": "{c} · 检出 {n} 种物质",
   "cmp.finder": "查找替代原料",
-  "hero.sub": "按食品或化合物查关键香气物质、检出物质和相关文献。",
-  "footer.short": "关键香气物质引自 Dunkel 等 2014；检出数据来自 FlavorDB2（CC BY-NC-SA 3.0，本站衍生数据按同一协议共享）；文献来自 Europe PMC 和 Crossref。详见<a href=\"about.html\">方法与来源</a>。"
+  "hero.sub": "按食品或化合物查关键风味物质、检出物质和相关文献。",
+  "footer.short": "关键风味物质引自 Dunkel 等 2014；检出数据来自 FlavorDB2（CC BY-NC-SA 3.0，本站衍生数据按同一协议共享）；文献来自 Europe PMC 和 Crossref。详见<a href=\"about.html\">方法与来源</a>。"
 }

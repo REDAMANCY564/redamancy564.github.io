@@ -1,5 +1,5 @@
 {
-  "hero.title": "Tiered Literature Knowledge Base of Food Key Aroma Compounds",
+  "hero.title": "Knowledge Base of Key Food Flavor Compounds",
   "hero.short": "Flavor Knowledge Base",
   "hero.intro": "Look up a food or a flavor compound: which compounds create a food's aroma, which foods a compound occurs in, and related research papers. Data are grouped into three tiers by strength of evidence.",
   "legend.title": "Evidence tiers",
@@ -17,7 +17,7 @@
   "search.foods": "Foods ({n})",
   "search.compounds": "Compounds ({n})",
   "search.load_failed": "The knowledge base could not be loaded. Please reload the page.",
-  "food.kfo": "Key aroma compounds",
+  "food.kfo": "Key flavor compounds",
   "food.kfo_complete": "According to the review, the aroma of this food is created by these compounds alone.",
   "food.detected": "Detected compounds ({n})",
   "food.detected_note": "Compounds FlavorDB lists as detected in this food; most of them do not affect the aroma.",
@@ -49,6 +49,6 @@
   "search.meta_kfo": "{n} key food odorants (Dunkel 2014)",
   "search.meta_det": "{c} · {n} compounds detected",
   "cmp.finder": "Find substitutes",
-  "hero.sub": "Key aroma compounds, detected compounds and papers, by food or compound.",
+  "hero.sub": "Key flavor compounds, detected compounds and papers, by food or compound.",
   "footer.short": "Key food odorants from Dunkel et al. 2014; detection data from FlavorDB2 (CC BY-NC-SA 3.0, derived data shared alike); papers via Europe PMC and Crossref. See <a href=\"about.html\">method &amp; sources</a>."
 }

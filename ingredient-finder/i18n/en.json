@@ -1,5 +1,5 @@
 {
-  "hero.title": "Flavor Ingredient Search and Substitute Screening from Predicted Odor",
+  "hero.title": "Flavor Ingredient Search and Substitute Screening from Predicted Odor Descriptors",
   "hero.short": "Flavor Ingredient Finder",
   "hero.intro": "Flavorists choose from thousands of ingredient molecules: for a client brief they look for ingredients with the target flavor, and when an ingredient is restricted or unavailable they look for one that smells similar. This tool does both with odor profiles predicted by the odor model: search ingredients by target flavor, or find substitutes for a molecule.",
   "tab.a": "Find by flavor brief",
