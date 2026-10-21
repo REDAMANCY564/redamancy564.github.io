@@ -226,59 +226,73 @@
     ["acetic acid", "", 18.79], ["nonanal", "", 17.55], ["hexanal", "66-25-1", 11.06], ["1-octen-3-ol", "", 18.79],
   ]);
 
-  // rule 1: merging adjacent peaks of one compound
-  const r1a = R.mergeAdjacent(s1.peaks, 0.1);
-  const acet = r1a.peaks.find(p => p.merged.length === 2);
-  check("rule 1", "split acetic acid peaks 0.08 min apart merge with tolerance 0.1", [r1a.peaks.length, acet && acet.area, acet && acet.rt], [4, 1000, 18.75]);
-  check("rule 1", "merged peak keeps the RT of the larger peak and is logged", r1a.log.filter(l => l.kind === "merged").length, 1);
-  check("rule 1", "tolerance 0.05: not merged", R.mergeAdjacent(s1.peaks, 0.05).peaks.length, 5);
-  check("rule 1", "tolerance not given: rule 1 not applied", R.mergeAdjacent(s1.peaks, null).peaks.length, 5);
+  // rules 2 and 1 (user decision 2026-10-20): within reference RT +- range, the target's peaks are
+  // added up when no peak of another compound lies between them; rule 2 (nearest reference RT) first
+  const m1 = R.sumInRange(s1.peaks, T1, 0.15);
+  check("rule 1", "statuses (range 0.15)", st(m1),
+    ["detected", "detected", "not_detected", "detected", "detected", "not_detected", "not_detected"]);
+  const acet = m1.targets[3].peak;
+  check("rule 1", "split acetic acid peaks (18.75, 18.83) in the range are added up", [acet.area, acet.merged.length], [1000, 2]);
+  check("rule 1", "the sum keeps the RT of the larger peak and is logged", [acet.rt, m1.log.filter(l => l.kind === "summed").length], [18.75, 1]);
+  check("rule 2", "co-eluting peak goes to the target with the closer reference RT", m1.targets[1].peak.no, "2");
+  check("rule 2", "the other target is not found and told why", [m1.targets[2].lostTo, m1.log.filter(l => l.kind === "peak_to_closer_target").length], [1, 1]);
+  check("rule 2", "several library hits: the standard file decides (logged)", m1.log.some(l => l.kind === "hit_chosen"), true);
+  check("rule 1", "found by name only (no CAS in the standard file)", m1.targets[4].delta.toFixed(2), "0.05");
+  check("rule 1", "no agreeing peak in the range: not found (no automatic pending)", m1.targets[6].status, "not_detected");
+  check("manual", "peaks already added for another target are not offered", R.windowPeaks(s1.peaks, T1[6], 0.15, m1.used).length, 0);
+  const TO = targetsOf([["1-octen-3-ol", "", 18.79]]);
+  check("manual", "free peaks of the range offered for assigning by hand", R.windowPeaks(s1.peaks, TO[0], 0.15, new Set()).map(p => p.rt), [18.75, 18.83]);
+  check("rule 1", "agreement by CAS for a compound outside the knowledge base",
+    R.sumInRange(sampleOf([["1", "Cyclotetrasiloxane, octamethyl-", "556-67-2", 9.5, 10]]).peaks, targetsOf([["D4 siloxane", "556-67-2", 9.5]]), 0.1).targets[0].status, "detected");
+
+  // no chain merging: only peaks within the range of the reference RT count
+  const s3 = sampleOf([["1", "Hexanal", "66-25-1", 11.00, 1], ["2", "Hexanal", "66-25-1", 11.06, 8], ["3", "Hexanal", "66-25-1", 11.12, 2], ["4", "Hexanal", "66-25-1", 11.18, 4]]);
+  const ch = R.sumInRange(s3.peaks, targetsOf([["hexanal", "66-25-1", 11.06]]), 0.07);
+  check("rule 1", "no chain merging: 4 peaks 0.06 min apart, range 0.07 -> the 3 in range are added", [ch.targets[0].peak.area, ch.targets[0].peak.merged.length], [11, 3]);
+  check("rule 1", "...the peak outside the range is logged, not added", ch.log.filter(l => l.kind === "elsewhere").map(l => l.rts), [[11.18]]);
+
+  // another compound in between separates; the group with the peak nearest the reference RT is used
   const s2 = sampleOf([
     ["1", "Hexanal", "66-25-1", 11.06, 10], ["2", "Octanal", "124-13-0", 11.10, 5], ["3", "Hexanal", "66-25-1", 11.14, 4],
     ["4", "(E)-2-Octenal", "", 18.38, 8], ["5", "(Z)-2-Octenal", "", 18.40, 2],
   ]);
-  const r1b = R.mergeAdjacent(s2.peaks, 0.1);
-  check("rule 1", "same compound with another compound in between: not merged", r1b.peaks.length, 5);
-  check("rule 1", "...but logged as a possible misidentification", r1b.log.filter(l => l.kind === "not_adjacent").map(l => l.name), ["Hexanal"]);
-  check("rule 1", "cis/trans isomers are never merged", r1b.peaks.filter(p => /octenal/i.test(p.hits[0].name)).length, 2);
+  const sp = R.sumInRange(s2.peaks, targetsOf([["hexanal", "66-25-1", 11.06], ["octanal", "124-13-0", 11.10], ["(E)-2-octenal", "", 18.38]]), 0.15);
+  check("rule 1", "same compound with another compound in between: not added (nearest group used)", [sp.targets[0].peak.area, sp.targets[0].peak.rt], [10, 11.06]);
+  check("rule 1", "...the separated peak is logged as a possible misidentification", sp.log.filter(l => l.kind === "separated").map(l => [l.target, l.rts]), [[0, [11.14]]]);
+  check("rule 1", "the compound in between is found as itself", sp.targets[1].peak.area, 5);
+  check("rule 1", "cis/trans isomers are never added together", sp.targets[2].peak.area, 8);
+  const s5 = sampleOf([["1", "Hexanal", "66-25-1", 11.06, 10], ["2", "Cyclopentasiloxane, decamethyl-", "541-02-6", 11.09, 50], ["3", "Hexanal", "66-25-1", 11.12, 4]]);
+  check("rule 1", "a siloxane peak in between also separates (user decision 2026-10-20)",
+    R.sumInRange(s5.peaks, targetsOf([["hexanal", "66-25-1", 11.06]]), 0.15).targets[0].peak.area, 10);
 
-  // rule 3 with rule 2, after rule 1
-  const m1 = R.matchTargets(r1a.peaks, T1, 0.15);
-  check("rule 3", "statuses (merge 0.1, window 0.15)", st(m1),
-    ["detected", "detected", "not_detected", "detected", "detected", "not_detected", "not_detected"]);
-  check("rule 2", "co-eluting peak goes to the target with the closer reference RT", m1.targets[1].peak.no, "2");
-  check("rule 2", "the other target is not found and told why", [m1.targets[2].lostTo, m1.log.filter(l => l.kind === "peak_to_closer_target").length], [1, 1]);
-  check("rule 2", "several library hits: the standard file decides (logged)", m1.log.some(l => l.kind === "hit_chosen"), true);
-  check("rule 3", "a peak already used by another target is not offered", R.windowPeaks(r1a.peaks, T1[6], 0.15, m1.used).length, 0);
-  check("rule 3", "found by name only (no CAS in the standard file)", m1.targets[4].delta.toFixed(2), "0.05");
+  // a peak that rule 2 gives to another target is not added
+  const s4 = sampleOf([["1", "Hexanal", "66-25-1", 11.06, 10], ["2", "Octanal", "124-13-0", 11.09, 5], ["2", "Hexanal", "66-25-1", 11.09, 5]]);
+  const tk = R.sumInRange(s4.peaks, targetsOf([["hexanal", "66-25-1", 11.06], ["octanal", "124-13-0", 11.10]]), 0.15);
+  check("rule 2", "a peak taken by the nearer target is not added to the other one", [tk.targets[0].peak.area, tk.targets[1].peak.area, tk.targets[0].status], [10, 5, "detected"]);
 
-  const m2 = R.matchTargets(s1.peaks, T1, 0.15);   // without rule 1
-  check("rule 3", "without rule 1: two acetic acid peaks, the closest is taken (logged)",
-    [m2.targets[3].status, m2.targets[3].peak.rt, m2.log.some(l => l.kind === "closest_of_several")], ["detected", 18.75, true]);
-  check("rule 3", "no agreeing peak in the window: not found (no automatic pending)", m2.targets[6].status, "not_detected");
-  check("manual", "free peaks of the window offered for assigning by hand (used peaks left out)",
-    R.windowPeaks(s1.peaks, T1[6], 0.15, m2.used).map(p => p.rt), [18.83]);
-  check("rule 3", "no reference RT: matched by identity, flagged", R.matchTargets(s1.peaks, targetsOf([["nonanal", "", null]]), 0.15).targets[0].status, "no_rt");
-  check("rule 3", "agreement by CAS for a compound outside the knowledge base",
-    R.matchTargets(sampleOf([["1", "Cyclotetrasiloxane, octamethyl-", "556-67-2", 9.5, 10]]).peaks, targetsOf([["D4 siloxane", "556-67-2", 9.5]]), 0.1).targets[0].status, "detected");
+  // no reference RT: the range is centred on the compound's largest peak
+  const nr = R.sumInRange(s1.peaks, targetsOf([["acetic acid", "", null]]), 0.15);
+  check("rule 1", "no reference RT: centred on the largest peak, peaks in range added, flagged", [nr.targets[0].status, nr.targets[0].peak.area, nr.targets[0].peak.rt], ["no_rt", 1000, 18.75]);
+  check("rule 1", "...and logged", nr.log.filter(l => l.kind === "no_rt_center").map(l => l.rt), [18.75]);
 
-  // tolerance changes the result
+  // the range changes the result
   const TA = targetsOf([["acetic acid", "", 18.77]]);   // peaks at dRT -0.02 and +0.06
-  check("tolerance", "window 0.03: one acetic acid peak inside -> detected at 18.75", [R.matchTargets(s1.peaks, TA, 0.03).targets[0].status, R.matchTargets(s1.peaks, TA, 0.03).targets[0].peak.rt], ["detected", 18.75]);
-  check("tolerance", "window 0.07: both inside -> the closer one", R.matchTargets(s1.peaks, TA, 0.07).targets[0].peak.rt, 18.75);
-  check("tolerance", "window 0.01: no peak inside -> not detected", R.matchTargets(s1.peaks, TA, 0.01).targets[0].status, "not_detected");
-  check("tolerance", "window 0: only exact reference RTs", st(R.matchTargets(s1.peaks, targetsOf([["2-pentylfuran", "", 14.18], ["nonanal", "", 17.55]]), 0)), ["detected", "not_detected"]);
+  const at = r => R.sumInRange(s1.peaks, TA, r).targets[0];
+  check("range", "range 0.03: one acetic acid peak inside -> 700 at 18.75", [at(0.03).status, at(0.03).peak.area, at(0.03).peak.rt], ["detected", 700, 18.75]);
+  check("range", "range 0.07: both inside -> added (1000)", at(0.07).peak.area, 1000);
+  check("range", "range 0.01: no peak inside -> not detected", at(0.01).status, "not_detected");
+  check("range", "range 0: only exact reference RTs", st(R.sumInRange(s1.peaks, targetsOf([["2-pentylfuran", "", 14.18], ["nonanal", "", 17.55]]), 0)), ["detected", "not_detected"]);
 
   // whole run: relative content, peaks assigned by hand
-  const run1 = R.run(s1.recs, s1.ident, T1, { window: 0.15, merge: 0.1 }, new Map());
-  check("run", "relative content from areas when the file has none (merged acetic acid = 1000 / 3400)",
+  const run1 = R.run(s1.recs, s1.ident, T1, { range: 0.15 }, new Map());
+  check("run", "relative content from areas when the file has none (added acetic acid = 1000 / 3400)",
     +run1.rows[3].rel.toFixed(2), 29.41);
   check("run", "not found -> no value", [run1.rows[5].found, run1.rows[5].rel], [false, null]);
   check("run", "relative content source", run1.relSource, "area");
   const TM = targetsOf([["mystery compound", "", 17.58]]);
-  const tolM = { window: 0.05, merge: null };
+  const tolM = { range: 0.05 };
   const nm = R.run(s1.recs, s1.ident, TM, tolM, new Map());
-  check("manual", "free peak in the window, other identification: not found", [nm.rows[0].status, nm.rows[0].found], ["not_detected", false]);
+  check("manual", "free peak in the range, other identification: not found", [nm.rows[0].status, nm.rows[0].found], ["not_detected", false]);
   const am = R.run(s1.recs, s1.ident, TM, tolM, new Map([[0, "p5"]]));
   check("manual", "assigned by hand: counted, with its relative content", [am.rows[0].status, am.rows[0].found, +am.rows[0].rel.toFixed(2)], ["manual", true, 26.47]);
   const TM2 = targetsOf([["nonanal", "", 17.55], ["mystery compound", "", 17.58]]);
@@ -286,21 +300,21 @@
   const TM3 = targetsOf([["mystery A", "", 17.58], ["mystery B", "", 17.62]]);
   check("manual", "one peak can be assigned to one target only",
     R.run(s1.recs, s1.ident, TM3, tolM, new Map([[0, "p5"], [1, "p5"]])).rows.map(r => r.status), ["manual", "not_detected"]);
-  check("manual", "a peak outside the window cannot be assigned", R.run(s1.recs, s1.ident, TM, tolM, new Map([[0, "p1"]])).rows[0].status, "not_detected");
+  check("manual", "a peak outside the range cannot be assigned", R.run(s1.recs, s1.ident, TM, tolM, new Map([[0, "p1"]])).rows[0].status, "not_detected");
 
   // Agilent MassHunter library-search report: hits 2 to 5 are rows without number, RT and area
   const mh = sampleOf([["1", "Heptanal", "000111-71-7", 3.909, 32159], ["", "Cyclohexane, 1,2,3-trimethyl-", "001678-97-3", null, null],
     ["", "Hexanal", "66-25-1", null, null], ["2", "Octanal", "124-13-0", 10.72, 900], ["", "Nonanal", "124-19-6", null, null]]);
   check("continuation", "rows without number, RT and area are further candidates of the previous peak",
     [mh.peaks.length, mh.peaks.map(p => p.hits.length)], [2, [3, 2]]);
-  check("continuation", "a target that is candidate 3 of a peak in its window is found (rule 2)",
-    R.matchTargets(mh.peaks, targetsOf([["hexanal", "66-25-1", 3.95]]), 0.15).targets[0].status, "detected");
+  check("continuation", "a target that is candidate 3 of a peak in its range is found (rule 2)",
+    R.sumInRange(mh.peaks, targetsOf([["hexanal", "66-25-1", 3.95]]), 0.15).targets[0].status, "detected");
   check("continuation", "MassHunter LibRes header (Chinese)", M.guessMapping(["化合物编号 (#)", "保留时间 (分)", "扫描编号 (#)", "面积 (Ab*s)", "基线高度 (Ab)",
     "绝对高度 (Ab)", "峰宽 50% (分)", "匹配项数量", "匹配项名称", "定性", "分子量 (amu)", "CAS 编号", "谱库", "条目编号谱库"]),
     ["peak", "rt", null, "area", null, null, null, null, "name", "match", null, "cas", null, null]);
   const withRel = s1.recs.map((r, i) => Object.assign({}, r, { rel: [10, 5, 5, 7, 3, 9][i] }));
-  check("run", "relative content column used and added for merged peaks",
-    [R.run(withRel, s1.ident, T1, { window: 0.15, merge: 0.1 }, new Map()).rows[3].rel, R.run(withRel, s1.ident, T1, { window: 0.15, merge: 0.1 }, new Map()).relSource], [10, "column"]);
+  check("run", "relative content column used and added for peaks added by rule 1",
+    [R.run(withRel, s1.ident, T1, { range: 0.15 }, new Map()).rows[3].rel, R.run(withRel, s1.ident, T1, { range: 0.15 }, new Map()).relSource], [10, "column"]);
 
   // ---------- flavor.js: OAV, ROAV, profile ----------
   const F = GcmsFlavor;
@@ -362,7 +376,7 @@
       const a = N.identify(idx, r.name, r.cas, r.casIsDate);
       return Object.assign(r, { ident: a, keys: R.idKeys(a.kbId, a.casNorm, a.casStatus, r.name) });
     });
-    const out = R.run(recs, ident, tg, { window: 0.15, merge: 0.1 }, new Map());
+    const out = R.run(recs, ident, tg, { range: 0.15 }, new Map());
     const missing = out.rows.map((r, i) => (r.found ? null : tg[i].name)).filter(Boolean);
     const expect = { example1: ["ethyl hexanoate", "2-methylbutanoic acid", "1-octen-3-ol", "dimethyl sulfide"], example2: [], example3: [] }[ex];
     if (ex === "example1") {

@@ -4,8 +4,7 @@
   "example1": {
    "file": "example1_yogurt_agilent_style.csv",
    "tolerances": {
-    "merge_min": 0.1,
-    "window_min": 0.15
+    "range_min": 0.15
    },
    "source": {
     "citation": "Wang J, Zhang D, Li J, Zou T, Wen R, Hou Y, Song H, Li H, Ma H, Shi J. Aroma profiling of long shelf-life yoghurt from milk with varying acidity: insights from sensory evaluation and instrumental analysis. Food Chem X 2025.",
@@ -22,8 +21,7 @@
   "example2": {
    "file": "example2_milk_shimadzu_style.txt",
    "tolerances": {
-    "merge_min": 0.1,
-    "window_min": 0.15
+    "range_min": 0.15
    },
    "source": {
     "citation": "Xu K, Han H, Wang X, Zhang X, Yang X, Lu X, Han Z, Wang S, Wang Y, et al. Elucidation of key aroma-active compounds and sensory profiles in raw and thermally sterilized milks: perspective from molecular sensory science. Food Chem X 2026.",
@@ -40,8 +38,7 @@
   "example3": {
    "file": "example3_gouda_thermo_style.xlsx",
    "tolerances": {
-    "merge_min": 0.1,
-    "window_min": 0.15
+    "range_min": 0.15
    },
    "source": {
     "citation": "Duensing PW, Hinrichs J, Schieberle P. Formation of key aroma compounds during 30 weeks of ripening in Gouda-type cheese produced from pasteurized and raw milk. J Agric Food Chem 2024.",

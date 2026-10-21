@@ -482,30 +482,32 @@
     RUN.open = new Set();
   }
 
-  // ---------- Tolerances (saved in this browser) ----------
+  // ---------- Retention time range (saved in this browser) ----------
+  // One setting since 2026-10-20 (rule 1 = add up within reference RT +- range); settings saved
+  // before that hold {window, merge}: the window becomes the range, the merge tolerance is dropped.
   const TOL_KEY = "gcms-tolerances";
-  const TOL = { window: null, merge: null, fromExample: false };
-  try { Object.assign(TOL, JSON.parse(localStorage.getItem(TOL_KEY) || "{}"), { fromExample: false }); } catch (e) { /* storage off */ }
+  const TOL = { range: null, fromExample: false };
+  try {
+    const saved = JSON.parse(localStorage.getItem(TOL_KEY) || "{}") || {};
+    TOL.range = saved.range != null ? saved.range : saved.window != null ? saved.window : null;
+  } catch (e) { /* storage off */ }
   const tolNum = v => (v === "" || v == null || !(+v >= 0) ? null : +v);
 
-  /** t: {window, merge} or an example's {window_min, merge_min}; example values are not saved. */
+  /** t: {range} or an example's {range_min}; example values are not saved. */
   function setTolerances(t, fromExample) {
-    TOL.window = t.window_min != null ? t.window_min : t.window;
-    TOL.merge = t.merge_min != null ? t.merge_min : t.merge;
+    TOL.range = t.range_min != null ? t.range_min : t.range;
     TOL.fromExample = !!fromExample;
     if (!fromExample) {
-      try { localStorage.setItem(TOL_KEY, JSON.stringify({ window: TOL.window, merge: TOL.merge })); } catch (e) { /* storage off */ }
+      try { localStorage.setItem(TOL_KEY, JSON.stringify({ range: TOL.range })); } catch (e) { /* storage off */ }
     }
     if (RUN.result) RUN.stale = true;
     renderMatch();
   }
-  ["tol-window", "tol-merge"].forEach(id => $(id).addEventListener("change", () => {
-    setTolerances({ window: tolNum($("tol-window").value), merge: tolNum($("tol-merge").value) }, false);
-  }));
+  $("tol-window").addEventListener("change", () => setTolerances({ range: tolNum($("tol-window").value) }, false));
 
   // ---------- Run ----------
   function runNow() {
-    RUN.tol = { window: tolNum(TOL.window), merge: tolNum(TOL.merge) };
+    RUN.tol = { range: tolNum(TOL.range) };
     RUN.result = GcmsRules.run(S.records, S.ident, STD.targets, RUN.tol, RUN.manual);
     RUN.result.rows.forEach((r, i) => {
       const t = STD.targets[i];
@@ -515,7 +517,7 @@
   }
   $("run-btn").addEventListener("click", async () => {
     if (!RUN.ready || $("run-btn").disabled) return;
-    if (tolNum(TOL.window) == null) { renderMatch(); return; }
+    if (tolNum(TOL.range) == null) { renderMatch(); return; }
     // large files take about a second: say so before the page is busy
     $("run-btn").disabled = true;
     $("run-msg").textContent = I18N.t("run.busy");
@@ -542,12 +544,10 @@
   function logText(l) {
     const v = Object.assign({}, l);
     if (l.target != null) v.target = tname(l.target);
-    if (l.kept != null && l.rule !== 3) v.kept = tname(l.kept);
+    if (l.kept != null) v.kept = tname(l.kept);
     if (l.rts) v.rts = l.rts.map(fmtRt).join(", ");
     if (l.rt != null) v.rt = fmtRt(l.rt);
-    if (l.rule === 3) v.kept = fmtRt(l.kept);
     if (l.hits) v.hits = l.hits.join(" / ");
-    if (l.rts && l.rts.length === 2) { v.rt1 = fmtRt(l.rts[0]); v.rt2 = fmtRt(l.rts[1]); }
     return I18N.t("log." + l.kind, v);
   }
 
@@ -560,11 +560,9 @@
       rt: STD.targets.filter(t => t.rt != null).length,
       bad: STD.targets.filter(t => ["suspicious", "date", "invalid"].includes(t.ident.casStatus)).length,
     });
-    $("tol-window").value = TOL.window == null ? "" : TOL.window;
-    $("tol-merge").value = TOL.merge == null ? "" : TOL.merge;
+    $("tol-window").value = TOL.range == null ? "" : TOL.range;
     $("tol-note").textContent = TOL.fromExample ? I18N.t("tol.example") : "";
-    const msg = tolNum(TOL.window) == null ? "run.need_window" : RUN.stale ? "run.stale"
-      : tolNum(TOL.merge) == null ? "run.no_merge" : null;
+    const msg = tolNum(TOL.range) == null ? "run.need_window" : RUN.stale ? "run.stale" : null;
     $("run-msg").textContent = msg ? I18N.t(msg) : "";
     $("run-msg").classList.toggle("error", msg === "run.need_window" || msg === "run.stale");
     const show = RUN.result && !RUN.stale;
@@ -578,8 +576,7 @@
     // result: every target of the standard file, relative content or "-"
     const found = res.rows.filter(r => r.found).length;
     $("result-summary").textContent = I18N.t("result.summary", {
-      n: res.rows.length, found, miss: res.rows.length - found, manual: res.rows.filter(r => r.status === "manual").length, win: RUN.tol.window,
-      merge: RUN.tol.merge == null ? I18N.t("result.merge_off") : RUN.tol.merge,
+      n: res.rows.length, found, miss: res.rows.length - found, manual: res.rows.filter(r => r.status === "manual").length, win: RUN.tol.range,
     });
     // most important first (narrow screens scroll the rest): name, relative content, RTs, CAS
     let html = "<thead><tr>" + ["result.col.no", "result.col.target", "result.col.rel", "result.col.rt", "result.col.ref_rt", "result.col.cas"]
@@ -587,7 +584,7 @@
     res.rows.forEach((r, i) => {
       const t = STD.targets[i];
       // not found: the user may look at the free peaks of the window and assign one by hand
-      const free = r.status === "not_detected" ? GcmsRules.windowPeaks(res.peaks, t, RUN.tol.window, res.taken) : [];
+      const free = r.status === "not_detected" ? GcmsRules.windowPeaks(res.peaks, t, RUN.tol.range, res.taken) : [];
       let act = "";
       if (r.status === "manual") {
         act = ' <span class="m user">' + esc(I18N.t("manual.chip")) + '</span> <button type="button" class="linkbtn" data-unassign="' + i + '">' + esc(I18N.t("manual.undo")) + "</button>";
@@ -611,9 +608,8 @@
     $("result-table").innerHTML = html + "</tbody>";
     $("rel-note").textContent = I18N.t(res.relSource === "column" ? "result.rel_column" : "result.rel_area");
 
-    // processing log: only what concerns the targets
-    const used = new Set(res.rows.filter(r => r.peak).flatMap(r => r.peak.merged));
-    const entries = res.log.filter(l => l.rule !== 1 || (l.keys || []).some(k => used.has(k)));
+    // processing log: every entry concerns a target of the standard file
+    const entries = res.log.slice();
     res.rows.forEach((r, i) => { if (r.status === "manual") entries.push({ rule: "-", kind: "manual", target: i, rt: r.peak.rt, name: peakName(r.peak) }); });
     let lh = "<thead><tr><th>" + esc(I18N.t("log.col.rule")) + "</th><th>" + esc(I18N.t("log.col.what")) + "</th></tr></thead><tbody>";
     entries.forEach(l => { lh += "<tr><td>" + esc(l.rule) + '</td><td class="wrap" style="max-width:none">' + esc(logText(l)) + "</td></tr>"; });

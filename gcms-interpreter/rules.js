@@ -11,10 +11,17 @@
  * Two identifications agree when they share any key, so targets outside the knowledge base
  * still match by CAS or name; cis/trans isomers (different CAS, compound and name) never agree.
  *
- * Order: group peaks -> rule 1 (merge adjacent peaks of one compound) -> rule 3 with rule 2
- * (targets, one peak with several candidates) -> targets the user assigned by hand -> relative content.
+ * Rules (user decision 2026-10-20, the user's own way of working; one setting, the retention time
+ * range, replaces the former target window and adjacent-peak merge tolerance):
+ *   rule 2  a peak that agrees with several targets goes only to the target whose reference RT is
+ *           nearest (no competitor with a reference RT: the hit with the best match score)
+ *   rule 1  for each target, the peaks identified as it within reference RT +- range that rule 2
+ *           left to it are added up, as long as no peak of another compound lies between them;
+ *           no chain merging. Peaks separated by another compound form groups: the group with the
+ *           peak nearest the reference RT is used, the others are logged (possible misidentification).
+ *           Without a reference RT the range is centred on the compound's largest peak (logged).
  * A target without an agreeing peak is "not found"; the user can look at the free peaks in its
- * window and assign one by hand (user decision 2026-10-18: no automatic "pending" any more).
+ * range and assign one by hand (user decision 2026-10-18: no automatic "pending" any more).
  */
 (function () {
   const RT_SAME = 0.0015;  // min: rows closer than this without a peak number = the same peak
@@ -61,113 +68,100 @@
     return peaks.sort((a, b) => (a.rt == null) - (b.rt == null) || a.rt - b.rt);
   }
 
+  /** A field of several peaks added up (null when none of them has it). */
+  const addUp = (ps, f) => (ps.some(p => p[f] != null) ? ps.reduce((s, p) => s + (p[f] || 0), 0) : null);
+  /** Size of a peak for "largest peak": area, else relative content, else amount. */
+  const size = p => (p.area != null ? p.area : p.rel != null ? p.rel : p.conc != null ? p.conc : 0);
   /**
-   * Rule 1: in RT order, consecutive peaks whose library identifications agree and whose RT
-   * difference is at most tol are merged: areas (relative contents, amounts) add up, the RT of the
-   * largest peak is kept. The same compound at non-adjacent positions (another compound in
-   * between) is not merged and is logged as a possible misidentification.
-   * Returns {peaks, log}; the input is not modified. tol null = rule 1 not applied.
+   * Does peak p separate two peaks of target t? Any peak identified as another compound does
+   * (user decision 2026-10-20), column bleed such as siloxanes included.
    */
-  function mergeAdjacent(peaks, tol) {
-    const log = [];
-    if (tol == null) return { peaks: peaks.slice(), log };
-    const out = [];
-    for (const p of peaks) {
-      const prev = out[out.length - 1];
-      if (prev && p.rt != null && prev.lastRt != null && p.rt - prev.lastRt <= tol + EPS && agree(prev.hits[0].keys, p.hits[0].keys)) {
-        const big = (p.area || 0) > (prev.bigArea || 0);
-        log.push({ rule: 1, kind: "merged", name: prev.hits[0].name, rts: [prev.lastRt, p.rt], tol, keys: [prev.merged[0], p.key] });
-        prev.merged.push(p.key);
-        prev.area = prev.area != null || p.area != null ? (prev.area || 0) + (p.area || 0) : null;
-        prev.rel = prev.rel != null || p.rel != null ? (prev.rel || 0) + (p.rel || 0) : null;
-        prev.conc = prev.conc != null || p.conc != null ? (prev.conc || 0) + (p.conc || 0) : null;
-        if (big) { prev.rt = p.rt; prev.bigArea = p.area; }
-        prev.lastRt = p.rt;
-        continue;
-      }
-      out.push(Object.assign({}, p, { merged: [p.key], lastRt: p.rt, bigArea: p.area }));
-    }
-    // same compound again, not adjacent: possible misidentification (kept, only logged)
-    for (let i = 0; i < out.length; i++) {
-      for (let j = i + 2; j < out.length; j++) {
-        if (agree(out[i].hits[0].keys, out[j].hits[0].keys)) {
-          log.push({ rule: 1, kind: "not_adjacent", name: out[i].hits[0].name, rts: [out[i].rt, out[j].rt], keys: out[i].merged.concat(out[j].merged) });
-        }
-      }
-    }
-    out.forEach(p => { delete p.lastRt; delete p.bigArea; });
-    return { peaks: out, log };
-  }
+  const separates = (p, t) => !agree(p.hits[0].keys, t.keys);
 
   /**
-   * Rule 3 with rule 2, for one sample. targets: [{name, cas, rt, keys}]; window: +- min.
-   * Returns {targets: [{status, peak, delta, note...}], log}
-   *   status "detected"     a peak with an agreeing identification in the window (if several
-   *                          remain after rule 1, the one closest to the reference RT is taken)
-   *          "not_detected" nothing found (or the only fitting peak went to another target)
-   *          "no_rt"        no reference RT in the standard file: matched by identity only
+   * Rules 2 and 1 for one sample. targets: [{name, cas, rt, keys}]; range: +- min around the
+   * reference RT. Returns {targets: [{status, peak, delta, hit, lostTo}], log, used (peak keys)}
+   *   status "detected"     peaks identified as the target in the range (added up by rule 1)
+   *          "not_detected" nothing found (or every fitting peak went to another target by rule 2)
+   *          "no_rt"        no reference RT in the standard file: range centred on the largest peak
+   *   peak: the largest peak of the group with area, relative content and amount added up and
+   *   merged = the keys of all peaks added.
    */
-  function matchTargets(peaks, targets, window) {
+  function sumInRange(peaks, targets, range) {
     const log = [];
-    const props = [];
-    targets.forEach((t, ti) => {
-      peaks.forEach(p => {
-        const hit = p.hits.find(h => agree(h.keys, t.keys));
-        if (!hit) return;
-        if (t.rt == null) { props.push({ ti, p, hit, delta: null }); return; }
-        if (p.rt == null) return;
-        const delta = p.rt - t.rt;
-        if (Math.abs(delta) <= window + EPS) props.push({ ti, p, hit, delta });
-      });
+    const timed = peaks.filter(p => p.rt != null);
+    // peaks identified as each target within the range of its centre
+    const cand = targets.map((t, ti) => {
+      const agreeing = peaks.map(p => ({ p, hit: p.hits.find(h => agree(h.keys, t.keys)) })).filter(x => x.hit);
+      let center = t.rt;
+      if (center == null) {
+        const withRt = agreeing.filter(x => x.p.rt != null);
+        if (!withRt.length) return { center: null, list: agreeing.slice(0, 1), outside: [] };   // identity only
+        center = withRt.reduce((a, b) => (size(b.p) > size(a.p) ? b : a)).p.rt;
+        log.push({ rule: 1, kind: "no_rt_center", target: ti, rt: center });
+      }
+      const inRange = x => x.p.rt != null && Math.abs(x.p.rt - center) <= range + EPS;
+      return { center, list: agreeing.filter(inRange), outside: agreeing.filter(x => x.p.rt != null && !inRange(x)) };
     });
 
-    // several peaks for one target (left after rule 1): keep the closest to the reference RT
-    const byTarget = new Map();
-    props.forEach(x => { if (!byTarget.has(x.ti)) byTarget.set(x.ti, []); byTarget.get(x.ti).push(x); });
-    const firstPass = [];
-    byTarget.forEach((list, ti) => {
-      if (list.length === 1 || targets[ti].rt == null) { firstPass.push(list[0]); return; }
-      const best = list.reduce((a, b) => (Math.abs(b.delta) < Math.abs(a.delta) ? b : a));
-      log.push({ rule: 3, kind: "closest_of_several", target: ti, rts: list.map(x => x.p.rt), kept: best.p.rt });
-      firstPass.push(best);
+    // rule 2: a peak wanted by several targets goes to the nearest reference RT
+    // (no competitor with a reference RT: the hit with the best match score)
+    const wanted = new Map();   // peak key -> [{ti, x}]
+    cand.forEach((c, ti) => c.list.forEach(x => {
+      if (!wanted.has(x.p.key)) wanted.set(x.p.key, []);
+      wanted.get(x.p.key).push({ ti, x });
+    }));
+    const owner = new Map();    // peak key -> target index
+    wanted.forEach((list, key) => {
+      if (list.length === 1) { owner.set(key, list[0].ti); return; }
+      const dist = o => Math.abs(o.x.p.rt - targets[o.ti].rt);
+      const withRef = list.filter(o => targets[o.ti].rt != null && o.x.p.rt != null);
+      const best = withRef.length
+        ? withRef.reduce((a, b) => (dist(b) < dist(a) ? b : a))
+        : list.reduce((a, b) => ((b.x.hit.match || 0) > (a.x.hit.match || 0) ? b : a));
+      owner.set(key, best.ti);
+      list.filter(o => o !== best).forEach(o => log.push({ rule: 2, kind: "peak_to_closer_target", target: o.ti, kept: best.ti, rt: o.x.p.rt }));
     });
 
-    // rule 2: a peak wanted by several targets goes to the closest reference RT
-    // (without reference RTs: the hit with the best match score)
-    const byPeak = new Map();
-    firstPass.forEach(x => { if (!byPeak.has(x.p.key)) byPeak.set(x.p.key, []); byPeak.get(x.p.key).push(x); });
-    const chosen = new Map();   // target index -> proposal
-    const lostTo = new Map();   // target index -> target index that got its peak
-    byPeak.forEach(list => {
-      if (list.length === 1) { chosen.set(list[0].ti, list[0]); return; }
-      const withRt = list.filter(x => x.delta != null);
-      const best = withRt.length
-        ? withRt.reduce((a, b) => (Math.abs(b.delta) < Math.abs(a.delta) ? b : a))
-        : list.reduce((a, b) => ((b.hit.match || 0) > (a.hit.match || 0) ? b : a));
-      chosen.set(best.ti, best);
-      list.filter(x => x !== best).forEach(x => {
-        lostTo.set(x.ti, best.ti);
-        log.push({ rule: 2, kind: "peak_to_closer_target", target: x.ti, kept: best.ti, rt: x.p.rt });
-      });
-    });
-    chosen.forEach(x => {
-      if (x.p.hits.length > 1) log.push({ rule: 2, kind: "hit_chosen", target: x.ti, rt: x.p.rt, hits: x.p.hits.map(h => h.name) });
-    });
-
-    const used = new Set([...chosen.values()].map(x => x.p.key));
+    // rule 1: add up the target's peaks in the range that no other compound separates
+    const used = new Set();
     const result = targets.map((t, ti) => {
-      const c = chosen.get(ti);
-      if (c) return { status: t.rt == null ? "no_rt" : "detected", peak: c.p, delta: c.delta, hit: c.hit };
-      if (lostTo.has(ti)) return { status: "not_detected", lostTo: lostTo.get(ti) };
-      return { status: "not_detected" };
+      const c = cand[ti];
+      const mine = c.list.filter(x => owner.get(x.p.key) === ti)
+        .sort((a, b) => (a.p.rt == null) - (b.p.rt == null) || a.p.rt - b.p.rt);
+      if (c.outside.length) log.push({ rule: 1, kind: "elsewhere", target: ti, rts: c.outside.map(x => x.p.rt) });
+      if (!mine.length) {
+        const lost = c.list.map(x => owner.get(x.p.key)).find(o => o != null && o !== ti);
+        return lost != null ? { status: "not_detected", lostTo: lost } : { status: "not_detected" };
+      }
+      const groups = [[mine[0]]];
+      for (let k = 1; k < mine.length; k++) {
+        const a = mine[k - 1].p.rt, b = mine[k].p.rt;
+        const apart = a == null || b == null || timed.some(p => p.rt > a && p.rt < b && separates(p, t));
+        if (apart) groups.push([mine[k]]); else groups[groups.length - 1].push(mine[k]);
+      }
+      const dist = x => (c.center == null || x.p.rt == null ? 0 : Math.abs(x.p.rt - c.center));
+      const nearest = mine.reduce((a, b) => (dist(b) < dist(a) ? b : a));
+      const group = groups.find(g => g.includes(nearest));
+      groups.filter(g => g !== group).forEach(g => log.push({ rule: 1, kind: "separated", target: ti, rts: g.map(x => x.p.rt) }));
+      const ps = group.map(x => x.p);
+      const big = ps.reduce((a, b) => (size(b) > size(a) ? b : a));
+      const peak = Object.assign({}, big, { area: addUp(ps, "area"), rel: addUp(ps, "rel"), conc: addUp(ps, "conc"), merged: ps.map(p => p.key) });
+      if (ps.length > 1) log.push({ rule: 1, kind: "summed", target: ti, rts: ps.map(p => p.rt), rt: big.rt });
+      ps.forEach(p => {
+        used.add(p.key);
+        if (p.hits.length > 1) log.push({ rule: 2, kind: "hit_chosen", target: ti, rt: p.rt, hits: p.hits.map(h => h.name) });
+      });
+      return { status: t.rt == null ? "no_rt" : "detected", peak, hit: group.find(x => x.p === big).hit,
+               delta: t.rt == null || peak.rt == null ? null : peak.rt - t.rt };
     });
     return { targets: result, log, used };
   }
 
-  /** Peaks in the window of target t that no other target uses (for assigning by hand), closest first. */
-  function windowPeaks(peaks, t, window, taken) {
+  /** Peaks in the range of target t that no target uses (for assigning by hand), nearest first. */
+  function windowPeaks(peaks, t, range, taken) {
     if (t.rt == null) return [];
-    return peaks.filter(p => !taken.has(p.key) && p.rt != null && Math.abs(p.rt - t.rt) <= window + EPS)
+    return peaks.filter(p => !taken.has(p.key) && p.rt != null && Math.abs(p.rt - t.rt) <= range + EPS)
       .sort((a, b) => Math.abs(a.rt - t.rt) - Math.abs(b.rt - t.rt));
   }
 
@@ -179,36 +173,37 @@
   }
 
   /**
-   * Whole pipeline for one sample. manual: Map target index -> peak key, peaks the user assigned
-   * by hand to targets that were not found. An assignment counts only if the target is still not
-   * found, the peak is in its window and no other target has that peak.
+   * Whole pipeline for one sample. tol: {range} (+- min; {window} accepted for older callers).
+   * manual: Map target index -> peak key, peaks the user assigned by hand to targets that were not
+   * found. An assignment counts only if the target is still not found, the peak is in its range and
+   * no other target has that peak.
    * Returns {rows, log, peaks, relSource, taken (peak keys in use)}.
    */
   function run(records, ident, targets, tol, manual) {
-    const grouped = groupPeaks(records, ident);
-    const r1 = mergeAdjacent(grouped, tol.merge);
-    const m = matchTargets(r1.peaks, targets, tol.window);
+    const range = tol.range != null ? tol.range : tol.window;
+    const peaks = groupPeaks(records, ident);
+    const m = sumInRange(peaks, targets, range);
     const taken = new Set(m.used);
     const status = m.targets.slice();
     (manual || new Map()).forEach((key, ti) => {
       const t = targets[ti];
       if (!t || status[ti].status !== "not_detected" || taken.has(key)) return;
-      const p = windowPeaks(r1.peaks, t, tol.window, taken).find(q => q.key === key);
+      const p = windowPeaks(peaks, t, range, taken).find(q => q.key === key);
       if (!p) return;
       taken.add(key);
-      status[ti] = { status: "manual", peak: p, delta: p.rt - t.rt, hit: p.hits[0] };
+      status[ti] = { status: "manual", peak: Object.assign({}, p, { merged: [p.key] }), delta: p.rt - t.rt, hit: p.hits[0] };
     });
     const hasRelColumn = records.some(r => r.rel != null);
     const rows = targets.map((t, i) => {
       const r = status[i];
       const found = ["detected", "no_rt", "manual"].includes(r.status);
       return Object.assign({}, r, {
-        found, rel: found ? relativeContent(r.peak, r1.peaks) : null,
+        found, rel: found ? relativeContent(r.peak, peaks) : null,
         area: found ? r.peak.area : null, conc: found ? r.peak.conc : null,
       });
     });
-    return { rows, log: r1.log.concat(m.log), peaks: r1.peaks, relSource: hasRelColumn ? "column" : "area", taken };
+    return { rows, log: m.log, peaks, relSource: hasRelColumn ? "column" : "area", taken };
   }
 
-  window.GcmsRules = { idKeys, agree, groupPeaks, mergeAdjacent, matchTargets, windowPeaks, relativeContent, run };
+  window.GcmsRules = { idKeys, agree, groupPeaks, separates, sumInRange, windowPeaks, relativeContent, run };
 })();

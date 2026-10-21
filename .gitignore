@@ -59,3 +59,8 @@ desktop.ini
 
 # Regulatory raw downloads (FDA, EU, GB 2760 copy): already covered by training/data/, listed explicitly
 /training/data/regulatory/
+
+# DEPTH-1 case analysis (Xu et al. 2026), stopped 2026-10-20: scripts and harness kept local only
+# (their data in training/data/gcms/xu2026/ is already covered by training/data/)
+/training/gcms/xu2026_*
+/training/gcms/harness/

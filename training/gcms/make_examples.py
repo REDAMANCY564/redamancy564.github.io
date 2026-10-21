@@ -270,9 +270,9 @@ def main():
         "note": "Simulated data. Compound sets and concentrations follow the cited studies; retention times, "
                 "areas, replicate noise and format problems are simulated.",
         "examples": {
-            "example1": {"file": "example1_yogurt_agilent_style.csv", "tolerances": {"merge_min": 0.1, "window_min": 0.15}, **example1(rng)},
-            "example2": {"file": "example2_milk_shimadzu_style.txt", "tolerances": {"merge_min": 0.1, "window_min": 0.15}, **example2(rng)},
-            "example3": {"file": "example3_gouda_thermo_style.xlsx", "tolerances": {"merge_min": 0.1, "window_min": 0.15}, **example3(rng)},
+            "example1": {"file": "example1_yogurt_agilent_style.csv", "tolerances": {"range_min": 0.15}, **example1(rng)},
+            "example2": {"file": "example2_milk_shimadzu_style.txt", "tolerances": {"range_min": 0.15}, **example2(rng)},
+            "example3": {"file": "example3_gouda_thermo_style.xlsx", "tolerances": {"range_min": 0.15}, **example3(rng)},
         },
         "standards": {"example1": "standard_example1_yogurt.csv", "example2": "standard_example2_milk.csv",
                       "example3": "standard_example3_gouda.csv"},
