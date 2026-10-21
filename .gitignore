@@ -67,3 +67,7 @@ desktop.ini
 # (their data in training/data/gcms/xu2026/ is already covered by training/data/)
 /training/gcms/xu2026_*
 /training/gcms/harness/
+
+# Mentor optimisation package (RD-001..RD-014): kept local only
+/redamancy-优化意见包/
+/redamancy-优化意见包.zip
