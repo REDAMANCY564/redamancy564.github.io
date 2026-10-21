@@ -77,5 +77,9 @@
   "nf.title": "Page not found",
   "nf.text": "There is no page at this address. The link may be mistyped, or the page may have been renamed. You can continue from the links below.",
   "nf.home": "Home",
-  "nf.projects": "All projects"
+  "nf.projects": "All projects",
+  "table.scroll_hint": "Swipe sideways to see all columns",
+  "toc.button": "Contents",
+  "toc.title": "On this page",
+  "toc.close": "Close the contents"
 }

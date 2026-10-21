@@ -77,5 +77,9 @@
   "nf.title": "页面不存在",
   "nf.text": "这个地址没有对应的页面，可能是链接写错了，或者页面已经改名。可以从下面的入口继续浏览。",
   "nf.home": "首页",
-  "nf.projects": "全部项目"
+  "nf.projects": "全部项目",
+  "table.scroll_hint": "左右滑动查看全部列",
+  "toc.button": "目录",
+  "toc.title": "本页目录",
+  "toc.close": "关闭目录"
 }

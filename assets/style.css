@@ -379,3 +379,42 @@ button.linklike.on { color: var(--text); font-weight: 600; text-decoration: none
   .seg button { font-size: 13px; }   /* the longest single word of a label still fits a third of 320 px */
 }
 @media (max-width: 599px), (pointer: coarse) { .seg button { min-height: 44px; } }
+
+/* Wide tables on phones: numbers stay on one line and the first column (row names) stays in view while
+   the table scrolls sideways. assets/projects.js marks tables wider than the screen: a "swipe" line above
+   and a fade at the right edge until the end is reached. Pages that let text cells wrap give them a
+   minimum width in their own styles (about 8 characters per line). */
+.scroll-hint { display: none; }
+@media (max-width: 599px) {
+  .table-wrap th.num, .table-wrap td.num { white-space: nowrap; }
+  .table-wrap tr > :first-child:not([colspan]) { position: sticky; left: 0; z-index: 1; background: var(--cell-bg, var(--bg));
+                                  white-space: normal; min-width: 7em; }   /* row names wrap so the column stays narrower than the screen */
+  .card, .viz-box { --cell-bg: var(--surface); }
+  .scroll-hint:not([hidden]) { display: block; margin: 0 0 4px; font-size: .8125rem; color: var(--muted); }
+  .table-wrap.can-scroll:not(.at-end) {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+  }
+}
+
+/* Method pages below 900 px: floating "Contents" button and the contents panel (assets/projects.js) */
+.toc-fab { display: none; }
+@media (max-width: 899px) {
+  .toc-fab:not([hidden]) {
+    position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 20;
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; max-width: calc(100vw - 32px); padding: 0 16px;
+    font: inherit; font-size: .9375rem; color: var(--text); background: var(--surface);
+    border: 1px solid var(--border); border-radius: 22px; box-shadow: 0 4px 14px rgba(0, 0, 0, .14); cursor: pointer;
+  }
+  .toc-fab .cur { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 52vw; }
+}
+.toc-sheet { width: 100%; max-width: 100%; max-height: 75vh; margin: auto 0 0; padding: 0; border: 0;
+             border-radius: 12px 12px 0 0; background: var(--surface); color: var(--text); }
+.toc-sheet::backdrop { background: rgba(0, 0, 0, .35); }
+.toc-sheet-head { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between;
+                  padding: 4px 4px 4px 16px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.toc-close { min-width: 44px; min-height: 44px; font: inherit; font-size: 1.4rem; line-height: 1; color: var(--muted);
+             background: none; border: 0; cursor: pointer; }
+.toc-sheet-list { display: flex; flex-direction: column; padding: 4px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.toc-sheet-list a { display: block; padding: 11px 0; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); }
+.toc-sheet-list a:last-child { border-bottom: 0; }
