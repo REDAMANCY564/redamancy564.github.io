@@ -164,6 +164,14 @@ def cv_lists(t, root):
     }
 
 
+def gcms_scope(t, root):
+    # same markup as gcms-interpreter/app.js and about.js (renderScope)
+    p = PROFILE
+    mail = (' <a class="mail-link" href="mailto:' + esc(p["email"]) + '">' + esc(p["email"]) + "</a>" + esc(t("scope.end"))
+            if p.get("email") else "")
+    return {"scope-note": esc(t("scope.text")) + mail}
+
+
 def page_url(rel):
     if rel.endswith("index.html"): rel = rel[: -len("index.html")]
     return SITE + rel
@@ -243,7 +251,8 @@ def render(rel):
 
     # profile-driven lists
     lists = {"index.html": home_lists, "projects/index.html": projects_list, "cv/index.html": cv_lists,
-             "404.html": lambda t, root: {"dir-list": home_lists(t, root)["dir-list"]}}.get(rel)
+             "404.html": lambda t, root: {"dir-list": home_lists(t, root)["dir-list"]},
+             "gcms-interpreter/index.html": gcms_scope, "gcms-interpreter/about.html": gcms_scope}.get(rel)
     if lists:
         root = {"index.html": "", "404.html": "/"}.get(rel, "../")
         for id_, inner in lists(t, root).items():

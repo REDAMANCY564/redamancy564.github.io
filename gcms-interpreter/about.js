@@ -22,7 +22,7 @@
   function renderScope() {
     const email = profile.email || "";
     $("scope-note").innerHTML = esc(I18N.t("scope.text")) + (email
-      ? ' <a href="mailto:' + esc(email) + '">' + esc(email) + "</a>" + esc(I18N.t("scope.end")) : "");
+      ? ' <a class="mail-link" href="mailto:' + esc(email) + '">' + esc(email) + "</a>" + esc(I18N.t("scope.end")) : "");
   }
 
   function renderAll() {

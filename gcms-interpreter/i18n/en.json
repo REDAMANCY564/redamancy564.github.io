@@ -2,7 +2,7 @@
   "hero.title": "Automated GC-MS Data Analysis Across Instrument Formats",
   "hero.short": "GC-MS Flavor Interpreter",
   "hero.intro": "Upload one sample's GC-MS peak table and a standard file (target list). The page detects the table format, unifies compound names and CAS numbers, handles duplicate peaks and peaks with several library hits by fixed rules, finds the relative content of each target, then uses odor thresholds to compute OAV or ROAV, rank the key flavor compounds and draw a flavor profile.",
-  "scope.text": "This site is built for quickly processing a single sample: upload one file containing the peak table of one sample at a time. To process hundreds or thousands of samples in batch, please email",
+  "scope.text": "This site is designed for quick processing of a single sample: upload one file at a time, containing the peak table of one sample. To process hundreds or thousands of samples in batch, email",
   "scope.end": ".",
   "scope.upload": "One sample at a time: each file should contain the peak table of one sample.",
   "scope.multi": "This file has {n} samples. The site handles one at a time; choose one above. For batch processing, email",

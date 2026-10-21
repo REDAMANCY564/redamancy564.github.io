@@ -112,9 +112,12 @@
     STD.targets = null;
   }
 
-  // ---------- Scope notice (single sample; the batch-by-email note is on the about page) ----------
+  // ---------- Scope notice (single sample; batch processing by email, address from assets/profile.json) ----------
+  const mailLink = () => profile.email
+    ? ' <a class="mail-link" href="mailto:' + esc(profile.email) + '">' + esc(profile.email) + "</a>" + esc(I18N.t("scope.end")) : "";
   function renderScope() {
     $("scope-upload").innerHTML = esc(I18N.t("scope.upload"));
+    $("scope-note").innerHTML = esc(I18N.t("scope.text")) + mailLink();
   }
 
   function download(text, name, type) {
@@ -315,9 +318,7 @@
     $("multi-sample").classList.toggle("hidden", !multi);
     if (!multi) return;
     $("sample-select").innerHTML = list.map(s => '<option value="' + esc(s) + '"' + (s === S.sample ? " selected" : "") + ">" + esc(s) + "</option>").join("");
-    const email = profile.email || "";
-    $("multi-sample").innerHTML = esc(I18N.t("scope.multi", { n: list.length })) +
-      (email ? ' <a href="mailto:' + esc(email) + '">' + esc(email) + "</a>" + esc(I18N.t("scope.end")) : "");
+    $("multi-sample").innerHTML = esc(I18N.t("scope.multi", { n: list.length })) + mailLink();
   }
 
   function renderMap() {

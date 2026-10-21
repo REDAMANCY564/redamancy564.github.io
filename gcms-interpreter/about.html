@@ -25,8 +25,8 @@
   <meta name="twitter:title" content="方法与来源 | 1 GC-MS 风味解读 | 崔京伟">
   <meta name="twitter:description" content="Method, rules, limitations and data sources of the Automated GC-MS Data Analysis Across Instrument Formats.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/gcms-interpreter.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261021f">
-  <script src="../assets/i18n.js?v=20261021f" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261021g">
+  <script src="../assets/i18n.js?v=20261021g" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 </head>
@@ -63,7 +63,7 @@
       <h2 data-sec="1" data-i18n="about.overview" data-no="1.1">概述</h2>
       <p data-i18n="hero.intro">上传一个样品的 GC-MS 峰表和标准文件（目标物质清单）。页面会识别表格格式，统一化合物名称和 CAS 号，按固定规则处理重复峰和一个峰对应多个候选物的情况，算出每个目标物质的相对含量，再用阈值计算 OAV 或 ROAV，排出关键风味物质并画出风味轮廓。</p>
       <p><b data-i18n="privacy.lead">你的数据不会离开你的电脑。</b> <span data-i18n="privacy.text">所有分析都在你的浏览器里完成，文件不会上传到任何服务器。页面没有统计或追踪脚本，适合对企业保密数据做初步分析。</span> <span data-i18n="privacy.tech">页面的内容安全策略（CSP）只允许连接本站，发往其他地址的请求会被浏览器拦截。你保存的仪器模板和设置只存在你自己的浏览器里。</span></p>
-      <p id="scope-note"></p>
+      <p id="scope-note">本网站适合快速处理单个样品：一次上传一个文件，文件中只含一个样品的峰表。如需批量处理上百甚至上千个样品，请发邮件联系 <a class="mail-link" href="mailto:e1719854@u.nus.edu">e1719854@u.nus.edu</a>。</p>
       <p data-i18n="about.practice">工具处理的是积分和鉴定之后的峰表，默认积分和谱库鉴定都已由人工确认。实际处理这类数据时，最耗时的是把同一物质的多个峰加起来，最容易出错的是标准文件里的多个物质匹配到同一个峰，导致一个峰被重复计算。工具的规则 1（以参考保留时间为中心、在设定范围内，把同一物质的峰相加，两个峰之间不能夹着其他物质的峰）和规则 2（一个峰只归给参考保留时间最近的物质）就是针对这两个问题写的。</p>
     </section>
 
@@ -108,7 +108,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261021f" defer></script>
-  <script src="about.js?v=20261021f" defer></script>
+  <script src="../assets/projects.js?v=20261021g" defer></script>
+  <script src="about.js?v=20261021g" defer></script>
 </body>
 </html>

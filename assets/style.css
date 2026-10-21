@@ -356,8 +356,10 @@ button.linklike.on { color: var(--text); font-weight: 600; text-decoration: none
    between neighbours (header 12-24 px, tabs 24 px) leave room, so the areas do not overlap. Dense
    chips get 36 px with 8 px gaps (the containers set the gap). */
 @media (max-width: 599px), (pointer: coarse) {
-  .site-header .brand, .site-nav a, .lang-toggle, .proj-tabs a, .pub-item .links a, a.help { position: relative; }
-  .site-header .brand::after, .site-nav a::after, .lang-toggle::after, .proj-tabs a::after, .pub-item .links a::after, a.help::after {
+  .site-header .brand, .site-nav a, .lang-toggle, .proj-tabs a, .pub-item .links a, a.help, a.mail-link { position: relative; }
+  a.mail-link { white-space: nowrap; }   /* inline e-mail link: one line, so the tap area below is one box */
+  .site-header .brand::after, .site-nav a::after, .lang-toggle::after, .proj-tabs a::after, .pub-item .links a::after, a.help::after,
+  a.mail-link::after {
     content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
     width: max(100%, 44px); height: max(100%, 44px);
   }
