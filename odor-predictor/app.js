@@ -235,6 +235,26 @@
     }
   }
 
+  // ---------- Regulatory status (EU, China; assets/regulatory.js) ----------
+  // Matched to the site's molecule library by the first block of the InChIKey (no stereo), like the KB panel
+  let regSeq = 0;
+  async function renderReg() {
+    const my = ++regSeq;
+    const box = $("reg-body");
+    box.textContent = I18N.t("reg.loading");
+    try {
+      const [rd] = await Promise.all([rdkitReady(), Reg.load()]);
+      const mol = rd.get_mol(current.smiles);
+      let ik = null;
+      try { if (mol) ik = rd.get_inchikey_for_inchi(mol.get_inchi()); } finally { if (mol) mol.delete(); }
+      if (my !== regSeq) return;
+      box.innerHTML = Reg.html(ik ? Reg.byIk(ik) : null, { outside: true });
+    } catch (e) {
+      if (my !== regSeq) return;
+      box.textContent = I18N.t("reg.load_failed");
+    }
+  }
+
   function renderDemo() {
     if (!current.top.some(t => t.label === selected)) selected = current.top[0].label;
     renderInfo();
@@ -242,16 +262,23 @@
     renderContrib();
     renderChart();
     if (kbSeen) renderKbSources(); else kbPending = true;
+    if (regSeen) renderReg(); else regPending = true;
   }
   // The sources and literature panel needs RDKit (to match the molecule) and the knowledge base:
   // filled when it first comes into view, then kept up to date
-  let kbSeen = false, kbPending = false;
+  let kbSeen = false, kbPending = false, regSeen = false, regPending = false;
   new IntersectionObserver((entries, obs) => {
     if (!entries.some(e => e.isIntersecting)) return;
     obs.disconnect();
     kbSeen = true;
     if (kbPending) renderKbSources();
   }).observe($("kb-body"));
+  new IntersectionObserver((entries, obs) => {
+    if (!entries.some(e => e.isIntersecting)) return;
+    obs.disconnect();
+    regSeen = true;
+    if (regPending) renderReg();
+  }).observe($("reg-body"));
 
   $("preset").addEventListener("change", e => {
     current = presets.find(p => p.id === e.target.value) || presets[0];

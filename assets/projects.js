@@ -82,10 +82,11 @@
     });
 
     // The full project names are long, so the tab shows the number and the short name (hero.short)
-    const about = /about\.html$/.test(location.pathname);
+    // sub-pages put their tab name first: method page, regulatory lookup (flavor knowledge base)
+    const sub = /about\.html$/.test(location.pathname) ? "nav.about" : /regulatory\.html$/.test(location.pathname) ? "nav.reg" : null;
     function setTitle() {
       const t = I18N.t;
-      document.title = (about ? t("nav.about") + " | " : "") + n + " " + t("hero.short") + " | " + t("site.name");
+      document.title = (sub ? t(sub) + " | " : "") + n + " " + t("hero.short") + " | " + t("site.name");
     }
     I18N.ready.then(setTitle);
     I18N.onChange(setTitle);

@@ -36,6 +36,26 @@ python knowledge/build_kb.py         # 生成 flavor-kb/data/*.json
 ```
 原文 PDF（Dunkel 2014、van Gemert 2011）有版权，已加入 `.gitignore`，不会上传。
 
+### 法规查询（flavor-kb/regulatory.html）
+
+食品香料在欧盟和中国的许可状态，显示在法规查询页、原料检索结果卡片、气味预测和知识库物质卡片中；美国未包含。数据只有一份：`flavor-kb/data/regulatory.json`（约 280 KB，随页面静态加载，不访问外部接口），由 `assets/regulatory.js` 读取和显示，文字在 `assets/i18n/*.json` 的 `reg.*` 键。
+
+| 地区 | 来源 | 说明 |
+|---|---|---|
+| 欧盟 | Regulation (EC) No 1334/2008 附件 I Part A 表 1（Union list），EUR-Lex 合并版 02008R1334-20260216（修订至 (EU) 2026/175），CC BY 4.0 | 摘录 FL 号、CAS、使用限制（本站概括，`training/regulatory/notes.json`）、脚注；附件 III A 部分单独说明 |
+| 中国 | GB 2760-2024 表 B.2、B.3（官方文本，食品安全国家标准数据检索平台），未包含修改单 | 只用编码、中文名、FEMA 号；FEMA→CAS 借助 FDA「Substances Added to Food」清单；无可用 FEMA 号的 30 个合成香料由本站在 PubChem 核实 CAS（`training/regulatory/cn_cas_manual.json`） |
+
+只覆盖与原料检索分子库按 CAS 重合的物质（2026-10-21：欧盟 2009、中国 1283、任一 2118）。「未在清单中找到」不等于不允许。
+
+**更新法规数据**（欧盟有新合并版、GB 2760 修改单正式发布时）：原始文件放在 `training/data/regulatory/`（不上传：欧盟合并版 XHTML、GB 2760 官方 PDF、FDA 清单），然后
+```powershell
+python training/regulatory/lib_cas.py          # 分子库 CAS（PubChem，有缓存）
+python training/regulatory/parse_eu_annex.py   # 欧盟表 1 和附件 III
+python training/regulatory/parse_gb.py         # GB 2760 表 B.2/B.3（需要 pip install pymupdf）
+python training/regulatory/build_regulatory.py # 生成 flavor-kb/data/regulatory.json 和核对报告
+```
+更新后同步修改页面上的版本、日期和数量（`assets/i18n` 的 `reg.src_*`，`flavor-kb/i18n` 的 `rq.scope` 和 `about.reg_*`），再跑 `ingredient-finder/tests/unit.html`（含法规数据检查）和 `python tools/prerender.py`。
+
 ## 4 基于贝叶斯优化的乳品风味改良与差距分析（flavor-improver/）
 
 方法框架演示：选择一种乳制品基底和改良方向，用贝叶斯优化搜索「添加哪些风味物质、加多少」。评价函数是虚拟的（OAV → log 强度 → 描述词「提升度」向量加和 → 与目标轮廓的余弦相似度，减去种数和用量惩罚），不含掩蔽、协同、基质效应。

@@ -22,8 +22,8 @@
   <meta name="twitter:title" content="方法与来源 | 8 风味知识库 | 崔京伟">
   <meta name="twitter:description" content="Evidence tiers and data sources of the Knowledge Base of Key Food Flavor Compounds.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/flavor-kb.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261021g">
-  <script src="../assets/i18n.js?v=20261021g" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261022a">
+  <script src="../assets/i18n.js?v=20261022a" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -51,13 +51,15 @@
       <h1 data-i18n="hero.title" data-no="8">食品关键风味物质知识库</h1>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool">工具</a>
+        <a href="regulatory.html" data-i18n="nav.reg">法规查询</a>
         <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
       </nav>
     </div>
     <nav class="toc">
       <a href="#overview" data-i18n="about.overview" data-no="8.1">概述</a>
       <a href="#tiers" data-i18n="legend.title" data-no="8.2">数据分级</a>
-      <a href="#data" data-i18n="about.data" data-no="8.3">数据、许可与引用</a>
+      <a href="#regulatory" data-i18n="about.reg" data-no="8.3">法规查询</a>
+      <a href="#data" data-i18n="about.data" data-no="8.4">数据、许可与引用</a>
     </nav>
 
     <section id="overview">
@@ -76,8 +78,30 @@
       </ul>
     </section>
 
+    <section id="regulatory">
+      <h2 data-sec="1" data-i18n="about.reg" data-no="8.3">法规查询</h2>
+      <p data-i18n="about.reg_what">「法规查询」页按物质名（中英文）、CAS 号、FEMA 号、FL 号或 GB 2760 编码，查询食品香料在欧盟和中国的许可状态；原料检索、气味预测和本知识库的物质卡片显示同样的信息。美国未包含。</p>
+      <p data-i18n="about.reg_practice">找替代原料时，除了风味，最关心的是法规。以前要逐个翻欧盟清单和 GB 2760 核对，比较费时；现在可以先在这里查出两地的状态，确认都在许可名单内。这里只做初筛，最终仍以官方最新文件为准。</p>
+      <h3 data-sec="2" data-i18n="about.reg_src" data-no="8.3.1">数据来源与版本</h3>
+      <p data-i18n-html="about.reg_src_eu"><b>欧盟：</b>Regulation (EC) No 1334/2008 附件 I Part A 表 1（Union list，由 Regulation (EU) No 872/2012 引入），<a href="https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16" target="_blank" rel="noopener">EUR-Lex 合并版 2026-02-16</a>（修订至 Commission Regulation (EU) 2026/175），2026-10-21 核对，此后没有新的修订法规。合并版只是文献工具，具有法律效力的是《欧盟官方公报》文本。欧盟委员会内容按 <a href="https://commission.europa.eu/legal-notice_en" target="_blank" rel="noopener">CC BY 4.0</a> 复用；本站摘录了 FL 号、CAS 号、使用限制和脚注，并对使用限制做了概括。附件 III A 部分（不得作为单一物质添加到食品中的物质，如香豆素）另作说明。</p>
+      <p data-i18n-html="about.reg_src_cn"><b>中国：</b>GB 2760-2024《食品安全国家标准 食品添加剂使用标准》（2024-02-08 发布，2025-02-08 实施）表 B.2「允许使用的食品用天然香料名单」和表 B.3「允许使用的食品用合成香料名单」，取自<a href="https://sppt.cfsa.net.cn:8086/db" target="_blank" rel="noopener">食品安全国家标准数据检索平台</a>的官方文本。第 1 号修改单截至 2026-10-21 仍在征求意见，未包含。本站只显示是否列入名单、所在表格、编码、FEMA 号和中文名，不转载标准原文。</p>
+      <h3 data-sec="2" data-i18n="about.reg_match" data-no="8.3.2">对应方法</h3>
+      <ul>
+        <li data-i18n="about.reg_match_1">只覆盖与本站分子库（原料检索的 5072 个分子）按 CAS 号重合的物质：欧盟 2009 个，中国 1283 个，至少在一地的 2118 个。分子的 CAS 号来自本知识库和 PubChem。</li>
+        <li data-i18n="about.reg_match_2">中国名单没有 CAS 号：先按 FEMA 号对应到 CAS，借助美国 FDA「Substances Added to Food」清单（只作对照，不显示美国的状态）；标准未给 FEMA 号或 FEMA 号查不到的 30 个合成香料，CAS 由本站在 PubChem 核实补充，页面上注明。</li>
+        <li data-i18n="about.reg_match_3">本站分子不区分立体异构体。清单条目是特定构型（如 d-、l-、顺式、(E)-）时，页面加注，请核对是否为同一异构体。</li>
+      </ul>
+      <h3 data-sec="2" data-i18n="about.reg_rules" data-no="8.3.3">显示规则与局限</h3>
+      <ul>
+        <li data-i18n="about.reg_rule_1">「未在清单中找到」只说明本站没有对应上：CAS 或 FEMA 号不同、分子没有 CAS 号，或物质不在本站分子库，不等于不允许。</li>
+        <li data-i18n="about.reg_rule_2">使用限制是本站的一两句话概括，以官方原文为准；不显示 FEMA 文献中的使用量。</li>
+        <li data-i18n="about.reg_rule_3">不提供按食品类别或使用条件的检索。中国的食品用香料按生产需要适量使用，部分食品不得添加（GB 2760 附录 B 表 B.1）。</li>
+        <li data-i18n="about.reg_rule_4">仅供参考，以官方最新文件为准，不构成法规建议。</li>
+      </ul>
+    </section>
+
     <section id="data">
-      <h2 data-sec="1" data-i18n="about.data" data-no="8.3">数据、许可与引用</h2>
+      <h2 data-sec="1" data-i18n="about.data" data-no="8.4">数据、许可与引用</h2>
       <p data-i18n-html="footer.data"><b>数据来源：</b>关键风味物质摘自 Dunkel A, et al. <i>Angew. Chem. Int. Ed.</i> 2014, 53, 7124-7143 (<a href="https://doi.org/10.1002/anie.201309508" target="_blank" rel="noopener">doi:10.1002/anie.201309508</a>) 正文，并注明页码；完整的食品与关键风味物质对照见该文补充材料。检出数据来自 <a href="https://cosylab.iiitd.edu.in/flavordb2/" target="_blank" rel="noopener">FlavorDB2</a>（Garg N, et al. <i>Nucleic Acids Res.</i> 2018），CC BY-NC-SA 3.0，本站衍生数据以相同协议共享。物质名称和结构来自 PubChem。</p>
       <p data-i18n-html="footer.apis"><b>文献服务：</b><a href="https://europepmc.org/" target="_blank" rel="noopener">Europe PMC</a>、<a href="https://www.crossref.org/" target="_blank" rel="noopener">Crossref</a>（均免费，无需密钥）。</p>
     </section>
@@ -89,6 +113,6 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261021g" defer></script>
+  <script src="../assets/projects.js?v=20261022a" defer></script>
 </body>
 </html>

@@ -3,6 +3,7 @@
  * Mode A: rank library molecules by wanted / unwanted predicted odor descriptors (finder.js).
  * Mode B: substitutes by odor similarity vs structure similarity (next stage).
  * Structures are drawn with RDKit.js (MinimalLib, self-hosted), loaded when the first structure is drawn.
+ * Regulatory status (EU, China) on every card and the region filter: assets/regulatory.js.
  */
 (async function () {
   const $ = id => document.getElementById(id);
@@ -30,6 +31,19 @@
     return;
   }
   $("load-status").textContent = "";   // the line keeps its height, so nothing below moves
+
+  // ---------- Regulatory status (static file, loaded with the page; the tool works without it) ----------
+  const REG = { ready: false, failed: false, region: "", only: null };
+  const regBlock = i => REG.ready ? Reg.html(Reg.byLib(i), { compact: true, li: i })
+    : '<p class="small muted" style="margin:8px 0 0">' + esc(I18N.t(REG.failed ? "reg.load_failed" : "reg.loading")) + "</p>";
+  function setRegion(region) {
+    REG.region = region;
+    REG.only = region && REG.ready ? new Set(Reg.items.filter(it => Reg.permitted(it, region)).map(it => it.li)) : null;
+    A.filters.only = REG.only;
+    ["f-reg", "fb-reg"].forEach(id => { $(id).value = region; });
+  }
+  const regLoad = Reg.load().then(() => { REG.ready = true; setRegion(REG.region); renderAll(); },
+    err => { console.error(err); REG.failed = true; ["f-reg", "fb-reg"].forEach(id => { $(id).disabled = true; }); renderAll(); });
 
   const mb = b => (b / 1e6).toFixed(1);
   let probsPromise = null, fpsPromise = null, probsGot = 0;
@@ -64,7 +78,7 @@
   showTab(new URLSearchParams(location.search).get("mode") === "b" ? "b" : "a");
 
   // ---------- Mode A state ----------
-  const A = { want: [], avoid: [], addTo: "want", shown: PAGE, filters: { natural: false, unseen: false } };
+  const A = { want: [], avoid: [], addTo: "want", shown: PAGE, filters: { natural: false, unseen: false, only: null } };
 
   // Training status as small muted text (no colored badge)
   const trainNote = used => '<span class="muted">' + esc(I18N.lang === "zh" ? "（" + I18N.t(used ? "g.train" : "g.unseen") + "）"
@@ -147,6 +161,12 @@
     A.shown = PAGE;
     runA();
   }));
+  // region filter, shared by both modes (only molecules listed in the chosen region's list)
+  ["f-reg", "fb-reg"].forEach(id => $(id).addEventListener("change", e => {
+    setRegion(e.target.value);
+    A.shown = PAGE;
+    regLoad.then(() => { runA(); if (B.query) { computeB(); renderB(); } });
+  }));
   $("a-more").addEventListener("click", () => { A.shown = Math.min(MAX_SHOWN, A.shown + PAGE); runA(); });
 
   // ---------- Results ----------
@@ -180,7 +200,7 @@
       (m.name ? '<p class="smi mono">' + esc(m.smiles) + "</p>" : "") +
       '<div class="meta"><span class="muted">' + esc(I18N.t("r.top")) + '</span><div class="preds">' +
       predText(top, j => wantIds.has(D.lib.labels[j].id)) +
-      "</div>" + foods + "</div></div></div>";
+      "</div>" + foods + "</div></div>" + regBlock(hit.index) + "</div>";
   }
 
   const LOW_SCORE = 0.1;
@@ -301,8 +321,8 @@
     B.suggest = [];
     renderSuggest();
     setStatusB(null);
-    B.query = { index: i, smiles: D.lib.molecules[i][0], name: D.lib.molecules[i][1], vec: F.vector(D, i), note: null };
-    B.result = F.neighbours(D, B.query.vec, F.fpBits(D, i), i);
+    B.query = { index: i, smiles: D.lib.molecules[i][0], name: D.lib.molecules[i][1], vec: F.vector(D, i), bits: F.fpBits(D, i), note: null };
+    computeB();
     B.open = new Set();
     renderB();
     $("b-out").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -346,8 +366,8 @@
         setStatusB("b.query_lib_match");
         return;
       }
-      B.query = { index: -1, smiles, name: null, vec: Float64Array.from(probs), note: fragmentsRemoved ? "b.fragments" : null };
-      B.result = F.neighbours(D, B.query.vec, bits, -1);
+      B.query = { index: -1, smiles, name: null, vec: Float64Array.from(probs), bits, note: fragmentsRemoved ? "b.fragments" : null };
+      computeB();
       B.open = new Set();
       setStatusB(null);
       renderB();
@@ -360,6 +380,10 @@
     } finally {
       $("b-go").disabled = false;
     }
+  }
+  // the 20 most odor-similar molecules, only among those permitted in the chosen region (if any)
+  function computeB() {
+    B.result = F.neighbours(D, B.query.vec, B.query.bits, B.query.index, REG.only ? { keep: i => REG.only.has(i) } : undefined);
   }
   function canonicalIs(rd, libSmiles, smiles) {
     const m = rd.get_mol(libSmiles);
@@ -429,7 +453,8 @@
     $("b-query").innerHTML = '<h3 style="margin-top:0">' + esc(I18N.t("b.query")) + '</h3><div class="qsvg svg" data-smiles="' + esc(q.smiles) + '" data-big="1"></div>' +
       '<p class="name" style="font-weight:700;margin:6px 0 0">' + esc(qName) + qBadge + '</p><p class="smi mono small muted" style="word-break:break-all;margin:2px 0 6px">' + esc(q.smiles) + "</p>" +
       '<div class="preds">' + predText(top) + "</div>" +
-      (q.note ? '<p class="small muted">' + esc(I18N.t(q.note)) + "</p>" : "");
+      (q.note ? '<p class="small muted">' + esc(I18N.t(q.note)) + "</p>" : "") +
+      (q.index >= 0 ? regBlock(q.index) : "");
     drawInto($("b-query").querySelector(".svg"), q.smiles, true);
     $("b-scatter").innerHTML = scatterSvg(res, q.index);
     $("b-legend").innerHTML = '<span><i style="background:var(--muted);opacity:.4"></i>' + esc(I18N.t("b.legend_all")) + '</span><span><i style="background:var(--accent)"></i>' +
@@ -437,7 +462,8 @@
     const thr = D.lib.odor_threshold.toFixed(3);
     $("b-rule").textContent = I18N.t("b.rule", { thr });
     const nHi = res.top.filter(h => h.highlight).length;
-    $("b-hi-summary").textContent = nHi ? I18N.t("b.hi_count", { n: nHi }) : I18N.t("b.hi_none", { thr });
+    $("b-hi-summary").textContent = (nHi ? I18N.t("b.hi_count", { n: nHi }) : I18N.t("b.hi_none", { thr })) +
+      (REG.only ? " " + I18N.t("b.reg_note", { region: I18N.t("f.reg." + REG.region) }) : "");
     $("b-results").innerHTML = res.top.map((h, k) => {
       const m = F.molecule(D, h.index);
       const preds = F.topLabels(D, h.index, TOP_PRED);
@@ -452,7 +478,8 @@
         (h.highlight ? '<span class="hi-text">' + esc(I18N.t("b.hi_badge")) + "</span> " : "") + badge +
         '<p class="name">' + esc(m.name || m.smiles) + "</p>" + (m.name ? '<p class="smi mono">' + esc(m.smiles) + "</p>" : "") +
         '<div class="meta"><div class="preds">' + predText(preds) + "</div>" + foods +
-        '<div><button type="button" class="linklike small" data-cmp="' + h.index + '" style="margin-top:6px">' + esc(I18N.t(open ? "b.compare_hide" : "b.compare")) + "</button></div></div></div>" +
+        '<div><button type="button" class="linklike small" data-cmp="' + h.index + '" style="margin-top:6px">' + esc(I18N.t(open ? "b.compare_hide" : "b.compare")) + "</button></div>" +
+        "</div></div>" + regBlock(h.index) +
         (open ? '<div class="radar">' + radarSvg(q.vec, F.vector(D, h.index), qName, m.name || m.smiles) + "</div>" : "") + "</div>";
     }).join("");
     $("b-results").querySelectorAll(".svg").forEach(el => drawInto(el, el.dataset.smiles));
@@ -476,5 +503,5 @@
   function renderAll() { renderA(); renderB(); }
   renderAll();
   I18N.onChange(renderAll);
-  window.__finder = { D, A, B, runA, queryLibrary, querySmiles };   // tests and checks
+  window.__finder = { D, A, B, REG, runA, queryLibrary, querySmiles, setRegion, regLoad };   // tests and checks
 })();

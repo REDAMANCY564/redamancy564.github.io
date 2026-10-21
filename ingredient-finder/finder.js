@@ -72,11 +72,15 @@
     return { index: i, smiles: m[0], name: m[1], group: m[2], kb: m[3], foods: m[4].map(k => d.lib.foods[k]) };
   }
 
-  /** Molecules passing the filters: {natural: has a FlavorDB food record, unseen: not used in training}. */
+  /**
+   * Molecules passing the filters: {natural: has a FlavorDB food record, unseen: not used in training,
+   * only: Set of library indices to keep (e.g. permitted in the chosen region), or null}.
+   */
   function passes(d, i, filters) {
     const m = d.lib.molecules[i];
     if (filters && filters.natural && !m[4].length) return false;
     if (filters && filters.unseen && m[2] === 0) return false;
+    if (filters && filters.only && !filters.only.has(i)) return false;
     return true;
   }
 
@@ -145,6 +149,7 @@
    * Returns {odor: Float64Array [n], struct: Float64Array [n], top: [{index, odor, tanimoto, highlight}]}
    * top = the topN most odor-similar molecules; highlight = odor similarity >= threshold and
    * Tanimoto < tanimotoMax (user decision 2026-10-18: top 20, 99.5th percentile, 0.3).
+   * opts.keep(i): only these molecules can enter top (similarities are still computed for all).
    */
   function neighbours(d, qVec, qBits, exclude, opts) {
     const o = Object.assign({ topN: d.lib.highlight_top_n, threshold: d.lib.odor_threshold, tanimotoMax: d.lib.tanimoto_max_for_highlight }, opts);
@@ -159,7 +164,7 @@
       struct[i] = tanimoto(qBits, fpBits(d, i));
     }
     const order = [];
-    for (let i = 0; i < d.n; i++) if (i !== exclude) order.push(i);
+    for (let i = 0; i < d.n; i++) if (i !== exclude && (!o.keep || o.keep(i))) order.push(i);
     order.sort((a, b) => odor[b] - odor[a]);
     const top = order.slice(0, o.topN).map(i => ({
       index: i, odor: odor[i], tanimoto: struct[i], highlight: odor[i] >= o.threshold && struct[i] < o.tanimotoMax,

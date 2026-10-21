@@ -1,0 +1,343 @@
+{
+ "_help": "GB 2760 table B.3 rows without a usable FEMA no.: CAS verified by this site in PubChem (2026-10-21), reviewed by the user. Shown with 「CAS 为本站核实补充」. cas = [] means not supplemented (reason). config: the supplemented CAS is one configuration in PubChem while the GB name gives none (note cnc:<code> in notes.json).",
+ "rows": {
+  "S0073": {
+   "cas": [
+    "3269-90-7"
+   ],
+   "pubchem_cid": 527143,
+   "pubchem_title": "Menthadienol",
+   "formula": "C10H16O",
+   "inchikey": "UIMAEYMKYMNCGW-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S0074": {
+   "cas": [
+    "28231-03-0"
+   ],
+   "pubchem_cid": 119831,
+   "pubchem_title": "Cedrenol",
+   "formula": "C15H24O",
+   "inchikey": "DJYWGTBEZVORGE-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S0368": {
+   "cas": [
+    "591-87-7"
+   ],
+   "pubchem_cid": 11584,
+   "pubchem_title": "Allyl acetate",
+   "formula": "C5H8O2",
+   "inchikey": "FWZUNOYOVVKUNF-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S0592": {
+   "cas": [
+    "2173-56-0"
+   ],
+   "pubchem_cid": 62433,
+   "pubchem_title": "Pentyl valerate",
+   "formula": "C10H20O2",
+   "inchikey": "FGPPDYNPZTUNIU-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S0642": {
+   "cas": [
+    "7370-92-5"
+   ],
+   "pubchem_cid": 110977,
+   "pubchem_title": "5-Tridecanolide",
+   "formula": "C13H24O2",
+   "inchikey": "RZZLMGATMUAJPX-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S0683": {
+   "cas": [
+    "292-46-6"
+   ],
+   "pubchem_cid": 67521,
+   "pubchem_title": "Lenthionine",
+   "formula": "C2H4S5",
+   "inchikey": "DZKOKXZNCDGVRY-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S0824": {
+   "cas": [
+    "2949-92-0"
+   ],
+   "pubchem_cid": 18064,
+   "pubchem_title": "S-Methyl methanethiosulfonate",
+   "formula": "C2H6O2S2",
+   "inchikey": "XYONNSVDNIRXKZ-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S0881": {
+   "cas": [
+    "1405-86-3"
+   ],
+   "pubchem_cid": 14982,
+   "pubchem_title": "Glycyrrhizin",
+   "formula": "C42H62O16",
+   "inchikey": "LPLVUJXQOOQHMX-QWBHMCJMSA-N",
+   "note": ""
+  },
+  "S0882": {
+   "cas": [
+    "56-89-3"
+   ],
+   "pubchem_cid": 67678,
+   "pubchem_title": "(-)-Cystine",
+   "formula": "C6H12N2O4S2",
+   "inchikey": "LEVWYRKDKASIDU-IMJSIDKUSA-N",
+   "note": ""
+  },
+  "S0883": {
+   "cas": [
+    "63-68-3"
+   ],
+   "pubchem_cid": 6137,
+   "pubchem_title": "L-Methionine",
+   "formula": "C5H11NO2S",
+   "inchikey": "FFEARJCKVFRZRR-BYPYZUCNSA-N",
+   "note": ""
+  },
+  "S0893": {
+   "cas": [
+    "622-78-6"
+   ],
+   "pubchem_cid": 2346,
+   "pubchem_title": "Benzyl Isothiocyanate",
+   "formula": "C8H7NS",
+   "inchikey": "MDKCFLQDBWCQCV-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S0897": {
+   "cas": [
+    "110-02-1"
+   ],
+   "pubchem_cid": 8030,
+   "pubchem_title": "Thiophene",
+   "formula": "C4H4S",
+   "inchikey": "YTPLMLYBLZKORZ-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S0916": {
+   "cas": [
+    "544-35-4"
+   ],
+   "pubchem_cid": 5282184,
+   "pubchem_title": "Ethyl Linoleate",
+   "formula": "C20H36O2",
+   "inchikey": "FMMOOAYVCKXGMF-MURFETPASA-N",
+   "note": ""
+  },
+  "S0921": {
+   "cas": [
+    "3658-93-3"
+   ],
+   "pubchem_cid": 77224,
+   "pubchem_title": "Hexane, 1,1-diethoxy-",
+   "formula": "C10H22O2",
+   "inchikey": "WNHOMUCDFNTSEV-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S0982": {
+   "cas": [
+    "90-00-6"
+   ],
+   "pubchem_cid": 6997,
+   "pubchem_title": "2-Ethylphenol",
+   "formula": "C8H10O",
+   "inchikey": "IXQGCWUGDFDQMF-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S0993": {
+   "cas": [
+    "628-63-7"
+   ],
+   "pubchem_cid": 12348,
+   "pubchem_title": "Amyl Acetate",
+   "formula": "C7H14O2",
+   "inchikey": "PGMYKACGEOXYJE-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S0998": {
+   "cas": [
+    "21188-60-3"
+   ],
+   "pubchem_cid": 89463,
+   "pubchem_title": "Methyl 3-acetoxyhexanoate",
+   "formula": "C9H16O4",
+   "inchikey": "ODICPWSNEYHYSJ-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S1005": {
+   "cas": [
+    "2349-14-6"
+   ],
+   "pubchem_cid": 70917,
+   "pubchem_title": "Methyl 3,7-dimethylocta-2,6-dienoate",
+   "formula": "C11H18O2",
+   "inchikey": "ACOBBFVLNKYODD-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S1008": {
+   "cas": [
+    "2050-09-1"
+   ],
+   "pubchem_cid": 74901,
+   "pubchem_title": "Isoamyl valerate",
+   "formula": "C10H20O2",
+   "inchikey": "UBLAMKHIFZBBSS-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S1024": {
+   "cas": [
+    "110-42-9"
+   ],
+   "pubchem_cid": 8050,
+   "pubchem_title": "Methyl Decanoate",
+   "formula": "C11H22O2",
+   "inchikey": "YRHYCMZPEVDGFQ-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S1064": {
+   "cas": [
+    "112-39-0"
+   ],
+   "pubchem_cid": 8181,
+   "pubchem_title": "Methyl Palmitate",
+   "formula": "C17H34O2",
+   "inchikey": "FLIACVVOZYBSBS-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S1069": {
+   "cas": [
+    "774-48-1"
+   ],
+   "pubchem_cid": 69884,
+   "pubchem_title": "(Diethoxymethyl)benzene",
+   "formula": "C11H16O2",
+   "inchikey": "MAQMEXSLUSZDQM-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S1105": {
+   "cas": [
+    "5989-54-8"
+   ],
+   "pubchem_cid": 439250,
+   "pubchem_title": "Limonene, (-)-",
+   "formula": "C10H16",
+   "inchikey": "XMGQYMWWDOXHJM-SNVBAGLBSA-N",
+   "note": "l- = (-)-(S)-limonene"
+  },
+  "S1110": {
+   "cas": [
+    "197098-61-6"
+   ],
+   "pubchem_cid": 21967387,
+   "pubchem_title": "8-Ocimenyl acetate, (3Z,6E)-",
+   "formula": "C12H18O2",
+   "inchikey": "RNKUOBQYBVPNSU-BDLVGCLISA-N",
+   "note": "PubChem record is the (3Z,6E) isomer",
+   "config": "(3Z,6E)"
+  },
+  "S1197": {
+   "cas": [
+    "77-54-3"
+   ],
+   "pubchem_cid": 13918856,
+   "pubchem_title": "Cedryl Acetate",
+   "formula": "C17H28O2",
+   "inchikey": "HQKQRXZEXPXXIG-DTWJZALFSA-N",
+   "note": ""
+  },
+  "S1332": {
+   "cas": [
+    "10444-50-5"
+   ],
+   "pubchem_cid": 5338463,
+   "pubchem_title": "Geranial propylene glycol acetal",
+   "formula": "C13H22O2",
+   "inchikey": "DWZRENGNFQNWQZ-DHZHZOJOSA-N",
+   "note": ""
+  },
+  "S1500": {
+   "cas": [
+    "33368-82-0"
+   ],
+   "pubchem_cid": 5352855,
+   "pubchem_title": "(E)-1-Propenyl 2-propenyl disulfide",
+   "formula": "C6H10S2",
+   "inchikey": "KBXOGESWPIVMNJ-GQCTYLIASA-N",
+   "note": "PubChem record is the (E) isomer",
+   "config": "(E)"
+  },
+  "S1502": {
+   "cas": [
+    "1193-81-3"
+   ],
+   "pubchem_cid": 137829,
+   "pubchem_title": "1-Cyclohexylethanol",
+   "formula": "C8H16O",
+   "inchikey": "JMSUNAQVHOHLMX-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S1505": {
+   "cas": [
+    "1374760-95-8"
+   ],
+   "pubchem_cid": 67516108,
+   "pubchem_title": "2-(4-Methylphenoxy)-N-(1H-pyrazol-3-yl)-N-(thiophen-2-ylmethyl)acetamide",
+   "formula": "C17H17N3O2S",
+   "inchikey": "QGDQESUNCJQMSA-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S1506": {
+   "cas": [
+    "1129-69-7"
+   ],
+   "pubchem_cid": 70797,
+   "pubchem_title": "2-Hexylpyridine",
+   "formula": "C11H17N",
+   "inchikey": "NZLJDTKLZIMONR-UHFFFAOYSA-N",
+   "note": ""
+  },
+  "S1262": {
+   "cas": [],
+   "reason": "PubChem has no CAS number for 4-hepten-3-one"
+  },
+  "S1485": {
+   "cas": [],
+   "reason": "listed as the sulfate salt; PubChem has only the free acid (a different structure)"
+  },
+  "S0512": {
+   "cas": [],
+   "reason": "mixture (ethyl esters of coconut oil acids)"
+  },
+  "S0682": {
+   "cas": [],
+   "reason": "polymer (polylimonene)"
+  },
+  "S1229": {
+   "cas": [],
+   "reason": "mixture (artificial cognac oil)"
+  },
+  "S1230": {
+   "cas": [],
+   "reason": "smoke flavouring preparation"
+  },
+  "S1231": {
+   "cas": [],
+   "reason": "smoke flavouring preparation"
+  },
+  "S1418": {
+   "cas": [],
+   "reason": "smoke flavouring preparation"
+  },
+  "S1419": {
+   "cas": [],
+   "reason": "smoke flavouring preparation"
+  }
+ }
+}

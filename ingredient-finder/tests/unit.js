@@ -64,6 +64,26 @@
   }
   check("mode B", "threshold and rule from library.json", [lib.odor_threshold, lib.tanimoto_max_for_highlight, lib.highlight_top_n], [0.9464, 0.3, 20]);
 
+  // ---------- regulatory status (assets/regulatory.js, flavor-kb/data/regulatory.json) ----------
+  await Reg.load();
+  const regOf = i => Reg.byLib(i);
+  const inLib = Reg.items.every(it => lib.molecules[it.li] && lib.molecules[it.li][0] === it.smiles);
+  check("regulatory", "every item is a library molecule (same index and SMILES)", inLib, true);
+  check("regulatory", "molecules listed: EU 2009, China 1283, both 1179",
+    ["eu", "cn", "both"].map(r => Reg.items.filter(it => Reg.permitted(it, r)).length), [2009, 1283, 1179]);
+  const dia = regOf(396), van = regOf(3302), cou = regOf(5023);
+  check("regulatory", "diacetyl: FL 07.052, GB S0207 / FEMA 2370", [dia.eu.map(e => e.fl), dia.cn.map(c => c.code + "/" + c.fema)], [["07.052"], ["S0207/2370"]]);
+  check("regulatory", "vanillin: FL 05.018 without restriction, GB S0172", [van.eu.map(e => [e.fl, e.r]), van.cn.map(c => [c.code, c.r])], [[["05.018", null]], [["S0172", null]]]);
+  check("regulatory", "coumarin: not in either list, Annex III Part A with Part B levels", [cou.eu.length, cou.cn.length, cou.a3], [0, 0, 1]);
+  check("regulatory", "d-camphor: FL 07.215 restricted, stereo note", Reg.items.filter(it => it.eu.some(e => e.fl === "07.215")).map(it => it.eu[0].r + "|" + it.eu[0].s), ["eu:07.215|true"]);
+  const euSet = new Set(Reg.items.filter(it => Reg.permitted(it, "eu")).map(it => it.li));
+  const onlyEu = F.scoreA(D, want, [], { only: euSet });
+  check("filters", "region filter: only molecules permitted in the EU (2009)", [onlyEu.length, onlyEu.every(h => euSet.has(h.index))], [2009, true]);
+  const cnSet = new Set(Reg.items.filter(it => Reg.permitted(it, "cn")).map(it => it.li));
+  const nb = F.neighbours(D, F.vector(D, 396), F.fpBits(D, 396), 396, { keep: i => cnSet.has(i) });
+  check("mode B", "region filter: the 20 neighbours are all listed in China, best odor similarity first",
+    [nb.top.length, nb.top.every(h => cnSet.has(h.index)), nb.top.every((h, k) => !k || nb.top[k - 1].odor >= h.odor)], [20, true, true]);
+
   // ---------- parity: RDKit.js fingerprints and the browser model vs Python ----------
   const rdkit = await initRDKitModule({ locateFile: () => new URL("../../assets/vendor/rdkit/RDKit_minimal.wasm", location.href).href });
   const spec = await (await fetch("../../odor-predictor/model/feature_spec.json")).json();

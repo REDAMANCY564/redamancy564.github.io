@@ -170,6 +170,10 @@
     if (c.fema) right.append(el("p", { class: "small" }, [el("b", { text: I18N.t("cmp.fema") + ": " }), c.fema]));
 
     card.append(el("div", { class: "grid cmp" }, [left, right]));
+    // regulatory status (EU, China): matched by CAS to the ingredient-finder library (assets/regulatory.js)
+    const regBox = el("div", { class: "small", text: I18N.t("reg.loading") });
+    card.append(el("div", { class: "kb-row-title small", text: I18N.t("reg.title") }), regBox);
+    Reg.load().then(() => { regBox.innerHTML = Reg.html(Reg.byKb(id)); }, () => { regBox.textContent = I18N.t("reg.load_failed"); });
     card.append(literature(FlavorKB.compoundNames(c), litFoods(kbd, c)));
     d.append(card);
     d.scrollIntoView({ behavior: "smooth", block: "start" });
