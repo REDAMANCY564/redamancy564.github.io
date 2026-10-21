@@ -84,5 +84,6 @@
   "footer.chembl": "<b>Drug flags:</b> ChEMBL (EMBL-EBI), used only to assess data bias.",
   "hero.sub": "Enter a molecule; a graph neural network estimates whether it is sweet, bitter, umami or tasteless.",
   "list.comma": ", ",
-  "footer.short": "Data: ChemTastesDB (CC BY 4.0) and VirtuousMultiTaste (MIT). Not for safety assessment. See <a href=\"about.html\">method &amp; sources</a>."
+  "footer.short": "Data: ChemTastesDB (CC BY 4.0) and VirtuousMultiTaste (MIT). Not for safety assessment. See <a href=\"about.html\">method &amp; sources</a>.",
+  "about.practice": "In dairy products I pay most attention to bitterness and to off-tastes that appear unintentionally during optimization. I also look at sweetness and fat-related mouthfeel, such as the effect of lactose on sweetness, bitter peptides from protein hydrolysis, and the effect of fat content on richness. This tool only predicts whether a small molecule is sweet, bitter, umami or tasteless; it is not suitable for peptides and does not cover mouthfeel, which still need sensory evaluation."
 }

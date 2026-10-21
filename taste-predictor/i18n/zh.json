@@ -84,5 +84,6 @@
   "footer.chembl": "<b>药物标记：</b>ChEMBL（EMBL-EBI），仅用于评估数据偏差。",
   "hero.sub": "输入分子，图神经网络估计它是甜、苦、鲜还是无味。",
   "list.comma": "、",
-  "footer.short": "数据来自 ChemTastesDB（CC BY 4.0）和 VirtuousMultiTaste（MIT）。不能用于安全性评估。详见<a href=\"about.html\">方法与来源</a>。"
+  "footer.short": "数据来自 ChemTastesDB（CC BY 4.0）和 VirtuousMultiTaste（MIT）。不能用于安全性评估。详见<a href=\"about.html\">方法与来源</a>。",
+  "about.practice": "在乳品中我最关注苦味，以及优化之外意外产生的不良味道；也关注甜味和脂肪带来的口感，例如乳糖对甜味的影响、蛋白水解产生的苦味肽、脂肪含量对醇厚感的影响。本工具只预测小分子的甜、苦、鲜和无味，不适用于肽，也不涉及口感，这些问题仍需感官评价。"
 }

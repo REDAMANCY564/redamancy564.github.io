@@ -200,5 +200,6 @@
   "var.sens": "Sensitivity analyses",
   "var.line": "Of the reproducible differences in pleasantness, {pl} come from personal preference (95% CI {plo} to {phi}); for intensity only {in} (95% CI {ilo} to {ihi}).",
   "seg.verdict.short": "No reliable participant segments in these data: individual differences look continuous.",
-  "footer.short": "Data CC0; participants anonymized and demographics dropped. Ethics, method and limitations: <a href=\"about.html#ethics\">method &amp; sources</a>."
+  "footer.short": "Data CC0; participants anonymized and demographics dropped. Ethics, method and limitations: <a href=\"about.html#ethics\">method &amp; sources</a>.",
+  "about.practice": "In sensory evaluation, panelists do differ, mainly in odor sensitivity and in judging intensity; this is usually reduced by screening panelists, agreeing on descriptors, training and standardizing test conditions. The same milky or fishy note is also accepted differently by different people. The results here likewise show that individual differences lie mainly in liking, and that liking is hard to predict from the molecule and a few ratings. I think personal preference is also shaped by life experience and eating habits, but this dataset has no such information, so this could not be tested."
 }

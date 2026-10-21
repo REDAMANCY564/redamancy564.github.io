@@ -80,5 +80,6 @@
   "status.kb_flavordb": "Odor description in the flavor knowledge base (FlavorDB):",
   "demo.finder_link": "Find substitutes",
   "hero.sub": "Enter a molecule; a graph neural network predicts its odor descriptors.",
-  "footer.short": "Trained on The Good Scents Company and Leffingwell data curated by OpenPOM (CC BY-NC). Non-commercial academic demo only; not for safety decisions. See <a href=\"about.html\">method &amp; sources</a>."
+  "footer.short": "Trained on The Good Scents Company and Leffingwell data curated by OpenPOM (CC BY-NC). Non-commercial academic demo only; not for safety decisions. See <a href=\"about.html\">method &amp; sources</a>.",
+  "about.practice": "For an unfamiliar compound, I usually check odor databases or search the literature with the compound name. Predicting odor from structure can be a useful reference when the molecule closely resembles known compounds, belongs to a homologous series with clear odor trends, and is backed by reliable experimental data. It is less reliable for isomers, especially stereoisomers. The model on this site does not distinguish stereoisomers, so its predictions for these molecules are only a rough hint."
 }

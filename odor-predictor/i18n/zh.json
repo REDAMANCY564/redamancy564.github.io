@@ -80,5 +80,6 @@
   "status.kb_flavordb": "风味知识库中的气味描述（FlavorDB）：",
   "demo.finder_link": "查找替代原料",
   "hero.sub": "输入分子，图神经网络预测它的气味描述词。",
-  "footer.short": "训练数据来自 The Good Scents Company 和 Leffingwell，经 OpenPOM 整理（CC BY-NC）。仅供非商业学术演示，不能用于安全性判断。详见<a href=\"about.html\">方法与来源</a>。"
+  "footer.short": "训练数据来自 The Good Scents Company 和 Leffingwell，经 OpenPOM 整理（CC BY-NC）。仅供非商业学术演示，不能用于安全性判断。详见<a href=\"about.html\">方法与来源</a>。",
+  "about.practice": "遇到不熟悉的物质，我一般查气味数据库，或用物质名作关键词查文献。从结构预测气味，在分子与已知物质高度相似、属于气味规律较明确的同系物，并且有可靠实验数据支持时，可以作参考；遇到同分异构体，特别是立体异构体时就不太可靠。本站模型不区分立体异构体，这类分子的预测只能当作粗略提示。"
 }

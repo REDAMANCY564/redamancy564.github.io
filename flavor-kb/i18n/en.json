@@ -50,5 +50,6 @@
   "search.meta_det": "{c} · {n} compounds detected",
   "cmp.finder": "Find substitutes",
   "hero.sub": "Key flavor compounds, detected compounds and papers, by food or compound.",
-  "footer.short": "Key food odorants from Dunkel et al. 2014; detection data from FlavorDB2 (CC BY-NC-SA 3.0, derived data shared alike); papers via Europe PMC and Crossref. See <a href=\"about.html\">method &amp; sources</a>."
+  "footer.short": "Key food odorants from Dunkel et al. 2014; detection data from FlavorDB2 (CC BY-NC-SA 3.0, derived data shared alike); papers via Europe PMC and Crossref. See <a href=\"about.html\">method &amp; sources</a>.",
+  "about.practice": "To find the key flavor compounds of a food, I usually search the literature on Web of Science and PubMed, and check databases such as Flavornet and The Good Scents Company for odor, thresholds and roles in food. Detected does not mean key: GC-MS only shows that a compound is present, while a key flavor compound must actually contribute to the overall flavor, which is usually judged by combining OAV, ROAV, GC-O, and recombination and omission experiments. This is why this knowledge base labels key flavor compounds and detected compounds separately."
 }

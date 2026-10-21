@@ -94,5 +94,6 @@
   "card.no_kb": "Not in the flavor knowledge base",
   "hero.sub": "{n} molecules placed by predicted odor; switch to the structure map to compare.",
   "food.legend_more": "Food highlighting: large dots are key flavor compounds, small dots are detected compounds, gray dots are other molecules. Only 16 foods have key flavor compound data (the knowledge base has none for coffee); for other foods the detected-compound lists come from FlavorDB and do not say which compounds matter for the odor.",
-  "footer.short": "Positions and colors are predictions, not measurements. Odor model CC BY-NC, non-commercial academic demo only. See <a href=\"about.html\">method &amp; sources</a>."
+  "footer.short": "Positions and colors are predictions, not measurements. Odor model CC BY-NC, non-commercial academic demo only. See <a href=\"about.html\">method &amp; sources</a>.",
+  "about.practice": "Molecules that differ in structure but smell alike are mainly useful as substitutes: when the original is restricted by regulation, a substitute may be allowed, or may cost less or be more stable. They also help in understanding how odor relates to structure, which gives ideas for flavor optimization and fragrance design."
 }

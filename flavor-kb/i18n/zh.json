@@ -50,5 +50,6 @@
   "search.meta_det": "{c} · 检出 {n} 种物质",
   "cmp.finder": "查找替代原料",
   "hero.sub": "按食品或化合物查关键风味物质、检出物质和相关文献。",
-  "footer.short": "关键风味物质引自 Dunkel 等 2014；检出数据来自 FlavorDB2（CC BY-NC-SA 3.0，本站衍生数据按同一协议共享）；文献来自 Europe PMC 和 Crossref。详见<a href=\"about.html\">方法与来源</a>。"
+  "footer.short": "关键风味物质引自 Dunkel 等 2014；检出数据来自 FlavorDB2（CC BY-NC-SA 3.0，本站衍生数据按同一协议共享）；文献来自 Europe PMC 和 Crossref。详见<a href=\"about.html\">方法与来源</a>。",
+  "about.practice": "查一种食品的关键风味物质，我通常用 Web of Science、PubMed 查文献，同时参考 Flavornet、The Good Scents Company 等数据库，了解物质的气味、阈值和在食品中的作用。检出不等于关键：GC-MS 只说明检测到了某种物质，关键风味物质要对整体风味有实际贡献，通常要结合 OAV、ROAV、GC-O 以及重组和缺失实验来判断。所以本知识库把「关键风味物质」和「检出物质」分开标注。"
 }

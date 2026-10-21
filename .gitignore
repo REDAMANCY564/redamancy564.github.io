@@ -57,6 +57,9 @@ desktop.ini
 # Feasibility notes: kept local only
 /REG-FEASIBILITY.md
 
+# Author's practice paragraphs (source text for about.practice): kept local only
+/TEXT-PRACTICE.md
+
 # Regulatory raw downloads (FDA, EU, GB 2760 copy): already covered by training/data/, listed explicitly
 /training/data/regulatory/
 

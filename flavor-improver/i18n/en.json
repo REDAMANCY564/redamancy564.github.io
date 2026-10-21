@@ -361,5 +361,6 @@
   "mode.bo": "Bayesian optimization demo",
   "ref.option_short": "Formula vs human milk",
   "user.option_short": "Your GC-MS data",
-  "footer.short": "The evaluation function is virtual, not sensory data. Odor model CC BY-NC, non-commercial academic demo only. See <a href=\"about.html\">method &amp; sources</a>."
+  "footer.short": "The evaluation function is virtual, not sensory data. Odor model CC BY-NC, non-commercial academic demo only. See <a href=\"about.html\">method &amp; sources</a>.",
+  "about.practice": "Comparing the flavor of two dairy products is usually done with GC-O and sensory evaluation, but GC-O looks at one compound at a time rather than the whole, and sensory evaluation is fairly subjective. My research aims to bring the flavor of infant formula closer to that of human milk. Flavor compounds cannot simply be added: it would not comply with regulations, and stability would also be a concern. Many flavor compounds in human milk come from lipid oxidation, so starting from precursors better reproduces that process. For infant formula, the results on this page are therefore only a reference for precursor directions, not addition recommendations."
 }
