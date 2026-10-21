@@ -145,14 +145,13 @@ for r in cn_rows:
                               "r": ("cn:" + r["code"]) if "cn:" + r["code"] in notes else None, "st": stereo(r["zh"], True)})
 
 # EU entries also by a CAS number supplemented above (molecule matched to a GB row by structure), so the tool
-# pages agree with the lookup page. User decision 2026-10-21: only glycyrrhizic acid (S0881, CAS 1405-86-3,
-# FL 16.012). The same rule would also add 17.006, 17.027, 01.046, 09.171, 06.035 and 12.098 (not applied).
-EU_VIA_SUPPLEMENTED = {"16.012"}
+# pages agree with the lookup page (glycyrrhizic acid 16.012, cystine 17.006, methionine 17.027, limonene 01.046,
+# cedryl acetate 09.171, citral propylene glycol acetal 06.035, allyl 1-propenyl disulfide 12.098; user 2026-10-21)
 eu_extra = []
 for i, cs in extra_cas.items():
     have = {e["fl"] for e in hits[i]["eu"]}
     for e in eu["table1"]:
-        if e["fl"] in EU_VIA_SUPPLEMENTED and e["fl"] not in have and set(e["cas"]) & set(cs):
+        if e["fl"] not in have and set(e["cas"]) & set(cs):
             hits[i]["eu"].append({"fl": e["fl"], "name": e["name"], "r": ("eu:" + e["fl"]) if e["restriction"] else None,
                                   "fn": e["footnotes"], "st": stereo(e["name"])})
             eu_extra.append((e["fl"], lib[i]["name"]))
@@ -235,16 +234,41 @@ for r in cn_rows:
     if not cas and mrow and mrow["cas"]:
         cas, via = list(mrow["cas"]), "manual"
     nodes.append(("cn", dict(r, cas=cas, via=via, fda=[f["name"] for f in fda])))
+# Grouping. Entries with one CAS number join others with the same CAS. An entry with several CAS numbers (a
+# mixture, "x or y", isomers) joins them only if it touches at most one such group and at most one library
+# molecule; otherwise it gets its own card, so it cannot chain different substances together (e.g. 14.025 and
+# 14.077 methoxypyrazines, S1431, N277, S0342). It still links to every library molecule it covers, as on the
+# tool pages; check_consistency.py verifies that both files agree for every molecule.
 parent = list(range(len(nodes)))
 def root(x):
     while parent[x] != x:
         parent[x] = parent[parent[x]]; x = parent[x]
     return x
+def node_mols(n):
+    li_ = set().union(*[cas2lib.get(c, set()) for c in n["cas"]]) if n["cas"] else set()
+    if n.get("via") == "manual":
+        li_ |= ik2lib.get(manual[n["code"]]["inchikey"][:14], set())
+    return li_
 first = {}
 for k, (_, n) in enumerate(nodes):
-    for c in n["cas"]:
+    if len(n["cas"]) == 1:
+        c = n["cas"][0] if isinstance(n["cas"], list) else next(iter(n["cas"]))
         if c in first: parent[root(k)] = root(first[c])
         else: first[c] = k
+multi_key, standalone = {}, 0
+for k, (_, n) in enumerate(nodes):
+    if len(n["cas"]) < 2:
+        continue
+    comps = {root(first[c]) for c in n["cas"] if c in first}
+    if len(comps) > 1 or len(node_mols(n)) > 1:
+        standalone += 1
+        continue
+    if comps:
+        parent[root(k)] = comps.pop()
+    else:   # several entries with the same CAS set and nothing else: one card
+        key = frozenset(n["cas"])
+        if key in multi_key: parent[root(k)] = root(multi_key[key])
+        else: multi_key[key] = k
 groups = collections.defaultdict(list)
 for k in range(len(nodes)):
     groups[root(k)].append(k)
@@ -296,5 +320,6 @@ lp = REPO / "flavor-kb" / "data" / "regulatory-lookup.json"
 lp.write_text(json.dumps({"meta": lmeta, "notes": {k: notes[k] for k in sorted(lused)}, "s": subs},
                          ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 restricted_all = [e["fl"] for e in eu["table1"] if e["restriction"]]
+print("standalone multi-CAS entries:", standalone)
 print("lookup:", json.dumps(lmeta["counts"]), "bytes", lp.stat().st_size,
       "restricted rows", len(restricted_all), "without summary", [f for f in restricted_all if "eu:" + f not in notes])

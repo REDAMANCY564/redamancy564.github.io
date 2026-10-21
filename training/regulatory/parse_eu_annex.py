@@ -45,7 +45,8 @@ ANNEX3_CAS = {
     "1-Allyl-4-methoxybenzene, estragole": ["140-67-0"], "Hydrocyanic acid": ["74-90-8"], "Menthofuran": ["494-90-6"],
     "4-Allyl-1,2-dimethoxybenzene, methyleugenol": ["93-15-2"], "Pulegone": ["89-82-7", "15932-80-6"],
     "Quassin": ["76-78-8"], "1-Allyl-3,4-methylene dioxy benzene, safrole": ["94-59-7"], "Teucrin A": ["12798-51-6"],
-    "Thujone (alpha and beta)": ["76-49-3", "546-80-5", "471-15-8", "1125-12-8"],
+    # 546-80-5 alpha, 471-15-8 beta, 1125-12-8 unspecified (76-49-3, added by mistake on 2026-10-20, is bornyl acetate)
+    "Thujone (alpha and beta)": ["546-80-5", "471-15-8", "1125-12-8"],
 }
 for name in ANNEX3_CAS:
     assert name in part_a, name   # every name must appear verbatim in Part A

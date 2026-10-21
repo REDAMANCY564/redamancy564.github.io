@@ -69,8 +69,8 @@
   const regOf = i => Reg.byLib(i);
   const inLib = Reg.items.every(it => lib.molecules[it.li] && lib.molecules[it.li][0] === it.smiles);
   check("regulatory", "every item is a library molecule (same index and SMILES)", inLib, true);
-  check("regulatory", "molecules listed: EU 2010, China 1283, both 1180",
-    ["eu", "cn", "both"].map(r => Reg.items.filter(it => Reg.permitted(it, r)).length), [2010, 1283, 1180]);
+  check("regulatory", "molecules listed: EU 2014, China 1283, both 1184",
+    ["eu", "cn", "both"].map(r => Reg.items.filter(it => Reg.permitted(it, r)).length), [2014, 1283, 1184]);
   const dia = regOf(396), van = regOf(3302), cou = regOf(5023);
   check("regulatory", "diacetyl: FL 07.052, GB S0207 / FEMA 2370", [dia.eu.map(e => e.fl), dia.cn.map(c => c.code + "/" + c.fema)], [["07.052"], ["S0207/2370"]]);
   check("regulatory", "vanillin: FL 05.018 without restriction, GB S0172", [van.eu.map(e => [e.fl, e.r]), van.cn.map(c => [c.code, c.r])], [[["05.018", null]], [["S0172", null]]]);
@@ -102,12 +102,28 @@
     [byCode("S0003").keys.some(k => k.includes("isopropylalcohol")), byCode("S0093").keys.some(k => k.includes("eugenylmethylether"))], [true, true]);
   check("lookup", "library links: the same 2118 molecules as the tool-page file",
     new Set(L.flatMap(s => s.links.map(l => l.li))).size, smallItems.length);
+  // tool pages and lookup page agree for every library molecule (training/regulatory/check_consistency.py)
+  const lkOf = new Map();
+  L.forEach(s => s.links.forEach(l => {
+    const o = lkOf.get(l.li) || { eu: new Set(), cn: new Set(), a3: false };
+    s.eu.forEach(e => o.eu.add(e.fl)); s.cn.forEach(c => o.cn.add(c.code)); o.a3 = o.a3 || !!s.a3;
+    lkOf.set(l.li, o);
+  }));
+  const sameSet = (a, b) => a.size === b.size && [...a].every(x => b.has(x));
+  const mismatch = smallItems.filter(it => {
+    const o = lkOf.get(it.li);
+    return !o || !sameSet(new Set(it.eu.map(e => e.fl)), o.eu) || !sameSet(new Set(it.cn.map(c => c.code)), o.cn) || o.a3 !== !!it.a3;
+  }).map(it => it.li);
+  check("lookup", "every library molecule: same EU entries, GB codes and Annex III flag on the tool pages and the lookup page", mismatch, []);
+  check("lookup", "thujone stands alone (Annex III); bornyl acetate (FL 09.017, S0385) is its own substance",
+    [L.filter(s => s.a3 && s.links.some(l => /thujone/i.test(l.name))).map(s => [s.eu.length, s.cn.length]), byFl("09.017") === byCode("S0385"), !!byFl("09.017").a3],
+    [[[0, 0]], true, false]);
   check("lookup", "stereo notes only on substances linked to the library",
     L.filter(s => !s.links.length).some(s => s.eu.some(e => e.s) || s.cn.some(c => c.s)), false);
 
   const euSet = new Set(smallItems.filter(it => Reg.permitted(it, "eu")).map(it => it.li));
   const onlyEu = F.scoreA(D, want, [], { only: euSet });
-  check("filters", "region filter: only molecules permitted in the EU (2010)", [onlyEu.length, onlyEu.every(h => euSet.has(h.index))], [2010, true]);
+  check("filters", "region filter: only molecules permitted in the EU (2014)", [onlyEu.length, onlyEu.every(h => euSet.has(h.index))], [2014, true]);
   const cnSet = new Set(smallItems.filter(it => Reg.permitted(it, "cn")).map(it => it.li));
   const nb = F.neighbours(D, F.vector(D, 396), F.fpBits(D, 396), 396, { keep: i => cnSet.has(i) });
   check("mode B", "region filter: the 20 neighbours are all listed in China, best odor similarity first",
