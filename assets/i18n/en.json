@@ -72,5 +72,10 @@
   "home.full_list": "Full list in the CV",
   "home.first_author": "First author",
   "projects.page_title": "Projects | Jingwei Cui",
-  "home.thumb_alt": "{name} screenshot"
+  "home.thumb_alt": "{name} screenshot",
+  "nf.page_title": "Page not found | Jingwei Cui",
+  "nf.title": "Page not found",
+  "nf.text": "There is no page at this address. The link may be mistyped, or the page may have been renamed. You can continue from the links below.",
+  "nf.home": "Home",
+  "nf.projects": "All projects"
 }

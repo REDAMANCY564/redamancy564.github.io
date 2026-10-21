@@ -1,11 +1,29 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Method &amp; sources | 5 Odor Space Map | Jingwei Cui</title>
+  <title>方法与来源 | 5 气味空间地图 | 崔京伟</title>
   <meta name="description" content="Odor Space vs Structure Space Map of Flavor Molecules: how the map was made, how well it groups similar-smelling molecules, its limitations and data sources.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261021a">
+  <link rel="canonical" href="https://redamancy564.github.io/odor-map/about.html">
+  <meta name="theme-color" content="#fbfaf7">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="崔京伟 Jingwei Cui">
+  <meta property="og:title" content="方法与来源 | 5 气味空间地图 | 崔京伟">
+  <meta property="og:description" content="Odor Space vs Structure Space Map of Flavor Molecules: how the map was made, how well it groups similar-smelling molecules, its limitations and data sources.">
+  <meta property="og:url" content="https://redamancy564.github.io/odor-map/about.html">
+  <meta property="og:image" content="https://redamancy564.github.io/assets/og/odor-map.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="方法与来源 | 5 气味空间地图 | 崔京伟">
+  <meta name="twitter:description" content="Odor Space vs Structure Space Map of Flavor Molecules: how the map was made, how well it groups similar-smelling molecules, its limitations and data sources.">
+  <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/odor-map.jpg">
+  <link rel="stylesheet" href="../assets/style.css?v=20261021b">
+  <script src="../assets/i18n.js?v=20261021b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -30,82 +48,81 @@
 
   <main class="container about">
     <div class="hero">
-      <h1 data-i18n="hero.title">Odor Space vs Structure Space Map of Flavor Molecules</h1>
+      <h1 data-i18n="hero.title" data-no="5">风味分子的气味空间与结构空间对比图谱</h1>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool">工具</a>
         <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
       </nav>
     </div>
     <nav class="toc">
-      <a href="#overview" data-i18n="about.overview">Overview</a>
-      <a href="#method" data-i18n="about.method">Method</a>
-      <a href="#results" data-i18n="about.results">Results</a>
-      <a href="#limits" data-i18n="about.limits">Limitations</a>
-      <a href="#data" data-i18n="about.data">Data, licenses &amp; citations</a>
+      <a href="#overview" data-i18n="about.overview" data-no="5.1">概述</a>
+      <a href="#method" data-i18n="about.method" data-no="5.2">方法</a>
+      <a href="#results" data-i18n="about.results" data-no="5.3">结果</a>
+      <a href="#limits" data-i18n="about.limits" data-no="5.4">局限</a>
+      <a href="#data" data-i18n="about.data" data-no="5.5">数据、许可与引用</a>
     </nav>
 
     <section id="overview">
-      <h2 data-sec="1" data-i18n="about.overview">Overview</h2>
-      <p id="hero-intro"></p>
-      <p data-i18n="about.practice"></p>
+      <h2 data-sec="1" data-i18n="about.overview" data-no="5.1">概述</h2>
+      <p id="hero-intro" data-snap="hero-intro">图中每个点是一个分子，共 5,072 个。点的位置由气味预测模型给出的 138 个描述词概率决定，两个点越近，模型认为它们的气味越相似。</p>
+      <p data-i18n="about.practice">结构差别大、气味却相近的分子，主要用于寻找替代物：原分子受法规限制时，替代物可能可以使用，或者成本更低、稳定性更好。这类分子也有助于理解气味和结构之间的关系，为风味优化和调香提供思路。</p>
     </section>
 
     <section id="method">
-      <h2 data-sec="1" data-i18n="about.method">Method</h2>
-      <p id="desc-odor"></p>
-      <p id="desc-structure"></p>
-      <p id="colour-note"></p>
-      <p id="region-note"></p>
-      <p data-i18n="food.legend_more"></p>
-      <h3 data-sec="2" data-i18n="params.title">Map settings</h3>
-      <p data-i18n="params.text"></p>
-      <div class="table-wrap"><table id="params-table"></table></div>
+      <h2 data-sec="1" data-i18n="about.method" data-no="5.2">方法</h2>
+      <p id="desc-odor" data-snap="desc-odor">气味地图：按模型对 138 个气味描述词的预测概率排列。</p>
+      <p id="desc-structure" data-snap="desc-structure">结构地图：按 Morgan 分子指纹（只看结构）排列，颜色仍是预测的气味。和气味地图对比，同一颜色的点明显更分散。</p>
+      <p id="colour-note" data-snap="colour-note">「按主要预测描述词」着色时，每个分子取预测概率最高的描述词，最常见的 10 个各有一种颜色，其余归为「其他」。果香分子最多（26%），这主要反映数据集本身的组成：香料数据库中酯类等果香分子较多。</p>
+      <p id="region-note" data-snap="region-note">区域标签是自动生成的：先把地图上的分子分成 40 个小区，如果某个描述词在一个小区中超过一半的分子里预测概率不低于 50%，并且这一比例至少是全库的 1.5 倍，就用满足条件、比例最高的描述词命名该区；相邻的同名小区合并。用同一规则，气味地图上得到 21 个区域标签，结构地图上只有 11 个。</p>
+      <p data-i18n="food.legend_more">食品高亮：大圆点是关键风味物质，小圆点是检出物质，灰色是其他分子。只有 16 种食品有关键风味物质数据（知识库中没有咖啡的关键风味物质数据）；其他食品的检出物质名单来自 FlavorDB，不说明哪些物质对气味重要。</p>
+      <h3 data-sec="2" data-i18n="params.title" data-no="5.2.1">地图参数</h3>
+      <p data-i18n="params.text">两张地图都用 UMAP 降到二维，随机种子固定。UMAP 的两个关键参数（邻居数, 最小距离）试了 3 组：(15, 0.1)、(30, 0.3)、(50, 0.5)，只用验证集选择，以「至少一个标签相同」的比例为准，每张地图各取验证集上最好的一组，让作为对照的结构地图也发挥出最好水平。参数是在移除非风味分子之前选定的，移除后重新计算的验证集结果见下表。指标含义见 5.3。</p>
+      <div class="table-wrap"><table id="params-table" data-snap="params-table"><thead><tr><th></th><th>气味地图</th><th>结构地图</th></tr></thead><tbody><tr><th>输入</th><td>138 个描述词的预测概率</td><td>Morgan 指纹（半径 2，2048 位）</td></tr><tr><th>距离</th><td>余弦距离</td><td>Jaccard 距离</td></tr><tr><th>邻居数</th><td>30</td><td>15</td></tr><tr><th>最小距离</th><td>0.3</td><td>0.1</td></tr><tr><th>随机种子</th><td>42</td><td>42</td></tr><tr><th>验证集（至少一个标签相同 / 平均 Jaccard）</th><td>0.738 / 0.202</td><td>0.640 / 0.160</td></tr></tbody></table></div>
     </section>
 
     <section id="results">
-      <h2 data-sec="1" data-i18n="about.results">Results</h2>
-      <h3 data-sec="2" data-i18n="results.title">Odor overlap of map neighbors</h3>
-      <p id="res-intro"></p>
-      <div class="table-wrap"><table id="res-table"></table></div>
-      <p id="res-take" style="margin-top:10px"></p>
+      <h2 data-sec="1" data-i18n="about.results" data-no="5.3">结果</h2>
+      <h3 data-sec="2" data-i18n="results.title" data-no="5.3.1">地图近邻的气味重合度</h3>
+      <p id="res-intro" data-snap="res-intro">检验方法：取 气味预测的骨架划分测试集中的 486 个分子，对每个分子，在二维地图上找出离它最近的 15 个有真实气味标签的分子，计算其中与它至少有一个相同真实标签的比例，以及标签的平均 Jaccard 重合度。真实标签只用于计算，不在页面上展示。测试集只在两张地图的参数定稿后计算一次。</p>
+      <div class="table-wrap"><table id="res-table" data-snap="res-table"><thead><tr><th></th><th class="num">至少一个标签相同</th><th class="num">平均 Jaccard</th></tr></thead><tbody><tr class="highlight"><td>气味地图</td><td class="num">0.752</td><td class="num">0.192</td></tr><tr class=""><td>结构地图</td><td class="num">0.647</td><td class="num">0.156</td></tr><tr><td>差值：气味地图减结构地图 [95% 置信区间]</td><td class="num">0.105 [0.085, 0.125]</td><td class="num">0.036 [0.029, 0.044]</td></tr><tr class=""><td>参照：随机挑选的 15 个分子</td><td class="num">0.387</td><td class="num">0.059</td></tr><tr class=""><td>参照：降维前的预测概率空间</td><td class="num">0.762</td><td class="num">0.205</td></tr><tr class=""><td>参照：降维前的指纹空间</td><td class="num">0.708</td><td class="num">0.174</td></tr></tbody></table></div>
+      <p id="res-take" style="margin-top:10px" data-snap="res-take">两项指标上气味地图都高于结构地图，差值的 95% 置信区间（配对 bootstrap，5000 次）都不包含 0；两张地图都远高于随机挑选（0.387）。降到二维会损失一部分邻近关系，结构地图损失更多：结构从 0.708 降到 0.647，气味只从 0.762 降到 0.752。</p>
       <details class="supp small">
-        <summary data-i18n="supp.summary"></summary>
-        <p id="supp-text" style="margin-top:8px"></p>
+        <summary data-i18n="supp.summary">补充指标：主要预测描述词一致比例（有循环论证成分）</summary>
+        <p id="supp-text" style="margin-top:8px" data-snap="supp-text">对全部 5072 个分子，计算地图上最近 15 个邻居中主要预测描述词（预测概率最高的描述词）与它相同的比例：气味地图 0.703，结构地图 0.453。这个指标天然偏向气味地图，因为气味地图本身就是用这些预测概率画出来的，所以只作为补充，不作为结论依据。</p>
       </details>
     </section>
 
     <section id="limits">
-      <h2 data-sec="1" data-i18n="about.limits">Limitations</h2>
+      <h2 data-sec="1" data-i18n="about.limits" data-no="5.4">局限</h2>
       <ul class="plain">
-        <li data-i18n="limits.1"></li>
-        <li data-i18n="limits.2"></li>
-        <li data-i18n="limits.3"></li>
-        <li data-i18n="limits.4"></li>
-        <li data-i18n="limits.5"></li>
+        <li data-i18n="limits.1">地图反映的是模型学到的气味表征，不是对人真实嗅觉感知的测量。</li>
+        <li data-i18n="limits.2">UMAP 降维会扭曲距离：局部的邻近关系比较可靠，远距离以及不同区域之间的相对位置不宜解读。</li>
+        <li data-i18n="limits.3">气味预测本身有误差，点的位置和颜色都继承了这些误差；未参与训练的分子误差可能更大。</li>
+        <li data-i18n="limits.4">本地图只讨论有机分子，硫化氢等小分子无机气味物质未纳入；这类物质在部分食品中很重要，例如硫化氢与加热乳、UHT 奶的蒸煮味和硫味有关。</li>
+        <li data-i18n="limits.5">颜色和位置只反映气味的类别，不反映气味强度、阈值和在食品中的实际贡献。</li>
       </ul>
     </section>
 
     <section id="data">
-      <h2 data-sec="1" data-i18n="about.data">Data, licenses &amp; citations</h2>
-      <p data-i18n-html="footer.data"></p>
-      <p data-i18n-html="footer.ref"></p>
-      <p data-i18n-html="footer.kb"></p>
-      <p id="excluded-note"></p>
+      <h2 data-sec="1" data-i18n="about.data" data-no="5.5">数据、许可与引用</h2>
+      <p data-i18n-html="footer.data"><b>数据与致谢：</b>气味预测来自本站<a href="../odor-predictor/">气味预测</a>的图神经网络，训练数据来自 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC），由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始气味标签，页面只展示模型预测。<b>模型及预测结果仅供非商业学术演示。</b></p>
+      <p data-i18n-html="footer.ref"><b>参考工作：</b>Lee BK, Mayhew EJ, Sanchez-Lengeling B, et al. A principal odor map unifies diverse tasks in olfactory perception. <i>Science</i> 2023, 381(6661): 999-1006. <a href="https://doi.org/10.1126/science.ade4401" target="_blank" rel="noopener">doi:10.1126/science.ade4401</a>。本页借鉴这一思路，用本站模型的预测和 UMAP 绘制，不是该论文的结果。</p>
+      <p data-i18n-html="footer.kb"><b>分子名称与食品：</b>来自本站<a href="../flavor-kb/">风味知识库</a>（Dunkel et al. 2014；FlavorDB2，Garg et al., <i>NAR</i> 2018，CC BY-NC-SA 3.0）或 PubChem。</p>
+      <p id="excluded-note" data-snap="excluded-note">本地图与风味原料检索使用同一个候选库，共 5072 个有机分子。已移除 47 个非风味分子：不含碳的无机物（包括硫化氢、氨、二氧化硫等无机气味物质）、有机硅（如 D6 硅氧烷，GC-MS 色谱柱流失的常见杂质）、非挥发性物质，以及原始数据中只以混合物形式出现的条目（其气味标签描述的是混合物，不能对应到单个分子）。</p>
       <details class="small">
-        <summary data-i18n="excluded.summary">Molecules removed from the library</summary>
-        <ul id="excluded-list" style="margin-top:6px"></ul>
+        <summary data-i18n="excluded.summary">查看移除的分子及原因</summary>
+        <ul id="excluded-list" style="margin-top:6px" data-snap="excluded-list"><li><b>无机物（不含碳，另含碳酸）</b> (32): hydrochloric acid, Ammonia, Water, sterile filtered, Hydrogen carbonate;hydron, Metaphosphoric Acid, Dihydrogen phosphate;hydron, Hydron;phosphono phosphate, Hydrogen sulfate;hydron, Hydron;sulfite, sulfur dioxide, Potassium Nitrate, Metasilicic acid, Silica, Tetraborate(2-), hydrogen peroxide, Perborate(2-), Orthosilicic acid, hydrogen sulfide, Aluminum Cation, Helium, Potassium Cation, Nitrous Oxide, Calcium Iodate, Bismuth-oxygen, Calcium Oxide, CID 73689919, Copper oxide, Magnesium Oxide, Titanium dioxide, Vanadium oxide (V2O5), Desitin, Zinc</li><li><b>原始数据只以混合物形式出现</b> (11): CID 524257, 1-(2,6,6-Trimethyl-2-cyclohexen-1-yl)-3-pentanone, 1-(5-Cyanopyridin-2-yl)-3-[2-(6-fluoro-2-hydroxy-3-propanoylphenyl)cyclopropyl]urea, Glycerides, palm-oil mono- and di-, hydrogenated, 3-oxooctanoates, 3-Oxodecanoic acid, Glycerides, palm-oil mono- and di-, hydrogenated, 3-oxododecanoates, 3-Oxotetradecanoic acid, Methanediol, (2-methylphenyl)-, GlyTouCan:G09597LJ, 1,5-Dihydroxypentan-3-yl dihydrogen phosphate, Triethanolamine</li><li><b>非挥发性、与气味无关</b> (2): 1-Popc, Anthocyanins</li><li><b>有机硅</b> (2): Allyldimethylsilane, Dodecamethylcyclohexasiloxane</li></ul>
       </details>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p data-i18n-html="footer.site"></p>
+      <p data-i18n-html="footer.site">© 2026 崔京伟 · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">代码（GitHub）</a></p>
     </div>
   </footer>
 
-  <script src="../assets/i18n.js?v=20261021a" data-page-dict="i18n/"></script>
-  <script src="../assets/projects.js?v=20261021a"></script>
-  <script src="about.js?v=20261021a"></script>
+  <script src="../assets/projects.js?v=20261021b"></script>
+  <script src="about.js?v=20261021b"></script>
 </body>
 </html>

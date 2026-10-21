@@ -1,11 +1,29 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>7 Odor Perception Differences | Jingwei Cui</title>
+  <title>7 气味感知差异 | 崔京伟</title>
   <meta name="description" content="Using public ratings of 480 molecules by 55 people: how much of the variation comes from the molecule, personal preference and measurement noise.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261021a">
+  <link rel="canonical" href="https://redamancy564.github.io/perception-diversity/">
+  <meta name="theme-color" content="#fbfaf7">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="崔京伟 Jingwei Cui">
+  <meta property="og:title" content="7 气味感知差异 | 崔京伟">
+  <meta property="og:description" content="Using public ratings of 480 molecules by 55 people: how much of the variation comes from the molecule, personal preference and measurement noise.">
+  <meta property="og:url" content="https://redamancy564.github.io/perception-diversity/">
+  <meta property="og:image" content="https://redamancy564.github.io/assets/og/perception-diversity.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="7 气味感知差异 | 崔京伟">
+  <meta name="twitter:description" content="Using public ratings of 480 molecules by 55 people: how much of the variation comes from the molecule, personal preference and measurement noise.">
+  <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/perception-diversity.jpg">
+  <link rel="stylesheet" href="../assets/style.css?v=20261021b">
+  <script src="../assets/i18n.js?v=20261021b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -53,82 +71,81 @@
 
   <main class="container viz">
     <section class="hero">
-      <h1 data-i18n="hero.title">Decomposing Individual Differences in Odor Ratings</h1>
+      <h1 data-i18n="hero.title" data-no="7">人群嗅觉评分差异的来源分解</h1>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool" aria-current="page">工具</a>
         <a href="about.html" data-i18n="nav.about">方法与来源</a>
       </nav>
-      <p class="small muted" id="hero-data" style="margin-top:8px"></p>
-      <p class="status muted" id="load-status" data-i18n="loading" aria-live="polite"></p>
+      <p class="small muted" id="hero-data" style="margin-top:8px" data-snap="hero-data">数据：55 名受试者对 480 个分子（每个分子两个浓度）的评价，共 55,000 条记录（Keller &amp; Vosshall, 2016）。所有结果都是预先计算的。</p>
+      <p class="status muted" id="load-status" data-i18n="loading" aria-live="polite">正在加载数据……</p>
     </section>
 
     <section class="section" id="variance">
-      <h2 data-sec="1" data-i18n="var.title">Sources of rating differences</h2>
+      <h2 data-sec="1" data-i18n="var.title" data-no="7.1">评分差异的来源</h2>
       <div class="viz-box">
-        <p class="viz-sub" data-i18n="var.sub"></p>
-        <svg id="var-svg" role="img" data-i18n-attr="aria-label:var.chart"></svg>
-        <div class="legend" id="var-legend"></div>
+        <p class="viz-sub" data-i18n="var.sub">全部 55 人，原始分数</p>
+        <svg id="var-svg" role="img" data-i18n-attr="aria-label:var.chart" aria-label="评分差异的来源" data-snap-h style="--snap-h: 112px; --snap-h-wide: 112px"></svg>
+        <div class="legend" id="var-legend" data-snap="var-legend"><span><i class="" style="background:var(--s1)"></i>分子本身</span><span><i class="" style="background:var(--s2)"></i>浓度</span><span><i class="" style="background:var(--s3)"></i>个人口味</span><span><i class="" style="background:var(--s4)"></i>个人整体习惯</span><span><i class="" style="background:var(--s5)"></i>测量噪声</span></div>
       </div>
-      <p id="var-hero"></p>
-      <p id="var-take"></p>
+      <p id="var-hero" data-snap="var-hero">愉悦度的可重复差异中有 <b>58%</b> 来自个人偏好（95% CI 51% 至 66%）；强度只有 <b>18%</b>（95% CI 5% 至 31%）。</p>
+      <p id="var-take" data-snap="var-take">单次评分中约 47% 是噪声。</p>
     </section>
 
     <section class="section" id="spread">
-      <h2 data-sec="1" data-i18n="spread.title">Ratings of one molecule across people</h2>
+      <h2 data-sec="1" data-i18n="spread.title" data-no="7.2">同一分子的评分分布</h2>
       <div class="ctl">
-        <label for="spread-select" data-i18n="spread.pick">Molecule</label>
-        <select id="spread-select"></select>
+        <label for="spread-select" data-i18n="spread.pick">分子</label>
+        <select id="spread-select" data-snap="spread-select"><option value="0" selected="">vanillin</option><option value="1">Methyl thiobutyrate</option><option value="2">isovaleric acid</option><option value="3">ethyl butyrate</option><option value="4">2-Methoxy-3-methylpyrazine</option><option value="5">isoamyl alcohol</option><option value="6">delta-Undecalactone</option><option value="7">coumarin</option><option value="8">Linalool</option><option value="9">Androstadienone</option></select>
       </div>
       <div class="viz-box">
-        <p class="viz-title" id="spread-title"></p>
-        <p class="viz-sub" id="spread-sub"></p>
-        <svg id="spread-svg" role="img" data-i18n-attr="aria-label:spread.aria"></svg>
+        <p class="viz-title" id="spread-title" data-snap="spread-title">vanillin（高浓度，稀释 1/10）的愉悦度</p>
+        <p class="viz-sub" id="spread-sub" data-snap="spread-sub">每个点是一位匿名受试者；55 人中 53 人闻到（共 55 人测试）</p>
+        <svg id="spread-svg" role="img" data-i18n-attr="aria-label:spread.aria" aria-label="所选分子的个人愉悦度分布" data-snap-h style="--snap-h: 244px; --snap-h-wide: 272px"></svg>
       </div>
-      <p class="small" id="spread-note"></p>
+      <p class="small" id="spread-note" data-snap="spread-note">标准差 15：在 479 个至少 45 人闻到的刺激中，争议程度排第 478（1 = 争议最大；标准差中位数 25）。</p>
     </section>
 
     <section class="section" id="predict">
-      <h2 data-sec="1" data-i18n="pred.title">Predicting a new participant's ratings</h2>
-      <p data-i18n="pred.intro"></p>
+      <h2 data-sec="1" data-i18n="pred.title" data-no="7.3">预测新受试者的评分</h2>
+      <p data-i18n="pred.intro">只用一位新受试者对 5 个气味的评分，预测其对其他气味的喜好；测试对象是模型训练时没见过的匿名受试者。</p>
       <div class="ctl">
-        <label for="demo-select" data-i18n="pred.pick">Anonymous test participant</label>
-        <select id="demo-select"></select>
-        <span class="seg" role="group" data-i18n-attr="aria-label:pred.toggle">
-          <button type="button" id="btn-model" aria-pressed="true" data-i18n="pred.btn.model">Model</button>
-          <button type="button" id="btn-panel" aria-pressed="false" data-i18n="pred.btn.panel">Panel average only</button>
+        <label for="demo-select" data-i18n="pred.pick">匿名测试受试者</label>
+        <select id="demo-select" data-snap="demo-select"><option value="0">P55</option><option value="1">P30</option><option value="2">P50</option><option value="3">P49</option><option value="4" selected="">P18</option><option value="5">P06</option><option value="6">P35</option><option value="7">P47</option></select>
+        <span class="seg" role="group" data-i18n-attr="aria-label:pred.toggle" aria-label="预测方式">
+          <button type="button" id="btn-model" aria-pressed="true" data-i18n="pred.btn.model">模型</button>
+          <button type="button" id="btn-panel" aria-pressed="false" data-i18n="pred.btn.panel">只用群体平均</button>
         </span>
       </div>
-      <p class="small" style="margin:6px 0 0" id="demo-known"></p>
-      <p data-i18n="pred.conclusion" style="margin-top:12px"></p>
+      <p class="small" style="margin:6px 0 0" id="demo-known" data-snap="demo-known">已知的 5 个评分（愉悦度，0 到 100）： beta-Alanine <b>24</b>、musk ketone (low) <b>4</b>、2-ethylhexyl acetate <b>52</b>、Butylated hydroxyanisole <b>65</b>、benzyl acetate <b>60</b></p>
+      <p data-i18n="pred.conclusion" style="margin-top:12px">只用 5 个评分时，模型仅比群体平均略好（误差低约 1.6%）；增加到 50 个评分，误差低约 5%。提升几乎全部来自估计这个人整体打分偏高还是偏低，模型仍学不到他具体喜欢哪些气味。</p>
       <div class="viz-box">
-        <p class="viz-title" id="demo-title"></p>
-        <p class="viz-sub" id="demo-sub"></p>
-        <svg id="demo-svg" role="img" data-i18n-attr="aria-label:pred.aria"></svg>
+        <p class="viz-title" id="demo-title" data-snap="demo-title">模型预测和真实评分（489 个气味）</p>
+        <p class="viz-sub" id="demo-sub" data-snap="demo-sub">相关 r = 0.50，误差 RMSE = 19.4；对比：只用群体平均 r = 0.50</p>
+        <svg id="demo-svg" role="img" data-i18n-attr="aria-label:pred.aria" aria-label="新受试者的预测评分与真实评分散点图" data-snap-h style="--snap-h: 320px; --snap-h-wide: 460px"></svg>
       </div>
-      <p class="small muted" id="demo-rule"></p>
+      <p class="small muted" id="demo-rule" data-snap="demo-rule">这 8 位受试者按「模型预测的相关」从最低到最高均匀选取，不是挑选效果最好的。</p>
     </section>
 
     <section class="section" id="segments">
-      <h2 data-sec="1" data-i18n="seg.title">Participant segments</h2>
-      <p id="seg-verdict"></p>
+      <h2 data-sec="1" data-i18n="seg.title" data-no="7.4">受试者群体</h2>
+      <p id="seg-verdict" data-snap="seg-verdict">这份数据中没有可靠的受试者群体，个体差异更像连续变化。</p>
       <div class="viz-box">
-        <p class="viz-title" data-i18n="seg.scores.title"></p>
-        <p class="viz-sub" data-i18n="seg.scores.sub"></p>
-        <svg id="scores-svg" role="img" data-i18n-attr="aria-label:seg.scores.title"></svg>
+        <p class="viz-title" data-i18n="seg.scores.title">55 位受试者在这个方向上的位置</p>
+        <p class="viz-sub" data-i18n="seg.scores.sub">每个点是一位匿名受试者</p>
+        <svg id="scores-svg" role="img" data-i18n-attr="aria-label:seg.scores.title" aria-label="55 位受试者在这个方向上的位置" data-snap-h style="--snap-h: 95px; --snap-h-wide: 95px"></svg>
       </div>
-      <p data-i18n="seg.scores.note"></p>
+      <p data-i18n="seg.scores.note">这个方向主要反映对气味强度的偏好。</p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p class="tool-src" data-i18n-html="footer.short"></p>
-      <p data-i18n-html="footer.site"></p>
+      <p class="tool-src" data-i18n-html="footer.short">数据为 CC0；受试者已匿名，人口学信息已删除。伦理、方法和局限见<a href="about.html#ethics">方法与来源</a>。</p>
+      <p data-i18n-html="footer.site">© 2026 崔京伟 · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">代码（GitHub）</a></p>
     </div>
   </footer>
 
-  <script src="../assets/i18n.js?v=20261021a" data-page-dict="i18n/"></script>
-  <script src="../assets/projects.js?v=20261021a"></script>
-  <script src="app.js?v=20261021a"></script>
+  <script src="../assets/projects.js?v=20261021b"></script>
+  <script src="app.js?v=20261021b"></script>
 </body>
 </html>

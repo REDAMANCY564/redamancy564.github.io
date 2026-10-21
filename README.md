@@ -188,6 +188,22 @@ git push
 
 **注意**：网页文字中不使用破折号（——）；联系方式只放邮箱，不放手机号。
 
+### 改完文字后：重新生成静态页面
+
+每个页面的 HTML 里已经写好了中文全文（访客打开时第一眼就是完整页面，不再先空白或先英文再跳动；不执行脚本也能读到中文）。英文仍由浏览器里的 `assets/i18n.js` 切换。所以改了下面任何一项之后，要运行一次生成脚本，再提交：
+
+- 任何 `i18n/zh.json`（全站或项目页）、`assets/profile.json`
+- 页面 HTML 里带 `data-i18n` 的元素、章节标题（`data-sec`）或 `<title>` / `description`
+- `assets/projects.js` 里的项目顺序或列表格式
+
+```powershell
+python tools/prerender.py           # 重写页面中的静态中文、编号、标题、分享标签和 sitemap.xml
+python tools/prerender.py --check   # 只检查：有页面没更新时列出并返回错误
+```
+
+脚本只改上面这些部分，页面里的其他内容保持不变。分享预览图（`assets/og/`）和主屏幕图标（`apple-touch-icon.png`）由 `python tools/make_og.py` 生成（需要本机的 Chrome），项目页面样子有较大变化时再运行。
+
+
 ### 上传前先在本地预览
 
 不要直接双击 HTML 文件：浏览器出于安全限制，不允许 `file://` 页面读取 JSON 和模型文件。在 `network` 文件夹运行：
@@ -204,6 +220,9 @@ python -m http.server 8000
 
 ```
 index.html              个人主页
+404.html                地址不存在时显示的页面（GitHub Pages 自动使用）
+robots.txt, sitemap.xml 搜索引擎用；sitemap.xml 由 tools/prerender.py 生成
+tools/                  prerender.py（写入静态中文与分享标签）、make_og.py（分享图与图标）
 assets/                 全站共用：样式、中英切换、个人信息、原子贡献绘图（contrib.js）
 odor-predictor/         3 气味预测
   index.html, app.js    页面与交互逻辑

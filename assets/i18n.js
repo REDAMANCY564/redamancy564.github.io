@@ -7,6 +7,13 @@
  * Dictionaries: shared  assets/i18n/<lang>.json  (path relative to this script)
  *               page    <data-page-dict>/<lang>.json  (attribute on this <script> tag, optional)
  * Usage in page code: await I18N.ready; I18N.t("key"); I18N.onChange(fn)
+ * Load this script in <head> (not deferred): the static HTML already holds the Chinese page
+ * (tools/prerender.py), so the language is decided before the first paint. Visitors of the other
+ * language get <html class="i18n-pending"> (body hidden by style.css) until their dictionary is
+ * applied, so they never see the wrong language and the page does not jump.
+ * Elements with data-snap="name" hold text that page scripts compute from data; the result is kept
+ * in the page dictionary as "snap.name" (tools/snapshot.py) and filled in at startup, so it is in
+ * place in either language before the page script has loaded its data.
  */
 (function () {
   const script = document.currentScript;
@@ -89,10 +96,51 @@
     onChange(fn) { listeners.push(fn); },
   };
 
-  I18N.ready = loadLang(I18N.lang).then(() => {
+  // The static HTML is written in this language (tools/prerender.py)
+  const root = document.documentElement;
+  const staticLang = (root.getAttribute("lang") || "").toLowerCase().startsWith("zh") ? "zh" : "en";
+  root.lang = I18N.lang === "zh" ? "zh-CN" : "en";
+  if (I18N.lang !== staticLang) root.classList.add("i18n-pending");
+  const domReady = new Promise(resolve => {
+    if (document.readyState !== "loading") resolve();
+    else document.addEventListener("DOMContentLoaded", resolve, { once: true });
+  });
+
+  function applySnaps() {
+    document.querySelectorAll("[data-snap]").forEach(el => {
+      const v = (dicts[I18N.lang] || {})["snap." + el.dataset.snap];
+      if (v !== undefined) el.innerHTML = v;
+    });
+  }
+  function startup() {
     I18N.apply();
+    applySnaps();
+    root.classList.remove("i18n-pending");
+  }
+
+  const dictReady = loadLang(I18N.lang);
+  // Other-language visitors: show the page as soon as the dictionary is here and the body has been
+  // parsed up to the footer (the scripts come after it), without waiting for large scripts to load.
+  dictReady.then(() => {
+    const early = () => {
+      if (!root.classList.contains("i18n-pending")) return true;
+      if (!document.querySelector(".site-footer")) return false;
+      startup();
+      return true;
+    };
+    if (early()) return;
+    const watch = new MutationObserver(() => { if (early()) watch.disconnect(); });
+    watch.observe(root, { childList: true, subtree: true });
+    domReady.then(() => watch.disconnect());
+  }, () => {});
+
+  I18N.ready = Promise.all([dictReady, domReady]).then(() => {
+    startup();
     const btn = document.getElementById("lang-toggle");
     if (btn) btn.addEventListener("click", () => I18N.setLang(I18N.lang === "zh" ? "en" : "zh"));
+  }, err => {
+    root.classList.remove("i18n-pending");   // show the static page rather than nothing
+    throw err;
   });
 
   window.I18N = I18N;

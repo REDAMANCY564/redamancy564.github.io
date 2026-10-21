@@ -1,11 +1,29 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Method &amp; sources | 2 Flavor Ingredient Finder | Jingwei Cui</title>
+  <title>方法与来源 | 2 风味原料检索 | 崔京伟</title>
   <meta name="description" content="Method, evaluation, limitations and data sources of Flavor Ingredient Search and Substitute Screening from Predicted Odor Descriptors.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261021a">
+  <link rel="canonical" href="https://redamancy564.github.io/ingredient-finder/about.html">
+  <meta name="theme-color" content="#fbfaf7">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="崔京伟 Jingwei Cui">
+  <meta property="og:title" content="方法与来源 | 2 风味原料检索 | 崔京伟">
+  <meta property="og:description" content="Method, evaluation, limitations and data sources of Flavor Ingredient Search and Substitute Screening from Predicted Odor Descriptors.">
+  <meta property="og:url" content="https://redamancy564.github.io/ingredient-finder/about.html">
+  <meta property="og:image" content="https://redamancy564.github.io/assets/og/ingredient-finder.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="方法与来源 | 2 风味原料检索 | 崔京伟">
+  <meta name="twitter:description" content="Method, evaluation, limitations and data sources of Flavor Ingredient Search and Substitute Screening from Predicted Odor Descriptors.">
+  <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/ingredient-finder.jpg">
+  <link rel="stylesheet" href="../assets/style.css?v=20261021b">
+  <script src="../assets/i18n.js?v=20261021b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 </head>
@@ -25,80 +43,79 @@
 
   <main class="container about">
     <div class="hero">
-      <h1 data-i18n="hero.title">Flavor Ingredient Search and Substitute Screening from Predicted Odor Descriptors</h1>
+      <h1 data-i18n="hero.title" data-no="2">基于气味描述词预测的风味原料检索及其替代物的筛选</h1>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool">工具</a>
         <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
       </nav>
     </div>
     <nav class="toc">
-      <a href="#overview" data-i18n="about.overview">Overview</a>
-      <a href="#method" data-i18n="about.method">Method</a>
-      <a href="#results" data-i18n="about.results">Results</a>
-      <a href="#limits" data-i18n="about.limits">Limitations</a>
-      <a href="#data" data-i18n="about.data">Data, licenses &amp; citations</a>
+      <a href="#overview" data-i18n="about.overview" data-no="2.1">概述</a>
+      <a href="#method" data-i18n="about.method" data-no="2.2">方法</a>
+      <a href="#results" data-i18n="about.results" data-no="2.3">结果</a>
+      <a href="#limits" data-i18n="about.limits" data-no="2.4">局限</a>
+      <a href="#data" data-i18n="about.data" data-no="2.5">数据、许可与引用</a>
     </nav>
 
     <section id="overview">
-      <h2 data-sec="1" data-i18n="about.overview">Overview</h2>
-      <p data-i18n="hero.intro"></p>
-      <p data-i18n="b.intro"></p>
-      <p data-i18n="about.practice"></p>
+      <h2 data-sec="1" data-i18n="about.overview" data-no="2.1">概述</h2>
+      <p data-i18n="hero.intro">调味师需要从数千种原料中挑选合适的分子：接到客户需求时要找出符合目标风味的原料，原料受限或断供时又要找到气味相近的替代品。这个工具用气味预测模型给出的气味轮廓来做这两件事：按目标风味检索原料，或为一个分子寻找替代原料。</p>
+      <p data-i18n="b.intro">气味相近但结构不同的分子可能避开原分子的法规、专利或供应问题。</p>
+      <p data-i18n="about.practice">找某种风味的候选物质通常比较费时。偏天然的需求，一般以「食品名 + 风味物质」为关键词查文献；不限食品、只要某种风味的，就要大量阅读文献。也可以问 AI，但就我的体会，它给出的基本是常用的几十种，很难覆盖全面。这个工具按预测的气味描述词在 5000 多个分子中检索，先把候选范围铺开，再由人筛选。找替代物时，除了风味，最关心的往往是法规。本页目前不显示法规状态，需要另行核查。</p>
     </section>
 
     <section id="method">
-      <h2 data-sec="1" data-i18n="about.method">Method</h2>
-      <h3 data-sec="2" data-i18n="tab.a">Find by flavor brief</h3>
-      <p data-i18n="a.score_note"></p>
-      <p data-i18n="a.score_why"></p>
+      <h2 data-sec="1" data-i18n="about.method" data-no="2.2">方法</h2>
+      <h3 data-sec="2" data-i18n="tab.a" data-no="2.2.1">按需求找原料</h3>
+      <p data-i18n="a.score_note">评分 = 想要的描述词预测概率的加权几何平均 × 不想要的描述词（1 − 预测概率）的加权几何平均；没有选不想要的描述词时，后一项取 1。权重：高 = 1，中 = 0.5，低 = 0.25。评分范围 0 到 1，页面上显示为 0 到 100。预测概率的高低因描述词而异：奶香、奶油、黄油的预测概率最高只有 34%、53%、64%，两三个这类描述词时得分在 30 到 40 之间已属较好的匹配；果香、青香等常见描述词的得分可以高得多。分数用于比较，不是及格线。</p>
+      <p data-i18n="a.score_why">用几何平均而不是加和，原因有两个。一是要求同时具备：任何一个想要的描述词概率很低，或者任何一个不想要的描述词概率很高，评分都会被明显拉低，不能靠其他描述词补回来。二是分数可以在不同检索之间比较：评分与选了多少个描述词无关，不会因为多选描述词而变高；要求越多、越难同时满足，最高分反而越低。评分只用于排序和比较，不是严格意义上的概率：各描述词的预测概率并不相互独立，几何平均也不对应概率的运算规则，所以不能把评分理解为「该分子同时具备这些气味的概率」。只选一个想要的描述词时，评分就等于它的预测概率，排序与下文评估中按单个描述词的排序相同。</p>
       <p id="unseen-note"></p>
-      <h3 data-sec="2" data-i18n="tab.b">Find substitutes</h3>
-      <p data-i18n="about.b_method"></p>
+      <h3 data-sec="2" data-i18n="tab.b" data-no="2.2.2">找替代原料</h3>
+      <p data-i18n="about.b_method">气味相似度是两个分子 138 个描述词预测概率向量的余弦相似度（在验证集上选定）；结构相似度是两者 Morgan 指纹（半径 2，2048 位）的 Tanimoto 系数。散点图展示库中每个分子与查询分子在这两方面的相似度。</p>
     </section>
 
     <section id="results">
-      <h2 data-sec="1" data-i18n="about.results">Results</h2>
+      <h2 data-sec="1" data-i18n="about.results" data-no="2.3">结果</h2>
       <p id="res-intro"></p>
-      <h3 data-sec="2" data-i18n="results.a_title"></h3>
-      <p class="small" data-i18n="results.a_text"></p>
+      <h3 data-sec="2" data-i18n="results.a_title" data-no="2.3.1">按需求检索：前 10 / 50 名的命中率</h3>
+      <p class="small" data-i18n="results.a_text">对每个描述词，在测试集中按预测概率排序，看前 10 个和前 50 个分子里有多少真的被标注了该描述词（precision@10 / @50），138 个描述词取平均。</p>
       <div class="table-wrap"><table id="res-a"></table></div>
-      <p data-i18n="results.a_take" style="margin-top:8px"></p>
-      <h3 data-sec="2" data-i18n="results.b_title" style="margin-top:20px"></h3>
-      <p class="small" data-i18n="results.b_text"></p>
+      <p data-i18n="results.a_take" style="margin-top:8px">模型排在前面的分子比随机排序准确得多，但和简单的分子指纹 + 逻辑回归基本持平，没有优势。可能的原因：单个描述词的排序主要取决于少数典型结构片段（如内酯环、硫原子），分子指纹也能抓住这些片段。</p>
+      <h3 data-sec="2" data-i18n="results.b_title" style="margin-top:20px" data-no="2.3.2">找替代物：最相近分子的真实气味重合度</h3>
+      <p class="small" data-i18n="results.b_text">对每个测试集分子，找出最相近的 10 个分子，计算它们与该分子真实气味标签的平均重合度（Jaccard，0 到 1，越高越像）。比较三种找法：按预测气味轮廓（本页的「气味相似度」）、按分子结构（Tanimoto）和随机挑选。</p>
       <div class="table-wrap"><table id="res-b"></table></div>
       <p id="res-b-take" style="margin-top:8px"></p>
     </section>
 
     <section id="limits">
-      <h2 data-sec="1" data-i18n="about.limits">Limitations</h2>
+      <h2 data-sec="1" data-i18n="about.limits" data-no="2.4">局限</h2>
       <ul class="plain">
-        <li data-i18n="limits.1"></li>
-        <li data-i18n="limits.2"></li>
-        <li data-i18n="limits.3"></li>
-        <li data-i18n="limits.4"></li>
+        <li data-i18n="limits.1">基于模型预测的气味类别，不代表气味强度、阈值和实际感官表现。</li>
+        <li data-i18n="limits.2">未考虑稳定性、溶解性、成本和可获得性。</li>
+        <li data-i18n="limits.3">替代原料的安全性和合规性必须另行确认；页面不显示地区法规状态，请查阅官方文件。</li>
+        <li data-i18n="limits.4">检索结果是候选清单，需要调味师判断和感官验证。</li>
       </ul>
     </section>
 
     <section id="data">
-      <h2 data-sec="1" data-i18n="about.data">Data, licenses &amp; citations</h2>
+      <h2 data-sec="1" data-i18n="about.data" data-no="2.5">数据、许可与引用</h2>
       <p class="small" id="excluded-note" style="margin-top:12px"></p>
       <details class="small">
-        <summary data-i18n="excluded.summary">Molecules removed from the library</summary>
+        <summary data-i18n="excluded.summary">查看移除的分子及原因</summary>
         <ul id="excluded-list" style="margin-top:6px"></ul>
       </details>
-      <p data-i18n-html="footer.data"></p>
-      <p data-i18n-html="footer.kb"></p>
+      <p data-i18n-html="footer.data"><b>数据与致谢：</b>气味模型用 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC）的数据训练，由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始气味标签，页面只展示模型预测。<b>模型及预测结果仅供非商业学术演示。</b></p>
+      <p data-i18n-html="footer.kb"><b>天然存在食品：</b>来自本站<a href="../flavor-kb/">风味知识库</a>，源自 FlavorDB2（Garg et al., <i>NAR</i> 2018，CC BY-NC-SA 3.0）。<b>分子名称：</b>风味知识库或 PubChem。</p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p data-i18n-html="footer.site"></p>
+      <p data-i18n-html="footer.site">© 2026 崔京伟 · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">代码（GitHub）</a></p>
     </div>
   </footer>
 
-  <script src="../assets/i18n.js?v=20261021a" data-page-dict="i18n/"></script>
-  <script src="../assets/projects.js?v=20261021a"></script>
-  <script src="about.js?v=20261021a"></script>
+  <script src="../assets/projects.js?v=20261021b"></script>
+  <script src="about.js?v=20261021b"></script>
 </body>
 </html>

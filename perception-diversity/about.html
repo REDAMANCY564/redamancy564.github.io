@@ -1,11 +1,29 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Method &amp; sources | 7 Odor Perception Differences | Jingwei Cui</title>
+  <title>方法与来源 | 7 气味感知差异 | 崔京伟</title>
   <meta name="description" content="Data processing, method, full results, limitations and data ethics of Decomposing Individual Differences in Odor Ratings (Keller and Vosshall 2016 data).">
-  <link rel="stylesheet" href="../assets/style.css?v=20261021a">
+  <link rel="canonical" href="https://redamancy564.github.io/perception-diversity/about.html">
+  <meta name="theme-color" content="#fbfaf7">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="崔京伟 Jingwei Cui">
+  <meta property="og:title" content="方法与来源 | 7 气味感知差异 | 崔京伟">
+  <meta property="og:description" content="Data processing, method, full results, limitations and data ethics of Decomposing Individual Differences in Odor Ratings (Keller and Vosshall 2016 data).">
+  <meta property="og:url" content="https://redamancy564.github.io/perception-diversity/about.html">
+  <meta property="og:image" content="https://redamancy564.github.io/assets/og/perception-diversity.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="方法与来源 | 7 气味感知差异 | 崔京伟">
+  <meta name="twitter:description" content="Data processing, method, full results, limitations and data ethics of Decomposing Individual Differences in Odor Ratings (Keller and Vosshall 2016 data).">
+  <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/perception-diversity.jpg">
+  <link rel="stylesheet" href="../assets/style.css?v=20261021b">
+  <script src="../assets/i18n.js?v=20261021b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -52,152 +70,151 @@
 
   <main class="container about viz">
     <div class="hero">
-      <h1 data-i18n="hero.title">Decomposing Individual Differences in Odor Ratings</h1>
+      <h1 data-i18n="hero.title" data-no="7">人群嗅觉评分差异的来源分解</h1>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool">工具</a>
         <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
       </nav>
     </div>
     <nav class="toc">
-      <a href="#overview" data-i18n="about.overview">Overview</a>
-      <a href="#processing" data-i18n="proc.title">Data processing</a>
-      <a href="#method" data-i18n="about.method">Method</a>
-      <a href="#results" data-i18n="about.results">Results</a>
-      <a href="#limits" data-i18n="about.limits">Limitations</a>
-      <a href="#ethics" data-i18n="eth.title">Data ethics</a>
-      <a href="#data" data-i18n="about.data">Data, licenses &amp; citations</a>
+      <a href="#overview" data-i18n="about.overview" data-no="7.1">概述</a>
+      <a href="#processing" data-i18n="proc.title" data-no="7.2">数据处理</a>
+      <a href="#method" data-i18n="about.method" data-no="7.3">方法</a>
+      <a href="#results" data-i18n="about.results" data-no="7.4">结果</a>
+      <a href="#limits" data-i18n="about.limits" data-no="7.5">局限</a>
+      <a href="#ethics" data-i18n="eth.title" data-no="7.6">数据伦理</a>
+      <a href="#data" data-i18n="about.data" data-no="7.7">数据、许可与引用</a>
     </nav>
-    <p class="status muted" id="load-status" data-i18n="loading" aria-live="polite"></p>
+    <p class="status muted" id="load-status" data-i18n="loading" aria-live="polite">正在加载数据……</p>
 
     <section id="overview">
-      <h2 data-sec="1" data-i18n="about.overview">Overview</h2>
-      <p data-i18n="hero.intro"></p>
-      <p class="small muted" id="hero-data"></p>
+      <h2 data-sec="1" data-i18n="about.overview" data-no="7.1">概述</h2>
+      <p data-i18n="hero.intro">本项目用公开的人类嗅觉评价数据，分析这种差异从何而来，并尝试预测「谁会喜欢它」。</p>
+      <p class="small muted" id="hero-data" data-snap="hero-data">数据：55 名受试者对 480 个分子（每个分子两个浓度）的评价，共 55,000 条记录（Keller &amp; Vosshall, 2016）。所有结果都是预先计算的。</p>
       <ul class="plain">
-        <li data-i18n="res.1"></li>
-        <li data-i18n="res.2"></li>
-        <li data-i18n="res.3"></li>
-        <li data-i18n="res.4"></li>
+        <li data-i18n="res.1">愉悦度主要由个人口味决定：可重复的差异中约六成来自个人；强度则主要由分子和浓度决定。这个结论在各种剔除规则和处理方式下都不变。</li>
+        <li data-i18n="res.2">模型能较好地预测群体平均评分，图神经网络的气味特征优于结构指纹（强度上明显）；但个人偏好中除整体偏移之外的部分，用少量评分几乎学不到。</li>
+        <li data-i18n="res.3">没有可靠的受试者群体；个人差异是连续的，唯一可重复的方向主要反映对浓烈气味的接受度。</li>
+        <li data-i18n="res.4">对消费者研究的启示：单次评分噪声很大，需要重复测试；先做好群体预测，再按可验证的维度调整，比假设存在固定人群更稳妥。</li>
       </ul>
-      <p data-i18n="about.practice"></p>
+      <p data-i18n="about.practice">做感官评价时，评价员之间确实有差异，主要在气味敏感度和强度判断上，通常靠筛选评价员、统一描述词、培训和标准化实验条件来减小。同样的奶香或腥味，不同人的接受程度也不同。本项目的结果也显示，个人差异主要体现在喜好上，而且很难从分子和少量评分中预测。我认为个人喜好还受生活经验和饮食习惯影响，但这份数据没有相关信息，无法检验。</p>
     </section>
 
     <section id="processing">
-      <h2 data-sec="1" data-i18n="proc.title">Data processing</h2>
-      <p data-i18n="proc.intro"></p>
-      <ol class="steps" id="flow"></ol>
-      <div class="table-wrap counts" id="qc-tiles"></div>
-      <h3 data-sec="2" data-i18n="proc.issues.title">Identifier problems found and how they were resolved</h3>
-      <div class="table-wrap"><table class="data" id="issues-table"></table></div>
-      <p class="small muted" data-i18n="proc.issues.note"></p>
-      <h3 data-sec="2" data-i18n="proc.retest.title">How consistent is each person?</h3>
-      <p data-i18n="proc.retest.text"></p>
+      <h2 data-sec="1" data-i18n="proc.title" data-no="7.2">数据处理</h2>
+      <p data-i18n="proc.intro">数据进入分析前，先统一标签、再做质量检查。原则是：把同一个东西的不同写法对应到一起，问题只标记不删除，每一步都写入处理日志。</p>
+      <ol class="steps" id="flow" data-snap="flow"><li>原始表格<span class="sep"></span>55,000 行，每行是一个人对一个气味刺激的评价</li><li>统一分子标识<span class="sep"></span>CAS 校验位、CAS / CID / 名称三方比对，480 个分子统一到 InChIKey，修正 3 处</li><li>统一浓度和量表<span class="sep"></span>稀释倍数记为对数，并标出每个分子的高 / 低浓度；13,711 条「闻不到」保持缺失</li><li>质量检查<span class="sep"></span>缺失、越界、重复；每人的重测一致性和打分习惯；只标记，不删除</li><li>分析<span class="sep"></span>差异分解、个性化预测、分群；剔除规则做前后对比</li></ol>
+      <div class="table-wrap counts" id="qc-tiles" data-snap="qc-tiles"><table class="data"><tbody><tr><td class="num">55,000</td><td>条记录</td></tr><tr><td class="num">0</td><td>条越界、重复或缺分记录</td></tr><tr><td class="num">9</td><td>个分子的标识需要处理</td></tr><tr><td class="num">25%</td><td>的评价是「闻不到」</td></tr></tbody></table></div>
+      <h3 data-sec="2" data-i18n="proc.issues.title" data-no="7.2.1">发现的标识问题与处理方式</h3>
+      <div class="table-wrap"><table class="data" id="issues-table" data-snap="issues-table"><thead><tr><th>分子</th><th>问题</th><th>处理</th></tr></thead><tbody><tr><td>isobutyl acetate, 6,10-Dimethyl-5,9-undecadien-2-one</td><td>CID 列里填的是 CAS 号</td><td>按 CAS 或名称在 PubChem 查到正确的 CID</td></tr><tr><td>butanediol (CID 262)</td><td>名称有歧义（如没写是哪个异构体），但 CID 和 CAS 一致</td><td>按 CID 和 CAS 处理</td></tr><tr><td>D-(-)-Ribose (CID 5779)</td><td>名称在 PubChem 查不到，CAS 指向另一种环形式</td><td>无法自动判断，保留表中 CID；几乎无味，对结论影响很小</td></tr><tr><td>isobutyl acetate (CID 8038)</td><td>CAS 号 109-19-0 的校验位不对，不是有效的 CAS 号</td><td>按名称确定分子，PubChem 记录的 CAS 为 110-19-0</td></tr><tr><td>dimethoxy benzene (CID 9016)</td><td>名称有歧义（如没写是哪个异构体），但 CID 和 CAS 一致</td><td>按 CID 和 CAS 处理</td></tr><tr><td>Methylcyclopentenolone (CID 61209)</td><td>名称有歧义（如没写是哪个异构体），但 CID 和 CAS 一致</td><td>按 CID 和 CAS 处理</td></tr><tr><td>Trivertal (CID 93375)</td><td>CAS 号代表异构体混合物，PubChem 把它归到另一个异构体</td><td>人工判断：保留表中的 CID（Trivertal 通常所指的结构），理由记入日志</td></tr><tr><td>omega-6-Hexadecenlactone (CID 6753 → 6515677)</td><td>表中的 CID 指向另一种结构（葵子麝香，一种硝基麝香），名称和 CAS 都指向黄葵内酯</td><td>二对一：改用名称和 CAS 一致指向的 CID</td></tr><tr><td>Ambrox (CID 10857465)</td><td>名称有歧义（如没写是哪个异构体），但 CID 和 CAS 一致</td><td>按 CID 和 CAS 处理</td></tr></tbody></table></div>
+      <p class="small muted" data-i18n="proc.issues.note">另有 4 对分子去掉立体信息后结构相同（如香叶醇和橙花醇），图神经网络无法区分，在「新分子」测试中放在同一组。</p>
+      <h3 data-sec="2" data-i18n="proc.retest.title" data-no="7.2.2">个人重测一致性</h3>
+      <p data-i18n="proc.retest.text">每位受试者对 20 个分子（每个两个浓度）测了两次。两次打分的相关越高，说明这个人越稳定。</p>
       <div class="viz-box" id="retest-box">
-        <p class="viz-title" data-i18n="proc.retest.chart"></p>
-        <p class="viz-sub" data-i18n="proc.retest.sub"></p>
-        <svg id="retest-svg" role="img" data-i18n-attr="aria-label:proc.retest.chart"></svg>
-        <div class="legend" id="retest-legend"></div>
+        <p class="viz-title" data-i18n="proc.retest.chart">每位受试者的重测一致性</p>
+        <p class="viz-sub" data-i18n="proc.retest.sub">每个点是一位匿名受试者；只用两次都闻到的刺激（每人 10 到 40 对）</p>
+        <svg id="retest-svg" role="img" data-i18n-attr="aria-label:proc.retest.chart" aria-label="每位受试者的重测一致性" data-snap-h style="--snap-h: 321px; --snap-h-wide: 222px"></svg>
+        <div class="legend" id="retest-legend" data-snap="retest-legend"><span><i class="dot" style="background:var(--s1)"></i>强度重测 r ≥ 0.2</span><span><i class="dot" style="background:var(--s2)"></i>强度重测 r &lt; 0.2（11 人，敏感性分析中剔除）</span></div>
       </div>
-      <p class="small" id="retest-note"></p>
-      <h3 data-sec="2" data-i18n="proc.desc.title">Descriptor mapping</h3>
-      <p data-i18n="proc.desc.text"></p>
-      <div class="table-wrap"><table class="data" id="desc-table"></table></div>
-      <p class="small" data-i18n-html="proc.files"></p>
+      <p class="small" id="retest-note" data-snap="retest-note">个人的重测一致性只是中等，但群体平均非常稳定：把受试者随机分成两半，两半算出的各气味平均分高度一致（折半信度：愉悦度 0.91，强度 0.96）。噪声主要在个人层面。</p>
+      <h3 data-sec="2" data-i18n="proc.desc.title" data-no="7.2.3">描述词映射</h3>
+      <p data-i18n="proc.desc.text">数据中的 20 个描述词和本站气味模型的 138 个标签说法不同。只有词义相同、而且数据也支持（受试者评分与模型预测的相关 ≥ 0.3）的才映射；分析时直接使用原有的 20 个描述词。</p>
+      <div class="table-wrap"><table class="data" id="desc-table" data-snap="desc-table"><thead><tr><th>数据中的描述词</th><th>拟对应的模型标签</th><th class="num">数据相关</th><th>与评分最相关的 3 个模型标签</th><th>结论</th></tr></thead><tbody><tr><td>edible</td><td>-</td><td class="num">-</td><td class="small">caramellic 0.22; coffee 0.19; alliaceous 0.18</td><td>不映射：没有对应标签</td></tr><tr><td>bakery</td><td>-</td><td class="num">-</td><td class="small">caramellic 0.23; chocolate 0.22; burnt 0.19</td><td>不映射：只是相关</td></tr><tr><td>sweet</td><td>sweet</td><td class="num">0.45</td><td class="small">raspberry 0.49; sweet 0.45; strawberry 0.42</td><td><span class="pass">映射</span></td></tr><tr><td>fruit</td><td>fruity</td><td class="num">0.50</td><td class="small">banana 0.52; melon 0.51; apple 0.51</td><td><span class="pass">映射</span></td></tr><tr><td>fish</td><td>fishy</td><td class="num">0.19</td><td class="small">cabbage 0.41; alliaceous 0.37; garlic 0.34</td><td>不映射：词相同，数据不支持</td></tr><tr><td>garlic</td><td>garlic</td><td class="num">0.32</td><td class="small">cabbage 0.40; savory 0.34; alliaceous 0.34</td><td><span class="pass">映射</span></td></tr><tr><td>spices</td><td>spicy</td><td class="num">0.22</td><td class="small">smoky 0.31; aromatic 0.27; medicinal 0.26</td><td>不映射：词相同，数据不支持</td></tr><tr><td>cold</td><td>cooling</td><td class="num">0.16</td><td class="small">citrus 0.29; pine 0.28; herbal 0.27</td><td>不映射：只是相关</td></tr><tr><td>sour</td><td>sour</td><td class="num">0.24</td><td class="small">cabbage 0.41; cheesy 0.33; tomato 0.31</td><td>不映射：词相同，数据不支持</td></tr><tr><td>burnt</td><td>burnt</td><td class="num">0.35</td><td class="small">savory 0.42; roasted 0.40; meaty 0.37</td><td><span class="pass">映射</span></td></tr><tr><td>acid</td><td>sour</td><td class="num">-0.02</td><td class="small">terpenic 0.17; gassy 0.13; musty 0.12</td><td>不映射：只是相关</td></tr><tr><td>warm</td><td>warm</td><td class="num">0.05</td><td class="small">aromatic 0.21; vanilla 0.20; powdery 0.19</td><td>不映射：词相同，数据不支持</td></tr><tr><td>musky</td><td>musk</td><td class="num">-0.18</td><td class="small">cooked 0.27; cabbage 0.27; savory 0.25</td><td>不映射：词相同，数据不支持</td></tr><tr><td>sweaty</td><td>sweaty</td><td class="num">0.09</td><td class="small">cabbage 0.36; cooked 0.29; cheesy 0.27</td><td>不映射：词相同，数据不支持</td></tr><tr><td>ammonia/urinous</td><td>-</td><td class="num">-</td><td class="small">garlic 0.15; sulfurous 0.14; fishy 0.13</td><td>不映射：只是相关</td></tr><tr><td>decayed</td><td>-</td><td class="num">-</td><td class="small">cabbage 0.34; meaty 0.30; cooked 0.30</td><td>不映射：只是相关</td></tr><tr><td>wood</td><td>woody</td><td class="num">0.11</td><td class="small">earthy 0.18; savory 0.18; fishy 0.15</td><td>不映射：词相同，数据不支持</td></tr><tr><td>grass</td><td>grassy</td><td class="num">0.20</td><td class="small">leafy 0.27; lemon 0.26; violet 0.25</td><td>不映射：词相同，数据不支持</td></tr><tr><td>flower</td><td>floral</td><td class="num">0.51</td><td class="small">floral 0.51; orris 0.48; jasmin 0.48</td><td><span class="pass">映射</span></td></tr><tr><td>chemical</td><td>-</td><td class="num">-</td><td class="small">pine 0.27; camphoreous 0.27; amber 0.26</td><td>不映射：只是相关</td></tr></tbody></table></div>
+      <p class="small" data-i18n-html="proc.files">受试者说的 musky 和调香行业的 musk 不是一回事（相关为负），fish、sweaty 也更接近含硫气味。消费者用语和专家用语需要分开对待。完整映射表：<a href="data/mappings/molecules.csv">分子</a>、<a href="data/mappings/descriptors.csv">描述词</a>、<a href="data/mappings/concentrations.csv">浓度</a>、<a href="data/mappings/scales.csv">量表</a>；<a href="data/processing_log.json">处理日志</a>。</p>
     </section>
 
     <section id="method">
-      <h2 data-sec="1" data-i18n="about.method">Method</h2>
-      <h3 data-sec="2" data-i18n="var.title">Sources of rating differences</h3>
-      <p data-i18n="var.intro"></p>
-      <p id="var-method"></p>
-      <h3 data-sec="2" data-i18n="pred.title">Predicting a new participant's ratings</h3>
-      <p data-i18n="pred.res.text"></p>
-      <h3 data-sec="2" data-i18n="seg.title">Participant segments</h3>
-      <p data-i18n="seg.intro"></p>
+      <h2 data-sec="1" data-i18n="about.method" data-no="7.3">方法</h2>
+      <h3 data-sec="2" data-i18n="var.title" data-no="7.3.1">评分差异的来源</h3>
+      <p data-i18n="var.intro">把每一条评分拆成几部分：分子本身、浓度、个人整体习惯（打分偏高或偏低）、个人口味（这个人对这个气味的特别反应），以及测量噪声（同一人两次打分的随机波动，用重复测试估计）。只分析「闻得到」的评价。</p>
+      <p id="var-method" data-snap="var-method">方法：矩估计。先用加法模型估计分子效应和个人效应，剩下的残差是「个人口味 + 噪声」；噪声用重复测试单独估计，两者相减得到个人口味。在模拟数据上（已知答案、真实的缺失模式）估计无偏。置信区间用分组刀切法（逐个剔除受试者 + 分 20 组剔除分子），模拟中 95% 区间的覆盖率为 90% 到 100%。噪声只能从 20 个重复分子估计，这些分子的残差方差与其他分子接近（愉悦度 495.3 对 537.4）。噪声并不均匀：很强的气味打分接近满分，噪声小得多（强度：最强的三分之一为 109.2，中间为 713.5）。「个人整体习惯」分不开「打分习惯」和「整体更爱闻气味」，只能合在一起报告。</p>
+      <h3 data-sec="2" data-i18n="pred.title" data-no="7.3.2">预测新受试者的评分</h3>
+      <p data-i18n="pred.res.text">两种场景分开评估：新分子（已知的受试者，没见过的分子，按分子骨架分 5 折交叉验证）和新受试者（只给 5 个评分，按受试者分 5 折，随机抽 20 次）。参数都只在训练部分内部选择。</p>
+      <h3 data-sec="2" data-i18n="seg.title" data-no="7.3.3">受试者群体</h3>
+      <p data-i18n="seg.intro">按个人口味把受试者分群，模拟消费者分群。分析对象是每个人「和群体平均不同的部分」。判定标准在运行前就定好了：轮廓系数要高于无结构对照（把每个人的评分在气味之间随机打乱）的 95% 分位数，而且把分子随机分成两半、分别聚类，两次分出的群要基本一致（ARI ≥ 0.5）。</p>
     </section>
 
     <section id="results">
-      <h2 data-sec="1" data-i18n="about.results">Results</h2>
-      <h3 data-sec="2" data-i18n="var.sens"></h3>
-      <div class="table-wrap"><table class="data" id="var-table"></table></div>
+      <h2 data-sec="1" data-i18n="about.results" data-no="7.4">结果</h2>
+      <h3 data-sec="2" data-i18n="var.sens" data-no="7.4.1">敏感性分析</h3>
+      <div class="table-wrap"><table class="data" id="var-table" data-snap="var-table"><thead><tr><th>版本</th><th>评分</th><th class="num">分子本身</th><th class="num">浓度</th><th class="num">个人口味</th><th class="num">个人整体习惯</th><th class="num">测量噪声</th><th class="num">个人口味占可重复差异</th></tr></thead><tbody><tr class="highlight"><td>全部 55 人（主分析）</td><td>愉悦度</td><td class="num">16%</td><td class="num">3%</td><td class="num">27%</td><td class="num">8%</td><td class="num">47%</td><td class="num">58% <span class="muted small">(51% - 66%)</span></td></tr><tr><td>剔除强度重测 r &lt; 0.2 的人</td><td>愉悦度</td><td class="num">17%</td><td class="num">3%</td><td class="num">27%</td><td class="num">8%</td><td class="num">45%</td><td class="num">58% <span class="muted small">(51% - 65%)</span></td></tr><tr><td>只剔除 P55（最不一致的一位）</td><td>愉悦度</td><td class="num">17%</td><td class="num">3%</td><td class="num">26%</td><td class="num">8%</td><td class="num">46%</td><td class="num">58% <span class="muted small">(51% - 65%)</span></td></tr><tr><td>按个人做 z 分数</td><td>愉悦度</td><td class="num">19%</td><td class="num">3%</td><td class="num">27%</td><td class="num">0%</td><td class="num">51%</td><td class="num">55% <span class="muted small">(47% - 63%)</span></td></tr><tr class="highlight"><td>全部 55 人（主分析）</td><td>强度</td><td class="num">21%</td><td class="num">19%</td><td class="num">9%</td><td class="num">10%</td><td class="num">42%</td><td class="num">18% <span class="muted small">(5% - 31%)</span></td></tr><tr><td>剔除强度重测 r &lt; 0.2 的人</td><td>强度</td><td class="num">22%</td><td class="num">20%</td><td class="num">10%</td><td class="num">8%</td><td class="num">40%</td><td class="num">20% <span class="muted small">(8% - 31%)</span></td></tr><tr><td>只剔除 P55（最不一致的一位）</td><td>强度</td><td class="num">21%</td><td class="num">19%</td><td class="num">9%</td><td class="num">10%</td><td class="num">42%</td><td class="num">18% <span class="muted small">(7% - 28%)</span></td></tr><tr><td>按个人做 z 分数</td><td>强度</td><td class="num">23%</td><td class="num">21%</td><td class="num">8%</td><td class="num">2%</td><td class="num">46%</td><td class="num">16% <span class="muted small">(4% - 28%)</span></td></tr><tr><td>「闻不到」记为强度 0</td><td>强度</td><td class="num">24%</td><td class="num">23%</td><td class="num">4%</td><td class="num">9%</td><td class="num">41%</td><td class="num">8% <span class="muted small">(0% - 20%)</span></td></tr></tbody></table></div>
 
-      <h3 data-sec="2" data-i18n="pred.res.title">All results</h3>
+      <h3 data-sec="2" data-i18n="pred.res.title" data-no="7.4.2">全部结果</h3>
       <div class="ctl">
-        <span class="seg" role="group" data-i18n-attr="aria-label:pred.var">
-          <button type="button" id="btn-pl" aria-pressed="true" data-i18n="v.pleasantness">Pleasantness</button>
-          <button type="button" id="btn-in" aria-pressed="false" data-i18n="v.intensity">Intensity</button>
+        <span class="seg" role="group" data-i18n-attr="aria-label:pred.var" aria-label="评分类型">
+          <button type="button" id="btn-pl" aria-pressed="true" data-i18n="v.pleasantness">愉悦度</button>
+          <button type="button" id="btn-in" aria-pressed="false" data-i18n="v.intensity">强度</button>
         </span>
       </div>
-      <div class="table-wrap"><table class="data" id="pred-table"></table></div>
+      <div class="table-wrap"><table class="data" id="pred-table" data-snap="pred-table"><thead><tr><th>模型</th><th class="num">相关 r</th><th class="num">误差 RMSE</th></tr></thead><tbody><tr><th colspan="3">场景 A：新分子</th></tr><tr><td>全体平均（基线；预测是常数，r 无意义）</td><td class="num">-</td><td class="num">28.0</td></tr><tr><td>个人平均（基线）</td><td class="num">0.27</td><td class="num">26.9</td></tr><tr><td>群体模型（用气味模型特征预测群体平均）</td><td class="num">0.28</td><td class="num">26.8</td></tr><tr><td>+ 个人整体偏移</td><td class="num">0.39</td><td class="num">25.7</td></tr><tr class="highlight"><td>+ 个人对气味特征的偏好</td><td class="num">0.42</td><td class="num">25.4</td></tr><tr><td>同上，但分子特征换成结构指纹（对照）</td><td class="num">0.39</td><td class="num">25.8</td></tr><tr><td>参考：如果群体平均能完美预测</td><td class="num">0.53</td><td class="num">23.8</td></tr><tr><th colspan="3">场景 B：新受试者（5 个评分）</th></tr><tr><td>全体平均（基线；预测是常数，r 无意义）</td><td class="num">-</td><td class="num">28.1</td></tr><tr><td>个人平均，只用 5 个评分（基线）</td><td class="num">0.15</td><td class="num">29.6</td></tr><tr><td>分子群体平均（基线）</td><td class="num">0.44</td><td class="num">25.1</td></tr><tr><td>+ 个人整体偏移</td><td class="num">0.47</td><td class="num">24.7</td></tr><tr class="highlight"><td>+ 潜在偏好因子</td><td class="num">0.47</td><td class="num">24.7</td></tr><tr><td>同上，但 5 个评分用固定的「测试气味」</td><td class="num">0.47</td><td class="num">24.8</td></tr><tr><th colspan="3">参考：人自身的一致性</th></tr><tr><td>同一人另一次打分</td><td class="num">0.52</td><td class="num">-</td></tr><tr><td>理论最高值</td><td class="num">0.72</td><td class="num">-</td></tr></tbody></table></div>
       <div class="viz-box" style="margin-top:14px">
-        <p class="viz-title" data-i18n="pred.curve.title"></p>
-        <p class="viz-sub" data-i18n="pred.curve.sub"></p>
-        <svg id="curve-svg" role="img" data-i18n-attr="aria-label:pred.curve.title"></svg>
-        <div class="legend" id="curve-legend"></div>
+        <p class="viz-title" data-i18n="pred.curve.title">已知评分个数与预测准确度</p>
+        <p class="viz-sub" data-i18n="pred.curve.sub">新受试者场景；横轴为已知评分个数（对数刻度）</p>
+        <svg id="curve-svg" role="img" data-i18n-attr="aria-label:pred.curve.title" aria-label="已知评分个数与预测准确度" data-snap-h style="--snap-h: 220px; --snap-h-wide: 220px"></svg>
+        <div class="legend" id="curve-legend" data-snap="curve-legend"><span><i class="dot" style="background:var(--s1)"></i>+ 潜在偏好因子</span><span><i class="dot" style="background:var(--s2)"></i>分子群体平均（基线）</span></div>
       </div>
-      <p class="small" style="margin-top:10px" data-i18n="pred.curve.table_cap"></p>
-      <div class="table-wrap"><table class="data" id="curve-table"></table></div>
-      <p id="curve-note"></p>
-      <p id="pred-take"></p>
+      <p class="small" style="margin-top:10px" data-i18n="pred.curve.table_cap">同一曲线的数值：模型（个人整体偏移 + 潜在偏好因子）与只用群体平均的对比。差值的 95% 置信区间按受试者重抽样得到；相关 r 把所有测试受试者的预测合在一起计算，「单个受试者内部 r」是每个人各自计算后的平均。</p>
+      <div class="table-wrap"><table class="data" id="curve-table" data-snap="curve-table"><thead><tr><th style="text-align:right">已知评分个数</th><th style="text-align:right">群体平均 r</th><th style="text-align:right">模型 r</th><th style="text-align:right">差值（95% 置信区间）</th><th style="text-align:right">误差 RMSE：群体平均 → 模型</th><th style="text-align:right">单个受试者内部 r：群体平均 / 模型</th></tr></thead><tbody><tr><td class="num">1</td><td class="num">0.443</td><td class="num">0.447</td><td class="num">+0.004<br><span class="small muted">-0.005 到 +0.013</span></td><td class="num">25.1 → 25.1</td><td class="num">0.488 / 0.488</td></tr><tr><td class="num">3</td><td class="num">0.443</td><td class="num">0.458</td><td class="num">+0.015<br><span class="small muted">-0.0002 到 +0.029</span></td><td class="num">25.1 → 24.9</td><td class="num">0.488 / 0.488</td></tr><tr><td class="num">5</td><td class="num">0.443</td><td class="num">0.471</td><td class="num">+0.029<br><span class="small muted">+0.009 到 +0.050</span></td><td class="num">25.1 → 24.7</td><td class="num">0.488 / 0.488</td></tr><tr><td class="num">10</td><td class="num">0.443</td><td class="num">0.487</td><td class="num">+0.044<br><span class="small muted">+0.019 到 +0.068</span></td><td class="num">25.1 → 24.5</td><td class="num">0.488 / 0.488</td></tr><tr><td class="num">20</td><td class="num">0.443</td><td class="num">0.503</td><td class="num">+0.060<br><span class="small muted">+0.031 到 +0.091</span></td><td class="num">25.1 → 24.2</td><td class="num">0.488 / 0.489</td></tr><tr><td class="num">50</td><td class="num">0.443</td><td class="num">0.517</td><td class="num">+0.074<br><span class="small muted">+0.042 到 +0.104</span></td><td class="num">25.1 → 24.0</td><td class="num">0.488 / 0.489</td></tr></tbody></table></div>
+      <p id="curve-note" data-snap="curve-note">提升来自个人整体偏移：已知评分越多，越能估计准这个人整体打分偏高还是偏低，所以合并计算的相关和误差都在改善；但单个受试者内部的相关系数不随评分数量变化（群体平均约 0.488，模型与它的差在 0.000 到 +0.001 之间），模型没有学到这个人对不同气味的相对喜好。</p>
+      <p id="pred-take" data-snap="pred-take">模型能较好地预测「大家平均觉得这个气味怎么样」，但个人偏好中除了「整体偏高或偏低」之外的部分几乎学不到。新分子场景中，群体平均的预测相关为 0.55（数据本身的可靠性 0.91），图神经网络没见过的分子上为 0.48，见过的为 0.57。个人斜率只多提升 0.029（0.024 到 0.034）。气味模型特征比结构指纹略好，群体模型高 0.024（-0.004 到 0.052，包含 0，不能说更好）。新受试者场景中，5 个评分只能估计出整体偏移（提升 0.028，0.008 到 0.049），潜在偏好因子几乎没有作用（提升 0.0002），同一个人内部的气味排序和直接用群体平均一样。</p>
 
-      <h3 data-sec="2" data-i18n="seg.title">Participant segments</h3>
-      <p id="seg-verdict-full"></p>
+      <h3 data-sec="2" data-i18n="seg.title" data-no="7.4.3">受试者群体</h3>
+      <p id="seg-verdict-full" data-snap="seg-verdict-full">这份数据中没有可靠的受试者群体，个体差异更像连续变化，而不是清晰的分群。两种聚类方法、k = 2 到 6、剔除或不剔除低一致性受试者，都没有达到标准：换一半分子重新聚类，分出的群几乎完全不同。每两个人「偏离群体的方式」的相关平均为 -0.02，基本就是零，说明每个人和大家的不同大多是独有的。</p>
       <details>
-        <summary data-i18n="seg.table.summary"></summary>
-        <div class="table-wrap" style="margin-top:8px"><table class="data" id="seg-table"></table></div>
-        <p class="small" style="margin-top:6px" data-i18n="seg.table.note"></p>
+        <summary data-i18n="seg.table.summary">全部聚类结果</summary>
+        <div class="table-wrap" style="margin-top:8px"><table class="data" id="seg-table" data-snap="seg-table"><thead><tr><th>方法</th><th class="num">k</th><th class="num">轮廓系数</th><th class="num">对照 95% 分位</th><th class="num">稳定性 ARI</th><th>各群人数</th><th>达标</th></tr></thead><tbody><tr><td>层次聚类</td><td class="num">2</td><td class="num">0.028</td><td class="num">0.017</td><td class="num">0.02</td><td class="small">40 / 15</td><td><span class="fail">否</span></td></tr><tr><td>层次聚类</td><td class="num">3</td><td class="num">0.025</td><td class="num">0.015</td><td class="num">0.05</td><td class="small">30 / 15 / 10</td><td><span class="fail">否</span></td></tr><tr><td>层次聚类</td><td class="num">4</td><td class="num">0.028</td><td class="num">0.016</td><td class="num">0.07</td><td class="small">15 / 15 / 15 / 10</td><td><span class="fail">否</span></td></tr><tr><td>层次聚类</td><td class="num">5</td><td class="num">0.027</td><td class="num">0.018</td><td class="num">0.07</td><td class="small">15 / 15 / 10 / 9 / 6</td><td><span class="fail">否</span></td></tr><tr><td>层次聚类</td><td class="num">6</td><td class="num">0.026</td><td class="num">0.019</td><td class="num">0.07</td><td class="small">15 / 11 / 10 / 9 / 6 / 4</td><td><span class="fail">否</span></td></tr><tr><td>k-means</td><td class="num">2</td><td class="num">0.028</td><td class="num">0.084</td><td class="num">0.09</td><td class="small">39 / 16</td><td><span class="fail">否</span></td></tr><tr><td>k-means</td><td class="num">3</td><td class="num">0.077</td><td class="num">0.083</td><td class="num">0.06</td><td class="small">53 / 1 / 1</td><td><span class="fail">否</span></td></tr><tr><td>k-means</td><td class="num">4</td><td class="num">0.018</td><td class="num">0.067</td><td class="num">0.03</td><td class="small">50 / 3 / 1 / 1</td><td><span class="fail">否</span></td></tr><tr><td>k-means</td><td class="num">5</td><td class="num">0.021</td><td class="num">0.058</td><td class="num">0.04</td><td class="small">41 / 11 / 1 / 1 / 1</td><td><span class="fail">否</span></td></tr><tr><td>k-means</td><td class="num">6</td><td class="num">-0.006</td><td class="num">0.024</td><td class="num">0.04</td><td class="small">27 / 24 / 1 / 1 / 1 / 1</td><td><span class="fail">否</span></td></tr></tbody></table></div>
+        <p class="small" style="margin-top:6px" data-i18n="seg.table.note">层次聚类的轮廓系数略高于对照，但稳定性 ARI 接近 0，说明这些「群」由噪声造成，不能重复。k-means 常常只分出 1 人一组。</p>
       </details>
-      <h3 data-sec="2" data-i18n="seg.axis.title">The one reproducible dimension</h3>
-      <p id="seg-axis-text"></p>
+      <h3 data-sec="2" data-i18n="seg.axis.title" data-no="7.4.4">唯一可重复的个人差异方向</h3>
+      <p id="seg-axis-text" data-snap="seg-axis-text">用主成分分析找到的第一个方向只解释 4.3% 的个人差异（无结构对照为 3.3%），但它是可重复的：用两半不同的分子分别算，得分的相关为 0.59（对照 0.28）。它主要反映对浓烈气味的接受度：这个方向和气味强度的相关为 -0.57。</p>
       <div class="viz-box">
-        <p class="viz-title" data-i18n="seg.desc.title"></p>
-        <p class="viz-sub" data-i18n="seg.desc.sub"></p>
-        <svg id="axis-svg" role="img" data-i18n-attr="aria-label:seg.desc.title"></svg>
-        <div class="legend" id="axis-legend"></div>
+        <p class="viz-title" data-i18n="seg.desc.title">排除强度后，这个方向和哪些描述词有关</p>
+        <p class="viz-sub" data-i18n="seg.desc.sub">各描述词的群体平均评分与该方向的偏相关（已扣除气味强度的影响）</p>
+        <svg id="axis-svg" role="img" data-i18n-attr="aria-label:seg.desc.title" aria-label="排除强度后，这个方向和哪些描述词有关" data-snap-h style="--snap-h: 390px; --snap-h-wide: 390px"></svg>
+        <div class="legend" id="axis-legend" data-snap="axis-legend"><span><i class="" style="background:var(--pos)"></i>偏向「更喜欢淡、弱的气味」一端</span><span><i class="" style="background:var(--neg)"></i>偏向「更喜欢浓、强的气味」一端</span></div>
       </div>
-      <p data-i18n="seg.desc.note"></p>
-      <p class="small" id="seg-axis-note"></p>
+      <p data-i18n="seg.desc.note">控制强度后，一端相对更偏好果香、甜香，另一端相对更能接受蒜味、鱼腥、麝香、汗味；相关约 0.25，明显弱于强度偏好的 0.57。</p>
+      <p class="small" id="seg-axis-note" data-snap="seg-axis-note">这个方向上的得分和受试者的质量指标（闻不到的比例、打分习惯、重测一致性等）基本无关（|ρ| ≤ 0.17），不是数据质量造成的假象。第二个方向解释 3.8%，可重复性 0.24（对照 0.19），只是勉强高于对照，不作解读。</p>
     </section>
 
     <section id="limits">
-      <h2 data-sec="1" data-i18n="about.limits">Limitations</h2>
+      <h2 data-sec="1" data-i18n="about.limits" data-no="7.5">局限</h2>
       <ul class="plain">
-        <li data-i18n="lim.1"></li>
-        <li data-i18n="lim.2"></li>
-        <li data-i18n="lim.3"></li>
-        <li data-i18n="lim.4"></li>
-        <li data-i18n="lim.5"></li>
-        <li data-i18n="lim.6"></li>
+        <li data-i18n="lim.1">数据来自实验室条件下的单分子评价，不是真实产品，也不是真实的消费场景。</li>
+        <li data-i18n="lim.2">受试者只有 55 人，全部来自纽约地区，群体结论的代表性有限；没有分出群体，不代表真实市场中没有群体。</li>
+        <li data-i18n="lim.3">只有显性评分数据，没有神经或生理等隐性数据。</li>
+        <li data-i18n="lim.4">描述词映射存在人为判断，分析中因此只使用原始的 20 个描述词。</li>
+        <li data-i18n="lim.5">噪声只能从 20 个重复分子估计，而且噪声随评分高低变化；方差分解假设噪声可以推广到全部刺激。</li>
+        <li data-i18n="lim.6">图神经网络在训练时见过本数据中 388 个分子的气味标签，这些分子上的预测偏乐观；页面已分开报告没见过的分子。</li>
       </ul>
     </section>
 
     <section id="ethics">
-      <h2 data-sec="1" data-i18n="eth.title">Data ethics</h2>
+      <h2 data-sec="1" data-i18n="eth.title" data-no="7.6">数据伦理</h2>
       <ul class="plain">
-        <li data-i18n="eth.1"></li>
-        <li data-i18n="eth.2"></li>
-        <li data-i18n="eth.3"></li>
-        <li data-i18n="eth.4"></li>
+        <li data-i18n="eth.1">原研究经 Rockefeller 大学伦理委员会批准（编号 LVO-0780），受试者签署了书面知情同意；数据由作者以 CC0 公开。</li>
+        <li data-i18n="eth.2">性别、年龄、种族、族裔等人口学信息在导入时直接丢弃，不做任何基于人口学信息的分析和结论。</li>
+        <li data-i18n="eth.3">受试者重新随机编码为 P01 到 P55，页面上的编号无法和原始公开表格中的个人信息对应；受试者自己写的气味描述不使用、不展示。</li>
+        <li data-i18n="eth.4">原始数据不上传到本站仓库；页面只发布汇总结果和匿名的评分值。</li>
       </ul>
     </section>
 
     <section id="data">
-      <h2 data-sec="1" data-i18n="about.data">Data, licenses &amp; citations</h2>
-      <p data-i18n-html="footer.data"></p>
-      <p data-i18n-html="footer.ref"></p>
-      <p data-i18n-html="footer.odor_model"></p>
-      <p data-i18n-html="footer.code"></p>
+      <h2 data-sec="1" data-i18n="about.data" data-no="7.7">数据、许可与引用</h2>
+      <p data-i18n-html="footer.data"><b>数据：</b>Keller A, Vosshall LB. Olfactory perception of chemically diverse molecules. <i>BMC Neuroscience</i> 2016; 17: 55. <a href="https://doi.org/10.1186/s12868-016-0287-2" target="_blank" rel="noopener">doi:10.1186/s12868-016-0287-2</a>。论文为 CC BY 4.0，数据为 CC0。该数据也用于 DREAM 嗅觉预测挑战赛。</p>
+      <p data-i18n-html="footer.ref"><b>参考：</b>Arshamian A, et al. The perception of odor pleasantness is shared across cultures. <i>Current Biology</i> 2022. <a href="https://doi.org/10.1016/j.cub.2022.02.062" target="_blank" rel="noopener">doi:10.1016/j.cub.2022.02.062</a>（9 种文化、225 人，愉悦度排序中个人差异占 54%，分子占 41%；设计不同，方向一致）。</p>
+      <p data-i18n-html="footer.odor_model"><b>气味模型：</b>本页的气味预测来自本站<a href="../odor-predictor/">气味预测</a>的图神经网络，训练数据来自 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC），由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅供非商业学术演示。</b></p>
+      <p data-i18n-html="footer.code">代码：<a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">GitHub</a>（training/perception/）。</p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p data-i18n-html="footer.site"></p>
+      <p data-i18n-html="footer.site">© 2026 崔京伟 · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">代码（GitHub）</a></p>
     </div>
   </footer>
 
-  <script src="../assets/i18n.js?v=20261021a" data-page-dict="i18n/"></script>
-  <script src="../assets/projects.js?v=20261021a"></script>
-  <script src="app.js?v=20261021a"></script>
+  <script src="../assets/projects.js?v=20261021b"></script>
+  <script src="app.js?v=20261021b"></script>
 </body>
 </html>

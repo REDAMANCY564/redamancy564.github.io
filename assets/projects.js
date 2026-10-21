@@ -58,6 +58,7 @@
   // freely. Hidden sections count too, so numbers do not change as steps appear. A container
   // with data-sec-scope (a mode of the flavor improver) restarts the numbering.
   function numberPage() {
+    if (document.body.hasAttribute("data-no-number")) return;   // 404.html, served at any address
     const parts = location.pathname.split("/");
     const idx = PROJECTS.findIndex(p => parts.includes(p[0]));
     if (idx < 0) return;

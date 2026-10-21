@@ -1,14 +1,32 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Data never leaves the browser: connections, form posts and scripts are limited to this site. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>Method &amp; sources | 1 GC-MS Flavor Interpreter | Jingwei Cui</title>
+  <title>方法与来源 | 1 GC-MS 风味解读 | 崔京伟</title>
   <meta name="description" content="Method, rules, limitations and data sources of the Automated GC-MS Data Analysis Across Instrument Formats.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261020c">
+  <link rel="canonical" href="https://redamancy564.github.io/gcms-interpreter/about.html">
+  <meta name="theme-color" content="#fbfaf7">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="崔京伟 Jingwei Cui">
+  <meta property="og:title" content="方法与来源 | 1 GC-MS 风味解读 | 崔京伟">
+  <meta property="og:description" content="Method, rules, limitations and data sources of the Automated GC-MS Data Analysis Across Instrument Formats.">
+  <meta property="og:url" content="https://redamancy564.github.io/gcms-interpreter/about.html">
+  <meta property="og:image" content="https://redamancy564.github.io/assets/og/gcms-interpreter.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="方法与来源 | 1 GC-MS 风味解读 | 崔京伟">
+  <meta name="twitter:description" content="Method, rules, limitations and data sources of the Automated GC-MS Data Analysis Across Instrument Formats.">
+  <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/gcms-interpreter.jpg">
+  <link rel="stylesheet" href="../assets/style.css?v=20261021b">
+  <script src="../assets/i18n.js?v=20261021b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 </head>
@@ -28,70 +46,69 @@
 
   <main class="container about">
     <div class="hero">
-      <h1 data-i18n="hero.title">Automated GC-MS Data Analysis Across Instrument Formats</h1>
+      <h1 data-i18n="hero.title" data-no="1">兼容多仪器格式的 GC-MS 数据自动分析</h1>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool">工具</a>
         <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
       </nav>
     </div>
     <nav class="toc">
-      <a href="#overview" data-i18n="about.overview">Overview</a>
-      <a href="#method" data-i18n="about.method">Method</a>
-      <a href="#limits" data-i18n="about.limits">Limitations</a>
-      <a href="#data" data-i18n="about.data">Data, licenses &amp; citations</a>
+      <a href="#overview" data-i18n="about.overview" data-no="1.1">概述</a>
+      <a href="#method" data-i18n="about.method" data-no="1.2">方法</a>
+      <a href="#limits" data-i18n="about.limits" data-no="1.3">局限</a>
+      <a href="#data" data-i18n="about.data" data-no="1.4">数据、许可与引用</a>
     </nav>
 
     <section id="overview">
-      <h2 data-sec="1" data-i18n="about.overview">Overview</h2>
-      <p data-i18n="hero.intro"></p>
-      <p><b data-i18n="privacy.lead"></b> <span data-i18n="privacy.text"></span> <span data-i18n="privacy.tech"></span></p>
+      <h2 data-sec="1" data-i18n="about.overview" data-no="1.1">概述</h2>
+      <p data-i18n="hero.intro">上传一个样品的 GC-MS 峰表和标准文件（目标物质清单）。页面会识别表格格式，统一化合物名称和 CAS 号，按固定规则处理重复峰和一个峰对应多个候选物的情况，算出每个目标物质的相对含量，再用阈值计算 OAV 或 ROAV，排出关键风味物质并画出风味轮廓。</p>
+      <p><b data-i18n="privacy.lead">你的数据不会离开你的电脑。</b> <span data-i18n="privacy.text">所有分析都在你的浏览器里完成，文件不会上传到任何服务器。页面没有统计或追踪脚本，适合对企业保密数据做初步分析。</span> <span data-i18n="privacy.tech">页面的内容安全策略（CSP）只允许连接本站，发往其他地址的请求会被浏览器拦截。你保存的仪器模板和设置只存在你自己的浏览器里。</span></p>
       <p id="scope-note"></p>
-      <p data-i18n="about.practice"></p>
+      <p data-i18n="about.practice">工具处理的是积分和鉴定之后的峰表，默认积分和谱库鉴定都已由人工确认。实际处理这类数据时，最耗时的是把同一物质的多个峰加起来，最容易出错的是标准文件里的多个物质匹配到同一个峰，导致一个峰被重复计算。工具的规则 1（以参考保留时间为中心、在设定范围内，把同一物质的峰相加，两个峰之间不能夹着其他物质的峰）和规则 2（一个峰只归给参考保留时间最近的物质）就是针对这两个问题写的。</p>
     </section>
 
     <section id="method">
-      <h2 data-sec="1" data-i18n="about.method">Method</h2>
-      <h3 data-sec="2" id="peak-table" data-i18n="import.peak_title">GC-MS peak table (one sample)</h3>
-      <p data-i18n="about.peak_required"></p>
-      <h3 data-sec="2" id="standard-file" data-i18n="std.title">Standard file (target list)</h3>
-      <p data-i18n="std.intro"></p>
-      <p data-i18n="std.required"></p>
-      <h3 data-sec="2" id="tolerances" data-i18n="about.tol_title">Matching tolerances</h3>
-      <p><b data-i18n="tol.window"></b>: <span data-i18n="tol.window_help"></span></p>
-      <h3 data-sec="2" id="oav-roav" data-i18n="about.oav_title">OAV and ROAV</h3>
-      <p data-i18n="fl.intro"></p>
-      <p data-i18n="about.basis_area"></p>
-      <h3 data-sec="2" id="thresholds" data-i18n="thr.title">Odor thresholds</h3>
-      <p data-i18n="about.thr"></p>
-      <p data-i18n="about.thr_choice"></p>
-      <h3 data-sec="2" id="profile" data-i18n="radar.title">Flavor profile</h3>
-      <p data-i18n="about.radar"></p>
-      <p data-i18n="about.radar_all"></p>
+      <h2 data-sec="1" data-i18n="about.method" data-no="1.2">方法</h2>
+      <h3 data-sec="2" id="peak-table" data-i18n="import.peak_title" data-no="1.2.1">GC-MS 峰表（一个样品）</h3>
+      <p data-i18n="about.peak_required">峰表请包含三列：① 化合物名称或 CAS 号；② 保留时间；③ 峰面积或相对含量（%）。样品已定量时可加浓度列，选择 OAV 时使用；保留指数、匹配度和峰号列可有可无。网页按列名关键词或仪器模板自动识别各列，识别结果可以在「确认表头和各列含义」一步修改。</p>
+      <h3 data-sec="2" id="standard-file" data-i18n="std.title" data-no="1.2.2">标准文件（目标物质清单）</h3>
+      <p data-i18n="std.intro">网页在每个物质的参考保留时间附近查找鉴定结果一致的峰，判断是否检出。</p>
+      <p data-i18n="std.required">标准文件请包含三列：① 物质名称或 CAS 号；② 参考保留时间；③ 气味阈值（请在列名中写明单位，如「阈值 (µg/kg)」）。阈值用于计算 OAV/ROAV 和风味轮廓；网站只内置了少量阈值，标准文件中没有阈值、也没有内置值的物质不参与风味计算。</p>
+      <h3 data-sec="2" id="tolerances" data-i18n="about.tol_title" data-no="1.2.3">保留时间范围</h3>
+      <p><b data-i18n="tol.window">保留时间范围（± min）</b>: <span data-i18n="tol.window_help">规则 1：以每个目标物质的参考保留时间为中心，在 ± 该值内查找被鉴定为该物质的峰，中间没有夹着其他物质的峰全部相加。范围越大，越不容易漏检，但越容易把误鉴定的峰也加进来。</span></p>
+      <h3 data-sec="2" id="oav-roav" data-i18n="about.oav_title" data-no="1.2.4">OAV 与 ROAV</h3>
+      <p data-i18n="fl.intro">只对上面找到的目标物质计算。有定量结果（浓度列）时计算 OAV = 浓度 ÷ 阈值，OAV ≥ 1 表示该物质在样品中可被闻到；只有峰面积或相对含量时计算 ROAV：贡献最大的物质记为 100，其余按「含量 ÷ 阈值」与它的比值换算。ROAV 只反映样品内各物质的相对贡献，不能说明能否被闻到。</p>
+      <p data-i18n="about.basis_area">按峰面积计算 ROAV，与按面积归一化的相对含量计算等价，且没有四舍五入误差。</p>
+      <h3 data-sec="2" id="thresholds" data-i18n="thr.title" data-no="1.2.5">气味阈值</h3>
+      <p data-i18n="about.thr">找到的物质的气味阈值统一换算为 mg/kg。阈值优先取你在标准文件中提供的值；标准文件中没有的，使用网站内置值（本站风味改良已采用的 53 个水中阈值，引自 L.J. van Gemert (2011) Odour Thresholds 第 II 部分）。你也可以在工具页直接修改或补充，修改只保存在本浏览器中。没有阈值的物质不做估计，不参与计算。</p>
+      <p data-i18n="about.thr_choice">拿不准的阈值一般通过查阅同类样品的文献确定，例如母乳样品会对照多篇母乳风味文献，再结合样品的实际情况选择；文献看得足够多，取值通常比较明确。所以工具让用户在标准文件中填写自己核对过的阈值，内置阈值只在没有其他来源时作参考。</p>
+      <h3 data-sec="2" id="profile" data-i18n="radar.title" data-no="1.2.6">风味轮廓</h3>
+      <p data-i18n="about.radar">12 个乳品维度（默认），沿用风味改良的计算规则：每个物质的强度 I = log10(OAV 或 ROAV)（大于 1 时，否则为 0），乘以 GNN 预测的气味标签概率除以该标签在训练数据中的出现频率（避免常见标签占优），各物质相加后，取 12 个乳品维度并归一化，数字为各维度所占百分比。适合乳品样品。排名表中的气味描述优先使用知识库数据，但轮廓需要统一的数值，所以全部使用模型预测。</p>
+      <p data-i18n="about.radar_all">全部 138 个气味标签：每个物质的强度 I = log10(OAV 或 ROAV)（大于 1 时，否则为 0），乘以 GNN 预测的 138 个气味标签概率（这里不除以标签出现频率：在 138 个标签上除以频率会把黄瓜等罕见标签放大上百倍），各物质相加后归一化。图中显示占比最大的 10 个标签，数字为占全部标签之和的百分比。适合非乳品样品。轮廓全部使用模型预测。</p>
     </section>
 
     <section id="limits">
-      <h2 data-sec="1" data-i18n="about.limits">Limitations</h2>
+      <h2 data-sec="1" data-i18n="about.limits" data-no="1.3">局限</h2>
       <ul class="plain" id="lim-list"></ul>
     </section>
 
     <section id="data">
-      <h2 data-sec="1" data-i18n="about.data">Data, licenses &amp; citations</h2>
-      <p data-i18n-html="footer.examples"></p>
-      <p data-i18n-html="footer.names"></p>
-      <p data-i18n-html="footer.flavor"></p>
-      <p data-i18n-html="footer.libs"></p>
-      <p data-i18n-html="footer.odor_model"></p>
+      <h2 data-sec="1" data-i18n="about.data" data-no="1.4">数据、许可与引用</h2>
+      <p data-i18n-html="footer.examples"><b>示例数据：</b>物质组成和浓度来自 Wang et al., <i>Food Chem X</i> 2025（酸奶，CC BY-NC）；Xu et al.（巴氏奶，CC BY-NC）；Duensing, Hinrichs &amp; Schieberle（高达奶酪，CC BY）。其余均为模拟。</p>
+      <p data-i18n-html="footer.names"><b>物质名称与 CAS 对照：</b>风味知识库物质的同义词和 CAS 号来自 PubChem（NCBI），离线整理后随页面加载。</p>
+      <p data-i18n-html="footer.flavor"><b>阈值与气味：</b>阈值优先使用你在标准文件中提供的值；内置值为本站风味改良已采用的 53 个水中阈值，引自 L.J. van Gemert (2011) <i>Odour Thresholds</i> 第 II 部分，每个值注明原始文献；气味描述来自 Dunkel et al., <i>Angew. Chem.</i> 2014 和 FlavorDB（Garg et al., <i>NAR</i> 2018，CC BY-NC-SA 3.0）；模型预测来自本站<a href="../odor-predictor/">气味预测</a>的 GNN，已离线算好随页面加载。</p>
+      <p data-i18n-html="footer.libs"><b>本站托管的第三方库：</b>SheetJS Community Edition 0.20.3（Apache-2.0），用于读取 Excel 文件。</p>
+      <p data-i18n-html="footer.odor_model"><b>气味模型：</b>本页的气味预测来自本站<a href="../odor-predictor/">气味预测</a>的图神经网络，训练数据来自 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC），由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅供非商业学术演示。</b></p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p data-i18n-html="footer.site"></p>
+      <p data-i18n-html="footer.site">© 2026 崔京伟 · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">代码（GitHub）</a></p>
     </div>
   </footer>
 
-  <script src="../assets/i18n.js?v=20261020c" data-page-dict="i18n/"></script>
-  <script src="../assets/projects.js?v=20261020c"></script>
-  <script src="about.js?v=20261020c"></script>
+  <script src="../assets/projects.js?v=20261021b"></script>
+  <script src="about.js?v=20261021b"></script>
 </body>
 </html>

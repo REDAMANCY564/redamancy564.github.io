@@ -78,6 +78,13 @@ img, svg { max-width: 100%; }
 .lang-toggle:hover { border-color: var(--accent); }
 .lang-toggle .active { color: var(--accent); font-weight: 700; }
 .lang-toggle .sep { margin: 0 6px; color: var(--border); }
+/* Visitors whose language differs from the static (Chinese) HTML: keep the page hidden until
+   assets/i18n.js has applied their dictionary; shown after 5 s anyway if that never happens. */
+html.i18n-pending body { visibility: hidden; animation: i18n-reveal 0s 5s forwards; }
+@keyframes i18n-reveal { to { visibility: visible; } }
+/* Charts drawn by page scripts: keep their final height (tools/snapshot.py) while still empty */
+svg[data-snap-h]:empty { height: var(--snap-h) !important; }
+@media (min-width: 900px) { svg[data-snap-h]:empty { height: var(--snap-h-wide, var(--snap-h)) !important; } }
 
 /* Typography */
 h1 { font-size: 1.75rem; line-height: 1.25; margin: 0 0 12px; letter-spacing: -.005em; }

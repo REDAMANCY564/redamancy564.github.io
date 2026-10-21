@@ -1,11 +1,29 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>2 Flavor Ingredient Finder | Jingwei Cui</title>
+  <title>2 风味原料检索 | 崔京伟</title>
   <meta name="description" content="Search 5,000+ molecules by wanted and unwanted odor descriptors, or find substitutes for a given molecule that smell alike but differ in structure.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261021a">
+  <link rel="canonical" href="https://redamancy564.github.io/ingredient-finder/">
+  <meta name="theme-color" content="#fbfaf7">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="崔京伟 Jingwei Cui">
+  <meta property="og:title" content="2 风味原料检索 | 崔京伟">
+  <meta property="og:description" content="Search 5,000+ molecules by wanted and unwanted odor descriptors, or find substitutes for a given molecule that smell alike but differ in structure.">
+  <meta property="og:url" content="https://redamancy564.github.io/ingredient-finder/">
+  <meta property="og:image" content="https://redamancy564.github.io/assets/og/ingredient-finder.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="2 风味原料检索 | 崔京伟">
+  <meta name="twitter:description" content="Search 5,000+ molecules by wanted and unwanted odor descriptors, or find substitutes for a given molecule that smell alike but differ in structure.">
+  <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/ingredient-finder.jpg">
+  <link rel="stylesheet" href="../assets/style.css?v=20261021b">
+  <script src="../assets/i18n.js?v=20261021b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -72,67 +90,67 @@
 
   <main class="container">
     <section class="hero">
-      <h1 data-i18n="hero.title">Flavor Ingredient Search and Substitute Screening from Predicted Odor Descriptors</h1>
+      <h1 data-i18n="hero.title" data-no="2">基于气味描述词预测的风味原料检索及其替代物的筛选</h1>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool" aria-current="page">工具</a>
         <a href="about.html" data-i18n="nav.about">方法与来源</a>
       </nav>
-      <p class="sub" data-i18n="hero.sub"></p>
+      <p class="sub" data-i18n="hero.sub">按目标风味检索 5000 多个分子，或为某个分子寻找气味相近的替代物。</p>
     </section>
 
     <section class="section" id="finder">
       <div class="tabs" role="tablist">
-        <button class="tab" role="tab" id="tab-a" aria-controls="panel-a" aria-selected="true" data-i18n="tab.a">Find by flavor brief</button>
-        <button class="tab" role="tab" id="tab-b" aria-controls="panel-b" aria-selected="false" data-i18n="tab.b">Find substitutes</button>
+        <button class="tab" role="tab" id="tab-a" aria-controls="panel-a" aria-selected="true" data-i18n="tab.a">按需求找原料</button>
+        <button class="tab" role="tab" id="tab-b" aria-controls="panel-b" aria-selected="false" data-i18n="tab.b">找替代原料</button>
       </div>
-      <p class="status" id="load-status" data-i18n="loading" aria-live="polite">Loading...</p>
+      <p class="status" id="load-status" data-i18n="loading" aria-live="polite">正在加载分子库……</p>
 
       <!-- Mode A -->
       <div id="panel-a" role="tabpanel" aria-labelledby="tab-a" class="hidden">
-        <p class="small ex-list" id="presets-a" style="margin-top:10px"><span class="muted" data-i18n="a.presets">Examples:</span> </p>
+        <p class="small ex-list" id="presets-a" style="margin-top:10px"><span class="muted" data-i18n="a.presets">示例：</span> </p>
 
         <div class="card" style="margin-top:14px">
-          <label class="field" for="label-filter" data-i18n="a.pick_label">Add odor descriptors</label>
+          <label class="field" for="label-filter" data-i18n="a.pick_label">添加气味描述词</label>
           <div class="row-wrap" style="margin-top:4px">
-            <input type="text" id="label-filter" autocomplete="off" spellcheck="false" style="max-width:280px" data-i18n-attr="placeholder:a.pick_ph">
-            <span class="small muted" data-i18n="a.add_to">Add to:</span>
+            <input type="text" id="label-filter" autocomplete="off" spellcheck="false" style="max-width:280px" data-i18n-attr="placeholder:a.pick_ph" placeholder="输入描述词筛选，如 奶 或 creamy">
+            <span class="small muted" data-i18n="a.add_to">添加到：</span>
             <span class="seg" role="group">
-              <button type="button" id="add-want" aria-pressed="true" data-i18n="a.add_want">wanted</button>
-              <button type="button" id="add-avoid" aria-pressed="false" data-i18n="a.add_avoid">unwanted</button>
+              <button type="button" id="add-want" aria-pressed="true" data-i18n="a.add_want">想要的</button>
+              <button type="button" id="add-avoid" aria-pressed="false" data-i18n="a.add_avoid">不想要的</button>
             </span>
           </div>
           <div class="label-list" id="label-list"></div>
 
           <div class="sel-grid">
-            <div><h3 data-i18n="a.want">Wanted descriptors</h3><div id="want-list"></div></div>
-            <div><h3 data-i18n="a.avoid">Unwanted descriptors</h3><div id="avoid-list"></div></div>
+            <div><h3 data-i18n="a.want">想要的描述词</h3><div id="want-list"></div></div>
+            <div><h3 data-i18n="a.avoid">不想要的描述词</h3><div id="avoid-list"></div></div>
           </div>
-          <div class="row-wrap"><button type="button" class="chip-btn" id="clear-sel" data-i18n="a.clear">Clear</button></div>
-          <p class="small muted" style="margin-top:10px"><span data-i18n="a.score_short"></span> <a class="help" href="about.html#method" aria-label="?">?</a></p>
+          <div class="row-wrap"><button type="button" class="chip-btn" id="clear-sel" data-i18n="a.clear">清空</button></div>
+          <p class="small muted" style="margin-top:10px"><span data-i18n="a.score_short">得分（0–100）= 想要的描述词概率的几何平均 ×（1 − 不想要的描述词概率）的几何平均。想要的气味都具备，分数才会高。</span> <a class="help" href="about.html#method" aria-label="?">?</a></p>
           <div class="filters small">
-            <label><input type="checkbox" id="f-natural"> <span data-i18n="f.natural">Only natural</span></label>
-            <label id="f-unseen-label"><input type="checkbox" id="f-unseen"> <span data-i18n="f.unseen">Only not used in training</span></label>
+            <label><input type="checkbox" id="f-natural"> <span data-i18n="f.natural">只看有食品天然存在记录的分子</span></label>
+            <label id="f-unseen-label"><input type="checkbox" id="f-unseen"> <span data-i18n="f.unseen">只看未参与训练的分子</span></label>
           </div>
         </div>
 
         <p id="a-summary" style="margin-top:14px"></p>
-        <div class="note warn hidden" id="a-low" data-i18n="a.low_score"></div>
+        <div class="note warn hidden" id="a-low" data-i18n="a.low_score">没有分子能同时较好地具备这些描述词，可以减少想要的描述词。</div>
         <div class="results" id="a-results"></div>
-        <div class="row-wrap"><button type="button" class="chip-btn hidden" id="a-more" data-i18n="a.more">Show more</button></div>
+        <div class="row-wrap"><button type="button" class="chip-btn hidden" id="a-more" data-i18n="a.more">显示更多</button></div>
       </div>
 
       <!-- Mode B -->
       <div id="panel-b" role="tabpanel" aria-labelledby="tab-b" class="hidden">
-        <p data-i18n="b.intro_short"></p>
-        <p class="small ex-list" id="presets-b" style="margin-top:10px"><span class="muted" data-i18n="b.presets">Examples:</span> </p>
-        <details class="card bg-box hidden" id="b-bg"><summary data-i18n="b.bg_summary">Why look for a substitute?</summary><p id="b-bg-text" style="margin:8px 0 6px"></p><p class="small muted" id="b-bg-src" style="margin:0"></p></details>
+        <p data-i18n="b.intro_short">选一个分子：列出预测气味最相近的 20 个，橙色表示结构不同。</p>
+        <p class="small ex-list" id="presets-b" style="margin-top:10px"><span class="muted" data-i18n="b.presets">示例：</span> </p>
+        <details class="card bg-box hidden" id="b-bg"><summary data-i18n="b.bg_summary">替代背景</summary><p id="b-bg-text" style="margin:8px 0 6px"></p><p class="small muted" id="b-bg-src" style="margin:0"></p></details>
 
         <form id="b-form" class="card" style="margin-top:14px" novalidate autocomplete="off">
-          <label class="field" for="b-input" data-i18n="b.search_label">Pick a molecule</label>
+          <label class="field" for="b-input" data-i18n="b.search_label">选择分子：输入名称在库中搜索，或直接输入 SMILES</label>
           <div class="row-wrap" style="margin-top:4px;position:relative">
             <input type="text" id="b-input" spellcheck="false" autocapitalize="off" style="flex:1 1 260px;max-width:460px" data-i18n-attr="placeholder:b.search_ph"
-                   role="combobox" aria-autocomplete="list" aria-controls="b-suggest" aria-expanded="false">
-            <button type="submit" class="btn" id="b-go" data-i18n="b.go">Find substitutes</button>
+                   role="combobox" aria-autocomplete="list" aria-controls="b-suggest" aria-expanded="false" placeholder="如 vanillin 或 CC(=O)C(C)=O">
+            <button type="submit" class="btn" id="b-go" data-i18n="b.go">查找替代</button>
             <div class="suggest hidden" id="b-suggest" role="listbox"></div>
           </div>
           <p class="small status" id="b-status" aria-live="polite"></p>
@@ -142,14 +160,14 @@
           <div class="b-top">
             <div class="card" id="b-query"></div>
             <div class="card">
-              <h3 style="margin-top:0" data-i18n="b.scatter_title">Odor similarity vs structure similarity</h3>
+              <h3 style="margin-top:0" data-i18n="b.scatter_title">气味相似度与结构相似度</h3>
               <div id="b-scatter"></div>
               <div class="legend small" id="b-legend"></div>
             </div>
           </div>
           <p class="small muted" id="b-rule" style="margin-top:10px"></p>
           <p id="b-hi-summary"></p>
-          <h3 data-i18n="b.list_title">The 20 molecules most similar in odor</h3>
+          <h3 data-i18n="b.list_title">气味最相近的 20 个分子</h3>
           <div class="results" id="b-results"></div>
         </div>
       </div>
@@ -159,17 +177,16 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p class="tool-src" data-i18n-html="footer.short"></p>
-      <p data-i18n-html="footer.site"></p>
+      <p class="tool-src" data-i18n-html="footer.short">结果只是候选清单，页面不显示法规状态，安全性和合规性需要另行核查。气味模型为 CC BY-NC，仅供非商业学术演示。详见<a href="about.html">方法与来源</a>。</p>
+      <p data-i18n-html="footer.site">© 2026 崔京伟 · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">代码（GitHub）</a></p>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.wasm.min.js"></script>
-  <script src="../odor-predictor/engine.js?v=20261021a"></script>
-  <script src="../assets/i18n.js?v=20261021a" data-page-dict="i18n/"></script>
-  <script src="../assets/projects.js?v=20261021a"></script>
-  <script src="finder.js?v=20261021a"></script>
-  <script src="app.js?v=20261021a"></script>
+  <script src="../odor-predictor/engine.js?v=20261021b"></script>
+  <script src="../assets/projects.js?v=20261021b"></script>
+  <script src="finder.js?v=20261021b"></script>
+  <script src="app.js?v=20261021b"></script>
 </body>
 </html>

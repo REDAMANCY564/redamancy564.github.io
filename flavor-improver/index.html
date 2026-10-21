@@ -1,12 +1,30 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net https://pubchem.ncbi.nlm.nih.gov; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>4 Flavor Improver | Jingwei Cui</title>
+  <title>4 风味改良 | 崔京伟</title>
   <meta name="description" content="Shows how Bayesian optimization adjusts a dairy flavor, or compares your sample with a target.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261021a">
+  <link rel="canonical" href="https://redamancy564.github.io/flavor-improver/">
+  <meta name="theme-color" content="#fbfaf7">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="崔京伟 Jingwei Cui">
+  <meta property="og:title" content="4 风味改良 | 崔京伟">
+  <meta property="og:description" content="Shows how Bayesian optimization adjusts a dairy flavor, or compares your sample with a target.">
+  <meta property="og:url" content="https://redamancy564.github.io/flavor-improver/">
+  <meta property="og:image" content="https://redamancy564.github.io/assets/og/flavor-improver.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="4 风味改良 | 崔京伟">
+  <meta name="twitter:description" content="Shows how Bayesian optimization adjusts a dairy flavor, or compares your sample with a target.">
+  <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/flavor-improver.jpg">
+  <link rel="stylesheet" href="../assets/style.css?v=20261021b">
+  <script src="../assets/i18n.js?v=20261021b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -93,62 +111,62 @@
 
   <main class="container">
     <section class="hero">
-      <h1 data-i18n="hero.title">Bayesian Optimization for Dairy Flavor Improvement and Gap Analysis</h1>
+      <h1 data-i18n="hero.title" data-no="4">基于贝叶斯优化的乳品风味改良与差距分析</h1>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool" aria-current="page">工具</a>
         <a href="about.html" data-i18n="nav.about">方法与来源</a>
       </nav>
-      <p class="sub" data-i18n="hero.sub"></p>
-      <div class="note warn" data-i18n-html="hero.disclaimer"></div>
+      <p class="sub" data-i18n="hero.sub">用贝叶斯优化建议往乳品基底里加哪些风味物质、加多少，让风味接近设定的方向。</p>
+      <div class="note warn" data-i18n-html="hero.disclaimer"><b>这是方法演示，不是配方建议。</b>评价函数由单分子气味预测和简化的加和规则构成，不包含掩蔽、协同和基质效应；实际使用时应换成感官评价或 GC-O 实验。</div>
     </section>
 
     <!-- Demo -->
     <section class="section" id="demo">
       <div class="mode-pick">
-        <span class="seg" id="mode-seg" role="group" data-i18n-attr="aria-label:mode.label">
-          <button type="button" data-mode="bo" aria-pressed="true" data-i18n="mode.bo">Bayesian optimization demo</button>
-          <button type="button" data-mode="ref" aria-pressed="false" data-i18n="ref.option_short">Formula vs human milk</button>
-          <button type="button" data-mode="user" aria-pressed="false" data-i18n="user.option_short">Your GC-MS data</button>
+        <span class="seg" id="mode-seg" role="group" data-i18n-attr="aria-label:mode.label" aria-label="模式">
+          <button type="button" data-mode="bo" aria-pressed="true" data-i18n="mode.bo">贝叶斯优化演示</button>
+          <button type="button" data-mode="ref" aria-pressed="false" data-i18n="ref.option_short">配方奶粉对比母乳</button>
+          <button type="button" data-mode="user" aria-pressed="false" data-i18n="user.option_short">我的 GC-MS 数据</button>
         </span>
       </div>
       <div data-sec-scope id="bo-area">
-      <label class="field" for="preset" data-i18n="demo.select">Choose a dairy base</label>
+      <label class="field" for="preset" data-i18n="demo.select">选择乳品基底</label>
       <select id="preset"></select>
       <p class="small muted base-meta" id="base-meta"></p>
 
-      <h3 class="sub-h" data-sec="1" data-i18n="base.title">Base composition and odor thresholds</h3>
-      <p class="small muted" data-i18n="base.intro"></p>
+      <h3 class="sub-h" data-sec="1" data-i18n="base.title" data-no="4.1">基底组成与气味阈值</h3>
+      <p class="small muted" data-i18n="base.intro">基底中已定量的关键风味物质（文献值）。OAV（气味活度值）= 浓度 ÷ 阈值，大于 1 才认为能闻到。阈值是水中的觉察阈值（文献值），可以修改。</p>
       <div class="thr-tools">
-        <button type="button" class="btn-sm" id="thr-reset-all" data-i18n="thr.reset_all">Reset all thresholds</button>
+        <button type="button" class="btn-sm" id="thr-reset-all" data-i18n="thr.reset_all">全部恢复默认阈值</button>
         <span class="small muted" id="thr-count"></span>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th data-i18n="col.compound">Compound</th>
-              <th class="num"><span data-i18n="col.conc">Concentration</span><span class="sub" id="conc-unit"></span></th>
-              <th class="num"><span data-i18n="col.threshold">Threshold</span><span class="sub">µg/kg</span></th>
+              <th data-i18n="col.compound">物质</th>
+              <th class="num"><span data-i18n="col.conc">浓度</span><span class="sub" id="conc-unit"></span></th>
+              <th class="num"><span data-i18n="col.threshold">阈值</span><span class="sub">µg/kg</span></th>
               <th class="num">OAV</th>
-              <th data-i18n="col.source">Source</th>
-              <th class="num"><span data-i18n="col.range">Literature range</span><span class="sub">µg/kg</span></th>
+              <th data-i18n="col.source">阈值出处</th>
+              <th class="num"><span data-i18n="col.range">文献范围</span><span class="sub">µg/kg</span></th>
             </tr>
           </thead>
           <tbody id="base-body"></tbody>
         </table>
       </div>
       <details class="thr-more">
-        <summary data-i18n="thr.palette_title">Candidate additives (18) and their thresholds</summary>
-        <p class="small muted" style="margin-top:8px" data-i18n="thr.palette_intro"></p>
+        <summary data-i18n="thr.palette_title">候选添加物（18 种）及其阈值</summary>
+        <p class="small muted" style="margin-top:8px" data-i18n="thr.palette_intro">算法只能从这 18 种物质中选择添加物，每种的添加量在阈值的 0.01 倍到 100 倍之间搜索，低于 0.1 倍视为不添加。修改阈值会同时改变添加量的换算。</p>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th data-i18n="col.compound">Compound</th>
-                <th class="num"><span data-i18n="col.threshold">Threshold</span><span class="sub">µg/kg</span></th>
-                <th data-i18n="col.source">Source</th>
-                <th class="num"><span data-i18n="col.range">Literature range</span><span class="sub">µg/kg</span></th>
-                <th class="num"><span data-i18n="col.max_add">Max. addition</span><span class="sub">µg/kg</span></th>
+                <th data-i18n="col.compound">物质</th>
+                <th class="num"><span data-i18n="col.threshold">阈值</span><span class="sub">µg/kg</span></th>
+                <th data-i18n="col.source">阈值出处</th>
+                <th class="num"><span data-i18n="col.range">文献范围</span><span class="sub">µg/kg</span></th>
+                <th class="num"><span data-i18n="col.max_add">最大添加量</span><span class="sub">µg/kg</span></th>
               </tr>
             </thead>
             <tbody id="palette-body"></tbody>
@@ -156,18 +174,18 @@
         </div>
       </details>
 
-      <h3 class="sub-h" data-sec="1" data-i18n="dir.title">Direction of improvement</h3>
+      <h3 class="sub-h" data-sec="1" data-i18n="dir.title" data-no="4.2">改良方向</h3>
       <p class="small muted" id="dir-rationale"></p>
       <div class="dirs" id="dirs"></div>
 
       <div class="controls">
-        <button type="button" class="btn" id="btn-run" data-i18n="ctl.start">Start optimization</button>
-        <button type="button" class="btn secondary" id="btn-skip" data-i18n="ctl.skip">Skip to result</button>
-        <label><span data-i18n="ctl.speed">Speed</span>
+        <button type="button" class="btn" id="btn-run" data-i18n="ctl.start">开始优化</button>
+        <button type="button" class="btn secondary" id="btn-skip" data-i18n="ctl.skip">跳到结果</button>
+        <label><span data-i18n="ctl.speed">播放速度</span>
           <select id="speed">
-            <option value="600" data-i18n="ctl.slow">Slow</option>
-            <option value="200" selected data-i18n="ctl.normal">Normal</option>
-            <option value="40" data-i18n="ctl.fast">Fast</option>
+            <option value="600" data-i18n="ctl.slow">慢</option>
+            <option value="200" selected data-i18n="ctl.normal">中</option>
+            <option value="40" data-i18n="ctl.fast">快</option>
           </select>
         </label>
         <span class="step-info" id="step-info" aria-live="polite"></span>
@@ -176,23 +194,23 @@
 
       <div class="grid-2">
         <div class="card">
-          <h3 data-i18n="chart.radar_title">Odor profile</h3>
+          <h3 data-i18n="chart.radar_title">气味轮廓</h3>
           <div class="chart-box"><canvas id="radar" aria-label="Odor profile radar chart"></canvas></div>
-          <p class="chart-cap" data-i18n="chart.radar_cap"></p>
+          <p class="chart-cap" data-i18n="chart.radar_cap">数值为各描述词在整体气味中所占的比例（各项之和为 1）。</p>
         </div>
         <div class="card">
-          <h3 data-i18n="chart.line_title">Best score so far</h3>
+          <h3 data-i18n="chart.line_title">最优得分随试验次数的变化</h3>
           <div class="chart-box line"><canvas id="line" aria-label="Best score by number of trials"></canvas></div>
           <p class="chart-cap" id="line-cap"></p>
-          <h3 style="margin-top:16px" data-i18n="recipe.title">Suggested additions (best so far)</h3>
+          <h3 style="margin-top:16px" data-i18n="recipe.title">添加建议（目前最优方案）</h3>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th data-i18n="col.compound">Compound</th>
-                  <th class="num"><span data-i18n="col.added">Added</span><span class="sub" id="add-unit"></span></th>
-                  <th class="num"><span data-i18n="col.added_oav">Added OAV</span></th>
-                  <th class="num"><span data-i18n="col.oav_after">OAV after</span></th>
+                  <th data-i18n="col.compound">物质</th>
+                  <th class="num"><span data-i18n="col.added">添加量</span><span class="sub" id="add-unit"></span></th>
+                  <th class="num"><span data-i18n="col.added_oav">添加量 OAV</span></th>
+                  <th class="num"><span data-i18n="col.oav_after">添加后 OAV</span></th>
                 </tr>
               </thead>
               <tbody id="recipe-body"></tbody>
@@ -207,16 +225,16 @@
       <div data-sec-scope id="ref-area" hidden>
         <p class="small muted base-meta" id="ref-meta"></p>
         <ul class="plain small ref-notice" style="margin-top:12px">
-          <li data-i18n-html="ref.notice.1"></li>
-          <li data-i18n-html="ref.notice.2"></li>
-          <li data-i18n-html="ref.notice.3"></li>
-          <li data-i18n-html="ref.notice.4"></li>
+          <li data-i18n-html="ref.notice.1">根据 <b>GB 2760-2024</b> 表 B.1，婴幼儿配方食品（食品分类号 13.01）不得添加食品用香料、香精；该表脚注规定，使用范围涵盖 0~6 月龄婴幼儿配方食品的不得添加任何食用香料。本示例针对婴儿配方食品，因此<b>不推荐直接添加风味物质</b>，只提出前体物质方向。</li>
+          <li data-i18n-html="ref.notice.2">前体物质的使用须符合婴幼儿配方食品产品标准（如 GB 10765-2021）和营养强化剂相关标准（GB 14880）。</li>
+          <li data-i18n-html="ref.notice.3">提高不饱和脂肪酸等前体可能增加氧化异味风险，需要结合工艺和储存条件评估。</li>
+          <li data-i18n-html="ref.notice.4">本页只比较两组已发表数据的气味轮廓，用于说明分析方法，不构成对任何产品的评价或宣称。</li>
         </ul>
 
-        <h3 class="sub-h" data-sec="1" data-i18n="ref.input_title"></h3>
-        <p class="small muted" data-i18n="ref.input_intro"></p>
+        <h3 class="sub-h" data-sec="1" data-i18n="ref.input_title" data-no="4.1">两组输入数据</h3>
+        <p class="small muted" data-i18n="ref.input_intro">两组数据都可以修改：选择起点样本、修改浓度或增删物质。OAV 加粗的物质达到关键风味物质标准，参与下面的分析，其余不参与。阈值沿用贝叶斯优化演示的固定规则（van Gemert 2011 水中觉察阈值）；本示例中，对 Buttery 等人只给出窄范围（两端相差不超过 2 倍）的物质取几何平均值。</p>
         <div class="thr-tools">
-          <label class="small"><span data-i18n="ref.cutoff"></span>
+          <label class="small"><span data-i18n="ref.cutoff">关键风味物质标准</span>
             <select id="ref-cutoff" style="width:auto;padding:4px 8px">
               <option value="10">OAV ≥ 10</option>
               <option value="5">OAV ≥ 5</option>
@@ -228,24 +246,24 @@
           <div class="card" id="ref-side-if"></div>
         </div>
 
-        <h3 class="sub-h" data-sec="1" data-i18n="ref.upper_title"></h3>
+        <h3 class="sub-h" data-sec="1" data-i18n="ref.upper_title" data-no="4.2">轮廓对比与差距</h3>
         <div class="grid-2">
           <div class="card">
-            <h3 data-i18n="ref.radar_title"></h3>
+            <h3 data-i18n="ref.radar_title">气味轮廓</h3>
             <div class="chart-box"><canvas id="ref-radar" aria-label="Odor profiles of the two inputs"></canvas></div>
-            <p class="chart-cap" data-i18n="ref.radar_cap"></p>
+            <p class="chart-cap" data-i18n="ref.radar_cap">只用达到关键风味物质标准的物质计算，规则与贝叶斯优化演示相同。每个方向是一个气味描述词，数值为占比（各项之和为 1）。描述词向量使用「提升度」，出现较少的描述词（如鱼腥、蘑菇、金属）会被放大。</p>
           </div>
           <div class="card">
-            <h3 data-i18n="ref.gap_title"></h3>
+            <h3 data-i18n="ref.gap_title">差距最大的关键风味物质</h3>
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th data-i18n="col.compound">Compound</th>
-                    <th class="num"><span data-i18n="ref.col.oav_hm"></span></th>
-                    <th class="num"><span data-i18n="ref.col.oav_if"></span></th>
-                    <th class="num"><span data-i18n="ref.col.gap"></span></th>
-                    <th data-i18n="ref.col.higher"></th>
+                    <th data-i18n="col.compound">物质</th>
+                    <th class="num"><span data-i18n="ref.col.oav_hm">母乳 OAV</span></th>
+                    <th class="num"><span data-i18n="ref.col.oav_if">奶粉 OAV</span></th>
+                    <th class="num"><span data-i18n="ref.col.gap">差距</span></th>
+                    <th data-i18n="ref.col.higher">较高的一方</th>
                   </tr>
                 </thead>
                 <tbody id="ref-gap-body"></tbody>
@@ -255,23 +273,23 @@
           </div>
         </div>
         <div class="card" style="margin-top:16px">
-          <h3 data-i18n="ref.dir_title"></h3>
+          <h3 data-i18n="ref.dir_title">前体物质方向</h3>
           <ul class="plain small" id="ref-dirs"></ul>
-          <p class="small" style="margin-top:12px" data-i18n-html="ref.no_amount"></p>
+          <p class="small" style="margin-top:12px" data-i18n-html="ref.no_amount"><b>本分析不给出添加量。</b>前体转化为风味物质的程度取决于工艺和储存条件，模型无法定量预测。数据说明：两组浓度来自同一研究、同一方法（顶空固相微萃取，外标法），属于半定量；母乳的风味物质个体差异很大，也受母亲饮食影响。</p>
         </div>
 
-        <h3 class="sub-h" data-sec="1" data-i18n="ref.lower_title"></h3>
-        <p class="small muted" data-i18n="ref.lower_intro"></p>
+        <h3 class="sub-h" data-sec="1" data-i18n="ref.lower_title" data-no="4.3">关键风味物质与前体物质对照表</h3>
+        <p class="small muted" data-i18n="ref.lower_intro">加粗的物质是当前输入中的关键风味物质。每行都注明文献出处和位置；法规状态针对前体物质在婴儿配方食品中的使用。</p>
         <div class="table-wrap">
           <table class="pre-table">
             <thead>
               <tr>
-                <th data-i18n="ref.pcol.compound"></th>
-                <th data-i18n="ref.pcol.odor"></th>
-                <th data-i18n="ref.pcol.precursor"></th>
-                <th data-i18n="ref.pcol.pathway"></th>
-                <th data-i18n="ref.pcol.status"></th>
-                <th data-i18n="ref.pcol.refs"></th>
+                <th data-i18n="ref.pcol.compound">关键风味物质</th>
+                <th data-i18n="ref.pcol.odor">风味描述</th>
+                <th data-i18n="ref.pcol.precursor">前体物质</th>
+                <th data-i18n="ref.pcol.pathway">形成途径</th>
+                <th data-i18n="ref.pcol.status">婴儿配方食品中的使用及法规依据</th>
+                <th data-i18n="ref.pcol.refs">文献出处</th>
               </tr>
             </thead>
             <tbody id="ref-pre-body"></tbody>
@@ -280,20 +298,20 @@
         <p class="small muted" style="margin-top:8px" id="ref-reg-notes"></p>
 
         <details class="thr-more" id="ref-sim">
-          <summary data-i18n="ref.sim_title"></summary>
-          <p class="small warn-text" style="margin-top:8px" data-i18n-html="ref.sim_warning"></p>
+          <summary data-i18n="ref.sim_title">添加量模拟（仅为方法演示，不适用于婴儿配方食品）</summary>
+          <p class="small warn-text" style="margin-top:8px" data-i18n-html="ref.sim_warning"><b>仅为方法演示。</b>根据 GB 2760-2024，婴儿配方食品不得添加任何食用香料，下面的结果<b>不能用于婴儿配方食品</b>。这里只演示：以奶粉的关键物质组成为起点、以母乳轮廓为参照时，贝叶斯优化演示中的优化算法会给出什么样的添加方案。加和模型无法降低已有物质的强度，所以奶粉中偏高的物质无法通过添加来抵消。</p>
           <div class="controls">
-            <button type="button" class="btn secondary" id="ref-sim-run" data-i18n="ref.sim_run"></button>
+            <button type="button" class="btn secondary" id="ref-sim-run" data-i18n="ref.sim_run">运行一次模拟（60 次试验）</button>
             <span class="step-info" id="ref-sim-info"></span>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th data-i18n="col.compound">Compound</th>
-                  <th class="num"><span data-i18n="col.added">Added</span><span class="sub">µg/kg</span></th>
-                  <th class="num" data-i18n="col.added_oav">Added OAV</th>
-                  <th class="num" data-i18n="col.oav_after">OAV after</th>
+                  <th data-i18n="col.compound">物质</th>
+                  <th class="num"><span data-i18n="col.added">添加量</span><span class="sub">µg/kg</span></th>
+                  <th class="num" data-i18n="col.added_oav">添加量 OAV</th>
+                  <th class="num" data-i18n="col.oav_after">添加后 OAV</th>
                 </tr>
               </thead>
               <tbody id="ref-sim-body"></tbody>
@@ -305,70 +323,70 @@
 
       <!-- Use my own data (PLAN-userdata.md): sample vs target from gcms-interpreter -->
       <div data-sec-scope id="user-area" hidden>
-        <p style="margin-top:12px" data-i18n-html="user.intro"></p>
-        <p class="small" data-i18n-html="user.privacy"></p>
+        <p style="margin-top:12px" data-i18n-html="user.intro"><b>用自己的数据：</b>先在 <a href="../gcms-interpreter/">GC-MS 风味解读</a> 中分别处理当前样品（如自己的奶粉）和目标样品（如母乳），在「风味解读」一步点「作为当前样品发送」或「作为目标发送」；也可以把那里导出的排名 CSV 上传到下面。两份数据可以用不同的标准文件处理，本页按化合物合并。</p>
+        <p class="small" data-i18n-html="user.privacy">数据只在你的浏览器中处理和保存，不会上传。只有当你在下面点击「从 PubChem 查结构」时，页面才会把缺少结构的物质的 CAS 号或名称发给 PubChem（不发送含量等数据）。</p>
         <details class="card user-req">
-          <summary><b data-i18n="user.req_title">CSV file requirements</b></summary>
+          <summary><b data-i18n="user.req_title">上传 CSV 的要求</b></summary>
           <ul class="plain small" style="margin-top:8px">
-            <li data-i18n-html="user.req.1"></li>
-            <li data-i18n-html="user.req.2"></li>
-            <li data-i18n-html="user.req.3"></li>
-            <li data-i18n-html="user.req.4"></li>
-            <li data-i18n-html="user.req.5"></li>
+            <li data-i18n-html="user.req.1">一个文件只放一个样品（当前样品和目标各一个文件）。第一行为列名，逗号或分号分隔，UTF-8 编码（Excel 中选「另存为 → CSV UTF-8」）。列名不区分大小写，中英文都可以。</li>
+            <li data-i18n-html="user.req.2"><b>必需：</b>物质名称列，列名为 Compound、化合物、物质或名称。</li>
+            <li data-i18n-html="user.req.3"><b>必需，以下数值列至少一个</b>（同时有多个时按此顺序使用）：(1) 定量浓度（Amount、浓度或含量；单位写在列名里，如「浓度 (µg/kg)」，没写时按 µg/kg），按 OAV 比较；(2) 相对含量或峰面积（Relative content、相对含量或峰面积），按 ROAV 比较；(3) 已经算好的 OAV（列名 OAV）；(4) 已经算好的 ROAV（列名 ROAV）。</li>
+            <li data-i18n-html="user.req.4"><b>建议：</b>CAS 号列（CAS），用于准确匹配风味知识库中的物质和气味；气味阈值列（Odor threshold 或阈值；单位写在列名里，没写时按 mg/kg），使用 ① 或 ② 时需要，缺少阈值的物质改用内置值，没有内置值的不参与计算；直接给出 OAV 或 ROAV 时不需要阈值。</li>
+            <li data-i18n-html="user.req.5">未检出的物质可以在数值列中写「not detected」或「未检出」。GC-MS 风味解读页面「导出排名（CSV）」得到的文件已符合以上要求，可以直接上传。</li>
           </ul>
-          <p class="small" style="margin:6px 0 0"><a href="examples/userdata_template.csv" download data-i18n="user.req_template">Download a CSV template</a></p>
+          <p class="small" style="margin:6px 0 0"><a href="examples/userdata_template.csv" download data-i18n="user.req_template">下载 CSV 模板</a></p>
         </details>
         <div class="user-slots">
           <div class="card" id="user-slot-sample"></div>
           <div class="card" id="user-slot-target"></div>
         </div>
         <div class="thr-tools">
-          <button type="button" class="btn-sm" id="user-example" data-i18n="user.example">Load the example pair</button>
-          <span class="small muted" data-i18n="user.example_note"></span>
+          <button type="button" class="btn-sm" id="user-example" data-i18n="user.example">载入示例数据</button>
+          <span class="small muted" data-i18n="user.example_note">Zhang et al. 2022 的奶粉样本 1（当前样品）和母乳样本 A1（目标），与「配方奶粉对比母乳」相同的已发表数据。</span>
         </div>
-        <h3 class="sub-h" data-sec="1" data-i18n="user.merge_title">Data check</h3>
+        <h3 class="sub-h" data-sec="1" data-i18n="user.merge_title" data-no="4.1">数据核对</h3>
         <div id="user-merge"></div>
 
         <div id="user-cmp" hidden>
-          <h3 class="sub-h" data-sec="1" data-i18n="user.cmp_title">Comparison</h3>
-          <label class="small"><span data-i18n="user.view">Profile dimensions</span>
+          <h3 class="sub-h" data-sec="1" data-i18n="user.cmp_title" data-no="4.2">对比分析</h3>
+          <label class="small"><span data-i18n="user.view">轮廓维度：</span>
             <select id="user-view" style="width:auto;padding:4px 8px">
-              <option value="dairy" data-i18n="user.view_dairy">12 dairy dimensions</option>
-              <option value="ref" data-i18n="user.view_ref">12 dimensions of example 5</option>
-              <option value="all" data-i18n="user.view_all">all 138 descriptors</option>
+              <option value="dairy" data-i18n="user.view_dairy">乳品 12 维（贝叶斯优化演示、GC-MS 页面默认）</option>
+              <option value="ref" data-i18n="user.view_ref">母乳 / 奶粉 12 维（配方奶粉对比母乳）</option>
+              <option value="all" data-i18n="user.view_all">全部 138 个描述词</option>
             </select></label>
           <div class="thr-tools" style="margin-top:6px">
-            <button type="button" class="btn-sm" id="user-rules-open" data-i18n="user.rules_open">Adjust the comparison rule</button>
+            <button type="button" class="btn-sm" id="user-rules-open" data-i18n="user.rules_open">调整判断标准</button>
             <span class="small muted" id="user-rules-now"></span>
           </div>
           <div class="chart-box" style="margin-top:8px"><canvas id="user-radar" aria-label="Odor profile radar chart"></canvas></div>
           <p class="small muted" id="user-radar-note"></p>
-          <h4 style="margin:16px 0 6px" data-i18n="user.gap_title">Compounds that differ most</h4>
+          <h4 style="margin:16px 0 6px" data-i18n="user.gap_title">差别最大的物质</h4>
           <div class="table-wrap"><table class="user-table"><thead id="user-gap-head"></thead><tbody id="user-gap-body"></tbody></table></div>
           <p class="small muted" id="user-gap-note"></p>
           <div class="user-slots">
-            <div class="card"><h4 data-i18n="user.list_s_title">Higher in the sample</h4><p class="small muted" data-i18n="user.list_s_intro"></p><ul class="plain small" id="user-higher-s"></ul></div>
-            <div class="card"><h4 data-i18n="user.list_t_title">Higher in the target</h4><p class="small muted" id="user-list-t-intro"></p><ul class="plain small" id="user-higher-t"></ul></div>
+            <div class="card"><h4 data-i18n="user.list_s_title">当前样品偏高的物质</h4><p class="small muted" data-i18n="user.list_s_intro">加和规则只能「添加」，不能降低已有物质，这些物质需要从原料或工艺方向降低（如控制氧化、热处理、储存条件）。</p><ul class="plain small" id="user-higher-s"></ul></div>
+            <div class="card"><h4 data-i18n="user.list_t_title">目标更高的物质</h4><p class="small muted" id="user-list-t-intro"></p><ul class="plain small" id="user-higher-t"></ul></div>
           </div>
 
-          <h3 class="sub-h" data-sec="1" data-i18n="user.rec_title">What to add</h3>
-          <p class="small" style="margin:0 0 4px" data-i18n-html="user.rec_notice1"></p>
-          <p class="small muted" style="margin:0" data-i18n-html="user.rec_notice2"></p>
+          <h3 class="sub-h" data-sec="1" data-i18n="user.rec_title" data-no="4.3">推荐添加的物质</h3>
+          <p class="small" style="margin:0 0 4px" data-i18n-html="user.rec_notice1"><b>只给方向，不给添加量。</b>评价基于加和规则（各物质的气味轮廓按强度相加），忽略了掩蔽、协同和基质效应；推荐结果必须经过感官评价和实验验证。</p>
+          <p class="small muted" style="margin:0" data-i18n-html="user.rec_notice2"><b>婴儿配方食品：</b>根据 GB 2760-2024，婴幼儿配方食品不得添加食品用香料、香精，这类产品只能从原料、工艺和前体方向调整；请同时参考「配方奶粉对比母乳」中的前体对照表。</p>
           <div id="user-rec" style="margin-top:10px"></div>
         </div>
 
         <dialog id="user-rules" class="user-dialog" aria-labelledby="user-rules-title">
-          <h3 id="user-rules-title" data-i18n="user.rules_title">Comparison rule</h3>
-          <p class="small muted" data-i18n="user.rules_intro"></p>
-          <label class="small rule-row"><span data-i18n="user.rule_fold">OAV mode: higher on one side from</span>
-            <input type="number" id="user-rule-fold" min="1.1" max="100" step="0.1"> <span data-i18n="user.rule_fold_unit">fold</span></label>
-          <label class="small rule-row"><span data-i18n="user.rule_pp">ROAV mode: higher on one side from</span>
-            <input type="number" id="user-rule-pp" min="0.1" max="50" step="0.5"> <span data-i18n="user.rule_pp_unit">percentage points</span></label>
+          <h3 id="user-rules-title" data-i18n="user.rules_title">判断标准</h3>
+          <p class="small muted" data-i18n="user.rules_intro">差别达到多少才算「一方较高」。默认值是经验设定（2 倍、2 个百分点），没有统一标准，可按样品的测定误差调整：误差大时宜放宽。设置保存在这个浏览器里。</p>
+          <label class="small rule-row"><span data-i18n="user.rule_fold">OAV 模式：相差</span>
+            <input type="number" id="user-rule-fold" min="1.1" max="100" step="0.1"> <span data-i18n="user.rule_fold_unit">倍及以上</span></label>
+          <label class="small rule-row"><span data-i18n="user.rule_pp">ROAV 模式：贡献占比相差</span>
+            <input type="number" id="user-rule-pp" min="0.1" max="50" step="0.5"> <span data-i18n="user.rule_pp_unit">个百分点及以上</span></label>
           <p class="small error" id="user-rules-msg"></p>
           <div class="thr-tools">
-            <button type="button" class="btn-sm" id="user-rules-apply" data-i18n="user.rules_apply">Apply</button>
-            <button type="button" class="btn-sm" id="user-rules-reset" data-i18n="user.rules_reset">Defaults</button>
-            <button type="button" class="btn-sm" id="user-rules-close" data-i18n="user.rules_close">Close</button>
+            <button type="button" class="btn-sm" id="user-rules-apply" data-i18n="user.rules_apply">应用</button>
+            <button type="button" class="btn-sm" id="user-rules-reset" data-i18n="user.rules_reset">恢复默认</button>
+            <button type="button" class="btn-sm" id="user-rules-close" data-i18n="user.rules_close">关闭</button>
           </div>
         </dialog>
       </div>
@@ -377,20 +395,19 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p class="tool-src" data-i18n-html="footer.short"></p>
-      <p data-i18n-html="footer.site"></p>
+      <p class="tool-src" data-i18n-html="footer.short">评价函数是虚拟的，不是感官数据。气味模型为 CC BY-NC，仅供非商业学术演示。详见<a href="about.html">方法与来源</a>。</p>
+      <p data-i18n-html="footer.site">© 2026 崔京伟 · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">代码（GitHub）</a></p>
     </div>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
-  <script src="../assets/i18n.js?v=20261021a" data-page-dict="i18n/"></script>
-  <script src="../assets/projects.js?v=20261021a"></script>
-  <script src="../assets/flavor-handoff.js?v=20261021a"></script>
-  <script src="mixture.js?v=20261021a"></script>
-  <script src="bo.js?v=20261021a"></script>
-  <script src="reference.js?v=20261021a"></script>
-  <script src="userdata-core.js?v=20261021a"></script>
-  <script src="userdata.js?v=20261021a"></script>
-  <script src="app.js?v=20261021a"></script>
+  <script src="../assets/projects.js?v=20261021b"></script>
+  <script src="../assets/flavor-handoff.js?v=20261021b"></script>
+  <script src="mixture.js?v=20261021b"></script>
+  <script src="bo.js?v=20261021b"></script>
+  <script src="reference.js?v=20261021b"></script>
+  <script src="userdata-core.js?v=20261021b"></script>
+  <script src="userdata.js?v=20261021b"></script>
+  <script src="app.js?v=20261021b"></script>
 </body>
 </html>

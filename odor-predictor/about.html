@@ -1,11 +1,29 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Method &amp; sources | 3 Odor Predictor | Jingwei Cui</title>
+  <title>方法与来源 | 3 气味预测 | 崔京伟</title>
   <meta name="description" content="Method, results, limitations and data sources of Molecular Odor Descriptor Prediction with Graph Neural Networks.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261021a">
+  <link rel="canonical" href="https://redamancy564.github.io/odor-predictor/about.html">
+  <meta name="theme-color" content="#fbfaf7">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="崔京伟 Jingwei Cui">
+  <meta property="og:title" content="方法与来源 | 3 气味预测 | 崔京伟">
+  <meta property="og:description" content="Method, results, limitations and data sources of Molecular Odor Descriptor Prediction with Graph Neural Networks.">
+  <meta property="og:url" content="https://redamancy564.github.io/odor-predictor/about.html">
+  <meta property="og:image" content="https://redamancy564.github.io/assets/og/odor-predictor.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="方法与来源 | 3 气味预测 | 崔京伟">
+  <meta name="twitter:description" content="Method, results, limitations and data sources of Molecular Odor Descriptor Prediction with Graph Neural Networks.">
+  <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/odor-predictor.jpg">
+  <link rel="stylesheet" href="../assets/style.css?v=20261021b">
+  <script src="../assets/i18n.js?v=20261021b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -33,114 +51,113 @@
 
   <main class="container about">
     <div class="hero">
-      <h1 data-i18n="hero.title">Molecular Odor Descriptor Prediction with Graph Neural Networks</h1>
+      <h1 data-i18n="hero.title" data-no="3">基于图神经网络的分子气味描述词预测</h1>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool">工具</a>
         <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
       </nav>
     </div>
     <nav class="toc">
-      <a href="#overview" data-i18n="about.overview">Overview</a>
-      <a href="#method" data-i18n="about.method">Method</a>
-      <a href="#results" data-i18n="about.results">Results</a>
-      <a href="#tried" data-i18n="about.tried">Tried, not adopted</a>
-      <a href="#limits" data-i18n="about.limits">Limitations</a>
-      <a href="#data" data-i18n="about.data">Data, licenses &amp; citations</a>
+      <a href="#overview" data-i18n="about.overview" data-no="3.1">概述</a>
+      <a href="#method" data-i18n="about.method" data-no="3.2">方法</a>
+      <a href="#results" data-i18n="about.results" data-no="3.3">结果</a>
+      <a href="#tried" data-i18n="about.tried" data-no="3.4">试过但未采用</a>
+      <a href="#limits" data-i18n="about.limits" data-no="3.5">局限</a>
+      <a href="#data" data-i18n="about.data" data-no="3.6">数据、许可与引用</a>
     </nav>
 
     <section id="overview">
-      <h2 data-sec="1" data-i18n="about.overview">Overview</h2>
-      <p data-i18n="hero.intro"></p>
-      <p data-i18n-html="footer.fi"></p>
-      <p data-i18n="about.practice"></p>
+      <h2 data-sec="1" data-i18n="about.overview" data-no="3.1">概述</h2>
+      <p data-i18n="hero.intro">这里用图神经网络，根据分子结构预测调香师会用哪些词描述它的气味，比如果香、黄油、烘烤。</p>
+      <p data-i18n-html="footer.fi"><b>用于：</b><a href="../flavor-improver/">风味改良</a>（作为单分子气味来源）。</p>
+      <p data-i18n="about.practice">遇到不熟悉的物质，我一般查气味数据库，或用物质名作关键词查文献。从结构预测气味，在分子与已知物质高度相似、属于气味规律较明确的同系物，并且有可靠实验数据支持时，可以作参考；遇到同分异构体，特别是立体异构体时就不太可靠。本站模型不区分立体异构体，这类分子的预测只能当作粗略提示。</p>
     </section>
 
     <section id="method">
-      <h2 data-sec="1" data-i18n="about.method">Method</h2>
+      <h2 data-sec="1" data-i18n="about.method" data-no="3.2">方法</h2>
       <ol class="steps">
-        <li><span data-i18n="flow.1.title"></span><span class="sep"></span><span data-i18n="flow.1.sub"></span></li>
-        <li><span data-i18n="flow.2.title"></span><span class="sep"></span><span data-i18n="flow.2.sub"></span></li>
-        <li><span data-i18n="flow.3.title"></span><span class="sep"></span><span data-i18n="flow.3.sub"></span></li>
-        <li><span data-i18n="flow.4.title"></span><span class="sep"></span><span data-i18n="flow.4.sub"></span></li>
+        <li><span data-i18n="flow.1.title">分子</span><span class="sep"></span><span data-i18n="flow.1.sub">用 SMILES 文本表示</span></li>
+        <li><span data-i18n="flow.2.title">图</span><span class="sep"></span><span data-i18n="flow.2.sub">原子是节点，化学键是边</span></li>
+        <li><span data-i18n="flow.3.title">图神经网络</span><span class="sep"></span><span data-i18n="flow.3.sub">原子向相邻原子传递信息，共 3 轮</span></li>
+        <li><span data-i18n="flow.4.title">气味描述词</span><span class="sep"></span><span data-i18n="flow.4.sub">138 个词各给出一个概率</span></li>
       </ol>
       <div class="method-text">
-        <p data-i18n-html="method.data"></p>
-        <p data-i18n-html="method.model"></p>
-        <p data-i18n-html="method.eval"></p>
-        <p data-i18n-html="method.explain"></p>
+        <p data-i18n-html="method.data"><b>数据。</b>4,886 个带有专家气味描述的分子，来自两个香精香料数据库（The Good Scents Company 和 Leffingwell），由 OpenPOM 项目合并清洗。每个分子平均有 138 个描述词中的约 5 个。</p>
+        <p data-i18n-html="method.model"><b>模型。</b>每个原子先用几项简单性质来描述：元素、相邻原子数和氢原子数、电荷、是否芳香、是否在环上。每一轮中，每个原子从与它成键的原子那里收集信息。最后把所有原子的信息汇总成整个分子的表示，再转换为 138 个概率。模型约有 14 万个参数，可以在浏览器里运行。</p>
+        <p data-i18n-html="method.eval"><b>数据划分。</b>含环分子按环系骨架划分为训练集（80%）、验证集（10%）和测试集（10%），因此测试集中的环系骨架都是模型没见过的。这比随机划分更难。</p>
+        <p data-i18n-html="method.explain"><b>原子贡献。</b>工具页结构图上的着色用遮挡法计算：依次从分子中删去一个原子，重新运行模型，看该描述词的概率变化多少。删去后概率下降的原子（橙色）是模型判断的依据，删去后概率上升的原子（蓝色）在压低这一判断。这说明的是模型看重哪些结构，不等于这些结构在化学上确实决定了气味。</p>
       </div>
     </section>
 
     <section id="results">
-      <h2 data-sec="1" data-i18n="about.results">Results</h2>
-      <p data-i18n="results.intro"></p>
+      <h2 data-sec="1" data-i18n="about.results" data-no="3.3">结果</h2>
+      <p data-i18n="results.intro">模型效果用 AUROC 衡量：随机取一个具有某描述词的分子和一个不具有的分子，AUROC 就是模型给前者打分更高的概率。0.5 相当于随机猜测，1.0 为完美。下表是 488 个测试分子上、138 个描述词的平均值。</p>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th data-i18n="results.col.model">Model</th>
-              <th class="num" data-i18n="results.col.all">All test molecules</th>
-              <th class="num" data-i18n="results.col.cyclic">With rings</th>
-              <th class="num" data-i18n="results.col.acyclic">Without rings</th>
+              <th data-i18n="results.col.model">模型</th>
+              <th class="num" data-i18n="results.col.all">全部测试分子</th>
+              <th class="num" data-i18n="results.col.cyclic">含环分子</th>
+              <th class="num" data-i18n="results.col.acyclic">无环分子</th>
             </tr>
           </thead>
           <tbody id="results-body"></tbody>
         </table>
       </div>
       <p class="small muted" id="seed-note" style="margin-top:8px"></p>
-      <p data-i18n="results.takeaway"></p>
+      <p data-i18n="results.takeaway">图神经网络比两种常规基线方法高约 0.02 AUROC。提升幅度不大，但在不同随机种子和大多数描述词上都稳定存在。对训练中没见过的环系骨架，预测明显更难（约 0.80）。</p>
       <div class="label-lists">
-        <div class="card"><h3 data-i18n="results.best">Easiest to predict</h3><ol id="best-labels"></ol></div>
-        <div class="card"><h3 data-i18n="results.worst">Hardest to predict</h3><ol id="worst-labels"></ol></div>
+        <div class="card"><h3 data-i18n="results.best">最容易预测</h3><ol id="best-labels"></ol></div>
+        <div class="card"><h3 data-i18n="results.worst">最难预测</h3><ol id="worst-labels"></ol></div>
       </div>
-      <p class="small muted" data-i18n="results.label_note" style="margin-top:8px"></p>
+      <p class="small muted" data-i18n="results.label_note" style="margin-top:8px">仅列出测试集中至少有 10 个阳性分子的描述词。</p>
 
     </section>
 
     <section id="tried">
-      <h2 data-sec="1" data-i18n="about.tried">Tried, not adopted</h2>
+      <h2 data-sec="1" data-i18n="about.tried" data-no="3.4">试过但未采用</h2>
 
-      <p data-i18n-html="ablation.intro"></p>
+      <p data-i18n-html="ablation.intro">参考 PharmaGNN（Liu et al., <i>J Sci Food Agric</i> 106, 8114-8120, 2026, <a href="https://doi.org/10.1002/jsfa.70826" target="_blank" rel="noopener">doi:10.1002/jsfa.70826</a>）的两个思路做了对照实验：一是改用非对称损失（ASL），让训练更关注稀有的描述词；二是给每个原子加上氢键供体、氢键受体、疏水基团三个药效团标记（采用 RDKit 的标准定义，浏览器中可以完全一致地算出）。原文中基于三维构象的电荷、logP 等描述符无法在浏览器中一致地计算，没有采用。四组设置使用同一骨架划分，各训练 3 次：</p>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th data-i18n="ablation.col.setup">Setup</th>
-              <th class="num" data-i18n="ablation.col.test">Test AUROC</th>
-              <th class="num" data-i18n="ablation.col.rare">Rare descriptors</th>
+              <th data-i18n="ablation.col.setup">设置</th>
+              <th class="num" data-i18n="ablation.col.test">测试集 AUROC</th>
+              <th class="num" data-i18n="ablation.col.rare">稀有描述词</th>
             </tr>
           </thead>
           <tbody id="ablation-body"></tbody>
         </table>
       </div>
       <p class="small muted" id="ablation-note" style="margin-top:8px"></p>
-      <p data-i18n="ablation.takeaway"></p>
+      <p data-i18n="ablation.takeaway">四组之间的差别都在随机波动范围内，稀有描述词反而略有下降，因此网页继续使用原模型。可能的原因：原文采用随机划分，本站采用更难的骨架划分；药效团标记与已有的元素、氢原子数特征有较多重叠；原文的模型结构也与本站不同。此外，非对称损失会让输出的概率整体偏高约 4 倍，不适合直接展示。</p>
     </section>
 
     <section id="limits">
-      <h2 data-sec="1" data-i18n="about.limits">Limitations</h2>
+      <h2 data-sec="1" data-i18n="about.limits" data-no="3.5">局限</h2>
       <ul class="plain">
-        <li data-i18n-html="limits.4"></li>
-        <li data-i18n-html="limits.6"></li>
+        <li data-i18n-html="limits.4">对于和训练数据差异很大的环系骨架，预测效果明显变弱（AUROC 约 0.80）。</li>
+        <li data-i18n-html="limits.6"><b>不可用于安全性判断。</b>模型不涉及毒性、致敏性或法规状态。</li>
       </ul>
     </section>
 
     <section id="data">
-      <h2 data-sec="1" data-i18n="about.data">Data, licenses &amp; citations</h2>
-      <p data-i18n-html="footer.data"></p>
-      <p data-i18n-html="footer.thr"></p>
-      <p data-i18n-html="footer.ref"></p>
+      <h2 data-sec="1" data-i18n="about.data" data-no="3.6">数据、许可与引用</h2>
+      <p data-i18n-html="footer.data"><b>数据与致谢：</b>模型用 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC 协议）的数据训练，由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅供非商业学术演示。</b></p>
+      <p data-i18n-html="footer.thr"><b>气味阈值：</b>L.J. van Gemert, Odour Thresholds: Compilations of Odour Threshold Values in Air, Water and Other Media, 2nd ed., Oliemans Punter &amp; Partners, 2011。代表值优先取自其中收录的 Czerny et al., <i>Eur. Food Res. Technol.</i> 228, 265-273 (2008)。</p>
+      <p data-i18n-html="footer.ref"><b>相关文献：</b>Lee et al., A principal odor map unifies diverse tasks in olfactory perception, <i>Science</i> 381, 999-1006 (2023). <a href="https://doi.org/10.1126/science.ade4401" target="_blank" rel="noopener">doi:10.1126/science.ade4401</a>；Liu et al., PharmaGNN: a model for odor prediction based on graph neural networks, <i>J Sci Food Agric</i> 106, 8114-8120 (2026). <a href="https://doi.org/10.1002/jsfa.70826" target="_blank" rel="noopener">doi:10.1002/jsfa.70826</a></p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p data-i18n-html="footer.site"></p>
+      <p data-i18n-html="footer.site">© 2026 崔京伟 · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">代码（GitHub）</a></p>
     </div>
   </footer>
 
-  <script src="../assets/i18n.js?v=20261021a" data-page-dict="i18n/"></script>
-  <script src="../assets/projects.js?v=20261021a"></script>
-  <script src="about.js?v=20261021a"></script>
+  <script src="../assets/projects.js?v=20261021b"></script>
+  <script src="about.js?v=20261021b"></script>
 </body>
 </html>

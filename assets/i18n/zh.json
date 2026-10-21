@@ -72,5 +72,10 @@
   "home.full_list": "完整列表见简历",
   "home.first_author": "第一作者",
   "projects.page_title": "项目 | 崔京伟",
-  "home.thumb_alt": "{name} 截图"
+  "home.thumb_alt": "{name} 截图",
+  "nf.page_title": "页面不存在 | 崔京伟",
+  "nf.title": "页面不存在",
+  "nf.text": "这个地址没有对应的页面，可能是链接写错了，或者页面已经改名。可以从下面的入口继续浏览。",
+  "nf.home": "首页",
+  "nf.projects": "全部项目"
 }

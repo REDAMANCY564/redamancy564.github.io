@@ -1,11 +1,29 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Method &amp; sources | 8 Flavor Knowledge Base | Jingwei Cui</title>
+  <title>方法与来源 | 8 风味知识库 | 崔京伟</title>
   <meta name="description" content="Evidence tiers and data sources of the Knowledge Base of Key Food Flavor Compounds.">
-  <link rel="stylesheet" href="../assets/style.css?v=20261021a">
+  <link rel="canonical" href="https://redamancy564.github.io/flavor-kb/about.html">
+  <meta name="theme-color" content="#fbfaf7">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="崔京伟 Jingwei Cui">
+  <meta property="og:title" content="方法与来源 | 8 风味知识库 | 崔京伟">
+  <meta property="og:description" content="Evidence tiers and data sources of the Knowledge Base of Key Food Flavor Compounds.">
+  <meta property="og:url" content="https://redamancy564.github.io/flavor-kb/about.html">
+  <meta property="og:image" content="https://redamancy564.github.io/assets/og/flavor-kb.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="方法与来源 | 8 风味知识库 | 崔京伟">
+  <meta name="twitter:description" content="Evidence tiers and data sources of the Knowledge Base of Key Food Flavor Compounds.">
+  <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/flavor-kb.jpg">
+  <link rel="stylesheet" href="../assets/style.css?v=20261021b">
+  <script src="../assets/i18n.js?v=20261021b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -30,48 +48,47 @@
 
   <main class="container about">
     <div class="hero">
-      <h1 data-i18n="hero.title">Knowledge Base of Key Food Flavor Compounds</h1>
+      <h1 data-i18n="hero.title" data-no="8">食品关键风味物质知识库</h1>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool">工具</a>
         <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
       </nav>
     </div>
     <nav class="toc">
-      <a href="#overview" data-i18n="about.overview">Overview</a>
-      <a href="#tiers" data-i18n="legend.title">Evidence tiers</a>
-      <a href="#data" data-i18n="about.data">Data, licenses &amp; citations</a>
+      <a href="#overview" data-i18n="about.overview" data-no="8.1">概述</a>
+      <a href="#tiers" data-i18n="legend.title" data-no="8.2">数据分级</a>
+      <a href="#data" data-i18n="about.data" data-no="8.3">数据、许可与引用</a>
     </nav>
 
     <section id="overview">
-      <h2 data-sec="1" data-i18n="about.overview">Overview</h2>
-      <p data-i18n="hero.intro"></p>
-      <p data-i18n="about.practice"></p>
+      <h2 data-sec="1" data-i18n="about.overview" data-no="8.1">概述</h2>
+      <p data-i18n="hero.intro">按食品或风味物质查询：某个食品由哪些物质构成香气，某个物质出现在哪些食品中，以及相关的研究文献。数据按证据强弱分为三级。物质和食品名称使用英文。</p>
+      <p data-i18n="about.practice">查一种食品的关键风味物质，我通常用 Web of Science、PubMed 查文献，同时参考 Flavornet、The Good Scents Company 等数据库，了解物质的气味、阈值和在食品中的作用。检出不等于关键：GC-MS 只说明检测到了某种物质，关键风味物质要对整体风味有实际贡献，通常要结合 OAV、ROAV、GC-O 以及重组和缺失实验来判断。所以本知识库把「关键风味物质」和「检出物质」分开标注。</p>
     </section>
 
     <section id="tiers">
-      <h2 data-sec="1" data-i18n="legend.title">Evidence tiers</h2>
+      <h2 data-sec="1" data-i18n="legend.title" data-no="8.2">数据分级</h2>
       <ul class="tier-list">
-        <li><span><span class="tag t1k" data-i18n="legend.t1k"></span></span><span data-i18n="legend.t1k_desc"></span></li>
-        <li><span><span class="tag t1d" data-i18n="legend.t1d"></span></span><span data-i18n="legend.t1d_desc"></span></li>
-        <li><span><span class="tag t2" data-i18n="legend.t2"></span></span><span data-i18n="legend.t2_desc"></span></li>
-        <li><span><span class="tag t3" data-i18n="legend.t3"></span></span><span data-i18n="legend.t3_desc"></span></li>
+        <li><span><span class="tag t1k" data-i18n="legend.t1k">关键风味物质</span></span><span data-i18n="legend.t1k_desc">来自 Dunkel et al. (2014) 综述正文：经 GC-O、定量和重组实验确认对该食品气味有贡献的物质。</span></li>
+        <li><span><span class="tag t1d" data-i18n="legend.t1d">检出</span></span><span data-i18n="legend.t1d_desc">来自 FlavorDB 数据库：该物质在该食品中被检出过。检出不代表它对气味有贡献。</span></li>
+        <li><span><span class="tag t2" data-i18n="legend.t2">实时文献</span></span><span data-i18n="legend.t2_desc">打开页面时从 Europe PMC 实时检索的相关论文，只列出文献，不做总结。</span></li>
+        <li><span><span class="tag t3" data-i18n="legend.t3">摘要文字匹配</span></span><span data-i18n="legend.t3_desc">根据你输入的 DOI 获取摘要，标出其中出现的风味物质名称。仅基于文字匹配，不代表文献结论。</span></li>
       </ul>
     </section>
 
     <section id="data">
-      <h2 data-sec="1" data-i18n="about.data">Data, licenses &amp; citations</h2>
-      <p data-i18n-html="footer.data"></p>
-      <p data-i18n-html="footer.apis"></p>
+      <h2 data-sec="1" data-i18n="about.data" data-no="8.3">数据、许可与引用</h2>
+      <p data-i18n-html="footer.data"><b>数据来源：</b>关键风味物质摘自 Dunkel A, et al. <i>Angew. Chem. Int. Ed.</i> 2014, 53, 7124-7143 (<a href="https://doi.org/10.1002/anie.201309508" target="_blank" rel="noopener">doi:10.1002/anie.201309508</a>) 正文，并注明页码；完整的食品与关键风味物质对照见该文补充材料。检出数据来自 <a href="https://cosylab.iiitd.edu.in/flavordb2/" target="_blank" rel="noopener">FlavorDB2</a>（Garg N, et al. <i>Nucleic Acids Res.</i> 2018），CC BY-NC-SA 3.0，本站衍生数据以相同协议共享。物质名称和结构来自 PubChem。</p>
+      <p data-i18n-html="footer.apis"><b>文献服务：</b><a href="https://europepmc.org/" target="_blank" rel="noopener">Europe PMC</a>、<a href="https://www.crossref.org/" target="_blank" rel="noopener">Crossref</a>（均免费，无需密钥）。</p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p data-i18n-html="footer.site"></p>
+      <p data-i18n-html="footer.site">© 2026 崔京伟 · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">代码（GitHub）</a></p>
     </div>
   </footer>
 
-  <script src="../assets/i18n.js?v=20261021a" data-page-dict="i18n/"></script>
-  <script src="../assets/projects.js?v=20261021a"></script>
+  <script src="../assets/projects.js?v=20261021b"></script>
 </body>
 </html>
