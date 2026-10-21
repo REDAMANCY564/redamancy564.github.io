@@ -20,18 +20,35 @@
   const HEAT = ["#dee2e6", "#ffe8cc", "#ffa94d", "#e8590c", "#a61e1e", "#4a0b0b"];
   const HEAT_BINS = 24;
   const FOOD_COLOURS = ["#1864ab", "#c2255c"];   // food A, food B
-  const RDKIT_JS = "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js";
-  const RDKIT_WASM = "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.wasm";
   const TOP_BARS = 8, FOOD_CHIPS = 30;
 
   let lib, probs, coords, meta;
+
+  // Grey points in the same geometry as draw() (identity zoom), shown while the rest loads
+  function drawPreview(c16, n, m) {
+    const canvas = $("map"), r = $("map-wrap").getBoundingClientRect();
+    const W = Math.max(1, Math.round(r.width)), H = Math.max(1, Math.round(r.height)), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const size = Math.min(W, H) - 2 * PAD, ox = (W - size) / 2, oy = (H - size) / 2, rad = 2.3;
+    ctx.globalAlpha = 0.55; ctx.fillStyle = OTHER; ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const x = ox + c16[m * 2 * n + 2 * i] / 65535 * size, y = oy + c16[m * 2 * n + 2 * i + 1] / 65535 * size;
+      ctx.moveTo(x + rad, y); ctx.arc(x, y, rad, 0, 2 * Math.PI);
+    }
+    ctx.fill(); ctx.globalAlpha = 1;
+  }
   try {
     const get = (url, kind) => fetch(url + VERSION).then(r => {
       if (!r.ok) throw new Error("Failed to load " + url);
       return kind === "json" ? r.json() : r.arrayBuffer();
     });
-    [lib, probs, coords, meta] = await Promise.all([
-      get(FINDER + "library.json", "json"), get(FINDER + "probs.bin"), get("data/coords.bin"), get("data/map.json", "json"), I18N.ready]);
+    // First the map's own coordinates (40 KB): grey points right away. The molecule library and the
+    // predicted probabilities (shared with ingredient-finder, 0.8 MB) follow and add colours and search.
+    [coords, meta] = await Promise.all([get("data/coords.bin"), get("data/map.json", "json"), I18N.ready]);
+    drawPreview(new Uint16Array(coords), meta.n, new URLSearchParams(location.search).get("map") === "structure" ? 1 : 0);
+    [lib, probs] = await Promise.all([get(FINDER + "library.json", "json"), get(FINDER + "probs.bin")]);
   } catch (e) {
     console.error(e);
     $("load-status").textContent = I18N.t("load_error");
@@ -44,7 +61,7 @@
     $("load-status").textContent = I18N.t("load_error");
     return;
   }
-  $("load-status").classList.add("hidden");
+  $("load-status").textContent = "";   // the line keeps its height, so nothing below moves
 
   const labelIndex = Object.fromEntries(lib.labels.map((l, j) => [l.id, j]));
   const labelName = j => I18N.pick(lib.labels[j]);
@@ -396,14 +413,8 @@
   let rdkitPromise = null;
   function getRdkit() {
     if (!rdkitPromise) {
-      rdkitPromise = new Promise((resolve, reject) => {
-        const sc = document.createElement("script");
-        sc.src = RDKIT_JS;
-        sc.onload = () => initRDKitModule({ locateFile: () => RDKIT_WASM }).then(resolve, reject);
-        sc.onerror = () => reject(new Error("RDKit script not loaded"));
-        document.head.appendChild(sc);
-      });
-      rdkitPromise.catch(err => { console.error(err); });
+      rdkitPromise = Libs.rdkit();   // self-hosted, loaded when the first detail card opens
+      rdkitPromise.catch(err => { console.error(err); rdkitPromise = null; });
     }
     return rdkitPromise;
   }

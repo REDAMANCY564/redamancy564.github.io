@@ -4,7 +4,6 @@
  * Depends on RDKit.js (MinimalLib) and onnxruntime-web being loaded.
  */
 (function () {
-  const ORT_DIST = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/";
   const SYMBOL_TO_Z = { C: 6, N: 7, O: 8, S: 16, F: 9, Cl: 17, Br: 35, I: 53, P: 15 };
 
   class EngineError extends Error {
@@ -129,8 +128,9 @@
     return { X, A, mask, numAtoms: n };
   }
 
+  // ONNX Runtime Web is loaded on first use (assets/libs.js, self-hosted in assets/vendor/)
   async function loadModel(modelUrl) {
-    ort.env.wasm.wasmPaths = ORT_DIST;
+    const ort = await Libs.ort();
     ort.env.wasm.numThreads = 1;
     return ort.InferenceSession.create(modelUrl, { executionProviders: ["wasm"] });
   }

@@ -65,7 +65,7 @@
   check("mode B", "threshold and rule from library.json", [lib.odor_threshold, lib.tanimoto_max_for_highlight, lib.highlight_top_n], [0.9464, 0.3, 20]);
 
   // ---------- parity: RDKit.js fingerprints and the browser model vs Python ----------
-  const rdkit = await initRDKitModule({ locateFile: () => "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.wasm" });
+  const rdkit = await initRDKitModule({ locateFile: () => new URL("../../assets/vendor/rdkit/RDKit_minimal.wasm", location.href).href });
   const spec = await (await fetch("../../odor-predictor/model/feature_spec.json")).json();
   const session = await OdorEngine.loadModel("../../odor-predictor/model/" + spec.model_file);
   let fpBad = [], maxDiff = 0;

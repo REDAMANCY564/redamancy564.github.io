@@ -1,6 +1,5 @@
 /* Flavor knowledge base page: search foods/compounds, detail views, DOI abstract analysis. */
 (async function () {
-  const RDKIT_WASM = "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.wasm";
   const MAX_CHIPS = 40;
   const $ = id => document.getElementById(id);
   const { el, tag, link, chips, literature, litFoods } = FlavorKBUI;
@@ -11,9 +10,7 @@
   let rdkitPromise = null;
   function getRdkit() {
     if (!rdkitPromise) {
-      rdkitPromise = typeof initRDKitModule === "function"
-        ? initRDKitModule({ locateFile: () => RDKIT_WASM })
-        : Promise.reject(new Error("RDKit not loaded"));
+      rdkitPromise = Libs.rdkit();   // self-hosted, loaded the first time a structure is drawn
     }
     return rdkitPromise;
   }

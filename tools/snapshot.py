@@ -29,8 +29,10 @@ COLLECT = r"""
   if (document.readyState !== "complete") await new Promise(r => addEventListener("load", r, { once: true }));
   // wait until the snapped elements stop changing (data loaded and drawn)
   const state = () => [...document.querySelectorAll("[data-snap],svg[data-snap-h]")].map(e => e.innerHTML.length).join(",");
+  // ... and none of them still shows a loading message ("正在…" / "Loading…")
+  const busy = () => [...document.querySelectorAll("[data-snap]")].some(e => /^(正在|Loading)/.test(e.textContent.trim()));
   let last = "", stable = 0;
-  for (let i = 0; i < 200 && stable < 8; i++) {
+  for (let i = 0; i < 400 && (stable < 8 || busy()); i++) {
     await new Promise(r => setTimeout(r, 150));
     const s = state(); stable = s === last ? stable + 1 : 0; last = s;
   }
@@ -79,6 +81,8 @@ class Chrome:
         self.call("Emulation.setUserAgentOverride", sid, userAgent="Mozilla/5.0 Chrome",
                   acceptLanguage="zh-CN,zh;q=0.9" if lang == "zh" else "en-US,en;q=0.9")
         self.call("Page.enable", sid)
+        # record afresh: pages ignore the stored snapshots (I18N.snap returns undefined)
+        self.call("Page.addScriptToEvaluateOnNewDocument", sid, source="window.__noSnap = true;")
         self.call("Page.navigate", sid, url=url)
         time.sleep(0.5)
         r = None

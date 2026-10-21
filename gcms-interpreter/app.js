@@ -28,26 +28,53 @@
     return res.arrayBuffer();
   }
 
-  // ---------- Preload everything (offline use after this point) ----------
-  const [dict, builtin, examples, profile, namesJson, flavorJson] = await Promise.all([
+  // ---------- Small files first: the page is usable before the analysis resources arrive ----------
+  const [dict, builtin, examples, profile] = await Promise.all([
     getJson("data/column_keywords.json"),
     getJson("data/templates.json"),
     getJson("examples/examples.json"),
     getJson("../assets/profile.json").catch(() => ({})),
-    getJson("data/names.json"),
-    getJson("data/flavor.json"),
     I18N.ready,
   ]);
   GcmsMapping.setDictionary(dict);
-  const nameIndex = GcmsNames.buildIndex(namesJson);
-  const FL = GcmsFlavor.buildIndex(flavorJson);
+
+  // ---------- Analysis resources, preloaded in the background (offline use after this point) ----------
+  // Everything an analysis needs (Excel reader, name list, odor data, example files) is fetched right after
+  // the first screen is shown and before any file is chosen; once "ready" shows, the page works offline
+  // and choosing or analysing a file makes no network request. Steps that need them wait for them.
+  let nameIndex = null, FL = null;
   const exampleFiles = {};
   const exampleStd = {};
-  await Promise.all(Object.entries(examples.examples).map(async ([id, ex]) => {
-    exampleFiles[id] = new File([await getBytes("examples/" + ex.file)], ex.file);
-    const std = examples.standards[id];
-    exampleStd[id] = new File([await getBytes("examples/" + std)], std);
-  }));
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = src; s.onload = resolve; s.onerror = () => reject(new Error("Failed to load " + src));
+      document.head.appendChild(s);
+    });
+  }
+  function setResStatus(key) {
+    const el = $("res-status");
+    el.dataset.key = key;
+    el.textContent = I18N.t(key);
+    el.classList.toggle("error", key === "res.error");
+  }
+  setResStatus("res.loading");
+  const resources = new Promise(r => requestAnimationFrame(() => setTimeout(r, 0))).then(() => Promise.all([
+    loadScript("../assets/vendor/sheetjs/xlsx.full.min.js"),
+    getJson("data/names.json"),
+    getJson("data/flavor.json"),
+    Promise.all(Object.entries(examples.examples).map(async ([id, ex]) => {
+      exampleFiles[id] = new File([await getBytes("examples/" + ex.file)], ex.file);
+      const std = examples.standards[id];
+      exampleStd[id] = new File([await getBytes("examples/" + std)], std);
+    })),
+  ])).then(([, namesJson, flavorJson]) => {
+    nameIndex = GcmsNames.buildIndex(namesJson);
+    FL = GcmsFlavor.buildIndex(flavorJson);
+    setResStatus("res.ready");
+    window.__gcms = { S, STD, RUN, TOL, FLV, FL, load, loadStd, exampleFiles, exampleStd, nameIndex };  // test harness, offline check
+  }, err => { console.error(err); setResStatus("res.error"); throw err; });
+  resources.catch(() => {});
 
   // ---------- State ----------
   const S = {
@@ -118,6 +145,7 @@
 
   async function load(file, exampleId) {
     try {
+      await resources;
       S.file = await GcmsIO.readFile(file);
     } catch (e) {
       console.error(e);
@@ -169,6 +197,8 @@
   dropZone("drop", "file-input", f => load(f));
   document.querySelectorAll("[data-example]").forEach(b => b.addEventListener("click", async () => {
     const id = b.dataset.example;
+    await resources.catch(() => {});
+    if (!exampleFiles[id]) return;
     await load(exampleFiles[id], id);
     await loadStd(exampleStd[id], true);
     setTolerances(examples.examples[id].tolerances, true);
@@ -329,6 +359,7 @@
 
   async function loadStd(file, isExample) {
     try {
+      await resources;
       const parsed = await GcmsIO.readFile(file);
       // a standard file holds one table: use the first sheet that has data
       const k = Math.max(0, parsed.sheets.findIndex(sh => sh.rows.length > 1));
@@ -442,6 +473,7 @@
   });
 
   async function confirmFiles() {
+    await resources;
     S.records = GcmsMapping.toRecords(S.mapping, data(), {
       sample: samples().length ? S.sample : null, decimalComma: S.decimalComma, dates: S.file.sheets[S.sheet].dates,
     });
@@ -888,5 +920,5 @@
 
   renderAll();
   I18N.onChange(renderAll);
-  window.__gcms = { S, STD, RUN, TOL, FLV, FL, load, loadStd, exampleFiles, exampleStd, nameIndex };  // test harness, offline check
+  I18N.onChange(() => { const el = $("res-status"); if (el.dataset.key) el.textContent = I18N.t(el.dataset.key); });
 })();

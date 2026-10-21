@@ -2,26 +2,25 @@
  * ingredient-finder page (PLAN-ingredient-finder.md).
  * Mode A: rank library molecules by wanted / unwanted predicted odor descriptors (finder.js).
  * Mode B: substitutes by odor similarity vs structure similarity (next stage).
- * Structures are drawn with RDKit.js (MinimalLib, CDN), loaded in parallel with the data.
+ * Structures are drawn with RDKit.js (MinimalLib, self-hosted), loaded when the first structure is drawn.
  */
 (async function () {
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const VERSION = new URL(document.currentScript.src).search;   // data of a new version bypasses the cache
-  const RDKIT_WASM = "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.wasm";
   const PAGE = 20, MAX_SHOWN = 200, TOP_PRED = 5, FOODS_SHOWN = 3;
   const F = window.FinderCore;
 
-  // RDKit is only needed for drawing: start it now, draw when ready
+  // RDKit is only needed for drawing structures and for mode B input: loaded on first use
   let rdkit = null;
-  const rdkitReady = (typeof initRDKitModule === "function" ? initRDKitModule({ locateFile: () => RDKIT_WASM })
-    : Promise.reject(new Error("RDKit script not loaded"))).then(m => { rdkit = m; return m; });
-  rdkitReady.catch(err => console.error(err));
+  const rdkitReady = () => Libs.rdkit().then(m => { rdkit = m; return m; }, err => { console.error(err); throw err; });
 
+  // The library (names, labels) first; the predicted probabilities (0.7 MB) and fingerprints load when a
+  // search first needs them, starting at the first interaction with the tool.
   let D, presets;
   try {
     [D, presets] = await Promise.all([
-      F.load("data/", VERSION),
+      F.loadLibrary("data/", VERSION),
       fetch("data/presets.json" + VERSION).then(r => r.json()),
       I18N.ready,
     ]);
@@ -30,7 +29,24 @@
     $("load-status").textContent = I18N.t("load_error");
     return;
   }
-  $("load-status").classList.add("hidden");
+  $("load-status").textContent = "";   // the line keeps its height, so nothing below moves
+
+  const mb = b => (b / 1e6).toFixed(1);
+  let probsPromise = null, fpsPromise = null, probsGot = 0;
+  function needProbs() {
+    if (!probsPromise) {
+      probsPromise = F.loadProbs(D, "data/", VERSION, got => {
+        probsGot = got;
+        document.querySelectorAll("[data-progress]").forEach(el => { el.textContent = progressText(); });
+      }).catch(err => { probsPromise = null; throw err; });
+    }
+    return probsPromise;
+  }
+  const needAll = () => Promise.all([needProbs(), fpsPromise || (fpsPromise = F.loadFps(D, "data/", VERSION).catch(err => { fpsPromise = null; throw err; }))]);
+  const progressText = () => I18N.t("loading_data", { got: mb(probsGot), total: mb(D.n * D.L) });
+  // start the download as soon as the visitor starts using the tool
+  ["pointerdown", "focusin", "keydown"].forEach(ev =>
+    $("finder").addEventListener(ev, () => { needProbs().catch(() => {}); }, { once: true, passive: true }));
 
   const labelName = j => I18N.pick(D.lib.labels[j]);
   const labelById = id => D.labelIndex[id];
@@ -138,7 +154,7 @@
   function drawInto(el, smiles, big) {
     const key = (big ? "L:" : "S:") + smiles;
     if (svgCache.has(key)) { el.innerHTML = svgCache.get(key); return; }
-    if (!rdkit) { el.textContent = I18N.t("r.drawing"); rdkitReady.then(() => drawInto(el, smiles, big), () => { el.textContent = I18N.t("r.no_draw"); }); return; }
+    if (!rdkit) { el.textContent = I18N.t("r.drawing"); rdkitReady().then(() => drawInto(el, smiles, big), () => { el.textContent = I18N.t("r.no_draw"); }); return; }
     let svg = null;
     const mol = rdkit.get_mol(smiles);
     if (mol) {
@@ -175,6 +191,11 @@
       $("a-results").innerHTML = "";
       $("a-low").classList.add("hidden");
       $("a-more").classList.add("hidden");
+      return;
+    }
+    if (!D.probs) {
+      $("a-summary").innerHTML = '<span data-progress>' + esc(progressText()) + "</span>";
+      needProbs().then(runA, err => { console.error(err); $("a-summary").textContent = I18N.t("load_error"); });
       return;
     }
     const hits = F.scoreA(D, A.want, A.avoid, A.filters);
@@ -270,7 +291,13 @@
     await querySmiles(q);
   });
 
-  function queryLibrary(i) {
+  async function queryLibrary(i) {
+    if (!D.probs || !D.bits) {
+      setStatusB("loading_data", { got: mb(probsGot), total: mb(D.n * D.L) });
+      $("b-status").setAttribute("data-progress", "");
+      try { await needAll(); } catch (err) { console.error(err); setStatusB("load_error", null, true); return; }
+      finally { $("b-status").removeAttribute("data-progress"); }
+    }
     B.suggest = [];
     renderSuggest();
     setStatusB(null);
@@ -283,13 +310,19 @@
 
   /** SMILES not in the library: RDKit.js fingerprint + the odor-predictor model in the browser. */
   async function querySmiles(q) {
+    if (!D.probs || !D.bits) {
+      setStatusB("loading_data", { got: mb(probsGot), total: mb(D.n * D.L) });
+      $("b-status").setAttribute("data-progress", "");
+      try { await needAll(); } catch (err) { console.error(err); setStatusB("load_error", null, true); return; }
+      finally { $("b-status").removeAttribute("data-progress"); }
+    }
     B.suggest = [];
     renderSuggest();
     $("b-go").disabled = true;
     try {
       setStatusB("b.loading_model");
       let rd;
-      try { rd = await rdkitReady; } catch (err) { setStatusB("b.need_rdkit", null, true); return; }
+      try { rd = await rdkitReady(); } catch (err) { setStatusB("b.need_rdkit", null, true); return; }
       const probe = rd.get_mol(q);
       const valid = probe && probe.is_valid();
       if (probe) probe.delete();

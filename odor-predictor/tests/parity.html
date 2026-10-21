@@ -38,15 +38,15 @@
     </div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.wasm.min.js"></script>
+  <script src="../../assets/vendor/rdkit/RDKit_minimal.js"></script>
+  <script src="../../assets/libs.js"></script>
   <script src="../engine.js"></script>
   <script>
     (async function () {
       const summary = document.getElementById("summary");
       try {
         const [rdkit, spec, fixtures] = await Promise.all([
-          initRDKitModule({ locateFile: () => "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.wasm" }),
+          initRDKitModule({ locateFile: () => new URL("../../assets/vendor/rdkit/RDKit_minimal.wasm", location.href).href }),
           fetch("../model/feature_spec.json").then(r => r.json()),
           fetch("parity_fixtures.json").then(r => r.json()),
         ]);

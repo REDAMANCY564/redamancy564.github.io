@@ -55,7 +55,7 @@ python flavor_improver/prepare_reference.py vg.txt --final             # 生成 
 python flavor_improver/make_parity_fixtures.py                         # 更新一致性测试数据（含配方奶粉对比母乳）
 ```
 
-**用自己的数据（2026-10-18）**：在 GC-MS 风味解读中分别处理当前样品和目标样品，点「作为当前样品发送 / 作为目标发送」（`assets/flavor-handoff.js`，浏览器本地存储，不上传），或上传其导出的排名 CSV（也接受自己整理的 CSV：物质名称列 + 浓度、相对含量 / 峰面积、OAV 或 ROAV 中至少一列，列名中英文均可，单位写在列名里；页面上有「上传 CSV 的要求」和模板 `flavor-improver/examples/userdata_template.csv`）；在风味改良页面选「我的 GC-MS 数据」（或打开 `flavor-improver/?mode=user`）。页面按化合物合并两边（阈值可改），两边都定量时按 OAV 比较，否则按 ROAV（贡献占比）；轮廓维度默认母乳 / 奶粉 12 维，可切换；「一方较高」的标准默认 2 倍 / 2 个百分点，可在设置窗口调整；只推荐添加哪些物质（OAV 模式按补到目标水平后的轮廓相似度排序），不给添加量。不在风味知识库中的物质可提供 SMILES（或点击后从 PubChem 按 CAS / 名称查询）由 odor-predictor 模型在浏览器中预测气味。页面有内容安全策略（脚本只来自本站、cdnjs、jsdelivr；数据只能发往本站、jsdelivr 和用户点击时的 PubChem）。逻辑在 `userdata-core.js`，单元测试 `flavor-improver/tests/userdata.html`；示例数据 `flavor-improver/examples/` 由 `training/flavor_improver/make_userdata_examples.py` 从「配方奶粉对比母乳」的已发表数据生成。
+**用自己的数据（2026-10-18）**：在 GC-MS 风味解读中分别处理当前样品和目标样品，点「作为当前样品发送 / 作为目标发送」（`assets/flavor-handoff.js`，浏览器本地存储，不上传），或上传其导出的排名 CSV（也接受自己整理的 CSV：物质名称列 + 浓度、相对含量 / 峰面积、OAV 或 ROAV 中至少一列，列名中英文均可，单位写在列名里；页面上有「上传 CSV 的要求」和模板 `flavor-improver/examples/userdata_template.csv`）；在风味改良页面选「我的 GC-MS 数据」（或打开 `flavor-improver/?mode=user`）。页面按化合物合并两边（阈值可改），两边都定量时按 OAV 比较，否则按 ROAV（贡献占比）；轮廓维度默认母乳 / 奶粉 12 维，可切换；「一方较高」的标准默认 2 倍 / 2 个百分点，可在设置窗口调整；只推荐添加哪些物质（OAV 模式按补到目标水平后的轮廓相似度排序），不给添加量。不在风味知识库中的物质可提供 SMILES（或点击后从 PubChem 按 CAS / 名称查询）由 odor-predictor 模型在浏览器中预测气味。页面有内容安全策略（脚本只来自本站；数据只能发往本站和用户点击时的 PubChem）。逻辑在 `userdata-core.js`，单元测试 `flavor-improver/tests/userdata.html`；示例数据 `flavor-improver/examples/` 由 `training/flavor_improver/make_userdata_examples.py` 从「配方奶粉对比母乳」的已发表数据生成。
 
 **尝试过的改进：混合物气味相似度模型（2026-10-18，未采用）**：借鉴 Satarifard et al., *PNAS* 2026（doi:10.1073/pnas.2611057123），想用一个比较两个混合物的小模型替换参照食品模式的加和规则。DREAM 挑战赛整理的数据没有开放许可（Synapse 条款禁止用于其他目的），只用了 Snitz et al. 2013（*PLoS Comput Biol*，CC BY 4.0）的相似度评分。按混合物分组：实验 2、3 共 165 对训练和交叉验证，实验 1 的 141 对不重叠比较作测试集（只算一次；实验 1 的 11 号混合物在补充表中组成被截断，已去掉）。测试集 Pearson / Spearman：新模型（GNN 预测概率幂平均 + 138 维权重的角距离）0.537 / 0.516，Snitz 21 描述符角距离 0.504 / 0.563，现用加和规则（12 维）0.315 / 0.382，138 维加和 0.449 / 0.553；与各基线的 Pearson 差值置信区间都包含 0，未达到替换条件，评价函数不变，只在网页「局限」部分报告。
 ```powershell
@@ -119,7 +119,7 @@ python taste/make_site_assets.py   # labels、presets、一致性测试数据
 
 把风味原料检索的候选库（5,072 个有机分子）用 UMAP 降到二维：气味地图按 GNN 的 138 维预测概率排列（余弦距离，邻居数 30，最小距离 0.3），结构地图按 Morgan 指纹排列（Jaccard 距离，15，0.1），随机种子 42。参数各取验证集上最好的一组（3 组中选），测试集定稿后只算一次。
 
-- **页面**：Canvas 2D 绘图，d3-zoom 缩放拖动，d3-quadtree 悬停查找（jsdelivr 固定版本）；两张地图平滑切换；按主要预测描述词或单个描述词的概率着色；自动区域标签；点击打开详情卡片（跳转气味预测、找替代原料、风味知识库）；搜索；食品高亮（Dunkel 2014 的 16 种食品为关键风味物质，其余 FlavorDB 食品为检出物质）。分子、名称和预测概率直接读取 `ingredient-finder/data/`，不重复存储。
+- **页面**：Canvas 2D 绘图，d3-zoom 缩放拖动，d3-quadtree 悬停查找（固定版本，本站托管于 `assets/vendor/`）；两张地图平滑切换；按主要预测描述词或单个描述词的概率着色；自动区域标签；点击打开详情卡片（跳转气味预测、找替代原料、风味知识库）；搜索；食品高亮（Dunkel 2014 的 16 种食品为关键风味物质，其余 FlavorDB 食品为检出物质）。分子、名称和预测概率直接读取 `ingredient-finder/data/`，不重复存储。
 - **链接参数**：`?smiles=`、`?food=` / `?food2=`（知识库食品 id）、`?map=structure`、`?colour=<描述词 id>`。
 - **测试集结果**（486 个分子，二维地图上最近 15 个有标签邻居）：至少一个真实标签相同的比例，气味地图 0.752、结构地图 0.647、随机 0.387；平均 Jaccard 0.192 / 0.156 / 0.059；差值 95% 置信区间不含 0。
 
@@ -201,6 +201,8 @@ python tools/prerender.py           # 重写页面中的静态中文、编号、
 python tools/prerender.py --check   # 只检查：有页面没更新时列出并返回错误
 ```
 
+有些内容由页面脚本按数据画出（带 `data-snap` 的元素，例如气味地图方法页的数字、感知差异页的图表、气味预测和味觉预测的第一张结构图）。改了这些数据或脚本后，先运行 `python tools/snapshot.py`（需要本机的 Chrome），再运行 `python tools/prerender.py`。
+
 脚本只改上面这些部分，页面里的其他内容保持不变。分享预览图（`assets/og/`）和主屏幕图标（`apple-touch-icon.png`）由 `python tools/make_og.py` 生成（需要本机的 Chrome），项目页面样子有较大变化时再运行。
 
 
@@ -222,8 +224,11 @@ python -m http.server 8000
 index.html              个人主页
 404.html                地址不存在时显示的页面（GitHub Pages 自动使用）
 robots.txt, sitemap.xml 搜索引擎用；sitemap.xml 由 tools/prerender.py 生成
-tools/                  prerender.py（写入静态中文与分享标签）、make_og.py（分享图与图标）
+tools/                  prerender.py（写入静态中文与分享标签）、snapshot.py（记录脚本按数据画出的内容）、make_og.py（分享图与图标）、make_font.py（标题字体）
 assets/                 全站共用：样式、中英切换、个人信息、原子贡献绘图（contrib.js）
+  vendor/               本站托管的第三方库（RDKit、ONNX Runtime、Chart.js、d3、SheetJS），版本、许可证与校验值见其中 README.md
+  libs.js               按需加载 RDKit / ONNX Runtime / Chart.js（首次用到时才下载）
+  fonts/                标题字体子集（由 tools/make_font.py 生成）
 odor-predictor/         3 气味预测
   index.html, app.js    页面与交互逻辑
   i18n/                 页面中英文案

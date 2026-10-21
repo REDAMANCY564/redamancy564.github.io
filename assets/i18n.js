@@ -94,6 +94,10 @@
       listeners.forEach(fn => fn(lang));
     },
     onChange(fn) { listeners.push(fn); },
+    // Recorded output of a data-snap element (undefined if none, or while tools/snapshot.py records afresh)
+    snap(name) {
+      return window.__noSnap ? undefined : (dicts[I18N.lang] || {})["snap." + name];
+    },
   };
 
   // The static HTML is written in this language (tools/prerender.py)
@@ -108,7 +112,7 @@
 
   function applySnaps() {
     document.querySelectorAll("[data-snap]").forEach(el => {
-      const v = (dicts[I18N.lang] || {})["snap." + el.dataset.snap];
+      const v = I18N.snap(el.dataset.snap);
       if (v !== undefined) el.innerHTML = v;
     });
   }

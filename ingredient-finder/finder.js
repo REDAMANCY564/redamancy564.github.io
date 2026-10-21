@@ -15,20 +15,53 @@
 (function () {
   const WEIGHTS = { high: 1, mid: 0.5, low: 0.25 };
 
+  // The page loads the library first and the large arrays when they are first needed:
+  // loadLibrary, then loadProbs (mode A and B) and loadFps (mode B). load() does all three (tests).
+  async function get(base, p, version, kind, onBytes) {
+    const res = await fetch(base + p + (version || ""));
+    if (!res.ok) throw new Error("Failed to load " + p);
+    if (kind === "json") return res.json();
+    if (!onBytes || !res.body) return res.arrayBuffer();
+    const reader = res.body.getReader(), parts = [];
+    let got = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      parts.push(value); got += value.length; onBytes(got);
+    }
+    const out = new Uint8Array(got);
+    let at = 0;
+    for (const p of parts) { out.set(p, at); at += p.length; }
+    return out.buffer;
+  }
+
+  async function loadLibrary(base, version) {
+    const lib = await get(base, "library.json", version, "json");
+    return { lib, n: lib.molecules.length, L: lib.labels.length, probs: null, offsets: null, bits: null,
+             labelIndex: Object.fromEntries(lib.labels.map((l, i) => [l.id, i])) };
+  }
+
+  /** Adds d.probs; onBytes(received) reports progress against d.n * d.L bytes. */
+  async function loadProbs(d, base, version, onBytes) {
+    const probs = new Uint8Array(await get(base, "probs.bin", version, "bin", onBytes));
+    if (probs.length !== d.n * d.L) throw new Error("probs.bin size does not match library.json");
+    d.probs = probs;
+    return d;
+  }
+
+  /** Adds d.offsets and d.bits (Morgan fingerprints). */
+  async function loadFps(d, base, version) {
+    const fpsBuf = await get(base, "fps.bin", version, "bin");
+    const offsets = new Uint32Array(fpsBuf, 0, d.n + 1);
+    d.bits = new Uint16Array(fpsBuf, (d.n + 1) * 4, offsets[d.n]);
+    d.offsets = offsets;
+    return d;
+  }
+
   async function load(base, version) {
-    const v = version || "";
-    const get = async (p, kind) => {
-      const res = await fetch(base + p + v);
-      if (!res.ok) throw new Error("Failed to load " + p);
-      return kind === "json" ? res.json() : res.arrayBuffer();
-    };
-    const [lib, probsBuf, fpsBuf] = await Promise.all([get("library.json", "json"), get("probs.bin"), get("fps.bin")]);
-    const n = lib.molecules.length, L = lib.labels.length;
-    const probs = new Uint8Array(probsBuf);
-    if (probs.length !== n * L) throw new Error("probs.bin size does not match library.json");
-    const offsets = new Uint32Array(fpsBuf, 0, n + 1);
-    const bits = new Uint16Array(fpsBuf, (n + 1) * 4, offsets[n]);
-    return { lib, n, L, probs, offsets, bits, labelIndex: Object.fromEntries(lib.labels.map((l, i) => [l.id, i])) };
+    const d = await loadLibrary(base, version);
+    await Promise.all([loadProbs(d, base, version), loadFps(d, base, version)]);
+    return d;
   }
 
   const prob = (d, i, j) => d.probs[i * d.L + j] / 255;
@@ -141,5 +174,5 @@
     return Uint16Array.from(out);
   }
 
-  window.FinderCore = { WEIGHTS, load, molecule, passes, scoreA, topLabels, topLabelsOf, vector, cosine, fpBits, tanimoto, prob, neighbours, bitsFromString };
+  window.FinderCore = { WEIGHTS, load, loadLibrary, loadProbs, loadFps, molecule, passes, scoreA, topLabels, topLabelsOf, vector, cosine, fpBits, tanimoto, prob, neighbours, bitsFromString };
 })();

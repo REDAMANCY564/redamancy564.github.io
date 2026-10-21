@@ -8,7 +8,6 @@
  *   standardized structure, computed live for searches; drawn on that structure.
  */
 (async function () {
-  const RDKIT_WASM = "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.wasm";
   const PUBCHEM = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/";
   const ACCENT = "#0f6e6e";
   const HELDOUT = "#9cc9c4";
@@ -21,15 +20,20 @@
     return res.json();
   }
 
-  // Start RDKit (large WASM) in parallel with the data; the preset view works without it.
+  // RDKit (large WASM) loads when a structure is first needed: the structure box comes into view or
+  // a molecule is entered. The preset view (text and chart) works without it.
   let rdkit = null;
   let rdkitFailed = false;
-  const rdkitReady = (typeof initRDKitModule === "function"
-    ? initRDKitModule({ locateFile: () => RDKIT_WASM })
-    : Promise.reject(new Error("RDKit script not loaded")))
-    .then(mod => { rdkit = mod; return mod; })
-    .catch(err => { rdkitFailed = true; console.error(err); throw err; });
-  rdkitReady.catch(() => {});
+  let rdkitPromise = null;
+  function rdkitReady() {
+    if (!rdkitPromise) {
+      rdkitPromise = Libs.rdkit()
+        .then(mod => { rdkit = mod; return mod; })
+        .catch(err => { rdkitFailed = true; rdkitPromise = null; console.error(err); throw err; });
+      rdkitPromise.then(renderStructure, renderStructure);
+    }
+    return rdkitPromise;
+  }
 
   const [presets, labels, spec] = await Promise.all([
     getJson("data/presets.json"),
@@ -81,13 +85,19 @@
     sel.value = current.source === "search" ? "" : current.id;
   }
 
+  // The first view (first preset, its top taste) is drawn in advance (tools/snapshot.py, key
+  // snap.mol-svg), so RDKit is only loaded when the visitor shows another molecule or taste.
+  const firstView = current.id + "|" + selected;
   function renderStructure() {
     const box = $("mol-svg");
     if (rdkit) {
       const svg = ContribView.drawSvg(rdkit, drawn(), current.contrib && current.contrib[selected]);
       if (svg) { box.innerHTML = svg; return; }
     }
+    const snap = I18N.snap("mol-svg");
+    if (current.id + "|" + selected === firstView && snap !== undefined) { box.innerHTML = snap; return; }
     box.textContent = rdkitFailed ? I18N.t("demo.rdkit_failed") : I18N.t("demo.loading_rdkit");
+    if (!rdkitFailed) rdkitReady().catch(() => {});
   }
 
   function selectTaste(id) {
@@ -266,7 +276,7 @@
     btn.disabled = true;
     try {
       setSearchStatus("search.loading_model");
-      const [rd, session] = await Promise.all([rdkitReady, getSession()]).catch(e => {
+      const [rd, session] = await Promise.all([rdkitReady(), getSession()]).catch(e => {
         console.error(e);
         throw Object.assign(new Error("engine"), { code: "engine" });
       });
@@ -332,7 +342,9 @@
   }
   renderAll();
   I18N.onChange(renderAll);
-  rdkitReady.then(renderStructure, renderStructure);
+  // first use of the demo: start RDKit so the next drawing is quick
+  ["pointerdown", "focusin", "keydown"].forEach(ev =>
+    $("mol-svg").closest("section").addEventListener(ev, () => { if (!rdkitFailed) rdkitReady().catch(() => {}); }, { once: true, passive: true }));
 
   // Shareable links: ?q=<name|CAS|SMILES> runs a search on load (used by the odor page)
   const q0 = new URLSearchParams(location.search).get("q");

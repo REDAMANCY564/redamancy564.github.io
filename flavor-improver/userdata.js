@@ -10,9 +10,6 @@
  * Everything else stays in the browser. Odor vectors and built-in thresholds: ../gcms-interpreter/data/flavor.json.
  */
 window.UserMode = (function () {
-  const RDKIT_JS = "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js";
-  const RDKIT_WASM = "https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.wasm";
-  const ORT_JS = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.wasm.min.js";
   const PUBCHEM = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/";
   const THR_KEY = "flavor-userdata-thr", PRED_KEY = "flavor-userdata-pred";
   const C = window.UserCore;
@@ -417,10 +414,9 @@ window.UserMode = (function () {
   let engine = null;
   async function getEngine() {
     if (engine) return engine;
-    await loadScript(RDKIT_JS);
-    await loadScript(ORT_JS);
+    // RDKit and ONNX Runtime are self-hosted (assets/libs.js); the engine loads ONNX Runtime itself
     await loadScript(new URL("../odor-predictor/engine.js", location.href).href);
-    const rdkit = await initRDKitModule({ locateFile: () => RDKIT_WASM });
+    const rdkit = await Libs.rdkit();
     const spec = await fetch("../odor-predictor/model/feature_spec.json").then(r => r.json());
     const labels = await fetch("../odor-predictor/model/labels.json").then(r => r.json());
     if (labels.length !== FL.labels.length || labels.some((l, i) => l.id !== FL.labels[i].id)) throw new Error("label order");

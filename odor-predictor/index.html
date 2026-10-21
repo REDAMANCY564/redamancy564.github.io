@@ -22,8 +22,8 @@
   <meta name="twitter:title" content="3 气味预测 | 崔京伟">
   <meta name="twitter:description" content="Enter a molecule name, CAS number or SMILES; a graph neural network gives its most likely odor descriptors.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/odor-predictor.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261021c">
-  <script src="../assets/i18n.js?v=20261021c" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261021d">
+  <script src="../assets/i18n.js?v=20261021d" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -98,7 +98,64 @@
         <div class="card">
           <p class="mol-name" id="mol-name"></p>
           <p class="mol-smiles mono" id="mol-smiles"></p>
-          <div class="mol-svg" id="mol-svg"></div>
+          <div class="mol-svg" id="mol-svg" data-snap="mol-svg"><!--?xml version='1.0' encoding='iso-8859-1'?-->
+<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:rdkit="http://www.rdkit.org/xml" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="360px" height="270px" viewBox="0 0 360 270">
+<!-- END OF HEADER -->
+<ellipse cx="285.9" cy="43.2" rx="29.7" ry="29.7" class="atom-0" style="fill:#AFD1F0;fill-rule:evenodd;stroke:#AFD1F0;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="233.0" cy="134.9" rx="29.7" ry="29.7" class="atom-1" style="fill:#E8590C;fill-rule:evenodd;stroke:#E8590C;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="285.9" cy="226.8" rx="29.7" ry="29.7" class="atom-2" style="fill:#EF905D;fill-rule:evenodd;stroke:#EF905D;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="127.0" cy="134.9" rx="29.7" ry="29.7" class="atom-3" style="fill:#E8590C;fill-rule:evenodd;stroke:#E8590C;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="74.1" cy="226.6" rx="29.7" ry="29.7" class="atom-4" style="fill:#AFD1F0;fill-rule:evenodd;stroke:#AFD1F0;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="74.1" cy="43.4" rx="29.7" ry="29.7" class="atom-5" style="fill:#EF905D;fill-rule:evenodd;stroke:#EF905D;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<path class="bond-0 atom-0 atom-1" d="M 285.9,43.2 L 233.0,134.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-1 atom-2" d="M 223.8,134.9 L 268.8,212.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-1 atom-2" d="M 237.5,126.9 L 282.5,204.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-1 atom-3" d="M 233.0,134.9 L 127.0,134.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-3 atom-4" d="M 127.0,134.9 L 74.1,226.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-3 atom-5" d="M 136.2,134.9 L 91.5,57.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-3 atom-5" d="M 122.5,142.8 L 77.7,65.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path d="M 235.6,130.3 L 233.0,134.9 L 227.7,134.9" style="fill:none;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;"></path>
+<path d="M 132.3,134.9 L 127.0,134.9 L 124.4,139.5" style="fill:none;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;"></path>
+<path class="atom-2" d="M 272.9 226.7
+Q 272.9 219.9, 276.3 216.1
+Q 279.6 212.3, 285.9 212.3
+Q 292.2 212.3, 295.6 216.1
+Q 298.9 219.9, 298.9 226.7
+Q 298.9 233.6, 295.5 237.5
+Q 292.1 241.4, 285.9 241.4
+Q 279.7 241.4, 276.3 237.5
+Q 272.9 233.6, 272.9 226.7
+M 285.9 238.2
+Q 290.2 238.2, 292.6 235.3
+Q 294.9 232.4, 294.9 226.7
+Q 294.9 221.1, 292.6 218.3
+Q 290.2 215.5, 285.9 215.5
+Q 281.6 215.5, 279.2 218.3
+Q 276.9 221.1, 276.9 226.7
+Q 276.9 232.4, 279.2 235.3
+Q 281.6 238.2, 285.9 238.2
+" fill="#000000"></path>
+<path class="atom-5" d="M 61.1 43.2
+Q 61.1 36.4, 64.4 32.6
+Q 67.8 28.8, 74.1 28.8
+Q 80.4 28.8, 83.7 32.6
+Q 87.1 36.4, 87.1 43.2
+Q 87.1 50.1, 83.7 54.0
+Q 80.3 57.9, 74.1 57.9
+Q 67.8 57.9, 64.4 54.0
+Q 61.1 50.2, 61.1 43.2
+M 74.1 54.7
+Q 78.4 54.7, 80.7 51.8
+Q 83.1 48.9, 83.1 43.2
+Q 83.1 37.7, 80.7 34.9
+Q 78.4 32.0, 74.1 32.0
+Q 69.8 32.0, 67.4 34.8
+Q 65.1 37.6, 65.1 43.2
+Q 65.1 49.0, 67.4 51.8
+Q 69.8 54.7, 74.1 54.7
+" fill="#000000"></path>
+</svg>
+</div>
           <div class="contrib-picker" id="contrib-picker"></div>
           <div class="contrib-legend" id="contrib-legend"></div>
           <p class="small mol-links">
@@ -130,14 +187,13 @@
     </div>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2026.3.6/dist/RDKit_minimal.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.wasm.min.js"></script>
-  <script src="engine.js?v=20261021c"></script>
-  <script src="../assets/projects.js?v=20261021c"></script>
-  <script src="../flavor-kb/kb.js?v=20261021c"></script>
-  <script src="../flavor-kb/kb-ui.js?v=20261021c"></script>
-  <script src="../assets/contrib.js?v=20261021c"></script>
-  <script src="app.js?v=20261021c"></script>
+  <script src="../assets/vendor/chartjs/chart.umd.min.js" defer></script>
+  <script src="../assets/libs.js?v=20261021d" defer></script>
+  <script src="engine.js?v=20261021d" defer></script>
+  <script src="../assets/projects.js?v=20261021d" defer></script>
+  <script src="../flavor-kb/kb.js?v=20261021d" defer></script>
+  <script src="../flavor-kb/kb-ui.js?v=20261021d" defer></script>
+  <script src="../assets/contrib.js?v=20261021d" defer></script>
+  <script src="app.js?v=20261021d" defer></script>
 </body>
 </html>

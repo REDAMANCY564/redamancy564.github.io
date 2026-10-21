@@ -1,8 +1,26 @@
 /* Shared site styles. Mobile first; no horizontal scrolling at 360px width. */
+/* Heading font: Latin subset of Source Serif 4, weights 400-600 (assets/fonts/README.md, tools/make_font.py).
+   unicode-range leaves out the space, so pages whose serif text has no Latin letters (Chinese headings)
+   do not download it; spaces come from the fallback face below, at practically the same width. */
 @font-face {
   font-family: "SiteSerif";
-  src: url("fonts/SiteSerif-Variable-Latin.woff2") format("woff2");
-  font-weight: 200 900; font-style: normal; font-display: swap;
+  src: url("fonts/SiteSerif-Latin.woff2") format("woff2");
+  font-weight: 400 600; font-style: normal; font-display: swap;
+  unicode-range: U+0021-007E, U+00B7, U+2013-2014, U+2018-2019, U+201C-201D, U+2026;
+}
+/* Shown until SiteSerif arrives: Georgia scaled to SiteSerif's average width and line metrics, so a
+   heading wraps the same before and after the swap (values printed by tools/make_font.py). */
+@font-face {
+  font-family: "SiteSerif Fallback"; src: local("Georgia"); font-weight: 400;
+  size-adjust: 100.45%; ascent-override: 103.14%; descent-override: 33.35%; line-gap-override: 0%;
+}
+@font-face {
+  font-family: "SiteSerif Fallback"; src: local("Georgia"); font-weight: 500;
+  size-adjust: 100.26%; ascent-override: 103.33%; descent-override: 33.41%; line-gap-override: 0%;
+}
+@font-face {
+  font-family: "SiteSerif Fallback"; src: local("Georgia Bold"), local("Georgia-Bold"); font-weight: 600 700;
+  size-adjust: 87.63%; ascent-override: 118.22%; descent-override: 38.23%; line-gap-override: 0%;
 }
 :root {
   --bg: #fbfaf7;
@@ -20,7 +38,7 @@
   --shadow: none;
   /* Serif for headings (Osmo-style contrast with the sans body): a self-hosted Latin subset of
      Source Serif 4 (assets/fonts, allowed by the strict CSP pages); Chinese uses the system Song face. */
-  --font-serif: "SiteSerif", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+  --font-serif: "SiteSerif", "SiteSerif Fallback", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
                 "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", SimSun, serif;
   --sp-1: 4px; --sp-2: 8px; --sp-3: 16px; --sp-4: 24px; --sp-5: 40px; --sp-6: 64px; --sp-7: 96px;
   color-scheme: light;
