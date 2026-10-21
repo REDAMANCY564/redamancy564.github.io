@@ -12,9 +12,9 @@
 5. 风味分子的气味空间与结构空间对比图谱（气味空间地图）：https://redamancy564.github.io/odor-map/
 6. 基于图神经网络的小分子味觉预测（味觉预测）：https://redamancy564.github.io/taste-predictor/
 7. 人群嗅觉评分差异的来源分解（气味感知差异）：https://redamancy564.github.io/perception-diversity/
-8. 食品关键风味物质知识库（风味知识库）：https://redamancy564.github.io/flavor-kb/
+8. 食品关键风味物质知识库与香料法规查询（风味知识库与法规查询）：https://redamancy564.github.io/flavor-kb/ ，法规查询：https://redamancy564.github.io/flavor-kb/regulatory.html
 
-## 8 食品关键风味物质知识库（flavor-kb/）
+## 8 食品关键风味物质知识库与香料法规查询（flavor-kb/）
 
 三级数据，网页上用颜色标签区分：
 
@@ -38,21 +38,23 @@ python knowledge/build_kb.py         # 生成 flavor-kb/data/*.json
 
 ### 法规查询（flavor-kb/regulatory.html）
 
-食品香料在欧盟和中国的许可状态，显示在法规查询页、原料检索结果卡片、气味预测和知识库物质卡片中；美国未包含。数据只有一份：`flavor-kb/data/regulatory.json`（约 280 KB，随页面静态加载，不访问外部接口），由 `assets/regulatory.js` 读取和显示，文字在 `assets/i18n/*.json` 的 `reg.*` 键。
+食品香料在欧盟和中国的许可状态；美国未包含。两份静态数据文件（同一个脚本生成，随页面加载，不访问外部接口），由 `assets/regulatory.js` 读取和显示，文字在 `assets/i18n/*.json` 的 `reg.*` 键：
+- `flavor-kb/data/regulatory.json`（约 280 KB）：只含与原料检索分子库按 CAS 重合的分子，供原料检索结果卡片、气味预测和知识库物质卡片使用。
+- `flavor-kb/data/regulatory-lookup.json`（约 430 KB，gzip 约 125 KB）：欧盟 Union list 全部条目、附件 III A 部分和 GB 2760 表 B.2/B.3 全部条目，按共同 CAS 合并为物质，只由法规查询页加载；本站有的物质附跳转链接。英文检索另用 GB 2760 表中的英文名和经 FEMA 号对应的 FDA 名称（只作检索词，不显示）。
 
 | 地区 | 来源 | 说明 |
 |---|---|---|
 | 欧盟 | Regulation (EC) No 1334/2008 附件 I Part A 表 1（Union list），EUR-Lex 合并版 02008R1334-20260216（修订至 (EU) 2026/175），CC BY 4.0 | 摘录 FL 号、CAS、使用限制（本站概括，`training/regulatory/notes.json`）、脚注；附件 III A 部分单独说明 |
 | 中国 | GB 2760-2024 表 B.2、B.3（官方文本，食品安全国家标准数据检索平台），未包含修改单 | 只用编码、中文名、FEMA 号；FEMA→CAS 借助 FDA「Substances Added to Food」清单；无可用 FEMA 号的 30 个合成香料由本站在 PubChem 核实 CAS（`training/regulatory/cn_cas_manual.json`） |
 
-只覆盖与原料检索分子库按 CAS 重合的物质（2026-10-21：欧盟 2009、中国 1283、任一 2118）。「未在清单中找到」不等于不允许。
+工具页只覆盖与原料检索分子库按 CAS 重合的物质（2026-10-21：欧盟 2010、中国 1283、任一 2118）；法规查询页收录两份名单全部条目（欧盟 2475 + 附件 III 15，中国 1892，合并为 3036 个物质，其中 2159 个与分子库对应）。「未在清单中找到」不等于不允许。
 
 **更新法规数据**（欧盟有新合并版、GB 2760 修改单正式发布时）：原始文件放在 `training/data/regulatory/`（不上传：欧盟合并版 XHTML、GB 2760 官方 PDF、FDA 清单），然后
 ```powershell
 python training/regulatory/lib_cas.py          # 分子库 CAS（PubChem，有缓存）
 python training/regulatory/parse_eu_annex.py   # 欧盟表 1 和附件 III
 python training/regulatory/parse_gb.py         # GB 2760 表 B.2/B.3（需要 pip install pymupdf）
-python training/regulatory/build_regulatory.py # 生成 flavor-kb/data/regulatory.json 和核对报告
+python training/regulatory/build_regulatory.py # 生成 flavor-kb/data/regulatory.json、regulatory-lookup.json 和核对报告
 ```
 更新后同步修改页面上的版本、日期和数量（`assets/i18n` 的 `reg.src_*`，`flavor-kb/i18n` 的 `rq.scope` 和 `about.reg_*`），再跑 `ingredient-finder/tests/unit.html`（含法规数据检查）和 `python tools/prerender.py`。
 
@@ -262,7 +264,7 @@ flavor-improver/        4 风味改良
   reference.js          配方奶粉对比母乳：参照食品模式（差距分析、前体方向）
   data/                 palette、bases、presets、mixture_spec、bo_traces、bo_metrics、reference（配方奶粉对比母乳）、precursors（前体对照表）
   tests/                parity.html（一致性）、bo_check.html（浏览器版算法表现）
-flavor-kb/              8 风味知识库
+flavor-kb/              8 风味知识库与法规查询（regulatory.html 为法规查询页）
 taste-predictor/        6 味觉预测（结构同 odor-predictor；engine.js 在气味引擎上加中和步骤）
 odor-map/               5 气味空间地图（data/：coords.bin、map.json、foods.json；分子数据读 ingredient-finder/data/）
 perception-diversity/   7 气味感知差异（data/：site.json、映射表、质量检查、处理日志）

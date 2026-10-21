@@ -69,17 +69,46 @@
   const regOf = i => Reg.byLib(i);
   const inLib = Reg.items.every(it => lib.molecules[it.li] && lib.molecules[it.li][0] === it.smiles);
   check("regulatory", "every item is a library molecule (same index and SMILES)", inLib, true);
-  check("regulatory", "molecules listed: EU 2009, China 1283, both 1179",
-    ["eu", "cn", "both"].map(r => Reg.items.filter(it => Reg.permitted(it, r)).length), [2009, 1283, 1179]);
+  check("regulatory", "molecules listed: EU 2010, China 1283, both 1180",
+    ["eu", "cn", "both"].map(r => Reg.items.filter(it => Reg.permitted(it, r)).length), [2010, 1283, 1180]);
   const dia = regOf(396), van = regOf(3302), cou = regOf(5023);
   check("regulatory", "diacetyl: FL 07.052, GB S0207 / FEMA 2370", [dia.eu.map(e => e.fl), dia.cn.map(c => c.code + "/" + c.fema)], [["07.052"], ["S0207/2370"]]);
   check("regulatory", "vanillin: FL 05.018 without restriction, GB S0172", [van.eu.map(e => [e.fl, e.r]), van.cn.map(c => [c.code, c.r])], [[["05.018", null]], [["S0172", null]]]);
   check("regulatory", "coumarin: not in either list, Annex III Part A with Part B levels", [cou.eu.length, cou.cn.length, cou.a3], [0, 0, 1]);
   check("regulatory", "d-camphor: FL 07.215 restricted, stereo note", Reg.items.filter(it => it.eu.some(e => e.fl === "07.215")).map(it => it.eu[0].r + "|" + it.eu[0].s), ["eu:07.215|true"]);
-  const euSet = new Set(Reg.items.filter(it => Reg.permitted(it, "eu")).map(it => it.li));
+  const gly = regOf(1072);
+  check("regulatory", "glycyrrhizic acid (library 1072): FL 16.012 restricted with its summary, GB S0881 (supplemented CAS)",
+    [gly.eu.map(e => e.fl + "|" + e.r), gly.cn.map(c => c.code + "|" + c.m),
+     /20–5000 mg\/kg/.test(((await (await fetch("../../flavor-kb/data/regulatory.json")).json()).notes["eu:16.012"] || {}).zh)],
+    [["16.012|eu:16.012"], ["S0881|true"], true]);
+
+  // lookup page data: every list entry, grouped by CAS (flavor-kb/data/regulatory-lookup.json)
+  const smallItems = Reg.items.slice();
+  await Reg.loadLookup();
+  const L = Reg.lookup;
+  const fls = L.flatMap(s => s.eu.map(e => e.fl)), codes = L.flatMap(s => s.cn.map(c => c.code));
+  check("lookup", "every Union list entry once (2475) and every GB 2760 B.2/B.3 code once (1892)",
+    [fls.length, new Set(fls).size, codes.length, new Set(codes).size], [2475, 2475, 1892, 1892]);
+  check("lookup", "all 15 Annex III Part A substances (coumarin alone, not in either list)",
+    [L.filter(s => s.a3).length >= 15 - 1, L.some(s => s.cas.includes("91-64-5") && s.a3 === 1 && !s.eu.length && !s.cn.length)], [true, true]);
+  const byFl = fl => L.find(s => s.eu.some(e => e.fl === fl)), byCode = c => L.find(s => s.cn.some(x => x.code === c));
+  check("lookup", "quinine hydrochloride (FL 14.011): outside the library, no links, restricted, also GB 2760",
+    [byFl("14.011").links.length, byFl("14.011").eu[0].r, byFl("14.011").cn.length > 0], [0, "eu:14.011", true]);
+  check("lookup", "entries without CAS: N024 (no FEMA no.) and FL 16.137 stand alone, flagged",
+    [byCode("N024").cas.length, byCode("N024").cn[0].x, byFl("16.137").cas.length], [0, true, 0]);
+  check("lookup", "diacetyl: one substance with FL 07.052 and S0207, linked to library molecule 396",
+    [byFl("07.052") === byCode("S0207"), byFl("07.052").links.map(l => l.li)], [true, [396]]);
+  check("lookup", "hidden search keys: GB 2760 English name (isopropylalcohol) and FDA name (eugenylmethylether)",
+    [byCode("S0003").keys.some(k => k.includes("isopropylalcohol")), byCode("S0093").keys.some(k => k.includes("eugenylmethylether"))], [true, true]);
+  check("lookup", "library links: the same 2118 molecules as the tool-page file",
+    new Set(L.flatMap(s => s.links.map(l => l.li))).size, smallItems.length);
+  check("lookup", "stereo notes only on substances linked to the library",
+    L.filter(s => !s.links.length).some(s => s.eu.some(e => e.s) || s.cn.some(c => c.s)), false);
+
+  const euSet = new Set(smallItems.filter(it => Reg.permitted(it, "eu")).map(it => it.li));
   const onlyEu = F.scoreA(D, want, [], { only: euSet });
-  check("filters", "region filter: only molecules permitted in the EU (2009)", [onlyEu.length, onlyEu.every(h => euSet.has(h.index))], [2009, true]);
-  const cnSet = new Set(Reg.items.filter(it => Reg.permitted(it, "cn")).map(it => it.li));
+  check("filters", "region filter: only molecules permitted in the EU (2010)", [onlyEu.length, onlyEu.every(h => euSet.has(h.index))], [2010, true]);
+  const cnSet = new Set(smallItems.filter(it => Reg.permitted(it, "cn")).map(it => it.li));
   const nb = F.neighbours(D, F.vector(D, 396), F.fpBits(D, 396), 396, { keep: i => cnSet.has(i) });
   check("mode B", "region filter: the 20 neighbours are all listed in China, best odor similarity first",
     [nb.top.length, nb.top.every(h => cnSet.has(h.index)), nb.top.every((h, k) => !k || nb.top[k - 1].odor >= h.odor)], [20, true, true]);

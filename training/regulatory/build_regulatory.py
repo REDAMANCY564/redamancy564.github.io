@@ -144,6 +144,20 @@ for r in cn_rows:
         hits[i]["cn"].append({"t": r["tab"], "code": r["code"], "fema": "+".join(r["femas"]), "zh": r["name"], "m": False, "c": False,
                               "r": ("cn:" + r["code"]) if "cn:" + r["code"] in notes else None, "st": stereo(r["zh"], True)})
 
+# EU entries also by a CAS number supplemented above (molecule matched to a GB row by structure), so the tool
+# pages agree with the lookup page. User decision 2026-10-21: only glycyrrhizic acid (S0881, CAS 1405-86-3,
+# FL 16.012). The same rule would also add 17.006, 17.027, 01.046, 09.171, 06.035 and 12.098 (not applied).
+EU_VIA_SUPPLEMENTED = {"16.012"}
+eu_extra = []
+for i, cs in extra_cas.items():
+    have = {e["fl"] for e in hits[i]["eu"]}
+    for e in eu["table1"]:
+        if e["fl"] in EU_VIA_SUPPLEMENTED and e["fl"] not in have and set(e["cas"]) & set(cs):
+            hits[i]["eu"].append({"fl": e["fl"], "name": e["name"], "r": ("eu:" + e["fl"]) if e["restriction"] else None,
+                                  "fn": e["footnotes"], "st": stereo(e["name"])})
+            eu_extra.append((e["fl"], lib[i]["name"]))
+print("EU entries added via supplemented CAS:", eu_extra)
+
 # ---- site file, compact (decoded by assets/regulatory.js):
 # item = [library index, InChIKey first block, name, SMILES, "CAS CAS", KB id, "中文名|中文名", eu, cn, annex III]
 # eu entry = "FL[;r][;f<footnotes>][;s]"   r: restriction (note "eu:<FL>"), s: entry is one stereoisomer
@@ -201,3 +215,86 @@ print(json.dumps({k: v for k, v in report.items() if k in ("molecules", "cn_unma
                                                           "eu_rows_matched", "size_bytes")}, ensure_ascii=False))
 print("eu restricted", len(eu_restricted), "eu multi", len(eu_multi), "cn multi", len(cn_multi),
       "name check", len(name_check), "notes missing", len(missing))
+
+# ======== Lookup page: every Union list row, Annex III Part A and every GB 2760 B.2/B.3 row ========
+# flavor-kb/data/regulatory-lookup.json, loaded only by flavor-kb/regulatory.html (the tool pages keep the file
+# above). Rows sharing a CAS number form one substance; rows without CAS stay on their own ("本条无 CAS").
+# substance = [display name, "中文名|…", "CAS CAS", eu[], cn[], annex III, library links, hidden search keys]
+#   eu / cn entries as above, plus cn flag x (row without CAS: no "CAS matched via FEMA" line); stereo notes
+#   only for substances linked to a library molecule (the note is about the site's molecules)
+#   library links = [[library index, name, SMILES, KB id], …]
+#   search keys (not shown): GB 2760 English names and FDA names (rows matched via FEMA no.), normalized
+skey = lambda s: re.sub(r"[^0-9a-z㐀-鿿]", "", s.lower().replace("α", "alpha").replace("β", "beta")
+                       .replace("γ", "gamma").replace("δ", "delta"))
+nodes = [("eu", e) for e in eu["table1"]] + [("a3", a) for a in eu["annex3_part_a"]]
+for r in cn_rows:
+    mrow = manual.get(r["code"])
+    fda = [f for fe in r["femas"] for f in fema2.get(fe, [])]
+    via = "fema" if any(f["cas"] for f in fda) else None
+    cas = sorted({f["cas"] for f in fda if f["cas"]})
+    if not cas and mrow and mrow["cas"]:
+        cas, via = list(mrow["cas"]), "manual"
+    nodes.append(("cn", dict(r, cas=cas, via=via, fda=[f["name"] for f in fda])))
+parent = list(range(len(nodes)))
+def root(x):
+    while parent[x] != x:
+        parent[x] = parent[parent[x]]; x = parent[x]
+    return x
+first = {}
+for k, (_, n) in enumerate(nodes):
+    for c in n["cas"]:
+        if c in first: parent[root(k)] = root(first[c])
+        else: first[c] = k
+groups = collections.defaultdict(list)
+for k in range(len(nodes)):
+    groups[root(k)].append(k)
+
+subs, lused = [], set()
+for g in sorted(groups.values(), key=lambda g: min(g)):
+    rows_ = [nodes[k] for k in g]
+    cas = sorted({c for _, n in rows_ for c in n["cas"]}, key=lambda c: [int(x) for x in c.split("-")])
+    li = set().union(*[cas2lib.get(c, set()) for c in cas]) if cas else set()
+    for kind, n in rows_:   # supplemented CAS rows were also matched by structure
+        if kind == "cn" and n["via"] == "manual":
+            li |= ik2lib.get(manual[n["code"]]["inchikey"][:14], set())
+    linked = bool(li)
+    eu_e, cn_e, a3, keys, zh = [], [], [], [], []
+    for kind, n in rows_:
+        if kind == "eu":
+            r_ = ("eu:" + n["fl"]) if n["restriction"] else None
+            eu_e.append(n["fl"] + (";r" if r_ else "") + (";f" + "".join(n["footnotes"]) if n["footnotes"] else "") +
+                        (";s" if linked and stereo(n["name"]) else ""))
+            if r_ and r_ in notes: lused.add(r_)
+            keys.append(skey(n["name"]))
+        elif kind == "a3":
+            a3.append(n)
+            keys.append(skey(n["name"]))
+        else:
+            mrow = manual.get(n["code"]) if n["via"] == "manual" else None
+            cfg = bool(mrow and mrow.get("config"))
+            st = linked and not cfg and (stereo(n["zh"], True) or bool(mrow and mrow["inchikey"].split("-")[1] != "UHFFFAOYSA"))
+            r_ = ("cn:" + n["code"]) if "cn:" + n["code"] in notes else None
+            cn_e.append(";".join([n["tab"], n["code"], "+".join(n["femas"])]) + (";r" if r_ else "") + (";s" if st else "") +
+                        (";m" if n["via"] == "manual" else "") + (";c" if cfg else "") + (";x" if not n["cas"] else ""))
+            if r_: lused.add(r_)
+            if cfg: lused.add("cnc:" + n["code"])
+            zh.append(n["name"])
+            keys += [skey(n["en"])] + [skey(x) for x in n["fda"]]
+    links = [[i, site[i][1], site[i][0], site[i][3]] for i in sorted(li)]
+    eu_names = [n["name"] for kind, n in rows_ if kind in ("eu", "a3")]
+    name = links[0][1] if links else (eu_names[0] if eu_names else "")
+    keys += [skey(x[1] or "") for x in links]
+    shown = {skey(name)} | {skey(x) for x in zh}
+    subs.append([name, "|".join(dict.fromkeys(zh)), " ".join(cas), sorted(eu_e), sorted(cn_e, key=lambda e: e.split(";")[1]),
+                 (1 if any(a["part_b"] for a in a3) else 2) if a3 else 0, links,
+                 "|".join(k for k in dict.fromkeys(keys) if k and k not in shown)])
+lmeta = dict(meta, nocas=None, counts={
+    "eu_rows": len(eu["table1"]), "annex3": len(eu["annex3_part_a"]), "cn_rows": {"B2": len(gb["B2"]), "B3": len(gb["B3"])},
+    "substances": len(subs), "linked": sum(1 for s in subs if s[6]), "linked_molecules": len({l[0] for s in subs for l in s[6]})})
+del lmeta["nocas"]
+lp = REPO / "flavor-kb" / "data" / "regulatory-lookup.json"
+lp.write_text(json.dumps({"meta": lmeta, "notes": {k: notes[k] for k in sorted(lused)}, "s": subs},
+                         ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+restricted_all = [e["fl"] for e in eu["table1"] if e["restriction"]]
+print("lookup:", json.dumps(lmeta["counts"]), "bytes", lp.stat().st_size,
+      "restricted rows", len(restricted_all), "without summary", [f for f in restricted_all if "eu:" + f not in notes])

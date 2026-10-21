@@ -52,5 +52,85 @@
   "cnc:S1500": {
     "zh": "补充的 CAS 为 PubChem 中的特定构型（(E)），GB 2760 名称未指定构型。",
     "en": "The supplemented CAS number is one configuration in PubChem ((E)); the GB 2760 name does not specify a configuration."
+  },
+  "eu:14.011": {
+    "zh": "只能用于非酒精饮料和酒精饮料（100 mg/kg）及烈酒（250 mg/kg）；单独或与 FL 14.152、14.155 合计，以奎宁碱计。",
+    "en": "Only in non-alcoholic and alcoholic beverages (100 mg/kg) and spirit drinks (250 mg/kg); alone or together with FL 14.152 and 14.155, expressed as quinine base.",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:14.152": {
+    "zh": "只能用于非酒精饮料和酒精饮料（100 mg/kg）及烈酒（250 mg/kg）；单独或与 FL 14.011、14.155 合计，以奎宁碱计。",
+    "en": "Only in non-alcoholic and alcoholic beverages (100 mg/kg) and spirit drinks (250 mg/kg); alone or together with FL 14.011 and 14.155, expressed as quinine base.",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:14.155": {
+    "zh": "只能用于非酒精饮料和酒精饮料（100 mg/kg）及烈酒（250 mg/kg）；单独或与 FL 14.011、14.152 合计，以奎宁碱计。",
+    "en": "Only in non-alcoholic and alcoholic beverages (100 mg/kg) and spirit drinks (250 mg/kg); alone or together with FL 14.011 and 14.152, expressed as quinine base.",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:16.012": {
+    "zh": "只能用于列出的食品类别，各类别有最高限量（20–5000 mg/kg，口香糖最高 5000 mg/kg）。",
+    "en": "Only in the listed food categories, each with a maximum level (20–5000 mg/kg; chewing gum up to 5000 mg/kg).",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:16.048": {
+    "zh": "只能用于列出的食品类别：乳制品、肉、鱼和即食咸味零食 3 g/kg，糖果按需适量，盐、调味料、汤和酱类等 3 g/kg（代盐 40 g/kg），酒精饮料 25 g/l。",
+    "en": "Only in the listed food categories: dairy products, meat, fish and savoury snacks 3 g/kg; confectionery quantum satis; salts, seasonings, soups, sauces and similar 3 g/kg (salt substitutes 40 g/kg); alcoholic beverages 25 g/l.",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:16.060": {
+    "zh": "只能用于列出的食品类别，各类别有最高限量（40–5000 mg/kg，口香糖最高 5000 mg/kg）。",
+    "en": "Only in the listed food categories, each with a maximum level (40–5000 mg/kg; chewing gum up to 5000 mg/kg).",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:16.061": {
+    "zh": "作为香料使用时，只能用于列出的食品类别，各类别有最高限量（3–5 mg/kg）。",
+    "en": "As a flavouring, only in the listed food categories, each with a maximum level (3–5 mg/kg).",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:16.113": {
+    "zh": "作为香料使用时，只能用于列出的食品类别，最高 10 mg/kg。",
+    "en": "As a flavouring, only in the listed food categories, at most 10 mg/kg.",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:16.126": {
+    "zh": "作为香料使用时，只能用于列出的食品类别，各类别有最高限量（3–30 mg/kg）。",
+    "en": "As a flavouring, only in the listed food categories, each with a maximum level (3–30 mg/kg).",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:16.127": {
+    "zh": "作为香料使用时，只能用于列出的食品类别，各类别有最高限量：多数类别 4–100 mg/kg；乳基饮料（14.1.4）和乳基甜点（16）各 4 mg/l。",
+    "en": "As a flavouring, only in the listed food categories, each with a maximum level: 4–100 mg/kg in most categories; dairy-based drinks (14.1.4) and dairy-based desserts (16) 4 mg/l each.",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:16.133": {
+    "zh": "只能用于列出的、采用不透光包装的食品类别（3–150 mg/kg）；不得出售给最终消费者；须标示含 FL 16.133 并注明避光，容器须不透光。",
+    "en": "Only in the listed food categories in opaque packaging (3–150 mg/kg); not for sale to the final consumer; the label must state that it contains FL 16.133 and must be protected from light, in opaque containers.",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:16.134": {
+    "zh": "只能用于口香糖（5.3），不超过 100 mg/kg。",
+    "en": "Only in chewing gum (5.3), at most 100 mg/kg.",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:16.135": {
+    "zh": "只能用于糖果类：其他糖果（5.1、5.3、5.4 除外）250 mg/kg，口香糖 500 mg/kg，装饰、浇头和甜酱 150 mg/kg。",
+    "en": "Only in confectionery: other confectionery (other than 5.1, 5.3 and 5.4) 250 mg/kg, chewing gum 500 mg/kg, decorations, toppings and sweet sauces 150 mg/kg.",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:16.136": {
+    "zh": "只能用于列出的食品类别，各类别有最高限量（1.7–20 mg/kg），部分类别只限干酪类似物或蔬菜。",
+    "en": "Only in the listed food categories, each with a maximum level (1.7–20 mg/kg); some categories are limited to cheese analogues or vegetables.",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:16.137": {
+    "zh": "只能用于列出的食品类别，最高 10 mg/kg；部分类别只限特定产品（咸味饼干，乳、乳类似物和果蔬基甜点）。",
+    "en": "Only in the listed food categories, at most 10 mg/kg; some categories are limited to particular products (savoury crackers; dairy, dairy-analogue, fruit- and vegetable-based desserts).",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "eu:17.038": {
+    "zh": "作为香料使用时，只能用于列出的食品类别，各类别有最高限量（15–160 mg/kg）。",
+    "en": "As a flavouring, only in the listed food categories, each with a maximum level (15–160 mg/kg).",
+    "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
   }
 }

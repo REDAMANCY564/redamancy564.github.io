@@ -1,12 +1,18 @@
 /*
- * Regulatory lookup page (flavor knowledge base): find a substance by name (English or GB 2760 Chinese
- * name), CAS, FEMA, FL number or GB 2760 code, and show its EU / China status (assets/regulatory.js).
+ * Regulatory lookup page (flavor knowledge base): every entry of the EU Union list (with Annex III Part A)
+ * and of GB 2760 tables B.2 / B.3, grouped by CAS into substances (flavor-kb/data/regulatory-lookup.json,
+ * loaded by this page only). Find a substance by name (English, GB 2760 Chinese name, hidden GB 2760 English
+ * and FDA names), CAS, FEMA, FL number or GB 2760 code, and show its EU / China status (assets/regulatory.js).
+ * Substances in the site's molecule library link to the ingredient finder, odor predictor and knowledge base.
  * No search by food category or conditions of use (user decision). The query is kept in ?q=.
  */
 (async function () {
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const MAX = 30;
+  // same normalization as the hidden search keys (build_regulatory.py skey): spaces and punctuation ignored
+  const skey = s => String(s || "").toLowerCase().replace(/α/g, "alpha").replace(/β/g, "beta").replace(/γ/g, "gamma")
+    .replace(/δ/g, "delta").replace(/[^0-9a-z㐀-鿿]/g, "");
 
   await I18N.ready;
   let query = "";
@@ -16,44 +22,52 @@
     $("rq-status").classList.toggle("error", !!isError);
   }
 
-  /** Items matching q, best first. The kind of query is recognised from its form. */
+  /** Substances matching q, best first. The kind of query is recognised from its form. */
   function find(q) {
-    const raw = q.trim(), s = raw.toLowerCase();
-    const items = Reg.items;
+    const s = q.trim().toLowerCase();
+    const subs = Reg.lookup;
     let m;
-    if ((m = s.match(/^0*(\d{2,7}-\d{2}-\d)$/))) return items.filter(it => it.cas.includes(m[1]));
-    if ((m = s.match(/^(?:fl\s*(?:no\.?)?\s*)?(\d{2})\.(\d{3})$/))) return items.filter(it => it.eu.some(e => e.fl === m[1] + "." + m[2]));
+    if ((m = s.match(/^0*(\d{2,7}-\d{2}-\d)$/))) return subs.filter(it => it.cas.includes(m[1]));
+    if ((m = s.match(/^(?:fl\s*(?:no\.?)?\s*)?(\d{2})\.(\d{3})$/))) return subs.filter(it => it.eu.some(e => e.fl === m[1] + "." + m[2]));
     if ((m = s.match(/^([ns])\s*0*(\d{1,4})$/))) {
       const code = m[1].toUpperCase() + m[2].padStart(m[1] === "n" ? 3 : 4, "0");
-      return items.filter(it => it.cn.some(c => c.code === code));
+      return subs.filter(it => it.cn.some(c => c.code === code));
     }
-    if ((m = s.match(/^(?:fema\s*(?:no\.?)?\s*)?(\d{4})$/))) return items.filter(it => it.cn.some(c => c.fema.split("+").includes(m[1])));
-    if (s.length < 2 && !/[㐀-鿿]/.test(s)) return [];
+    if ((m = s.match(/^(?:fema\s*(?:no\.?)?\s*)?(\d{4})$/))) return subs.filter(it => it.cn.some(c => c.fema.split("+").includes(m[1])));
+    const k = skey(s);
+    if (k.length < 2 && !/[㐀-鿿]/.test(k)) return [];
     const scored = [];
-    for (const it of items) {
-      const names = [it.name || ""].concat(it.zh).map(x => x.toLowerCase());
+    for (const it of subs) {
+      // shown names rank before hidden search keys (GB 2760 English names, FDA names)
+      const shown = [it.name].concat(it.zh, it.links.map(l => l.name)).map(skey);
       let best = 99;
-      for (const n of names) {
-        if (n === s) best = Math.min(best, 0);
-        else if (n.startsWith(s)) best = Math.min(best, 1);
-        else if (n.includes(s)) best = Math.min(best, 2);
-      }
-      if (best < 99) scored.push([best, Math.min(...names.map(n => n.length)), it]);
+      shown.forEach(n => { if (n === k) best = Math.min(best, 0); else if (n.startsWith(k)) best = Math.min(best, 1); else if (n.includes(k)) best = Math.min(best, 2); });
+      if (best === 99) it.keys.forEach(n => { if (n === k) best = Math.min(best, 3); else if (n.includes(k)) best = Math.min(best, 4); });
+      if (best < 99) scored.push([best, Math.min(...shown.filter(Boolean).map(n => n.length)), it]);
     }
     return scored.sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(x => x[2]);
   }
 
+  // English page, China-only substance: 「中文名（编码）」, no translation of the name (user decision)
+  function title(it) {
+    if (it.name) return esc(it.name) + (it.zh.length ? ' <span class="rq-zh">' + esc(it.zh.join("、")) + "</span>" : "");
+    const zh = it.zh.join("、");
+    return esc(I18N.lang === "zh" ? zh : zh + "（" + it.cn.map(c => c.code).join("、") + "）");
+  }
+
+  const linkRow = l => [
+    '<a href="../ingredient-finder/?mode=b&amp;smiles=' + encodeURIComponent(l.smiles) + '">' + esc(I18N.t("rq.to_finder")) + "</a>",
+    '<a href="../odor-predictor/?q=' + encodeURIComponent(l.smiles) + '#demo">' + esc(I18N.t("rq.to_odor")) + "</a>",
+    l.kb ? '<a href="./?compound=' + encodeURIComponent(l.kb) + '">' + esc(I18N.t("rq.to_kb")) + "</a>" : "",
+  ].join("");
+
   function card(it) {
-    const odorQ = it.smiles;
-    const links = [
-      '<a href="../ingredient-finder/?mode=b&amp;smiles=' + encodeURIComponent(it.smiles) + '">' + esc(I18N.t("rq.to_finder")) + "</a>",
-      '<a href="../odor-predictor/?q=' + encodeURIComponent(odorQ) + '#demo">' + esc(I18N.t("rq.to_odor")) + "</a>",
-      it.kb ? '<a href="./?compound=' + encodeURIComponent(it.kb) + '">' + esc(I18N.t("rq.to_kb")) + "</a>" : "",
-    ].join("");
-    return '<div class="card rq-item"><h3>' + esc(it.name || it.smiles) +
-      (it.zh.length ? ' <span class="rq-zh">' + esc(it.zh.join("、")) + "</span>" : "") + "</h3>" +
-      (it.cas.length ? '<p class="rq-cas">CAS ' + esc(it.cas.slice(0, 4).join(", ")) + "</p>" : "") +
-      '<p class="rq-links">' + links + "</p>" + Reg.html(it, { bare: true }) + "</div>";
+    // links only for substances in the site's molecule library; one row per molecule when several match
+    const links = it.links.length === 1 ? '<p class="rq-links">' + linkRow(it.links[0]) + "</p>"
+      : it.links.map(l => '<p class="rq-links"><span class="muted">' + esc(l.name) + "</span>" + linkRow(l) + "</p>").join("");
+    return '<div class="card rq-item"><h3>' + title(it) + "</h3>" +
+      '<p class="rq-cas">' + (it.cas.length ? "CAS " + esc(it.cas.slice(0, 4).join(", ")) : esc(I18N.t("rq.nocas"))) + "</p>" +
+      links + Reg.html(it, { bare: true }) + "</div>";
   }
 
   function render() {
@@ -63,7 +77,7 @@
     if (!query) { box.innerHTML = ""; setStatus(null); return; }
     const hits = find(query);
     if (!hits.length) { box.innerHTML = ""; setStatus("rq.none", { q: query }); return; }
-    setStatus(hits.length > MAX ? "rq.count_more" : "rq.count", { n: hits.length, k: MAX });
+    setStatus(hits.length > MAX ? "rq.count_more" : hits.length === 1 ? "rq.count_one" : "rq.count", { n: hits.length, k: MAX });
     const shown = hits.slice(0, MAX);
     box.innerHTML = shown.map(card).join("");
     // sources and the GB 2760 Annex B sentence once, below the list (the disclaimer is in the note above)
@@ -78,7 +92,7 @@
     }
     if (!query) { render(); return; }
     setStatus("reg.loading");
-    try { await Reg.load(); } catch (e) { setStatus("reg.load_failed", null, true); return; }
+    try { await Reg.loadLookup(); } catch (e) { setStatus("reg.load_failed", null, true); return; }
     render();
   }
 
@@ -86,6 +100,6 @@
   document.querySelectorAll("button[data-q]").forEach(b => b.addEventListener("click", () => run(b.dataset.q, true)));
   window.addEventListener("popstate", () => run(new URLSearchParams(location.search).get("q") || "", false));
   I18N.onChange(() => { if (Reg.meta) render(); });
-  Reg.load().catch(() => {});   // start the download (static file, about 110 KB compressed) while the visitor types
+  Reg.loadLookup().catch(() => {});   // start the download (static file, about 125 KB compressed) while the visitor types
   run(new URLSearchParams(location.search).get("q") || "", false);
 })();

@@ -10,6 +10,8 @@
 (function () {
   const script = document.currentScript;
   const DATA_URL = new URL("../flavor-kb/data/regulatory.json" + new URL(script.src).search, script.src);
+  // every list entry (not only library molecules): loaded by the regulatory lookup page only
+  const LOOKUP_URL = new URL("../flavor-kb/data/regulatory-lookup.json" + new URL(script.src).search, script.src);
   const EU_URL = "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16";
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const t = (k, v) => I18N.t(k, v);
@@ -19,23 +21,29 @@
   const byLib = new Map(), byKb = new Map(), byIk = new Map();
   let nocas = new Set();
 
-  // item = [li, ik, name, smiles, "CAS CAS", kb, "中文名|…", eu[], cn[], annexIII]  (see build_regulatory.py)
+  // list entries (see build_regulatory.py): eu "FL[;r][;f12][;s]", cn "B3;code;FEMA[;r][;s][;m][;c][;x]"
+  function euEntry(e) {
+    const p = e.split(";"), f = new Set(p.slice(1));
+    const fn = p.slice(1).find(x => x[0] === "f");
+    return { fl: p[0], r: f.has("r") ? "eu:" + p[0] : null, fn: fn ? fn.slice(1).split("") : [], s: f.has("s") };
+  }
+  function cnEntry(e) {
+    const p = e.split(";"), f = new Set(p.slice(3));
+    return { t: p[0], code: p[1], fema: p[2], r: f.has("r") ? "cn:" + p[1] : null, s: f.has("s"), m: f.has("m"),
+             c: f.has("c") ? "cnc:" + p[1] : null, x: f.has("x") };
+  }
+  // item = [li, ik, name, smiles, "CAS CAS", kb, "中文名|…", eu[], cn[], annexIII]
   function decode(a) {
-    const flags = parts => new Set(parts);
     return {
       li: a[0], ik: a[1], name: a[2], smiles: a[3], cas: a[4] ? a[4].split(" ") : [], kb: a[5] || null,
-      zh: a[6] ? a[6].split("|") : [],
-      eu: a[7].map(e => {
-        const p = e.split(";"), f = flags(p.slice(1));
-        const fn = p.slice(1).find(x => x[0] === "f");
-        return { fl: p[0], r: f.has("r") ? "eu:" + p[0] : null, fn: fn ? fn.slice(1).split("") : [], s: f.has("s") };
-      }),
-      cn: a[8].map(e => {
-        const p = e.split(";"), f = flags(p.slice(3));
-        return { t: p[0], code: p[1], fema: p[2], r: f.has("r") ? "cn:" + p[1] : null, s: f.has("s"), m: f.has("m"),
-                 c: f.has("c") ? "cnc:" + p[1] : null };
-      }),
-      a3: a[9],
+      zh: a[6] ? a[6].split("|") : [], eu: a[7].map(euEntry), cn: a[8].map(cnEntry), a3: a[9],
+    };
+  }
+  // lookup substance = [name, "中文名|…", "CAS CAS", eu[], cn[], annexIII, [[li, name, SMILES, KB id]…], "search|keys"]
+  function decodeSub(a) {
+    return {
+      name: a[0], zh: a[1] ? a[1].split("|") : [], cas: a[2] ? a[2].split(" ") : [], eu: a[3].map(euEntry), cn: a[4].map(cnEntry),
+      a3: a[5], links: a[6].map(([li, name, smiles, kb]) => ({ li, name, smiles, kb: kb || null })), keys: a[7] ? a[7].split("|") : [],
     };
   }
 
@@ -58,6 +66,23 @@
       }).catch(err => { loading = null; throw err; });
     }
     return loading;
+  }
+
+  let lookupLoading = null;
+  /** All list entries as substances (regulatory lookup page). Uses the lookup file's notes and metadata. */
+  function loadLookup() {
+    if (!lookupLoading) {
+      lookupLoading = fetch(LOOKUP_URL).then(r => {
+        if (!r.ok) throw new Error("Failed to load " + LOOKUP_URL);
+        return r.json();
+      }).then(d => {
+        R.meta = d.meta;
+        R.notes = d.notes;
+        R.lookup = d.s.map(decodeSub);
+        return R;
+      }).catch(err => { lookupLoading = null; throw err; });
+    }
+    return lookupLoading;
   }
 
   /** Listed in the region's list: "eu" (Union list), "cn" (GB 2760), "both". */
@@ -94,7 +119,8 @@
     if (it && it.eu.length) {
       it.eu.forEach(e => {
         lines.push(li(esc(t("reg.eu.fl", { fl: e.fl }))));
-        if (e.r) lines.push(li(esc(note(e.r)) + " " + link(R.notes[e.r].url || EU_URL, t("reg.official")), "reg-restr"));
+        // restriction summary (reviewed text, notes.json); a restriction not yet summarised shows the link only
+        if (e.r) lines.push(li((note(e.r) ? esc(note(e.r)) + " " : "") + link((R.notes[e.r] || {}).url || EU_URL, t("reg.official")), "reg-restr"));
         e.fn.forEach(n => lines.push(li(n === "1" ? esc(t("reg.fn1")) : n === "5" ? esc(t("reg.fn5"))
           : esc(t("reg.fn234", { n })) + " " + link(EU_URL, t("reg.official")), "muted")));
         if (e.s) lines.push(li(esc(t("reg.stereo")), "muted"));
@@ -116,7 +142,7 @@
         lines.push(li(esc(t("reg.cn.line", { t: c.t.replace("B", "B."), kind: t(c.t === "B2" ? "reg.cn.natural" : "reg.cn.synthetic"), code: c.code }) +
           (c.fema ? " · FEMA " + c.fema.replace("+", ", ") : ""))));
         if (c.r) lines.push(li(esc(note(c.r)), "reg-restr"));
-        lines.push(li(esc(t(c.m ? "reg.cn.manual" : "reg.cn.via_fema")), "muted"));
+        if (!c.x) lines.push(li(esc(t(c.m ? "reg.cn.manual" : "reg.cn.via_fema")), "muted"));
         if (c.c) lines.push(li(esc(note(c.c)), "muted"));
         if (c.s) lines.push(li(esc(t("reg.stereo")), "muted"));
       });
@@ -160,7 +186,8 @@
   }
 
   window.Reg = {
-    load, permitted, html, decode, common,
+    load, loadLookup, permitted, html, decode, common,
+    get lookup() { return R.lookup || []; },
     byLib: i => byLib.get(i) || null,
     byKb: id => byKb.get(id) || null,
     byIk: ik => byIk.get(String(ik || "").slice(0, 14)) || null,
