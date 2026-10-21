@@ -86,8 +86,22 @@
   // ---------- Canvas, zoom ----------
   const canvas = $("map"), ctx = canvas.getContext("2d"), wrap = $("map-wrap");
   let W = 0, H = 0, dpr = 1, tr = d3.zoomIdentity, raf = 0;
-  const zoom = d3.zoom().scaleExtent([1, 40]).on("zoom", e => { tr = e.transform; hideTip(); request(); });
+  // Touch screens: one finger scrolls the page (touch-action in index.html), two fingers move and zoom
+  // the map, a tap opens a molecule (click handler below). Mouse and wheel keep d3's default filter.
+  const zoom = d3.zoom().scaleExtent([1, 40])
+    .filter(e => e.type.startsWith("touch") ? e.touches.length >= 2 : (!e.ctrlKey || e.type === "wheel") && !e.button)
+    .on("zoom", e => { tr = e.transform; hideTip(); request(); });
   const sel = d3.select(canvas).call(zoom);
+  canvas.style.touchAction = "pan-x pan-y";
+  // the first one-finger touch on the map explains the gestures once
+  let hinted = false;
+  canvas.addEventListener("touchstart", e => {
+    if (hinted || e.touches.length !== 1) return;
+    hinted = true;
+    const h = $("touch-hint");
+    h.classList.add("show");
+    setTimeout(() => h.classList.remove("show"), 2800);
+  }, { passive: true });
 
   function base() {
     const size = Math.min(W, H) - 2 * PAD;

@@ -19,6 +19,7 @@
   "ctl.reset": "Reset",
   "map.aria": "Scatter plot of the molecular odor space",
   "map.hint": "Scroll or pinch to zoom, drag to pan; click a molecule for details, click a legend item to highlight that class.",
+  "map.touch_hint": "One finger scrolls the page; use two fingers to move or zoom the map",
   "map.desc.odor": "Odor map: molecules arranged by the model's predicted probabilities for 138 odor descriptors.",
   "map.desc.structure": "Structure map: molecules arranged by Morgan fingerprints (structure only); colors are still the predicted odor. Compared with the odor map, dots of the same color are clearly more scattered.",
   "legend.other": "Other",

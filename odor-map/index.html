@@ -22,8 +22,8 @@
   <meta name="twitter:title" content="5 气味空间地图 | 崔京伟">
   <meta name="twitter:description" content="5,000+ molecules laid out by predicted odor on a zoomable map; switch to a structure-based layout to compare.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/odor-map.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261021b">
-  <script src="../assets/i18n.js?v=20261021b" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261021c">
+  <script src="../assets/i18n.js?v=20261021c" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -34,22 +34,28 @@
     .ctl .lbl { font-size: .875rem; color: var(--muted); }
     .ctl select { width: auto; max-width: 100%; padding: 4px 8px; font-size: .875rem; }
 
-    /* Projector-style layout: side panel + map filling the rest of the window */
-    .map-layout { display: grid; grid-template-columns: 300px 1fr; gap: 16px; height: calc(100vh - 57px); padding: 12px 16px; }
-    .map-layout .panel { overflow-y: auto; padding-right: 4px; min-width: 0; }
-    .panel h1 { font-size: 1.375rem; margin: 4px 0 0; }
-    .panel .proj-tabs { margin-bottom: var(--sp-3); }
+    /* Projector-style layout: title and side panel on the left, map filling the rest of the window.
+       Phones (one column): title, then the map, then the controls. */
+    .map-layout { display: grid; grid-template-columns: 300px 1fr; grid-template-rows: auto 1fr; gap: 0 16px;
+                  grid-template-areas: "head map" "panel map"; height: calc(100vh - 57px); padding: 12px 16px; }
+    .map-head { grid-area: head; min-width: 0; }
+    .map-layout .panel { grid-area: panel; overflow-y: auto; padding-right: 4px; min-width: 0; }
+    .map-layout .map-wrap { grid-area: map; }
+    .map-head h1 { font-size: 1.375rem; margin: 4px 0 0; }
+    .map-head .proj-tabs { margin-bottom: var(--sp-3); }
     .panel .sub { color: var(--muted); margin-bottom: var(--sp-3); }
     .panel .tool-src { font-size: .875rem; color: var(--muted); margin-top: var(--sp-4); }
     .map-wrap { position: relative; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);
                 overflow: hidden; height: 100%; min-height: 300px; }
     #detail { position: absolute; top: 12px; right: 52px; width: 320px; max-height: calc(100% - 24px); overflow: auto; z-index: 4; }
     @media (max-width: 899px) {
-      .map-layout { grid-template-columns: 1fr; height: auto; }
-      .map-layout .map-wrap { height: min(120vw, 72vh); }
+      .map-layout { grid-template-columns: 1fr; grid-template-rows: none; grid-template-areas: "head" "map" "panel"; gap: 12px; height: auto; }
+      .map-head .proj-tabs { margin-bottom: 0; }
+      .map-layout .map-wrap { height: 56vh; }
       #detail { top: auto; bottom: 8px; left: 8px; right: 8px; width: auto; max-height: 62%; }
     }
-    #map { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+    /* touch: one finger scrolls the page, two fingers move and zoom the map (app.js) */
+    #map { display: block; width: 100%; height: 100%; cursor: grab; touch-action: pan-x pan-y; }
     #map:active { cursor: grabbing; }
     .map-name { position: absolute; left: 10px; top: 8px; font-size: .875rem; font-weight: 700; color: var(--muted);
                 background: rgba(255, 255, 255, .85); padding: 1px 8px; border-radius: 4px; pointer-events: none; }
@@ -57,6 +63,10 @@
     .map-btns button { font: inherit; width: 32px; height: 32px; border-radius: 4px; border: 1px solid var(--border);
                        background: rgba(255, 255, 255, .92); color: var(--text); cursor: pointer; font-size: 1.05rem; line-height: 1; }
     .map-btns button:hover { border-color: var(--accent); color: var(--accent); }
+    .touch-hint { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 5; max-width: calc(100% - 24px);
+                  background: rgba(31, 35, 40, .86); color: #fff; font-size: .875rem; line-height: 1.4; padding: 6px 12px; border-radius: 4px;
+                  text-align: center; pointer-events: none; opacity: 0; transition: opacity .4s; }
+    .touch-hint.show { opacity: 1; }
     .tip { position: absolute; z-index: 3; pointer-events: none; max-width: 260px; background: var(--surface); border: 1px solid var(--border);
            border-radius: 4px; box-shadow: 0 4px 14px rgba(0, 0, 0, .14); padding: 6px 10px; font-size: .875rem; line-height: 1.45; }
     .tip b { display: block; word-break: break-word; }
@@ -67,6 +77,14 @@
     .legend button.on { border-color: var(--text); font-weight: 700; }
     .legend button.off { opacity: .45; }
     .legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    /* phones and touch screens: 44 px map buttons, 36 px legend and descriptor chips 8 px apart */
+    @media (max-width: 599px), (pointer: coarse) {
+      .map-btns button { width: 44px; height: 44px; }
+      .legend { gap: 8px; } .legend button { min-height: 36px; } .ctl .grp { gap: 8px; }
+    }
+    @media (max-width: 599px) {
+      .ctl .grp:has(> .seg) { flex: 1 1 100%; }
+    }
     .heat-legend { margin-top: 10px; max-width: 360px; font-size: .875rem; }
     .heat-bar { height: 10px; border-radius: 5px; border: 1px solid var(--border); }
     .heat-scale { display: flex; justify-content: space-between; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -114,12 +132,14 @@
   </header>
 
   <main class="container-wide map-layout">
-    <aside class="panel">
+    <div class="map-head">
       <h1 data-i18n="hero.title" data-no="5">风味分子的气味空间与结构空间对比图谱</h1>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool" aria-current="page">工具</a>
         <a href="about.html" data-i18n="nav.about">方法与来源</a>
       </nav>
+    </div>
+    <aside class="panel">
       <p class="sub" id="hero-sub"></p>
       <div class="ctl">
         <div class="grp">
@@ -176,6 +196,7 @@
         <button type="button" id="map-help" data-i18n-attr="aria-label:map.hint;title:map.hint" aria-label="滚轮或双指缩放，拖动平移；点击分子查看详情，点击图例只突出该类。" title="滚轮或双指缩放，拖动平移；点击分子查看详情，点击图例只突出该类。">?</button>
       </div>
       <div class="tip hidden" id="tip"></div>
+      <div class="touch-hint" id="touch-hint" data-i18n="map.touch_hint" aria-hidden="true">单指滑动滚动页面，双指移动或缩放地图</div>
       <div id="detail"></div>
     </div>
   </main>
@@ -196,7 +217,7 @@
   <script src="https://cdn.jsdelivr.net/npm/d3-drag@3.0.0/dist/d3-drag.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/d3-zoom@3.0.0/dist/d3-zoom.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/d3-quadtree@3.0.1/dist/d3-quadtree.min.js"></script>
-  <script src="../assets/projects.js?v=20261021b"></script>
-  <script src="app.js?v=20261021b"></script>
+  <script src="../assets/projects.js?v=20261021c"></script>
+  <script src="app.js?v=20261021c"></script>
 </body>
 </html>

@@ -325,3 +325,39 @@ button.linklike.on { color: var(--text); font-weight: 600; text-decoration: none
 .seg button { font: inherit; font-size: .875rem; padding: 4px 14px; border: 0; background: var(--surface); color: var(--accent); cursor: pointer; }
 .seg button + button { border-left: 1px solid var(--accent); }
 .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+
+/* Phones and touch screens: form controls at 16px (iOS Safari zooms the page when a smaller field gets
+   focus) and at least 44px tall. Overrides the compact sizes the pages set for desktop. */
+@media (max-width: 599px), (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]):not([type="hidden"]),
+  select, textarea { font-size: 16px !important; min-height: 44px; }
+}
+
+/* Phones and touch screens: tap areas of at least 44 x 44 px for navigation and single buttons. The
+   visible size stays; an invisible ::after, centred on the element, extends the tap area. The gaps
+   between neighbours (header 12-24 px, tabs 24 px) leave room, so the areas do not overlap. Dense
+   chips get 36 px with 8 px gaps (the containers set the gap). */
+@media (max-width: 599px), (pointer: coarse) {
+  .site-header .brand, .site-nav a, .lang-toggle, .proj-tabs a, .pub-item .links a, a.help { position: relative; }
+  .site-header .brand::after, .site-nav a::after, .lang-toggle::after, .proj-tabs a::after, .pub-item .links a::after, a.help::after {
+    content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: max(100%, 44px); height: max(100%, 44px);
+  }
+  /* the first card link sits right next to the second one: it grows to the left only */
+  .pub-item .links a:first-child::after { left: auto; right: 0; transform: translateY(-50%); width: max(100%, 46px); }
+  .chip-btn { min-height: 36px; }
+  .contrib-picker { gap: 8px; }
+  .about .toc a { display: inline-block; padding: 6px 0; }
+}
+
+/* Segmented toggles on phones: one full-width row of equal buttons (labels may wrap to two lines),
+   at least 44 px tall; touch screens of any width get the 44 px height. */
+@media (max-width: 599px) {
+  .seg { display: flex; flex: 1 1 100%; width: 100%; flex-wrap: nowrap; }
+  .seg button { flex: 1 1 0; min-width: 0; padding: 4px; line-height: 1.3; white-space: normal; text-align: center;
+                text-wrap: balance; -webkit-hyphens: auto; hyphens: auto; }
+}
+@media (max-width: 360px) {
+  .seg button { font-size: 13px; }   /* the longest single word of a label still fits a third of 320 px */
+}
+@media (max-width: 599px), (pointer: coarse) { .seg button { min-height: 44px; } }
