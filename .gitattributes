@@ -1,0 +1,2 @@
+# Third-party files must stay byte-identical to their source (sha256 in assets/vendor/README.md)
+assets/vendor/** -text
