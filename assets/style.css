@@ -421,14 +421,17 @@ button.linklike.on { color: var(--text); font-weight: 600; text-decoration: none
 .toc-sheet-list a { display: block; padding: 11px 0; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); }
 .toc-sheet-list a:last-child { border-bottom: 0; }
 
-/* Flavouring regulatory status (assets/regulatory.js): EU and China side by side on wide screens.
+/* Flavouring regulatory status (assets/regulatory.js): EU, China and US side by side on wide screens.
    Result cards use the compact form, a one-line summary that opens to the same block. */
 .reg { font-size: .875rem; margin-top: 12px; }
 .reg-grid { display: grid; grid-template-columns: 1fr; gap: 10px 24px; }
 @media (min-width: 700px) { .reg:not(.compact) .reg-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 960px) { .reg:not(.compact) .reg-grid { grid-template-columns: 1fr 1fr 1fr; } }
 .reg-head { margin: 0; }
 .reg-name { font-weight: 700; }
-.reg-status { font-weight: 600; color: var(--accent); }
+/* status text breaks only at spaces (Chinese words such as 删除 stay on one line); overflow-wrap as a fallback for
+   a status with no space that is wider than its column */
+.reg-status { font-weight: 600; color: var(--accent); word-break: keep-all; overflow-wrap: anywhere; }
 .reg-status.restr, .reg-status.a3 { color: var(--warn); }
 .reg-status.nf { color: var(--muted); font-weight: 400; }
 .reg-lines { margin: 4px 0 0; padding-left: 1.1em; }

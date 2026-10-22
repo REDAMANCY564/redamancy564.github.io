@@ -1,0 +1,16 @@
+{
+ "_help": "Substances named in the flavour-related sections of 21 CFR Part 189 (user, 2026-10-22: only 189.110, 189.113, 189.130, 189.180), eCFR text up to date as of 2026-10-20. The sections give no CAS numbers except 189.113: CAS checked by this site in PubChem (2026-10-22) or taken from the FDA list's --PROHIBITED rows (fda). cas = [] means no CAS (botanical material or oil): shown on the lookup page as a card without CAS. To be reviewed by the user (REG-REVIEW.md section 14).",
+ "rows": [
+  {"sec": "189.110", "name": "Calamus", "cas": [], "fda": "CALAMUS--PROHIBITED (977022-90-4, FDA number)", "note": "dried rhizome of Acorus calamus L."},
+  {"sec": "189.110", "name": "Oil of calamus", "cas": ["8015-79-0"], "fda": "CALAMUS OIL--PROHIBITED", "note": ""},
+  {"sec": "189.110", "name": "Extract of calamus", "cas": ["84775-39-3"], "fda": "CALAMUS EXTRACT--PROHIBITED", "note": ""},
+  {"sec": "189.113", "name": "Cinnamyl anthranilate", "cas": ["87-29-6"], "fda": "CINNAMYL ANTHRANILATE--PROHIBITED", "note": "CAS given in the section", "pubchem_cid": 5284369},
+  {"sec": "189.130", "name": "Coumarin", "cas": ["91-64-5"], "fda": "COUMARIN--PROHIBITED", "note": "", "pubchem_cid": 323},
+  {"sec": "189.130", "name": "Tonka beans", "cas": [], "fda": "", "note": "coumarin as a constituent of tonka beans"},
+  {"sec": "189.130", "name": "Tonka extract", "cas": [], "fda": "", "note": "coumarin as a constituent of tonka extract"},
+  {"sec": "189.180", "name": "Safrole", "cas": ["94-59-7"], "fda": "SAFROLE--PROHIBITED", "note": "", "pubchem_cid": 5144},
+  {"sec": "189.180", "name": "Oil of sassafras", "cas": [], "fda": "", "note": "about 80 percent safrole (section text); no CAS verified"},
+  {"sec": "189.180", "name": "Isosafrole", "cas": ["120-58-1", "4043-71-4"], "fda": "", "note": "PubChem CID 637796 lists both CAS numbers", "pubchem_cid": 637796},
+  {"sec": "189.180", "name": "Dihydrosafrole", "cas": ["94-58-6"], "fda": "", "note": "", "pubchem_cid": 7197}
+ ]
+}

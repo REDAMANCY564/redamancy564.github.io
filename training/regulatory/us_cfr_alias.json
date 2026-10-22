@@ -1,0 +1,131 @@
+{
+ "_help": "Name check between the FDA list and the current eCFR text (user review, REG-REVIEW.md section 14). alias: eCFR entry ('section|name' as printed, typos included) -> FDA list ids whose row cites that section under another name; such an entry gets no separate name-only card on the lookup page. drop: FDA citations not kept (id|section -> reason). eCFR entries neither matched nor aliased become name-only cards without CAS. not_found: FDA citations whose substance is not found under any name or synonym in the current section (user E5): the eCFR prevails, the page shows the FEMA no. and the note 'FDA list cites the section, name not found in the current text'.",
+ "alias": {
+  "172.510|Opopanax (bisabolmyrrh)": [
+   "9000-78-6",
+   "977136-06-3",
+   "8021-36-1"
+  ],
+  "172.510|Storax (styrax)": [
+   "8046-19-3",
+   "977029-80-3",
+   "8024-01-9"
+  ],
+  "172.510|Tagetes (marigold)": [
+   "8016-84-0"
+  ],
+  "172.510|Thistle, blessed (holy thistle)": [
+   "977023-13-4",
+   "977048-22-8",
+   "977048-24-0",
+   "977048-23-9"
+  ],
+  "172.510|Walnut husks (hulls), leaves, and green nuts": [
+   "977014-38-2",
+   "977091-98-7"
+  ],
+  "172.515|Allyl cyclohexaneproprionate": [
+   "2705-87-5"
+  ],
+  "172.515|Decyl actate": [
+   "112-17-4"
+  ],
+  "172.515|Dihydrocarvone": [
+   "3792-53-8"
+  ],
+  "172.515|ρ-Ethoxybenzaldehyde": [
+   "10031-82-0"
+  ],
+  "172.515|Heptanal 1,2-glyceryl acetal": [
+   "977043-66-5"
+  ],
+  "172.515|2-Hexen-1-yl acetate": [
+   "2497-18-9"
+  ],
+  "172.515|ρ-Isopropylacetophenone": [
+   "645-13-6"
+  ],
+  "172.515|ρ-Isopropylphenylacetaldehyde": [
+   "4395-92-0"
+  ],
+  "172.515|cis- Jasmone": [
+   "488-10-8"
+  ],
+  "172.515|Methyl ester of rosin, partially hydrogenated (as defined in § 172.615)": [
+   "977035-88-3"
+  ],
+  "172.515|Methyl-5-hepten-2-ol": [
+   "1569-60-4"
+  ],
+  "172.515|Methyl 2-hexanoate": [
+   "2396-77-2"
+  ],
+  "182.10|Angostura (cusparia bark)": [
+   "977000-22-8"
+  ],
+  "182.10|Cinnamon, Ceylon": [
+   "977000-66-0"
+  ],
+  "182.10|Cinnamon, Saigon": [
+   "977000-66-0"
+  ],
+  "182.10|Galanga (galangal)": [
+   "977038-75-7"
+  ],
+  "182.20|Almond, bitter (free from prussic acid)": [
+   "8013-76-1"
+  ],
+  "182.20|Bitter almond (free from prussic acid)": [
+   "8013-76-1"
+  ],
+  "182.20|Cinnamon bark, Ceylon": [
+   "8007-80-5",
+   "977038-60-0",
+   "977091-23-8"
+  ],
+  "182.20|Cinnamon bark, Saigon": [
+   "8007-80-5",
+   "977038-60-0",
+   "977091-23-8"
+  ],
+  "182.20|Cinnamon leaf, Ceylon": [
+   "8015-96-1",
+   "977184-45-4"
+  ],
+  "182.20|Cinnamon leaf, Saigon": [
+   "8015-96-1",
+   "977184-45-4"
+  ],
+  "182.20|Galanga (galangal)": [
+   "977038-76-8",
+   "8024-40-6"
+  ],
+  "182.40|Persic oil (see apricot kernel and peach kernel)": [
+   "72869-69-3",
+   "8023-98-1"
+  ],
+  "182.50|Civet (zibeth, zibet, zibetum)": [
+   "68916-26-7"
+  ],
+  "182.50|Cognac oil, white and green": [
+   "8016-21-5",
+   "977050-49-9"
+  ],
+  "182.60|Anethole": [
+   "4180-23-8"
+  ],
+  "172.515|3-Octanon-1-ol": [
+   "65405-68-7"
+  ]
+ },
+ "drop": {
+  "25013-16-5|172.515": "butylated hydroxyanisole: 172.515(d) allows it as an antioxidant in flavoring substances; it is not a flavouring",
+  "1185-57-5|182.20": "iron ammonium citrate: not in the 182.20 text"
+ },
+ "not_found": {
+  "112-44-7|172.515": "undecanal: none of its names in the FDA list or PubChem (aldehyde C-11 undecylic, hendecanal, undecylic aldehyde, undecylaldehyde, undecyl aldehyde, C11 aldehyde) is in 172.515 (checked 2026-10-22)"
+ },
+ "_alias_notes": {
+  "172.515|3-Octanon-1-ol": "PubChem CID 5362561 (3-(hydroxymethyl)-2-heptanone, FEMA 2804, CAS 65405-68-7) lists 3-Octanon-1-ol as a synonym (FHFI name)"
+ }
+}

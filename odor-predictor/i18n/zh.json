@@ -71,7 +71,7 @@
   "ablation.note": "测试集 AUROC 为 3 次训练的平均值 ± 标准差。稀有描述词：训练集中阳性分子最少的三分之一（{n} 个）上的平均 AUROC。",
   "ablation.takeaway": "四组之间的差别都在随机波动范围内，稀有描述词反而略有下降，因此网页继续使用原模型。可能的原因：原文采用随机划分，本站采用更难的骨架划分；药效团标记与已有的元素、氢原子数特征有较多重叠；原文的模型结构也与本站不同。此外，非对称损失会让输出的概率整体偏高约 4 倍，不适合直接展示。",
   "limits.4": "对于和训练数据差异很大的环系骨架，预测效果明显变弱（AUROC 约 0.80）。",
-  "limits.6": "<b>不可用于安全性判断。</b>模型不涉及毒性、致敏性或法规状态；页面另外显示的欧盟和中国许可状态来自官方名单，仅供参考。",
+  "limits.6": "<b>不可用于安全性判断。</b>模型不涉及毒性、致敏性或法规状态；页面另外显示的欧盟、中国和美国法规状态来自官方名单，仅供参考。",
   "footer.data": "<b>数据与致谢：</b>模型用 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href=\"https://arxiv.org/abs/1910.10685\" target=\"_blank\" rel=\"noopener\">arXiv:1910.10685</a>，CC BY-NC 协议）的数据训练，由 <a href=\"https://github.com/BioMachineLearning/openpom\" target=\"_blank\" rel=\"noopener\">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅供非商业学术演示。</b>",
   "footer.thr": "<b>气味阈值：</b>L.J. van Gemert, Odour Thresholds: Compilations of Odour Threshold Values in Air, Water and Other Media, 2nd ed., Oliemans Punter &amp; Partners, 2011。代表值优先取自其中收录的 Czerny et al., <i>Eur. Food Res. Technol.</i> 228, 265-273 (2008)。",
   "footer.ref": "<b>相关文献：</b>Lee et al., A principal odor map unifies diverse tasks in olfactory perception, <i>Science</i> 381, 999-1006 (2023). <a href=\"https://doi.org/10.1126/science.ade4401\" target=\"_blank\" rel=\"noopener\">doi:10.1126/science.ade4401</a>；Liu et al., PharmaGNN: a model for odor prediction based on graph neural networks, <i>J Sci Food Agric</i> 106, 8114-8120 (2026). <a href=\"https://doi.org/10.1002/jsfa.70826\" target=\"_blank\" rel=\"noopener\">doi:10.1002/jsfa.70826</a>",

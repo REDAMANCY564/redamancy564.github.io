@@ -235,7 +235,7 @@
     }
   }
 
-  // ---------- Regulatory status (EU, China; assets/regulatory.js) ----------
+  // ---------- Regulatory status (EU, China, US; assets/regulatory.js) ----------
   // Matched to the site's molecule library by the first block of the InChIKey (no stereo), like the KB panel
   let regSeq = 0;
   async function renderReg() {

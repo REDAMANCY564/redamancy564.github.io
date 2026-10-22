@@ -1,5 +1,5 @@
 {
-  "_help": "One- or two-sentence summaries of restrictions of use, shown with 「允许使用，有使用限制」. Keys: eu:<FL no.> (Union list column 7) or cn:<GB code>. Reviewed text only; the official text prevails. Category numbers are those of Regulation (EC) No 1333/2008 Annex II. cnc:<GB code> = configuration note for a CAS number supplemented by this site.",
+  "_help": "One- or two-sentence summaries of restrictions of use, shown with 「允许使用，有使用限制」. Keys: eu:<FL no.> (Union list column 7) or cn:<GB code>. Reviewed text only; the official text prevails. Category numbers are those of Regulation (EC) No 1333/2008 Annex II. cnc:<GB code> = configuration note for a CAS number supplemented by this site. usx:<CAS>:<21 CFR section> = note on a US citation (e.g. the section names the substance differently).",
   "eu:05.062": {
     "zh": "只能用于列出的食品类别，各类别有最高限量（0.04–2 mg/kg）。",
     "en": "Only in the listed food categories, each with a maximum level (0.04–2 mg/kg).",
@@ -132,5 +132,10 @@
     "zh": "作为香料使用时，只能用于列出的食品类别，各类别有最高限量（15–160 mg/kg）。",
     "en": "As a flavouring, only in the listed food categories, each with a maximum level (15–160 mg/kg).",
     "url": "https://eur-lex.europa.eu/eli/reg/2008/1334/2026-02-16"
+  },
+  "usx:65405-68-7:172.515": {
+    "zh": "21 CFR 172.515 条文中的名称为 3-Octanon-1-ol，本站按 FDA 清单和 PubChem 同义名对应，两者按字面结构不同，请以官方原文核对。",
+    "en": "21 CFR 172.515 names this entry 3-Octanon-1-ol; this site matches it through the FDA list and a PubChem synonym. Read literally, the two names describe different structures; check the official text.",
+    "url": "https://www.ecfr.gov/current/title-21/section-172.515"
   }
 }

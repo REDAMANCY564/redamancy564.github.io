@@ -3,7 +3,7 @@
  * Mode A: rank library molecules by wanted / unwanted predicted odor descriptors (finder.js).
  * Mode B: substitutes by odor similarity vs structure similarity (next stage).
  * Structures are drawn with RDKit.js (MinimalLib, self-hosted), loaded when the first structure is drawn.
- * Regulatory status (EU, China) on every card and the region filter: assets/regulatory.js.
+ * Regulatory status (EU, China, US) on every card and the region filter: assets/regulatory.js.
  */
 (async function () {
   const $ = id => document.getElementById(id);

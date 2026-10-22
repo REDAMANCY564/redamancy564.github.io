@@ -1,8 +1,9 @@
 /*
- * Regulatory lookup page (flavor knowledge base): every entry of the EU Union list (with Annex III Part A)
- * and of GB 2760 tables B.2 / B.3, grouped by CAS into substances (flavor-kb/data/regulatory-lookup.json,
- * loaded by this page only). Find a substance by name (English, GB 2760 Chinese name, hidden GB 2760 English
- * and FDA names), CAS, FEMA, FL number or GB 2760 code, and show its EU / China status (assets/regulatory.js).
+ * Regulatory lookup page (flavor knowledge base): every entry of the EU Union list (with Annex III Part A),
+ * of GB 2760 tables B.2 / B.3 and of the US 21 CFR flavouring sections and FDA list, grouped by CAS into
+ * substances (flavor-kb/data/regulatory-lookup.json, loaded by this page only). Find a substance by name
+ * (English, GB 2760 Chinese name, hidden GB 2760 English and FDA names), CAS, FEMA, FL number or GB 2760
+ * code, and show its EU / China / US status (assets/regulatory.js).
  * Substances in the site's molecule library link to the ingredient finder, odor predictor and knowledge base.
  * No search by food category or conditions of use (user decision). The query is kept in ?q=.
  */
@@ -33,7 +34,8 @@
       const code = m[1].toUpperCase() + m[2].padStart(m[1] === "n" ? 3 : 4, "0");
       return subs.filter(it => it.cn.some(c => c.code === code));
     }
-    if ((m = s.match(/^(?:fema\s*(?:no\.?)?\s*)?(\d{4})$/))) return subs.filter(it => it.cn.some(c => c.fema.split("+").includes(m[1])));
+    if ((m = s.match(/^(?:fema\s*(?:no\.?)?\s*)?(\d{4})$/)))
+      return subs.filter(it => it.cn.some(c => c.fema.split("+").includes(m[1])) || it.us.some(e => e.kind === "f" && e.fema === m[1]));
     const k = skey(s);
     if (k.length < 2 && !/[㐀-鿿]/.test(k)) return [];
     const scored = [];
@@ -48,8 +50,11 @@
     return scored.sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(x => x[2]);
   }
 
+  // Substance in the China and US lists only (no library molecule, no EU entry): the name comes from the FDA list;
+  // the Chinese page shows the GB 2760 Chinese name, as for China-only substances (user E6).
   // English page, China-only substance: 「中文名（编码）」, no translation of the name (user decision)
   function title(it) {
+    if (it.name && it.zh.length && I18N.lang === "zh" && !it.eu.length && !it.a3 && !it.links.length) return esc(it.zh.join("、"));
     if (it.name) return esc(it.name) + (it.zh.length ? ' <span class="rq-zh">' + esc(it.zh.join("、")) + "</span>" : "");
     const zh = it.zh.join("、");
     return esc(I18N.lang === "zh" ? zh : zh + "（" + it.cn.map(c => c.code).join("、") + "）");

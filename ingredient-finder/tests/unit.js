@@ -81,6 +81,26 @@
     [gly.eu.map(e => e.fl + "|" + e.r), gly.cn.map(c => c.code + "|" + c.m),
      /20–5000 mg\/kg/.test(((await (await fetch("../../flavor-kb/data/regulatory.json")).json()).notes["eu:16.012"] || {}).zh)],
     [["16.012|eu:16.012"], ["S0881|true"], true]);
+  // US: 21 CFR flavouring sections and the FDA list (user decisions D1-D6, E1-E6)
+  await I18N.ready;   // the status blocks are checked in the page language
+  const usK = it => it.us.map(e => e.kind + ":" + (e.sec || e.fema || "") + (e.lim != null ? ";l" : "") + (e.nlfg != null ? ";n" : "") + (e.note ? ";k" : ""));
+  check("regulatory US", "molecules: US permitted 1852, all three 1164",
+    ["us", "all3"].map(r => Reg.items.filter(it => Reg.permitted(it, r)).length), [1852, 1164]);
+  check("regulatory US", "coumarin 189.130 and safrole 189.180 prohibited, not permitted", [usK(cou), usK(regOf(4016)), Reg.permitted(cou, "us")],
+    [["p:189.130"], ["p:189.180"], false]);
+  check("regulatory US", "diacetyl 184.1278 + FEMA 2370; vanillin 182.60; acetal 172.515", [usK(dia), usK(van), usK(regOf(2995))],
+    [["cfr:184.1278", "f:2370"], ["cfr:182.60", "f:3107"], ["cfr:172.515", "f:2002"]]);
+  check("regulatory US", "pulegone and styrene removed in 2018 (styrene also NLFG), not permitted",
+    [usK(regOf(4102)), usK(regOf(366)), Reg.permitted(regOf(4102), "us"), Reg.permitted(regOf(366), "us")],
+    [["d:", "f:2963"], ["d:", "f:3233;n"], false, false]);
+  check("regulatory US", "quinoline NLFG only: not permitted; 2-acetylpyridine FEMA only: permitted",
+    [usK(regOf(3864)), Reg.permitted(regOf(3864), "us"), usK(regOf(626)), Reg.permitted(regOf(626), "us")], [["f:3470;n"], false, ["f:3251"], true]);
+  check("regulatory US", "undecanal: 172.515 not found in the current text (FEMA only); 3-(hydroxymethyl)-2-heptanone: 172.515 with the reviewed note",
+    [usK(regOf(2474)), usK(regOf(2045))], [["u:172.515", "f:3092"], ["cfr:172.515;k", "f:2804"]]);
+  check("regulatory US", "delta-decalactone: 172.515(c) limitation as written", [usK(regOf(4573)), /oleomargarine/.test(Reg.html(regOf(4573)))], [["cfr:172.515;l", "f:2361"], true]);
+  check("regulatory US", "block wording: prohibited, removed in 2018, FEMA note, not found",
+    [/21 CFR 189\.130/.test(Reg.html(cou)), /83 FR 50490/.test(Reg.html(regOf(4102))), Reg.html(regOf(626)).includes(I18N.t("reg.us.fema_note")),
+     Reg.html(null).includes(I18N.t("reg.nf.us_note"))], [true, true, true, true]);
 
   // lookup page data: every list entry, grouped by CAS (flavor-kb/data/regulatory-lookup.json)
   const smallItems = Reg.items.slice();
@@ -100,21 +120,31 @@
     [byFl("07.052") === byCode("S0207"), byFl("07.052").links.map(l => l.li)], [true, [396]]);
   check("lookup", "hidden search keys: GB 2760 English name (isopropylalcohol) and FDA name (eugenylmethylether)",
     [byCode("S0003").keys.some(k => k.includes("isopropylalcohol")), byCode("S0093").keys.some(k => k.includes("eugenylmethylether"))], [true, true]);
-  check("lookup", "library links: the same 2118 molecules as the tool-page file",
+  check("lookup", "library links: the same 2386 molecules as the tool-page file",
     new Set(L.flatMap(s => s.links.map(l => l.li))).size, smallItems.length);
   // tool pages and lookup page agree for every library molecule (training/regulatory/check_consistency.py)
   const lkOf = new Map();
   L.forEach(s => s.links.forEach(l => {
-    const o = lkOf.get(l.li) || { eu: new Set(), cn: new Set(), a3: false };
-    s.eu.forEach(e => o.eu.add(e.fl)); s.cn.forEach(c => o.cn.add(c.code)); o.a3 = o.a3 || !!s.a3;
+    const o = lkOf.get(l.li) || { eu: new Set(), cn: new Set(), a3: false, us: new Set() };
+    s.eu.forEach(e => o.eu.add(e.fl)); s.cn.forEach(c => o.cn.add(c.code)); o.a3 = o.a3 || !!s.a3; usK(s).forEach(k => o.us.add(k));
     lkOf.set(l.li, o);
   }));
   const sameSet = (a, b) => a.size === b.size && [...a].every(x => b.has(x));
   const mismatch = smallItems.filter(it => {
     const o = lkOf.get(it.li);
-    return !o || !sameSet(new Set(it.eu.map(e => e.fl)), o.eu) || !sameSet(new Set(it.cn.map(c => c.code)), o.cn) || o.a3 !== !!it.a3;
+    return !o || !sameSet(new Set(it.eu.map(e => e.fl)), o.eu) || !sameSet(new Set(it.cn.map(c => c.code)), o.cn) || o.a3 !== !!it.a3 ||
+      !sameSet(new Set(usK(it)), o.us);
   }).map(it => it.li);
-  check("lookup", "every library molecule: same EU entries, GB codes and Annex III flag on the tool pages and the lookup page", mismatch, []);
+  check("lookup", "every library molecule: same EU entries, GB codes, Annex III flag and US entries on the tool pages and the lookup page", mismatch, []);
+  const byUs = (kind, v) => L.find(s => s.us.some(e => e.kind === kind && (e.sec === v || e.fema === v)));
+  check("lookup US", "every FEMA no. of the FDA list once at most per substance; 189.110 calamus and tonka cards; 172.510 limitation as written",
+    [L.every(s => new Set(s.us.filter(e => e.kind === "f").map(e => e.fema)).size === s.us.filter(e => e.kind === "f").length),
+     L.filter(s => s.us.some(e => e.kind === "p" && e.sec === "189.110")).length >= 3,
+     L.some(s => /tonka/i.test(s.name) && s.us.some(e => e.kind === "p")),
+     L.some(s => s.us.some(e => e.kind === "cfr" && e.sec === "172.510" && e.lim != null))], [true, true, true, true]);
+  check("lookup US", "US-only substances are named from the FDA list in ordinary case (no capitals-only names)",
+    L.filter(s => s.us.length && !s.eu.length && !s.cn.length && !s.links.length && !s.a3).some(s => s.name === s.name.toUpperCase() && /[A-Z]{4}/.test(s.name)), false);
+  check("lookup US", "FEMA 2475 (methyleugenol) is found through the US entries", !!byUs("f", "2475"), true);
   check("lookup", "thujone stands alone (Annex III); bornyl acetate (FL 09.017, S0385) is its own substance",
     [L.filter(s => s.a3 && s.links.some(l => /thujone/i.test(l.name))).map(s => [s.eu.length, s.cn.length]), byFl("09.017") === byCode("S0385"), !!byFl("09.017").a3],
     [[[0, 0]], true, false]);
@@ -124,6 +154,10 @@
   const euSet = new Set(smallItems.filter(it => Reg.permitted(it, "eu")).map(it => it.li));
   const onlyEu = F.scoreA(D, want, [], { only: euSet });
   check("filters", "region filter: only molecules permitted in the EU (2014)", [onlyEu.length, onlyEu.every(h => euSet.has(h.index))], [2014, true]);
+  const usSet = new Set(smallItems.filter(it => Reg.permitted(it, "us")).map(it => it.li));
+  const onlyUs = F.scoreA(D, want, [], { only: usSet });
+  check("filters", "region filter: only molecules permitted in the US (1852), coumarin and pulegone left out",
+    [onlyUs.length, onlyUs.every(h => usSet.has(h.index)), usSet.has(5023), usSet.has(4102)], [1852, true, false, false]);
   const cnSet = new Set(smallItems.filter(it => Reg.permitted(it, "cn")).map(it => it.li));
   const nb = F.neighbours(D, F.vector(D, 396), F.fpBits(D, 396), 396, { keep: i => cnSet.has(i) });
   check("mode B", "region filter: the 20 neighbours are all listed in China, best odor similarity first",
