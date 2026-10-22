@@ -38,18 +38,21 @@ python knowledge/build_kb.py         # 生成 flavor-kb/data/*.json
 
 ### 法规查询（flavor-kb/regulatory.html）
 
-食品香料在欧盟和中国的许可状态；美国未包含。两份静态数据文件（同一个脚本生成，随页面加载，不访问外部接口），由 `assets/regulatory.js` 读取和显示，文字在 `assets/i18n/*.json` 的 `reg.*` 键：
-- `flavor-kb/data/regulatory.json`（约 280 KB）：只含与原料检索分子库按 CAS 重合的分子，供原料检索结果卡片、气味预测和知识库物质卡片使用。
-- `flavor-kb/data/regulatory-lookup.json`（约 430 KB，gzip 约 125 KB）：欧盟 Union list 全部条目、附件 III A 部分和 GB 2760 表 B.2/B.3 全部条目，按共同 CAS 合并为物质，只由法规查询页加载；本站有的物质附跳转链接。英文检索另用 GB 2760 表中的英文名和经 FEMA 号对应的 FDA 名称（只作检索词，不显示）。
+食品香料在欧盟、中国和美国的法规状态。两份静态数据文件（同一个脚本生成，随页面加载，不访问外部接口），由 `assets/regulatory.js` 读取和显示，文字在 `assets/i18n/*.json` 的 `reg.*` 键：
+- `flavor-kb/data/regulatory.json`（约 350 KB，gzip 约 130 KB）：只含与原料检索分子库按 CAS 重合的分子，供原料检索结果卡片、气味预测和知识库物质卡片使用。
+- `flavor-kb/data/regulatory-lookup.json`（约 565 KB，gzip 约 160 KB）：欧盟 Union list 全部条目、附件 III A 部分、GB 2760 表 B.2/B.3 全部条目和美国条目，按共同 CAS 合并为物质，只由法规查询页加载；本站有的物质附跳转链接。英文检索另用 GB 2760 表中的英文名和 FDA 清单名称。FDA 自编号（977 开头）不是 CAS，只用于合并条目，不显示。
 
 | 地区 | 来源 | 说明 |
 |---|---|---|
 | 欧盟 | Regulation (EC) No 1334/2008 附件 I Part A 表 1（Union list），EUR-Lex 合并版 02008R1334-20260216（修订至 (EU) 2026/175），CC BY 4.0 | 摘录 FL 号、CAS、使用限制（本站概括，`training/regulatory/notes.json`）、脚注；附件 III A 部分单独说明 |
 | 中国 | GB 2760-2024 表 B.2、B.3（官方文本，食品安全国家标准数据检索平台），未包含修改单 | 只用编码、中文名、FEMA 号；FEMA→CAS 借助 FDA「Substances Added to Food」清单；无可用 FEMA 号的 30 个合成香料由本站在 PubChem 核实 CAS（`training/regulatory/cn_cas_manual.json`） |
+| 美国 | eCFR 21 CFR 172.510、172.515、182.10/20/40/50/60、第 184 部分中用途含香料且物质本身是香料的节、第 189 部分与香料相关的 4 节（189.110/113/130/180），现行文本更新至 2026-10-20；FDA「Substances Added to Food」清单（2026-09-08 更新）。美国政府作品，公有领域；eCFR 是非官方汇编 | 条款不给 CAS：按 FDA 清单的条款引用对应 CAS，再与 eCFR 条文逐条核对名称（写法不同的对应和不收的引用见 `training/regulatory/us_cfr_alias.json`）；189 条文点名、FDA 清单没有的物质见 `us_189_manual.json`（PubChem 核实）；FEMA 编号和「已不再列为 FEMA GRAS」照录 FDA 清单；2018 年从 172.515 删除的 7 种单独标出；172.510 限制栏和 172.515(c) 照录英文原文。不使用 FEMA 网站或 FEMA 发布的数据 |
 
-工具页只覆盖与原料检索分子库按 CAS 重合的物质（2026-10-21：欧盟 2014、中国 1283、任一 2118）；法规查询页收录两份名单全部条目（欧盟 2475 + 附件 III 15，中国 1892，合并为 3048 个物质，其中 2165 个与分子库对应）。「未在清单中找到」不等于不允许。
+工具页只覆盖与原料检索分子库按 CAS 重合的物质（2026-10-22：欧盟 2014、中国 1283、美国 1868（其中「许可」1852）、三地都许可 1164、任一 2386）；法规查询页收录三地全部条目（欧盟 2475 + 附件 III 15，中国 1892，美国 2973，合并为 3861 个物质，其中 2451 个与分子库对应）。「未在清单中找到」不等于不允许。
 
-**更新法规数据**（欧盟有新合并版、GB 2760 修改单正式发布时）：原始文件放在 `training/data/regulatory/`（不上传：欧盟合并版 XHTML、GB 2760 官方 PDF、FDA 清单），然后
+**更新法规数据**：原始文件放在 `training/data/regulatory/`（不上传：欧盟合并版 XHTML、GB 2760 官方 PDF、FDA 清单 `fda/foodsubstances.txt`、eCFR XML `us/p172.xml` 等）。
+
+欧盟有新合并版、GB 2760 修改单正式发布时：
 ```powershell
 python training/regulatory/lib_cas.py          # 分子库 CAS（PubChem，有缓存）
 python training/regulatory/parse_eu_annex.py   # 欧盟表 1 和附件 III
@@ -57,7 +60,25 @@ python training/regulatory/parse_gb.py         # GB 2760 表 B.2/B.3（需要 pi
 python training/regulatory/build_regulatory.py # 生成 flavor-kb/data/regulatory.json、regulatory-lookup.json 和核对报告
 python training/regulatory/check_consistency.py # 核对两份数据对每个本站分子一致（应输出 differences: 0）
 ```
-更新后同步修改页面上的版本、日期和数量（`assets/i18n` 的 `reg.src_*`，`flavor-kb/i18n` 的 `rq.scope` 和 `about.reg_*`），再跑 `ingredient-finder/tests/unit.html`（含法规数据检查）和 `python tools/prerender.py`。
+
+eCFR 香料条款（21 CFR 172、182、184、189 部分）或 FDA「Substances Added to Food」清单更新时：
+1. 下载新文件。eCFR 用官方 API（必须带 `--compressed`，日期取 https://www.ecfr.gov/api/versioner/v1/titles.json 中 Title 21 的 `up_to_date_as_of`）：
+   ```powershell
+   curl --compressed -o training/data/regulatory/us/p172.xml "https://www.ecfr.gov/api/versioner/v1/full/<日期>/title-21.xml?part=172"
+   ```
+   对 182、184、189 同样下载。FDA 清单从 https://www.hfpappexternal.fda.gov/scripts/fdcc/cfc/XMLService.cfm?method=downloadxls&set=FoodSubstances 下载，存为 `training/data/regulatory/fda/foodsubstances.txt`（文件第一行有「Last updated」日期）。
+2. 依次运行：
+   ```powershell
+   python training/regulatory/parse_us.py          # eCFR XML -> training/data/regulatory/out/us_parsed.json（先把脚本里的 ECFR_DATE 改为新日期）
+   python training/regulatory/build_regulatory.py  # 重新生成两份数据文件；FDA 清单的更新日期在脚本 meta 的 fda_updated，查阅日期在 CHECKED
+   python training/regulatory/check_consistency.py # 应输出 differences: 0
+   ```
+3. 看 `training/data/regulatory/out/build_report.json` 的 `us_name_check`（FDA 引用但名称对不上）、`us_cfr_only`（eCFR 有、FDA 无）、`us_dropped`、`us_not_found`、`us_184`：有新增时人工核对，必要时更新 `us_cfr_alias.json`（alias、drop、not_found）或 `us_189_manual.json`，再重跑第 2 步。若 172.515 等条款又有物质被删除，同时检查脚本中的 `US_DELETED`。
+
+无论更新哪一地，之后都要：
+- 同步修改页面上的日期和数量：`assets/i18n/*.json` 的 `reg.src_eu`、`reg.src_cn`、`reg.src_us`（美国写 eCFR 更新日期、查阅日期和 FDA 清单日期）；`flavor-kb/i18n/*.json` 的 `rq.scope`、`rq.footer`、`about.reg_src_*`、`about.reg_match_1`；`ingredient-finder/i18n/*.json` 的 `footer.reg`。中英文同步。
+- 更新 `?v=` 版本号：所有 HTML 里的 `?v=` 换成新值（如 `grep -rl "v=20261022d" --include=*.html . | xargs sed -i "s/v=20261022d/v=<新版本>/g"`），否则浏览器可能继续用缓存的旧数据和脚本。
+- 跑 `ingredient-finder/tests/unit.html`（含三地法规数据检查，测试中的计数需随数据更新）和 `python tools/prerender.py`。
 
 ## 4 基于贝叶斯优化的乳品风味改良与差距分析（flavor-improver/）
 
