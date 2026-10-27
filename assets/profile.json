@@ -9,8 +9,8 @@
     "zh": "江南大学食品科学与工程博士在读；新加坡国立大学联合培养。"
   },
   "bio": {
-    "en": "My PhD research is on the flavor of human milk; my master's work was on the Maillard reaction of beef tallow residue. I analyze samples with GC-MS, GC-O, an electronic nose and sensory evaluation, and build models with machine learning. During my PhD I wrote a GC-MS automation program that is used in daily research and has processed more than 3,000 samples.",
-    "zh": "我的博士课题是母乳风味研究，硕士做的是牛油渣美拉德反应。平时用 GC-MS、GC-O、电子鼻和感官评价做分析，并通过机器学习进行建模。读博期间我写了一套 GC-MS 自动化处理程序，已用于日常科研，累计处理 3000 多个样品。"
+    "en": "My PhD research is on human milk flavor, and my master's research was on the Maillard reaction of beef tallow residue. I use GC-MS, GC-O, electronic nose and sensory evaluation for analysis, and build models with machine learning. The 8 online tools on this site cover common steps in flavor R&D: automated GC-MS data processing, odor and taste prediction for molecules, search for flavor ingredients and their substitutes, dairy flavor improvement, analysis of individual differences in odor perception, and lookup of key flavor compound literature and EU, China and US flavoring regulations.",
+    "zh": "我的博士课题是关于母乳风味的研究，硕士是牛油渣的美拉德反应。平时用 GC-MS、GC-O、电子鼻和感官评价做分析，并通过机器学习进行建模。本站的 8 个在线工具覆盖风味研发的几个常见环节：GC-MS 数据自动整理，分子的气味和味觉预测，风味原料与其替代物的检索，乳品风味的改良，人群的嗅觉差异分析，以及关键风味物质的文献和欧盟、中国、美国香料法规查询。"
   },
   "email": "e1719854@u.nus.edu",
   "github": "https://github.com/REDAMANCY564",

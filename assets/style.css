@@ -247,7 +247,7 @@ a.help:hover { border-color: var(--accent); color: var(--accent); }
 .container-wide { max-width: none; padding: 0 16px; }
 
 /* Homepage (Barron-style: three screens, no cards) */
-.home .who { padding: var(--sp-6) 0 var(--sp-5); max-width: 720px; }
+.home .who { padding: var(--sp-5) 0 var(--sp-4); max-width: 720px; }
 .home .who h1 { font-size: 2.25rem; margin-bottom: var(--sp-2); }
 .home .role { color: var(--muted); margin-bottom: var(--sp-3); }
 .home-block { padding: var(--sp-5) 0; }

@@ -1,9 +1,9 @@
-# Jingwei Cui 个人网站与 8 个风味研究项目
+# Jingwei Cui 个人网站与 8 个风味研究在线工具
 
 - 个人主页：https://redamancy564.github.io/
-- 项目目录：https://redamancy564.github.io/projects/
+- 在线工具目录：https://redamancy564.github.io/projects/
 
-项目编号与网站一致（顺序定义在 `assets/projects.js`）。项目全称用于主页、项目目录页和页面标题；括号里的简称用于浏览器标签和站内互相引用：
+在线工具编号与网站一致（顺序定义在 `assets/projects.js`）。在线工具全称用于主页、在线工具目录页和页面标题；括号里的简称用于浏览器标签和站内互相引用：
 
 1. 兼容多仪器格式的 GC-MS 数据自动分析（GC-MS 风味解读）：https://redamancy564.github.io/gcms-interpreter/
 2. 基于气味描述词预测的风味原料检索及其替代物的筛选（风味原料检索）：https://redamancy564.github.io/ingredient-finder/

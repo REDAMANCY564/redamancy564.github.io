@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>崔京伟 Jingwei Cui</title>
-  <meta name="description" content="Jingwei Cui: PhD candidate in Food Science and Engineering (Jiangnan University, with joint PhD training at NUS). Flavor research, papers and browser tools for flavor and perception research.">
+  <meta name="description" content="Jingwei Cui: PhD candidate in Food Science and Engineering (Jiangnan University, with joint PhD training at NUS). Flavor research, papers and online tools for flavor and perception research.">
   <link rel="canonical" href="https://redamancy564.github.io/">
   <meta name="theme-color" content="#fbfaf7">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="崔京伟 Jingwei Cui">
   <meta property="og:title" content="崔京伟 Jingwei Cui">
-  <meta property="og:description" content="Jingwei Cui: PhD candidate in Food Science and Engineering (Jiangnan University, with joint PhD training at NUS). Flavor research, papers and browser tools for flavor and perception research.">
+  <meta property="og:description" content="Jingwei Cui: PhD candidate in Food Science and Engineering (Jiangnan University, with joint PhD training at NUS). Flavor research, papers and online tools for flavor and perception research.">
   <meta property="og:url" content="https://redamancy564.github.io/">
   <meta property="og:image" content="https://redamancy564.github.io/assets/og/site.png">
   <meta property="og:image:width" content="1200">
@@ -20,10 +20,10 @@
   <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="崔京伟 Jingwei Cui">
-  <meta name="twitter:description" content="Jingwei Cui: PhD candidate in Food Science and Engineering (Jiangnan University, with joint PhD training at NUS). Flavor research, papers and browser tools for flavor and perception research.">
+  <meta name="twitter:description" content="Jingwei Cui: PhD candidate in Food Science and Engineering (Jiangnan University, with joint PhD training at NUS). Flavor research, papers and online tools for flavor and perception research.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/site.png">
-  <link rel="stylesheet" href="assets/style.css?v=20261022d">
-  <script src="assets/i18n.js?v=20261022d"></script>
+  <link rel="stylesheet" href="assets/style.css?v=20261027a">
+  <script src="assets/i18n.js?v=20261027a"></script>
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
@@ -32,7 +32,7 @@
     <div class="container">
       <a class="brand" href="./" data-i18n="site.name">崔京伟</a>
       <nav class="site-nav" aria-label="Site">
-        <a href="./projects/" data-i18n="nav.projects">项目</a>
+        <a href="./projects/" data-i18n="nav.projects">在线工具</a>
         <a href="./cv/" data-i18n="nav.cv">简历</a>
         <button class="lang-toggle" id="lang-toggle" type="button">
           <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
@@ -46,13 +46,13 @@
     <section class="who">
       <h1 data-i18n="site.name">崔京伟</h1>
       <p class="role" id="role">江南大学食品科学与工程博士在读；新加坡国立大学联合培养。</p>
-      <p id="bio">我的博士课题是母乳风味研究，硕士做的是牛油渣美拉德反应。平时用 GC-MS、GC-O、电子鼻和感官评价做分析，并通过机器学习进行建模。读博期间我写了一套 GC-MS 自动化处理程序，已用于日常科研，累计处理 3000 多个样品。</p>
+      <p id="bio">我的博士课题是关于母乳风味的研究，硕士是牛油渣的美拉德反应。平时用 GC-MS、GC-O、电子鼻和感官评价做分析，并通过机器学习进行建模。本站的 8 个在线工具覆盖风味研发的几个常见环节：GC-MS 数据自动整理，分子的气味和味觉预测，风味原料与其替代物的检索，乳品风味的改良，人群的嗅觉差异分析，以及关键风味物质的文献和欧盟、中国、美国香料法规查询。</p>
       <p class="contact-row" id="contact"><a href="mailto:e1719854@u.nus.edu">邮箱</a><a href="assets/cv.pdf" target="_blank" rel="noopener">简历（PDF）</a><a href="https://github.com/REDAMANCY564" target="_blank" rel="noopener">GitHub</a></p>
     </section>
 
     <!-- Screen 2: all projects as a table of contents -->
     <section class="home-block" id="projects">
-      <h2 data-i18n="home.projects">项目</h2>
+      <h2 data-i18n="home.projects">在线工具</h2>
       <ol class="dir-list" id="dir-list"><li><span class="no">1</span><div><a class="toc-title" href="gcms-interpreter/">兼容多仪器格式的 GC-MS 数据自动分析</a><p>上传一个样品的 GC-MS 峰表，按 OAV 或 ROAV 排出关键风味物质；数据只在浏览器里处理。</p></div></li><li><span class="no">2</span><div><a class="toc-title" href="ingredient-finder/">基于气味描述词预测的风味原料检索及其替代物的筛选</a><p>基于想要和不想要的气味描述词检索 5000 多个分子，或给一个既定分子找与其气味相近、结构不同的替代物。</p></div></li><li><span class="no">3</span><div><a class="toc-title" href="odor-predictor/">基于图神经网络的分子气味描述词预测</a><p>输入分子名称、CAS 号或 SMILES，图神经网络给出该分子最可能的气味描述词。</p></div></li><li><span class="no">4</span><div><a class="toc-title" href="flavor-improver/">基于贝叶斯优化的乳品风味改良与差距分析</a><p>演示贝叶斯优化怎样调整乳品风味；也可以把自己的样品和目标样品对比。</p></div></li><li><span class="no">5</span><div><a class="toc-title" href="odor-map/">风味分子的气味空间与结构空间对比图谱</a><p>5000 多个分子按预测气味排成一张可缩放的图，也可以切换成按结构排列来对比。</p></div></li><li><span class="no">6</span><div><a class="toc-title" href="taste-predictor/">基于图神经网络的小分子味觉预测</a><p>预测小分子是甜、苦、鲜还是无味。</p></div></li><li><span class="no">7</span><div><a class="toc-title" href="perception-diversity/">人群嗅觉评分差异的来源分解</a><p>基于 55 人对 480 个分子的公开评分，分析评分差异有多少来自分子、个人偏好和测量噪声。</p></div></li><li><span class="no">8</span><div><a class="toc-title" href="flavor-kb/">食品关键风味物质知识库与香料法规查询</a><p>按食品或化合物查关键风味物质、检出物质和相关文献，并按物质名、CAS 或 FEMA 号查询香料在欧盟、中国和美国的法规状态。</p></div></li></ol>
     </section>
 
@@ -72,12 +72,12 @@
     </div>
   </footer>
 
-  <script src="assets/projects.js?v=20261022d"></script>
+  <script src="assets/projects.js?v=20261027a"></script>
   <script>
     (async function () {
       let profile = {};
       try {
-        profile = await (await fetch("assets/profile.json?v=20261022d")).json();
+        profile = await (await fetch("assets/profile.json?v=20261027a")).json();
       } catch (e) {
         console.error("Could not load profile.json", e);
       }
