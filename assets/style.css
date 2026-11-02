@@ -270,6 +270,23 @@ a.help:hover { border-color: var(--accent); color: var(--accent); }
 .paper-list .venue { color: var(--muted); font-size: .875rem; }
 .paper-list .venue i { color: var(--text); }
 .home .more { margin: var(--sp-3) 0 0; font-size: .95rem; }
+/* Homepage "Leave a message" form (assets/home.js) */
+.msg-form { max-width: 760px; }
+.msg-form .hp { display: none; }
+.msg-open-row { margin: 0; }
+.msg-form textarea, .msg-form input[type="text"], .msg-form input[type="email"] {
+  font: inherit; width: 100%; max-width: none; box-sizing: border-box;
+  padding: 8px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); color: var(--text);
+}
+.msg-form textarea { resize: vertical; display: block; margin-bottom: var(--sp-3); }
+.msg-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+@media (max-width: 599px) { .msg-row { grid-template-columns: 1fr; } }
+.msg-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); margin: var(--sp-3) 0 var(--sp-2); }
+.msg-send { font: inherit; padding: 6px 18px; border: 1px solid var(--accent); border-radius: 4px; background: var(--accent); color: #fff; cursor: pointer; }
+.msg-send:disabled { opacity: .6; cursor: default; }
+.msg-status { color: var(--accent); }
+.msg-status.err { color: var(--error); }
+.msg-form .small { margin: 0; }
 .page-head { padding: var(--sp-5) 0 var(--sp-2); }
 .contact-row { margin: var(--sp-3) 0 0; }
 .contact-row a + a::before, .mol-links a:not([hidden]) + a::before { content: " / "; color: var(--muted); }
