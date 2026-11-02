@@ -274,6 +274,7 @@ a.help:hover { border-color: var(--accent); color: var(--accent); }
 .msg-form { max-width: 760px; }
 .msg-form .hp { display: none; }
 .msg-open-row { margin: 0; }
+.home-block#message { padding: var(--sp-3) 0; }   /* tighter than other sections: keeps the homepage within three screens */
 .msg-form textarea, .msg-form input[type="text"], .msg-form input[type="email"] {
   font: inherit; width: 100%; max-width: none; box-sizing: border-box;
   padding: 8px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); color: var(--text);
