@@ -17,7 +17,7 @@ import websocket
 ROOT = Path(__file__).resolve().parent.parent
 CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 PROJECTS = ["gcms-interpreter", "ingredient-finder", "odor-predictor", "flavor-improver",
-            "odor-map", "taste-predictor", "perception-diversity", "flavor-kb"]
+            "odor-map", "taste-predictor", "flavor-kb"]
 
 
 class Quiet(SimpleHTTPRequestHandler):

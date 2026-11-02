@@ -7,7 +7,7 @@
 
   "cv.summary": "Summary",
   "sum.1.h": "Sensory evaluation",
-  "sum.1": "Trained in QDA, triangle tests, preference tests and sensory study design. Have recruited, screened, trained and calibrated sensory panels, and led industry-commissioned sensory evaluation and flavor screening projects, following data collection and quality-control standards for human-subject research. Decomposed the variance of individual perception and tested for consumer preference segments (none were stable in the data).",
+  "sum.1": "Trained in QDA, triangle tests, preference tests and sensory study design. Have recruited, screened, trained and calibrated sensory panels, and led industry-commissioned sensory evaluation and flavor screening projects, following data collection and quality-control standards for human-subject research.",
   "sum.2.h": "Data analysis and modeling",
   "sum.2": "Python, MATLAB and SQL. In perception research I have built, tuned and validated neural network, ensemble, random forest, XGBoost and Gaussian process regression models, and I use ANOVA, PCA and other multivariate methods.",
   "sum.3.h": "Data integration and automation",
@@ -31,7 +31,7 @@
   "cv.dev": "Software development",
   "dev.1.h": "Flavor AI Toolkit (personal website)",
   "dev.1.meta": "Sole developer · <a href=\"../\">redamancy564.github.io</a>",
-  "dev.1": "Designed and built 8 browser-based tools for flavor and perception research: odor and taste prediction from molecular structure; an odor-space map of 5,000 aroma molecules; ingredient and substitute search from a flavor brief; GC-MS peak-table parsing with OAV/ROAV ranking of key flavor compounds; analysis of individual perception differences (including a test for consumer segments). All computation runs locally in the browser; raw data are not uploaded.",
+  "dev.1": "Designed and built 7 browser-based tools for flavor research: odor and taste prediction from molecular structure; an odor-space map of 5,000 aroma molecules; ingredient and substitute search from a flavor brief; GC-MS peak-table parsing with OAV/ROAV ranking of key flavor compounds. All computation runs locally in the browser; raw data are not uploaded.",
   "dev.2.h": "Automated GC-MS Data Processing System",
   "dev.2.meta": "Sole developer",
   "dev.2": "Designed, built and maintain a program that extracts and analyses GC-MS data after manual peak integration: automatic retention-time matching, merging of adjacent peaks, and rule-based choice of the flavor compound when one peak has several library candidates. Cut secondary data processing from hours to minutes and removed manual transcription errors; in routine research use, 3,000+ samples so far.",

@@ -29,7 +29,7 @@ LANG = "zh"
 # Same order as PROJECTS in assets/projects.js (the project number)
 PROJECTS = [("gcms-interpreter", "gcms"), ("ingredient-finder", "finder"), ("odor-predictor", "odor"),
             ("flavor-improver", "fi"), ("odor-map", "map"), ("taste-predictor", "taste"),
-            ("perception-diversity", "perc"), ("flavor-kb", "kb")]
+            ("flavor-kb", "kb")]
 PAGES = (["index.html", "projects/index.html", "cv/index.html", "404.html"] +
          [f"{d}/{f}" for d, _ in PROJECTS for f in ("index.html", "about.html")] +
          ["flavor-kb/regulatory.html"])

@@ -1,6 +1,6 @@
 /*
  * Project list and numbering, shared by every page. The order of PROJECTS is the project number
- * (1 to 8) used on the homepage, the projects page, project titles, section headings and tab titles.
+ * (1 to 7) used on the homepage, the projects page, project titles, section headings and tab titles.
  * Needs assets/i18n.js loaded first. Screenshots live in assets/thumbs/<directory>.webp.
  */
 (function () {
@@ -12,7 +12,6 @@
     ["flavor-improver", "fi"],
     ["odor-map", "map"],
     ["taste-predictor", "taste"],
-    ["perception-diversity", "perc"],
     ["flavor-kb", "kb"],
   ];
 
