@@ -64,6 +64,7 @@
   "cv.research": "Research experience",
   "res.1.date": "2023.09 – present",
   "res.1.h": "Ph.D. thesis: Recognition, prediction and simulation of human milk flavor using end-to-end neural networks based on electronic nose data",
+  "res.1.link": "Research overview (step-by-step animation)",
   "res.1.1": "Classification model: discriminates human milk, several mammalian milks and infant formula from electronic nose resistance data.",
   "res.1.2": "Prediction model: ensemble learning framework predicting key flavor-active compounds directly from electronic nose response features.",
   "res.1.3": "Weight model: quantified the contribution of maternal mood, diet, and milk fatty acid / amino acid composition to human milk flavor.",

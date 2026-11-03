@@ -206,6 +206,8 @@ git push
 
 **添加简历 PDF**：把文件放到 `assets/cv.pdf`，再在 `assets/profile.json` 里写 `"cv_pdf": "assets/cv.pdf"`。
 
+**研究概览**（`research/`）：主页简介里「我的博士课题是关于母乳风味的研究」链接到这里（`assets/profile.json` 的 `bio_link` 必须是 `bio` 原文的一部分），简历页科研经历也有链接。字幕、短句和画面标签在 `research/i18n/*.json`，改了要跑 `python tools/prerender.py`。画面全是示意数据。
+
 **主页留言**：主页最下方的「留言」表单用 [Web3Forms](https://web3forms.com) 发到邮箱 785010405@qq.com（接收邮箱在 Web3Forms 后台设置，不在代码里）。access key 写在 `index.html` 表单的隐藏字段 `access_key` 里（这个 key 按设计可以公开，只能用来往这个邮箱发信）；提交逻辑在 `assets/home.js`，文字在 `assets/i18n/*.json` 的 `home.msg*` 键。免费版每月 250 条。只有访客点「发送」时才会请求 api.web3forms.com，页面加载时不发任何外部请求；主页的内容安全策略（`index.html` 的 `Content-Security-Policy`）只放行这一个外部地址，其他页面不受影响。表单默认折叠，点「写留言」才展开（保持主页在三屏以内）。
 
 **注意**：网页文字中不使用破折号（——）；联系方式只放邮箱，不放手机号。
@@ -267,6 +269,7 @@ flavor-improver/        4 风味改良
 flavor-kb/              7 风味知识库与法规查询（regulatory.html 为法规查询页）
 taste-predictor/        6 味觉预测（结构同 odor-predictor；engine.js 在气味引擎上加中和步骤）
 odor-map/               5 气味空间地图（data/：coords.bin、map.json、foods.json；分子数据读 ingredient-finder/data/）
+research/               研究概览（博士课题四步动画，不是在线工具，不参与编号）：research.js 用固定种子生成示意数据并播放动画（不读论文或样本数据），文字在 i18n/；严格 CSP，不发外部请求
 training/               训练代码（原始数据不上传）
   flavor_improver/      风味改良的数据准备、贝叶斯优化实验与分析
   taste/                味觉预测的数据处理、训练、导出

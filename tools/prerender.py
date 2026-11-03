@@ -30,7 +30,7 @@ LANG = "zh"
 PROJECTS = [("gcms-interpreter", "gcms"), ("ingredient-finder", "finder"), ("odor-predictor", "odor"),
             ("flavor-improver", "fi"), ("odor-map", "map"), ("taste-predictor", "taste"),
             ("flavor-kb", "kb")]
-PAGES = (["index.html", "projects/index.html", "cv/index.html", "404.html"] +
+PAGES = (["index.html", "projects/index.html", "cv/index.html", "research/index.html", "404.html"] +
          [f"{d}/{f}" for d, _ in PROJECTS for f in ("index.html", "about.html")] +
          ["flavor-kb/regulatory.html"])
 SITE = "https://redamancy564.github.io/"
@@ -132,7 +132,10 @@ def home_lists(t, root):
                      esc(t("home.first_author")) + "</span></li>" for x in p.get("papers") or [])
     patents = "".join("<li>" + esc(pick(x["title"])) + '<br><span class="venue">' + esc(pick(x["note"])) + "</span></li>"
                       for x in (p.get("patents") or []) + (p.get("talks") or []))
-    return {"role": esc(pick(p.get("role")) or ""), "bio": esc(pick(p.get("bio")) or ""), "contact": "".join(links),
+    bio, link = pick(p.get("bio")) or "", pick(p.get("bio_link")) or ""   # same as assets/home.js
+    at = bio.find(link) if link else -1
+    bio_html = esc(bio) if at < 0 else (esc(bio[:at]) + '<a href="' + root + 'research/">' + esc(link) + "</a>" + esc(bio[at + len(link):]))
+    return {"role": esc(pick(p.get("role")) or ""), "bio": bio_html, "contact": "".join(links),
             "dir-list": directory, "paper-list": papers, "patent-list": patents}
 
 

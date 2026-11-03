@@ -19,7 +19,17 @@
     const t = I18N.t;
     document.title = t("home.page_title");
     document.getElementById("role").textContent = I18N.pick(profile.role) || "";
-    document.getElementById("bio").textContent = I18N.pick(profile.bio) || "";
+    // bio, with the part named in profile.bio_link linking to the research overview
+    const bioEl = document.getElementById("bio"), bio = I18N.pick(profile.bio) || "";
+    const link = profile.bio_link ? I18N.pick(profile.bio_link) : "";
+    const at = link ? bio.indexOf(link) : -1;
+    bioEl.textContent = at < 0 ? bio : bio.slice(0, at);
+    if (at >= 0) {
+      const a = document.createElement("a");
+      a.href = "research/";
+      a.textContent = link;
+      bioEl.append(a, bio.slice(at + link.length));
+    }
 
     // One contact line: Email / CV (PDF) / GitHub
     const links = [];
