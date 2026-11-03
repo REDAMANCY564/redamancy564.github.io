@@ -119,86 +119,168 @@
   }
 
   // ---------- overview diagram ----------
+  // Four nodes (1 smell, 2 identify, 3 the bridge between them, 4 adjust), each with a small icon drawn
+  // like its detail picture. The current node is framed; when the step changes a small teal dot travels
+  // along the lines to the next node. Steps already watched get a tick.
   let OV = null;
+  const visited = new Set();
+  const HM_LIGHT = "#9fcac5";
+  function miniSensors(g, x, cy) {
+    const shades = [0.25, 0.6, 0.35, 0.5, 0.55, 0.3, 0.45, 0.2];
+    for (let i = 0; i < 8; i++)
+      el("rect", { x: x + (i % 4) * 7, y: cy - 6 + Math.floor(i / 4) * 7, width: 5, height: 5,
+        fill: mix("#ffffff", C.line, shades[i]), stroke: C.line, "stroke-width": 0.8 }, g);
+    return 26;
+  }
+  function miniPeaks(g, x, cy) {
+    const b = cy + 6;
+    el("path", { d: `M${x},${b} L${x + 6},${b} L${x + 8.5},${cy - 2} L${x + 11},${b} L${x + 15},${b} L${x + 17.5},${cy - 8} L${x + 20},${b} L${x + 24},${b} L${x + 26},${cy + 1} L${x + 28},${b} L${x + 32},${b}`,
+      fill: "none", stroke: C.muted, "stroke-width": 1.1, "stroke-linejoin": "round" }, g);
+    return 32;
+  }
+  function miniChainBottle(g, x, cy) {
+    el("path", { d: `M${x},${cy + 3} l4,-6 l4,6 l4,-6 l4,6`, fill: "none", stroke: C.muted, "stroke-width": 1.1, "stroke-linejoin": "round" }, g);
+    el("path", { d: `M${x + 20},${cy} L${x + 28},${cy}`, fill: "none", stroke: C.line, "stroke-width": 1 }, g);
+    el("path", { d: `M${x + 25},${cy - 3} L${x + 29},${cy} L${x + 25},${cy + 3}`, fill: "none", stroke: C.line, "stroke-width": 1 }, g);
+    const b = el("g", { fill: "none", stroke: C.fm, "stroke-width": 1.1 }, g);
+    el("path", { d: `M${x + 36},${cy - 7} Q${x + 36},${cy - 10} ${x + 38},${cy - 11} Q${x + 40},${cy - 10} ${x + 40},${cy - 7}` }, b);
+    el("rect", { x: x + 33.5, y: cy - 7, width: 9, height: 2.5 }, b);
+    el("rect", { x: x + 34, y: cy - 4.5, width: 8, height: 12, rx: 2 }, b);
+    return 43;
+  }
+  function tickMark(g, k, x, y) {
+    return el("path", { d: `M${x - 4},${y} L${x - 1},${y + 3} L${x + 4},${y - 3}`, fill: "none", stroke: C.hm, "stroke-width": 1.6,
+      "stroke-linecap": "round", "stroke-linejoin": "round", opacity: visited.has(k) ? 1 : 0 }, g);
+  }
   function buildOverview() {
     ov.textContent = "";
     const W = Math.max(300, ov.parentNode.clientWidth);
-    const narrow = W < 560;
-    const bw = narrow ? 108 : 200, bh = narrow ? 48 : 52;
-    const y1 = narrow ? 78 : 82;
-    const n1 = { x: narrow ? 1 : W / 2 - 300, y: y1, w: bw, h: bh };
-    const n2 = { x: narrow ? W - bw - 1 : W / 2 + 100, y: y1, w: bw, h: bh };
-    const w4 = narrow ? 158 : 240;
-    const n4 = { x: narrow ? W - w4 - 1 : n2.x + bw / 2 - w4 / 2, y: y1 + bh + 42, w: w4, h: bh };
+    const narrow = W < 600;
+    const bw = narrow ? 122 : Math.round(Math.min(320, (W - 170) / 2)), bh = narrow ? 46 : 58;
+    const gap = narrow ? W - 2 * bw : Math.round(Math.min(160, W - 2 * bw - 10));
+    const left = narrow ? 0 : Math.round((W - 2 * bw - gap) / 2);
+    const y1 = narrow ? 70 : 78;
+    const n1 = { x: left, y: y1, w: bw, h: bh };
+    const n2 = { x: left + bw + gap, y: y1, w: bw, h: bh };
+    const w4 = narrow ? 150 : bw;
+    const n4 = { x: Math.min(n2.x + bw / 2 - w4 / 2, W - w4 - 1), y: y1 + bh + (narrow ? 34 : 40), w: w4, h: bh };
     const H = n4.y + bh + 4;
     ov.setAttribute("viewBox", "0 0 " + W + " " + H);
     ov.setAttribute("width", W); ov.setAttribute("height", H);
 
     const hl = el("rect", { rx: 6, fill: C.soft, stroke: C.hm, "stroke-width": 1.5, opacity: 0 }, ov);
-    // drop of human milk
-    const cx = W / 2, cy = 24;
-    el("path", { d: `M${cx},${cy - 14} C${cx + 4},${cy - 6} ${cx + 9},${cy} ${cx + 9},${cy + 5} A9,9 0 0 1 ${cx - 9},${cy + 5} C${cx - 9},${cy} ${cx - 4},${cy - 6} ${cx},${cy - 14}Z`,
-      fill: C.soft, stroke: C.hm, "stroke-width": 1.5 }, ov);
-    text(ov, cx + 15, cy - 1, t("rs.ov.milk"), { class: "t-hm" });
-
-    const groups = {};
-    function node(k, b, title, sub) {
-      const g = el("g", { class: "ov-g" }, ov);
-      el("rect", { x: b.x, y: b.y, width: b.w, height: b.h, rx: 4, fill: "none", stroke: C.line, "stroke-width": 1 }, g);
-      text(g, b.x + b.w / 2, b.y + 21, title, { class: "t-strong", "text-anchor": "middle" });
-      text(g, b.x + b.w / 2, b.y + 39, sub, { "text-anchor": "middle" });
-      g.addEventListener("click", () => userGo(k));
-      groups[k] = g;
-      return g;
-    }
-    const g1 = node(1, n1, "1 " + t("rs.s1.name"), t("rs.ov.s1"));
-    const g2 = node(2, n2, "2 " + t("rs.s2.name"), t("rs.ov.s2"));
-    const g4 = node(4, n4, "4 " + t("rs.s4.name"), t("rs.ov.s4"));
-    // branches from the drop
+    // drop of human milk and its two branches (light teal)
+    const cx = W / 2, cy = 28;
     const bx1 = n1.x + bw / 2, bx2 = n2.x + bw / 2;
-    el("path", { d: `M${cx - 10},${cy + 8} C${bx1},${cy + 8} ${bx1},${cy + 20} ${bx1},${y1 - 4}`, fill: "none", stroke: C.line, "stroke-width": 1 }, g1);
-    arrowHead(g1, bx1, y1 - 3, 90);
-    el("path", { d: `M${cx + 10},${cy + 8} C${bx2},${cy + 8} ${bx2},${cy + 20} ${bx2},${y1 - 4}`, fill: "none", stroke: C.line, "stroke-width": 1 }, g2);
-    arrowHead(g2, bx2, y1 - 3, 90);
-    // 2 -> 4
-    el("path", { d: `M${bx2},${y1 + bh + 3} L${bx2},${n4.y - 4}`, fill: "none", stroke: C.line, "stroke-width": 1 }, g4);
-    arrowHead(g4, bx2, n4.y - 3, 90);
-    // 3: the bridge from 1 to 2
+    el("path", { d: `M${cx - 14},${cy + 8} C${bx1},${cy + 8} ${bx1},${cy + 18} ${bx1},${y1 - 4}`, fill: "none", stroke: HM_LIGHT, "stroke-width": 1.2 }, ov);
+    arrowHead(ov, bx1, y1 - 3, 90, HM_LIGHT);
+    el("path", { d: `M${cx + 14},${cy + 8} C${bx2},${cy + 8} ${bx2},${cy + 18} ${bx2},${y1 - 4}`, fill: "none", stroke: HM_LIGHT, "stroke-width": 1.2 }, ov);
+    arrowHead(ov, bx2, y1 - 3, 90, HM_LIGHT);
+    el("path", { d: `M${cx},${cy - 22} C${cx + 6},${cy - 11} ${cx + 13},${cy - 3} ${cx + 13},${cy + 4} A13,13 0 0 1 ${cx - 13},${cy + 4} C${cx - 13},${cy - 3} ${cx - 6},${cy - 11} ${cx},${cy - 22}Z`,
+      fill: C.hm, stroke: C.hm, "stroke-width": 1 }, ov);
+    text(ov, cx + 20, cy - 4, t("rs.ov.milk"), { class: "t-hm" });
+
+    // 2 -> 4 (under the boxes)
+    el("path", { d: `M${bx2},${y1 + bh + 3} L${bx2},${n4.y - 4}`, fill: "none", stroke: C.line, "stroke-width": 1 }, ov);
+    arrowHead(ov, bx2, n4.y - 3, 90);
+
+    const groups = {}, ticks = {};
+    function node(k, b, icon, desc) {
+      const g = el("g", { class: "ov-g" }, ov);
+      el("rect", { x: b.x, y: b.y, width: b.w, height: b.h, rx: 4, fill: "#fbfaf7", stroke: C.line, "stroke-width": 1 }, g);
+      const pad = narrow ? 9 : 14, mid = b.y + b.h / 2;
+      const iw = icon(g, b.x + pad, mid);
+      const tx = b.x + pad + iw + (narrow ? 7 : 12);
+      const title = text(g, tx, narrow ? mid + 5 : mid - 4, k + " " + t("rs.s" + k + ".name"), { class: "t-strong" });
+      if (!narrow) {   // on phones only the icon and the step name
+        const d = text(g, tx, mid + 15, desc, {});
+        const avail = b.x + b.w - 18 - tx;
+        if (d.getComputedTextLength() > avail) d.style.fontSize = "12px";
+        if (d.getComputedTextLength() > avail) { d.remove(); title.setAttribute("y", mid + 5); }
+      }
+      g.addEventListener("click", () => userGo(k));
+      ticks[k] = tickMark(g, k, b.x + b.w - 10, b.y + 10);
+      groups[k] = g;
+    }
+    node(1, n1, miniSensors, t("rs.ov.s1"));
+    node(2, n2, miniPeaks, t("rs.ov.s2"));
+    node(4, n4, miniChainBottle, t("rs.ov.s4"));
+    // 3: the bridge from 1 to 2, with three small model dots on the arrow
     const g3 = el("g", { class: "ov-g" }, ov);
     g3.addEventListener("click", () => userGo(3));
     groups[3] = g3;
-    const ay = y1 + bh / 2 + 8, ax0 = n1.x + bw + 6, ax1 = n2.x - 6;
-    const lab3 = text(g3, (ax0 + ax1) / 2, ay - 9, "3 " + t("rs.s3.name"), { class: "t-strong", "text-anchor": "middle" });
+    const ay = y1 + bh / 2, ax0 = n1.x + bw + 6, ax1 = n2.x - 6, am = (ax0 + ax1) / 2;
+    el("rect", { x: ax0, y: ay - 30, width: ax1 - ax0, height: 54, fill: "transparent" }, g3);   // click area
+    const lab3 = text(g3, am, ay - 10, "3 " + t("rs.s3.name"), { class: "t-strong", "text-anchor": "middle" });
     const arrow3 = el("path", { d: `M${ax0},${ay} L${ax1 - 1},${ay}`, fill: "none", stroke: C.text, "stroke-width": 1.2 }, g3);
     const head3 = arrowHead(g3, ax1, ay, 0, C.text);
-    el("rect", { x: ax0, y: ay - 28, width: ax1 - ax0, height: 36, fill: "transparent" }, g3);   // click area
-    void lab3;
-    const pad = 5;
+    [-9, 0, 9].forEach(dx => el("circle", { cx: am + dx, cy: ay, r: 2.6, fill: "#fbfaf7", stroke: C.text, "stroke-width": 1.1 }, g3));
+    if (!narrow) {
+      const d3 = text(g3, am, ay + 20, t("rs.ov.s3"), { "text-anchor": "middle" });
+      if (d3.getComputedTextLength() > ax1 - ax0) d3.style.fontSize = "12px";
+      if (d3.getComputedTextLength() > ax1 - ax0) d3.remove();
+    }
+    ticks[3] = tickMark(g3, 3, am + lab3.getComputedTextLength() / 2 + 10, ay - 15);
+    const pad = 4;
     const box = b => ({ x: b.x - pad, y: b.y - pad, w: b.w + 2 * pad, h: b.h + 2 * pad });
-    const targets = { 1: box(n1), 2: box(n2), 4: box(n4), 3: { x: ax0 - 4, y: ay - 28, w: ax1 - ax0 + 8, h: 38 } };
-    OV = { hl, groups, targets, arrow3, head3, cur: null, shown: false };
+    const targets = { 1: box(n1), 2: box(n2), 4: box(n4), 3: { x: ax0 - 2, y: ay - 28, w: ax1 - ax0 + 4, h: narrow ? 38 : 56 } };
+    // route of the travelling dot: 1 -> 3 -> 2 -> (along the edge of box 2) -> 4
+    const route = [[n1.x + bw, ay], [am, ay], [n2.x, ay], [n2.x, y1 + bh], [bx2, y1 + bh], [bx2, n4.y]];
+    const stop = { 1: 0, 3: 1, 2: 2, 4: 5 };
+    const dot = el("circle", { r: 4, fill: C.hm, opacity: 0 }, ov);
+    OV = { hl, groups, ticks, targets, arrow3, head3, route, stop, dot, cur: null };
     return OV;
   }
   function setHl(r) {
     OV.hl.setAttribute("x", r.x); OV.hl.setAttribute("y", r.y);
     OV.hl.setAttribute("width", r.w); OV.hl.setAttribute("height", r.h);
   }
-  async function overviewTo(n, T) {
-    const to = OV.targets[n];
-    const from = OV.shown ? OV.cur : to;
-    const ops = [1, 2, 3, 4].map(k => [OV.groups[k], +(OV.groups[k].getAttribute("opacity") || 1), k === n ? 1 : 0.35]);
-    const hl0 = OV.shown ? 1 : 0;
-    await T(0.7, e => {
-      setHl({ x: lerp(from.x, to.x, e), y: lerp(from.y, to.y, e), w: lerp(from.w, to.w, e), h: lerp(from.h, to.h, e) });
-      op(OV.hl, lerp(hl0, 1, e));
+  function routePoint(a, b, e) {   // point at fraction e of the route between stops a and b
+    const pts = a <= b ? OV.route.slice(a, b + 1) : OV.route.slice(b, a + 1).reverse();
+    const seg = [];
+    let total = 0;
+    for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(l); total += l; }
+    let d = total * e;
+    for (let i = 0; i < seg.length; i++) {
+      if (d <= seg[i] || i === seg.length - 1) {
+        const f = seg[i] ? Math.min(1, d / seg[i]) : 1;
+        return [lerp(pts[i][0], pts[i + 1][0], f), lerp(pts[i][1], pts[i + 1][1], f)];
+      }
+      d -= seg[i];
+    }
+    return pts[0];
+  }
+  async function overviewTo(n, T, instant) {
+    const prev = OV.cur;
+    const ops = [1, 2, 3, 4].map(k => [OV.groups[k], +(OV.groups[k].getAttribute("opacity") || 1), k === n ? 1 : 0.6]);
+    if (prev != null && prev !== n && !instant) {
+      // a small dot travels from the current node to the next one while the old frame fades
+      const a = OV.stop[prev], b = OV.stop[n];
+      op(OV.dot, 1);
+      await T(0.7, e => {
+        const [x, y] = routePoint(a, b, e);
+        OV.dot.setAttribute("cx", x); OV.dot.setAttribute("cy", y);
+        op(OV.hl, 1 - e);
+      });
+      op(OV.dot, 0);
+    }
+    setHl(OV.targets[n]);
+    await T(0.6, e => {
+      op(OV.hl, Math.max(+(OV.hl.getAttribute("opacity")), e));
       ops.forEach(([g, a, b]) => op(g, lerp(a, b, e)));
     });
-    OV.cur = to; OV.shown = true;
-    if (n === 3) {
+    OV.cur = n;
+    if (n === 3 && !instant) {
       const d = prepDraw(OV.arrow3);
       op(OV.head3, 0);
       await T(0.8, e => { d(e); op(OV.head3, e > 0.9 ? (e - 0.9) * 10 : 0); });
     }
+  }
+  function markVisited(n, T) {
+    if (visited.has(n)) return Promise.resolve();
+    visited.add(n);
+    const tk = OV.ticks[n];
+    return T(0.6, e => op(tk, e));
   }
 
   // ---------- scenes ----------
@@ -213,7 +295,7 @@
     const clipId = "rs-clip1";
     const defs = el("defs", {}, g);
     const cp = el("clipPath", { id: clipId }, defs);
-    el("rect", { x: x0, y: y0 - 6, width: pw, height: ph + 6 }, cp);
+    el("rect", { x: x0 + 6, y: y0, width: pw - 6, height: ph - 6 }, cp);   // zoomed points stay inside the axes
     const axes = el("path", { d: `M${x0},${y0} L${x0},${y1} L${x1},${y1}`, fill: "none", stroke: C.faint, "stroke-width": 1, opacity: 0 }, g);
     const clip = el("g", { "clip-path": "url(#" + clipId + ")" }, g);
     const pts = el("g", {}, clip);
@@ -229,15 +311,16 @@
       for (let j = 0; j < 3; j++)
         el("circle", { cx: (gx + gauss(rnd) * 4).toFixed(1), cy: (gy + gauss(rnd) * 4).toFixed(1), r: 2.2, fill: C.line }, animal);
     }
-    const sc = { x: x0 + pw * 0.43, y: y0 + ph * 0.36 };
-    for (let j = 0; j < 3; j++)
-      el("path", { d: starPath(sc.x + (j - 1) * 7, sc.y + (j === 1 ? -4 : 2), 4.5), fill: "none", stroke: C.star, "stroke-width": 1 }, stars);
+    // Alpine Holstein milk: a few small filled stars just inside the edge of the human milk cluster
+    const sc = { x: hc.x + pw * 0.065, y: hc.y - ph * 0.12 };
+    [[0, 0], [10, 4], [-9, 6], [3, -9]].forEach(([dx, dy]) =>
+      el("path", { d: starPath(sc.x + dx, sc.y + dy, 5.2), fill: "#3d434a", stroke: "#fbfaf7", "stroke-width": 0.8 }, stars));
     const labels = el("g", {}, g);
     const lh = text(labels, hc.x, y0 + 10, t("rs.f.human"), { class: "t-hm", "text-anchor": "middle", opacity: 0 });
     const la = text(labels, ac.x, y0 + 10, t("rs.f.animal"), { "text-anchor": "middle", opacity: 0 });
     void lh; void la;
     const starLab = el("g", { opacity: 0 }, labels);
-    el("path", { d: `M${sc.x},${sc.y - 8} L${sc.x},${y0 + 2}`, stroke: C.line, "stroke-width": 1, fill: "none" }, starLab);
+    el("path", { d: `M${sc.x},${sc.y - 16} L${sc.x},${y0 + 2}`, stroke: C.line, "stroke-width": 1, fill: "none" }, starLab);
     const sl = text(starLab, sc.x, y0 - 4, t("rs.f.alpine"), { class: "t-dark", "text-anchor": "middle" });
     // keep the star label inside the frame
     const slw = sl.getComputedTextLength();
@@ -258,7 +341,8 @@
     }
     await T(0.6, () => {});
     // (b) zoom into human milk, colour by city
-    await T(0.6, e => { op(lh, 1 - e); op(la, 1 - e); op(starLab, 1 - e); });
+    // only human milk goes into the zoom: labels, stars and animal milk fade out first
+    await T(0.6, e => { [lh, la, starLab, stars, animal].forEach(n => op(n, 1 - e)); });
     const s = 2.1, pc = { x: x0 + pw / 2, y: y0 + ph / 2 };
     const zoom = e => {
       const k = lerp(1, s, e), tx = lerp(0, pc.x - hc.x * s, e), ty = lerp(0, pc.y - hc.y * s, e);
@@ -296,7 +380,8 @@
     const rects = items.map(([, v], i) => {
       const y = top + 14 + i * rh + (rh - 14) / 2;
       labs[i].setAttribute("y", y + 11);
-      return { r: el("rect", { x: 8 + lw, y, width: 0, height: 14, fill: C.fill, stroke: C.line, "stroke-width": 1 }, g), L: maxL * v / 32 };
+      const top1 = i === 0;   // the highest bar (lipid) is drawn darker
+      return { r: el("rect", { x: 8 + lw, y, width: 0, height: 14, fill: top1 ? "#d3d0c8" : C.fill, stroke: top1 ? C.muted : C.line, "stroke-width": 1 }, g), L: maxL * v / 32 };
     });
     await T(0.6, e => op(title, e));
     for (let i = 0; i < rects.length; i++) {
@@ -338,12 +423,12 @@
     }
     // the nose walks along the time axis and lights the key peaks
     const nose = el("g", { opacity: 0 }, g);
-    const noseIn = el("g", { transform: "scale(1.5)" }, nose);
-    el("path", { d: "M-3,-13 C1,-6 7,-1 6,3 C5,6 0,6 -2,4", fill: "none", stroke: C.text, "stroke-width": 1.3, "stroke-linecap": "round" }, noseIn);
-    el("path", { d: "M0,3 q2,-2 4,0", fill: "none", stroke: C.text, "stroke-width": 1.1 }, noseIn);
-    const ny = axisY + 24;
-    let nx = xa - 26;
-    const place = x => nose.setAttribute("transform", `translate(${x.toFixed(1)},${ny})`);
+    el("path", { d: `M0,${axisY + 1} L0,${axisY + 7}`, stroke: C.text, "stroke-width": 1.2, fill: "none" }, nose);
+    const sniff = text(nose, 0, axisY + 21, t("rs.f.sniff"), { class: "t-dark", "text-anchor": "middle" });
+    const sw = sniff.getComputedTextLength();
+    let nx = Math.max(xa - 26, xL + sw / 2);
+    const xEnd = xR - sw / 2;
+    const place = x => nose.setAttribute("transform", `translate(${x.toFixed(1)},0)`);
     place(nx);
     await T(0.6, e => op(nose, e));
     const keyLab = text(g, (keys[0] + keys[2]) / 2, 16, t("rs.f.key"), { class: "t-dark", "text-anchor": "middle", opacity: 0 });
@@ -363,7 +448,7 @@
       await T(0.6, e => { op(lead, e); if (k === 0) op(keyLab, e); });
     }
     const from = nx;
-    await T(0.6, e => place(lerp(from, xR - 8, e)));
+    await T(0.6, e => place(lerp(from, xEnd, e)));
   };
 
   SCENES[3] = async function (g, W, H, T) {
@@ -381,18 +466,18 @@
       compLab = [100, 87, "start"];
       const bw = (W - 24) / 2;
       for (let i = 0; i < 6; i++) L.boxes.push([8 + (i % 2) * (bw + 8), 116 + Math.floor(i / 2) * 32, bw, 26]);
-      mergeP = [W / 2, 246]; weightLab = [W / 2 - 12, 251, "end"];
-      barBase = H - 18; barX0 = W / 2 - 4; keyLab = [8, H - 22, "start"];
+      mergeP = [60, 250]; weightLab = [8, 276, "start"];
+      barBase = 273; barX0 = 160; keyLab = [187, 296, "middle"];
       gcBox = [W - 80, 8, 72, 28]; onlyLab = [W - 8, 56, "end"];
     } else {
       sensLab = [8, 78];
       for (let r = 0; r < 7; r++) for (let c = 0; c < 2; c++) L.cells.push([12 + c * 16, 92 + r * 16]);
       L.points = [[86, 132], [86, 152], [86, 172]];
       compLab = [56, 232, "middle"];
-      const bw = Math.min(150, W * 0.3);
+      const bw = Math.min(126, W * 0.26);
       for (let i = 0; i < 6; i++) L.boxes.push([118, 40 + i * 44, bw, 28]);
-      mergeP = [118 + bw + 62, 166]; weightLab = [118 + bw + 72, 152, "start"];
-      barBase = 252; barX0 = mergeP[0] + 50; keyLab = [mergeP[0] + 50 + 27, 274, "middle"];
+      mergeP = [118 + bw + 44, 166]; weightLab = [118 + bw + 56, 156, "start"];
+      barBase = 206; barX0 = null; keyLab = null;   // set once the label width is known
       gcBox = [W - 82, 52, 76, 30]; onlyLab = [W - 6, 106, "end"];
     }
     // GC-O-MS: the reference method
@@ -433,15 +518,19 @@
     L.boxes.forEach(([x, y, w, h]) => mg.push(narrow ? lineEl(x + w / 2, y + h, mergeP[0], mergeP[1] - 5) : lineEl(x + w, y + h / 2, mergeP[0] - 5, mergeP[1])));
     const mn = el("g", { opacity: 0 }, g);
     el("circle", { cx: mergeP[0], cy: mergeP[1], r: 5, fill: "none", stroke: C.text, "stroke-width": 1.3 }, mn);
-    text(mn, weightLab[0], weightLab[1], t("rs.f.weight"), { class: "t-dark", "text-anchor": weightLab[2] });
+    const wl = text(mn, weightLab[0], weightLab[1], t("rs.f.weight"), { class: "t-dark", "text-anchor": weightLab[2] });
+    if (barX0 == null) {
+      barX0 = Math.min(weightLab[0] + wl.getComputedTextLength() + 14, W - 72);
+      keyLab = [barX0 + 27, barBase + 22, "middle"];
+    }
     const dg = drawAll(mg);
     mg.forEach(p => op(p, 1));
     await T(0.8, e => { dg(e); op(mn, e); });
     // output bars: key flavor compounds
     const heights = narrow ? [34, 22, 46, 28] : [62, 38, 80, 48];
-    const out = narrow ? lineEl(mergeP[0], mergeP[1] + 5, mergeP[0], barBase - Math.max(...heights) - 6)
-                       : lineEl(mergeP[0] + 5, mergeP[1], barX0 - 6, mergeP[1]);
+    const out = lineEl(mergeP[0] + 5, mergeP[1], barX0 - 6, mergeP[1]);   // one line flowing left to right
     const kl = text(g, keyLab[0], keyLab[1], t("rs.f.key"), { class: "t-dark", "text-anchor": keyLab[2], opacity: 0 });
+    if (keyLab[2] === "middle") kl.setAttribute("x", Math.min(keyLab[0], W - 4 - kl.getComputedTextLength() / 2));   // keep inside
     const dout = prepDraw(out);
     op(out, 1);
     await T(0.6, e => { dout(e); op(kl, e); });
@@ -563,12 +652,13 @@
     const W = detailSize();
     const g = el("g", {}, detail);
     showText(n, "none");
-    await overviewTo(n, T);
+    await overviewTo(n, T, inst);
     const parts = stepParts(n);
     await T(0.6, e => { parts.lede.style.opacity = e; });
     await SCENES[n](g, W, H_DETAIL, T, reduced && n === 1);
     await T(0.6, e => { parts.cap.style.opacity = e; });
     if (parts.go) await T(0.6, e => { parts.go.style.opacity = e; });
+    await markVisited(n, T);
     if (my !== gen || inst || n >= 4) return;
     // one gentle hint on "Next" (no loop)
     await T(1.2, e => { nextBtn.style.boxShadow = "0 0 0 2px rgba(15,110,110," + (0.55 * Math.sin(Math.PI * e)).toFixed(3) + ")"; });
