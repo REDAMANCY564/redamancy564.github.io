@@ -150,7 +150,7 @@
   }
   function tickMark(g, k, x, y) {
     return el("path", { d: `M${x - 4},${y} L${x - 1},${y + 3} L${x + 4},${y - 3}`, fill: "none", stroke: C.hm, "stroke-width": 1.6,
-      "stroke-linecap": "round", "stroke-linejoin": "round", opacity: visited.has(k) ? 1 : 0 }, g);
+      "stroke-linecap": "round", "stroke-linejoin": "round", opacity: visited.has(k) && k !== cur ? 1 : 0 }, g);   // ticks only on steps already left
   }
   function buildOverview() {
     ov.textContent = "";
@@ -265,9 +265,11 @@
       op(OV.dot, 0);
     }
     setHl(OV.targets[n]);
+    const tks = [1, 2, 3, 4].map(k => [OV.ticks[k], +OV.ticks[k].getAttribute("opacity"), visited.has(k) && k !== n ? 1 : 0]);
     await T(0.6, e => {
       op(OV.hl, Math.max(+(OV.hl.getAttribute("opacity")), e));
       ops.forEach(([g, a, b]) => op(g, lerp(a, b, e)));
+      tks.forEach(([tk, a, b]) => op(tk, lerp(a, b, e)));
     });
     OV.cur = n;
     if (n === 3 && !instant) {
@@ -276,11 +278,8 @@
       await T(0.8, e => { d(e); op(OV.head3, e > 0.9 ? (e - 0.9) * 10 : 0); });
     }
   }
-  function markVisited(n, T) {
-    if (visited.has(n)) return Promise.resolve();
+  function markVisited(n) {   // the tick appears once the visitor moves on to another step
     visited.add(n);
-    const tk = OV.ticks[n];
-    return T(0.6, e => op(tk, e));
   }
 
   // ---------- scenes ----------
@@ -343,9 +342,19 @@
     // (b) zoom into human milk, colour by city
     // only human milk goes into the zoom: labels, stars and animal milk fade out first
     await T(0.6, e => { [lh, la, starLab, stars, animal].forEach(n => op(n, 1 - e)); });
-    const s = 2.1, pc = { x: x0 + pw / 2, y: y0 + ph / 2 };
+    // zoom so that every human milk point stays whole inside the clipped plot area
+    const xs = hdots.map(d => +d.getAttribute("cx")), ys = hdots.map(d => +d.getAttribute("cy"));
+    const bx0 = Math.min(...xs), bx1 = Math.max(...xs), by0 = Math.min(...ys), by1 = Math.max(...ys);
+    const inner = { x0: x0 + 6, x1: x1, y0: y0, y1: y1 - 6 };
+    let s = 2.1;
+    for (let i = 0; i < 3; i++) {   // the dots grow with the zoom, so leave room for their radius
+      const m = 2.2 * s + 3;
+      s = Math.min(2.1, (inner.x1 - inner.x0 - 2 * m) / (bx1 - bx0), (inner.y1 - inner.y0 - 2 * m) / (by1 - by0));
+    }
+    const bc = { x: (bx0 + bx1) / 2, y: (by0 + by1) / 2 };
+    const pc = { x: (inner.x0 + inner.x1) / 2, y: (inner.y0 + inner.y1) / 2 };
     const zoom = e => {
-      const k = lerp(1, s, e), tx = lerp(0, pc.x - hc.x * s, e), ty = lerp(0, pc.y - hc.y * s, e);
+      const k = lerp(1, s, e), tx = lerp(0, pc.x - bc.x * s, e), ty = lerp(0, pc.y - bc.y * s, e);
       pts.setAttribute("transform", `translate(${tx.toFixed(2)},${ty.toFixed(2)}) scale(${k.toFixed(4)})`);
     };
     await T(1.0, zoom);
@@ -658,7 +667,7 @@
     await SCENES[n](g, W, H_DETAIL, T, reduced && n === 1);
     await T(0.6, e => { parts.cap.style.opacity = e; });
     if (parts.go) await T(0.6, e => { parts.go.style.opacity = e; });
-    await markVisited(n, T);
+    markVisited(n);
     if (my !== gen || inst || n >= 4) return;
     // one gentle hint on "Next" (no loop)
     await T(1.2, e => { nextBtn.style.boxShadow = "0 0 0 2px rgba(15,110,110," + (0.55 * Math.sin(Math.PI * e)).toFixed(3) + ")"; });
