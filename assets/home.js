@@ -19,17 +19,20 @@
     const t = I18N.t;
     document.title = t("home.page_title");
     document.getElementById("role").textContent = I18N.pick(profile.role) || "";
-    // bio, with the part named in profile.bio_link linking to the research overview
-    const bioEl = document.getElementById("bio"), bio = I18N.pick(profile.bio) || "";
-    const link = profile.bio_link ? I18N.pick(profile.bio_link) : "";
-    const at = link ? bio.indexOf(link) : -1;
-    bioEl.textContent = at < 0 ? bio : bio.slice(0, at);
-    if (at >= 0) {
+    // bio, with the parts named in profile.bio_link linking to the research overview (same as tools/prerender.py)
+    const bioEl = document.getElementById("bio");
+    let rest = I18N.pick(profile.bio) || "";
+    bioEl.textContent = "";
+    for (const l of profile.bio_link || []) {
+      const link = I18N.pick(l) || "", at = link ? rest.indexOf(link) : -1;
+      if (at < 0) continue;
       const a = document.createElement("a");
-      a.href = "research/";
+      a.href = l.href;
       a.textContent = link;
-      bioEl.append(a, bio.slice(at + link.length));
+      bioEl.append(rest.slice(0, at), a);
+      rest = rest.slice(at + link.length);
     }
+    bioEl.append(rest);
 
     // One contact line: Email / CV (PDF) / GitHub
     const links = [];

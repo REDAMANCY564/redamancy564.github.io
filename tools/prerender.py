@@ -132,9 +132,14 @@ def home_lists(t, root):
                      esc(t("home.first_author")) + "</span></li>" for x in p.get("papers") or [])
     patents = "".join("<li>" + esc(pick(x["title"])) + '<br><span class="venue">' + esc(pick(x["note"])) + "</span></li>"
                       for x in (p.get("patents") or []) + (p.get("talks") or []))
-    bio, link = pick(p.get("bio")) or "", pick(p.get("bio_link")) or ""   # same as assets/home.js
-    at = bio.find(link) if link else -1
-    bio_html = esc(bio) if at < 0 else (esc(bio[:at]) + '<a href="' + root + 'research/">' + esc(link) + "</a>" + esc(bio[at + len(link):]))
+    rest, bio_html = pick(p.get("bio")) or "", ""   # same as assets/home.js: each bio_link part becomes a link
+    for l in p.get("bio_link") or []:
+        link = pick(l) or ""
+        at = rest.find(link) if link else -1
+        if at < 0: continue
+        bio_html += esc(rest[:at]) + '<a href="' + root + esc(l["href"]) + '">' + esc(link) + "</a>"
+        rest = rest[at + len(link):]
+    bio_html += esc(rest)
     return {"role": esc(pick(p.get("role")) or ""), "bio": bio_html, "contact": "".join(links),
             "dir-list": directory, "paper-list": papers, "patent-list": patents}
 

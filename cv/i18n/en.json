@@ -74,6 +74,7 @@
   "res.2.1": "Flavor prediction model accounting for interactions between volatile compounds to predict overall sample flavor.",
   "res.2.2": "Curve-fitting model for ROAV of volatile compounds as a function of enzymatic hydrolysis time.",
   "res.2.3": "Additive optimization model selecting the optimal ratio among 17 amino acids, balancing flavor against cost.",
+  "res.2.link": "Research overview (step-by-step animation)",
 
   "cv.pubs": "Publications, patents and conferences",
   "pubs.published": "First-author SCI publications (published)",

@@ -1,12 +1,16 @@
-/* Research overview page (research/). Minimal line style: thin grey lines, human milk teal, formula orange. */
+/* Research overview page (research/). Minimal line style: thin grey lines, human milk teal, formula orange;
+   the master's part uses a warm brown accent (beef tallow residue). */
 .rs .page-head { padding-bottom: var(--sp-3); }
 .rs-stage { margin: 0 0 var(--sp-4); }
+.rs-part { margin: 0 0 var(--sp-5); scroll-margin-top: 72px; }   /* clear of the sticky header (research/#master) */
+.rs-part-h { margin: 0 0 var(--sp-2); }
 .rs-svg { display: block; max-width: 100%; overflow: visible; }
 .rs-svg text { font-size: 13px; fill: var(--muted); }
 .rs-svg .t-strong { fill: var(--text); font-weight: 600; font-size: 14px; }
 .rs-svg .t-dark { fill: var(--text); }
 .rs-svg .t-hm { fill: var(--accent); }
 .rs-svg .t-fm { fill: var(--hi); }
+.rs-svg .t-m { fill: #8a5a2b; }
 .rs-ov .ov-g { cursor: pointer; }
 
 .rs-ctrl { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); margin: var(--sp-3) 0; }
@@ -25,9 +29,9 @@
 
 /* Without the script every step is listed in order; with it only the current one is shown. */
 .rs-step { margin: 0 0 var(--sp-4); }
-.rs-step h2 { font-size: 1.25rem; margin: 0 0 var(--sp-2); }
+.rs-step h3 { font-size: 1.25rem; margin: 0 0 var(--sp-2); }
 .rs-step .rs-no { margin-right: .5em; color: var(--accent); }
-.rs-live .rs-step h2 { display: none; }
+.rs-live .rs-step h3 { display: none; }
 .rs-live .rs-step { margin: 0; }
 .rs-step[hidden] { display: none; }
 .rs-lede { font-family: var(--font-serif); font-size: 1.4rem; line-height: 1.35; color: var(--text); margin: 0 0 var(--sp-3); }
@@ -38,3 +42,7 @@
           color: var(--accent); text-decoration: none; }
 .rs-btn:hover { background: var(--accent-soft); }
 .rs-note { font-size: .875rem; color: var(--muted); margin: var(--sp-4) 0 var(--sp-5); }
+
+/* master's part: brown accent */
+.rs-part-m .rs-step .rs-no { color: #8a5a2b; }
+.rs-part-m .rs-nav:hover:not(:disabled) { border-color: #8a5a2b; color: #8a5a2b; }
