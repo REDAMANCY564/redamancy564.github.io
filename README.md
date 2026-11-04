@@ -206,7 +206,7 @@ git push
 
 **添加简历 PDF**：把文件放到 `assets/cv.pdf`，再在 `assets/profile.json` 里写 `"cv_pdf": "assets/cv.pdf"`。
 
-**研究概览**（`research/`）：两部分，博士课题四步、硕士课题三步（锚点 `#master`），各自一个动画舞台，互不影响。主页简介里「我的博士课题是关于母乳风味的研究」链接到这里，「硕士是牛油渣的美拉德反应」链接到 `research/#master`（`assets/profile.json` 的 `bio_link` 是一个列表，每项的文字必须是 `bio` 原文的一部分，`href` 是链接地址），简历页科研经历的博士、硕士课题下也各有链接。字幕、短句和画面标签在 `research/i18n/*.json`，改了要跑 `python tools/prerender.py`。画面全是示意数据。
+**研究概览**（`research/`）：两部分，博士课题四步、硕士课题三步（锚点 `#master`），各自一个动画舞台，互不影响；每步的「重播」只重放当前这一步。博士第 1、2 步共用三种聚类颜色（`research.js` 的 `CL`）。主页简介里「我的博士课题是关于母乳风味的研究」链接到这里，「硕士是牛油渣的美拉德反应」链接到 `research/#master`（`assets/profile.json` 的 `bio_link` 是一个列表，每项的文字必须是 `bio` 原文的一部分，`href` 是链接地址），简历页科研经历的博士、硕士课题下也各有链接。字幕、短句和画面标签在 `research/i18n/*.json`，改了要跑 `python tools/prerender.py`。画面全是示意数据。
 
 **主页留言**：主页最下方的「留言」表单用 [Web3Forms](https://web3forms.com) 发到邮箱 785010405@qq.com（接收邮箱在 Web3Forms 后台设置，不在代码里）。access key 写在 `index.html` 表单的隐藏字段 `access_key` 里（这个 key 按设计可以公开，只能用来往这个邮箱发信）；提交逻辑在 `assets/home.js`，文字在 `assets/i18n/*.json` 的 `home.msg*` 键。免费版每月 250 条。只有访客点「发送」时才会请求 api.web3forms.com，页面加载时不发任何外部请求；主页的内容安全策略（`index.html` 的 `Content-Security-Policy`）只放行这一个外部地址，其他页面不受影响。表单默认折叠，点「写留言」才展开（保持主页在三屏以内）。
 

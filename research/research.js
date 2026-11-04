@@ -278,9 +278,66 @@
   // Each scene draws into g (W x H user units = CSS pixels) and awaits T for every change.
   const SCENES = {};
 
+  // Three cluster colours (shared by steps 1 and 2): distinct from formula orange, the master's brown and human milk teal.
+  const CL = ["#2f6fd0", "#8e4ec6", "#5a9a2e"];
+  const CL_C = [[0.24, 0.36], [0.72, 0.34], [0.47, 0.74]];   // cluster centres as fractions of their box
+  // A dashed ellipse drawn dash by dash (stroke-dasharray is taken by line drawing, so the dashes are subpaths).
+  function dashEllipse(parent, cx, cy, rx, ry, colour) {
+    const p = el("path", { fill: "none", stroke: mix(colour, "#ffffff", 0.4), "stroke-width": 1.4, "stroke-linecap": "round" }, parent);
+    const N = Math.max(16, Math.round(Math.PI * (rx + ry) / 7));
+    return e => {
+      let d = "";
+      const n = Math.floor(e * N + 1e-6);
+      for (let i = 0; i < n; i++) {
+        const a0 = -Math.PI / 2 + i * 2 * Math.PI / N, a1 = a0 + 2 * Math.PI / N * 0.55;
+        d += `M${(cx + rx * Math.cos(a0)).toFixed(1)},${(cy + ry * Math.sin(a0)).toFixed(1)} A${rx.toFixed(1)},${ry.toFixed(1)} 0 0 1 ${(cx + rx * Math.cos(a1)).toFixed(1)},${(cy + ry * Math.sin(a1)).toFixed(1)} `;
+      }
+      p.setAttribute("d", d);
+    };
+  }
+  // Layout of three clusters inside box {x, y, w, h}: centres, ellipse radii and point positions (uniform in each ellipse).
+  function clusterLayout(box, rnd, counts) {
+    return CL_C.map(([fx, fy], k) => {
+      const cx = box.x + fx * box.w, cy = box.y + fy * box.h;
+      const rx = box.w * 0.14 + 6, ry = box.h * 0.16 + 6;
+      const pts = [];
+      for (let i = 0; i < counts[k]; i++) {
+        const a = rnd() * 2 * Math.PI, r = 0.92 * Math.pow(rnd(), 0.7);
+        pts.push([cx + (rx - 7) * r * Math.cos(a), cy + (ry - 7) * r * Math.sin(a)]);
+      }
+      return { k, cx, cy, rx, ry, pts };
+    });
+  }
+  // Ellipses and cluster letters for a layout; returns { draws: [fn(e)], labs: [text] } (labels start hidden).
+  function clusterMarks(parent, lay, box) {
+    const draws = lay.map(c => dashEllipse(parent, c.cx, c.cy, c.rx, c.ry, CL[c.k]));
+    const labs = lay.map(c => {
+      const s = t("rs.f.cluster", { k: "ABC"[c.k] });
+      const l = text(parent, 0, 0, s, { "text-anchor": c.k === 2 ? "start" : "middle", opacity: 0 });
+      l.style.fill = CL[c.k];
+      const w = l.getComputedTextLength();
+      if (c.k === 2) {   // C sits low in the middle: its letter goes to its right (or left if there is no room)
+        let x = c.cx + c.rx + 6;
+        if (x + w > box.x + box.w) { x = c.cx - c.rx - 6; l.setAttribute("text-anchor", "end"); }
+        l.setAttribute("x", x); l.setAttribute("y", c.cy + 4);
+      } else {           // A and B: above their ellipses
+        l.setAttribute("x", Math.min(Math.max(c.cx, box.x + w / 2), box.x + box.w - w / 2));
+        l.setAttribute("y", c.cy - c.ry - 6);
+      }
+      return l;
+    });
+    const bb = labs.map(l => l.getBBox());
+    if (bb[0].x + bb[0].width + 4 > bb[1].x) {   // too tight: letters only, re-centred
+      labs.forEach((l, k) => { l.textContent = "ABC"[k]; });
+      labs.slice(0, 2).forEach((l, k) => { const c = lay[k], w = l.getComputedTextLength(); l.setAttribute("x", Math.min(Math.max(c.cx, box.x + w / 2), box.x + box.w - w / 2)); });
+    }
+    return { draws, labs };
+  }
+
   SCENES[1] = async function (g, W, H, T, staticView) {
     const rnd = mulberry32(1303);
-    const x0 = 8, x1 = W - 8, y0 = 26;
+    const x0 = 8, y0 = 26;
+    const x1 = staticView ? Math.round(W * 0.58) : W - 8;   // reduced motion: the three clusters sit to the right
     const y1 = staticView ? Math.round(H * 0.5) : H - 58;
     const pw = x1 - x0, ph = y1 - y0;
     const clipId = "rs-clip1";
@@ -309,9 +366,8 @@
     const labels = el("g", {}, g);
     const lh = text(labels, hc.x, y0 + 10, t("rs.f.human"), { class: "t-hm", "text-anchor": "middle", opacity: 0 });
     const la = text(labels, ac.x, y0 + 10, t("rs.f.animal"), { "text-anchor": "middle", opacity: 0 });
-    void lh; void la;
     const starLab = el("g", { opacity: 0 }, labels);
-    el("path", { d: `M${sc.x},${sc.y - 16} L${sc.x},${y0 + 2}`, stroke: C.line, "stroke-width": 1, fill: "none" }, starLab);
+    el("path", { d: `M${sc.x},${sc.y - 21} L${sc.x},${y0 + 2}`, stroke: C.line, "stroke-width": 1, fill: "none" }, starLab);
     const sl = text(starLab, sc.x, y0 - 4, t("rs.f.alpine"), { class: "t-dark", "text-anchor": "middle" });
     // keep the star label inside the frame
     const slw = sl.getComputedTextLength();
@@ -319,21 +375,46 @@
     sl.setAttribute("x", slx);
     // the human / animal labels would sit under the star label: move them below the clusters
     lh.setAttribute("y", y1 - 6); la.setAttribute("y", y1 - 6);
+    // a teal halo round the stars (white underlay so it reads on top of teal points)
+    const rc = { x: sc.x + 0.5, y: sc.y - 0.5 };
+    const halo = el("g", { opacity: 0 }, labels);
+    el("circle", { cx: rc.x, cy: rc.y, r: 18, fill: "none", stroke: "#fbfaf7", "stroke-width": 4 }, halo);
+    el("circle", { cx: rc.x, cy: rc.y, r: 18, fill: "none", stroke: C.hm, "stroke-width": 1.6 }, halo);
+    const haloScale = k => halo.setAttribute("transform", `translate(${rc.x},${rc.y}) scale(${k.toFixed(3)}) translate(${-rc.x},${-rc.y})`);
 
     // (a)
     await T(0.6, e => op(axes, e));
     await T(0.8, e => op(human, e));
     await T(0.8, e => op(animal, e));
     await T(0.6, e => { op(stars, e); op(lh, e); op(la, e); op(starLab, e); });
+    await T(0.6, e => op(halo, e));
+    for (let i = 0; i < 2; i++) await T(0.6, e => haloScale(1 + 0.15 * Math.sin(Math.PI * e)));
+    haloScale(1);
 
-    if (staticView) {   // reduced motion: (a) on top, (c) below
+    if (staticView) {   // reduced motion: (a) and the three clusters on top, (c) below
+      const box = { x: x1 + 14, y: y0 + 14, w: W - 8 - (x1 + 14), h: y1 - y0 - 14 };
+      const cg = el("g", {}, g);
+      const cl = text(cg, box.x, y0 - 4, t("rs.f.clustered"), {});
+      cl.style.fontSize = "12px";
+      if (cl.getComputedTextLength() > box.w) {   // narrow: two lines, and the clusters move down a little
+        const words = cl.textContent.split(" "), half = Math.ceil(words.length / 2);
+        cl.textContent = "";
+        [words.slice(0, half).join(" "), words.slice(half).join(" ")].forEach((w, i) => {
+          const ts = el("tspan", { x: box.x, y: y0 - 8 + i * 14 }, cl); ts.textContent = w;
+        });
+        box.y += 8; box.h -= 8;
+      }
+      const lay = clusterLayout(box, mulberry32(31), [14, 12, 12]);
+      lay.forEach(c => c.pts.forEach(([x, y]) => el("circle", { cx: x.toFixed(1), cy: y.toFixed(1), r: 2.2, fill: CL[c.k] }, cg)));
+      const mk = clusterMarks(cg, lay, box);
+      mk.draws.forEach(f => f(1)); mk.labs.forEach(l => op(l, 1));
       await bars(g, W, y1 + 22, H, T);
       return;
     }
-    await T(0.6, () => {});
+    await T(3.0, () => {});   // let the halo stay
     // (b) zoom into human milk, colour by city
-    // only human milk goes into the zoom: labels, stars and animal milk fade out first
-    await T(0.6, e => { [lh, la, starLab, stars, animal].forEach(n => op(n, 1 - e)); });
+    // only human milk goes into the zoom: labels, stars, halo and animal milk fade out first
+    await T(0.6, e => { [lh, la, starLab, stars, animal, halo].forEach(n => op(n, 1 - e)); });
     // zoom so that every human milk point stays whole inside the clipped plot area
     const xs = hdots.map(d => +d.getAttribute("cx")), ys = hdots.map(d => +d.getAttribute("cy"));
     const bx0 = Math.min(...xs), bx1 = Math.max(...xs), by0 = Math.min(...ys), by1 = Math.max(...ys);
@@ -360,13 +441,32 @@
     }
     await T(0.6, e => op(legend, e));
     await T(1.4, () => {});
-    // back to one colour, zoom out
     await T(0.6, e => op(legend, 1 - e));
-    await T(0.8, e => hdots.forEach((d, i) => d.setAttribute("fill", mix(CITY[i % 6], C.hm, e))));
-    await T(1.0, e => zoom(1 - e));
-    await T(0.6, () => {});
+    // (b2) the same points, clustered by e-nose signals: three colours, three groups
+    const box = { x: inner.x0 + 4, y: inner.y0 + 4, w: inner.x1 - inner.x0 - 8, h: inner.y1 - inner.y0 - 8 };
+    const crnd = mulberry32(31);
+    const ks = hdots.map(() => Math.floor(crnd() * 3));
+    const counts = [0, 1, 2].map(k => ks.filter(x => x === k).length);
+    const lay = clusterLayout(box, crnd, counts);
+    const used = [0, 0, 0];
+    const tx = pc.x - bc.x * s, ty = pc.y - bc.y * s;
+    const moves = hdots.map((d, i) => {   // targets are in screen units; the points live in the zoomed group
+      const [X, Y] = lay[ks[i]].pts[used[ks[i]]++];
+      return [+d.getAttribute("cx"), +d.getAttribute("cy"), (X - tx) / s, (Y - ty) / s];
+    });
+    await T(0.8, e => hdots.forEach((d, i) => d.setAttribute("fill", mix(CITY[i % 6], CL[ks[i]], e))));
+    await T(1.0, e => hdots.forEach((d, i) => {
+      const [a, b, c, dd] = moves[i];
+      d.setAttribute("cx", lerp(a, c, e).toFixed(2)); d.setAttribute("cy", lerp(b, dd, e).toFixed(2));
+    }));
+    const cg = el("g", {}, g);
+    const mk = clusterMarks(cg, lay, box);
+    await T(0.6, e => mk.draws.forEach(f => f(e)));
+    const cl = text(g, x0 + 2, 14, t("rs.f.clustered"), { class: "t-dark", opacity: 0 });
+    await T(0.6, e => { mk.labs.forEach(l => op(l, e)); op(cl, e); });
+    await T(1.4, () => {});
     // (c) association bars
-    await T(0.6, e => { op(pts, 1 - e); op(axes, 1 - e); });
+    await T(0.6, e => { op(pts, 1 - e); op(axes, 1 - e); op(cg, 1 - e); op(cl, 1 - e); });
     legend.remove();
     await bars(g, W, 26, H, T);
   };
@@ -390,8 +490,10 @@
     }
   }
 
-  SCENES[2] = async function (g, W, H, T) {
+  SCENES[2] = async function (root, W, Hfull, T, staticView) {
     const rnd = mulberry32(2026);
+    const H = staticView ? 206 : Hfull;   // reduced motion: spectra on top, ROAV scatter below
+    const g = el("g", {}, root);
     const xL = 8, xR = W - 8, axisY = H - 44;
     const xa = xL + (xR - xL) * 0.36;
     const keys = [0.22, 0.52, 0.83].map(f => xa + (xR - xa) * f);
@@ -450,6 +552,29 @@
     }
     const from = nx;
     await T(0.6, e => place(lerp(from, xEnd, e)));
+    // human milk ROAV data, using the three e-nose cluster labels from step 1
+    let box;
+    if (staticView) box = { x: 14, y: H + 26, w: W - 22, h: Hfull - H - 50 };
+    else {
+      await T(0.6, e => op(g, 1 - e));
+      g.remove();
+      box = { x: 14, y: 40, w: W - 22, h: Hfull - 90 };
+    }
+    const rg = el("g", {}, root);
+    const head = el("g", { opacity: 0 }, rg);
+    text(head, 8, box.y - 14, t("rs.f.roav"), { class: "t-dark" });
+    el("path", { d: `M${box.x - 6},${box.y - 4} L${box.x - 6},${box.y + box.h + 4} L${box.x + box.w},${box.y + box.h + 4}`, fill: "none", stroke: C.faint, "stroke-width": 1 }, head);
+    await T(0.6, e => op(head, e));
+    const lay = clusterLayout(box, mulberry32(57), [10, 9, 9]);
+    for (const c of lay) {
+      const cg = el("g", { opacity: 0 }, rg);
+      c.pts.forEach(([x, y]) => el("circle", { cx: x.toFixed(1), cy: y.toFixed(1), r: 2.6, fill: CL[c.k] }, cg));
+      await T(0.6, e => op(cg, e));
+    }
+    const mk = clusterMarks(rg, lay, box);
+    await T(0.6, e => mk.draws.forEach(f => f(e)));
+    const ul = text(rg, W - 8, box.y + box.h + 22, t("rs.f.roav_labels"), { class: "t-dark", "text-anchor": "end", opacity: 0 });
+    await T(0.6, e => { mk.labs.forEach(l => op(l, e)); op(ul, e); });
   };
 
   SCENES[3] = async function (g, W, H, T) {
@@ -547,7 +672,68 @@
     });
     const ol = text(g, onlyLab[0], onlyLab[1], t("rs.f.enose_only"), { class: "t-dark", "text-anchor": onlyLab[2], opacity: 0 });
     await T(0.6, e => op(ol, e));
+    await T(1.0, () => {});
+    await T(0.6, e => op(g, 1 - e));
+    while (g.firstChild) g.removeChild(g.firstChild);
+    op(g, 1);
+    await accuracy(g, W, H, T);
   };
+
+  // Step 3, second scene: how accuracy is assessed. (a) rank consistency, (b) numerical deviation in bands.
+  // Scores are schematic (10, 8, 9, 6, 7); no result from the paper is shown.
+  async function accuracy(g, W, H, T) {
+    const title = text(g, 8, 18, t("rs.f.acc"), { class: "t-strong", opacity: 0 });
+    await T(0.6, e => op(title, e));
+    // (a) rank consistency
+    const a = el("g", { opacity: 0 }, g);
+    text(a, 8, 46, t("rs.f.rank"), { class: "t-dark" });
+    const cxM = Math.round(W * 0.34), cxP = Math.round(W * 0.66), rowY = i => 78 + i * 14;
+    text(a, cxM, 64, t("rs.f.measured"), { "text-anchor": "middle" });
+    text(a, cxP, 64, t("rs.f.predicted"), { "text-anchor": "middle" });
+    for (let i = 0; i < 6; i++) {
+      el("circle", { cx: cxM, cy: rowY(i), r: 3.5, fill: C.text }, a);
+      el("circle", { cx: cxP, cy: rowY(i), r: 3.5, fill: C.text }, a);
+    }
+    await T(0.6, e => op(a, e));
+    const prank = [0, 1, 3, 2, 4, 5];   // samples 3 and 4 swap places in the prediction
+    const links = prank.map((p, i) => el("path", { d: `M${cxM + 6},${rowY(i)} L${cxP - 6},${rowY(p)}`, fill: "none", stroke: C.line, "stroke-width": 1 }, g));
+    const dl = drawAll(links);
+    await T(0.8, dl);
+    links.forEach(l => l.removeAttribute("stroke-dasharray"));
+    await T(0.6, e => [2, 3].forEach(i => { links[i].setAttribute("stroke", mix(C.line, "#e0897e", e)); links[i].setAttribute("stroke-width", lerp(1, 1.5, e)); }));
+    // (b) numerical deviation: a ruler with symmetric bands, dark at the centre (the measured value)
+    const ry = 252, half = (W - 32) / 2, cx = W / 2, NB = 7;
+    const b = el("g", { opacity: 0 }, g);
+    text(b, 8, 180, t("rs.f.dev"), { class: "t-dark" });
+    for (let k = NB - 1; k >= 0; k--) {
+      const w = half * (k + 1) / NB;
+      el("rect", { x: cx - w, y: ry - 6, width: 2 * w, height: 12, fill: mix("#80868d", "#eeebe5", k / (NB - 1)) }, b);
+    }
+    el("circle", { cx, cy: ry, r: 5, fill: "#fbfaf7", stroke: C.text, "stroke-width": 1.4 }, b);
+    await T(0.8, e => op(b, e));
+    const ends = el("g", { opacity: 0 }, g);
+    text(ends, cx, ry - 32, t("rs.f.small"), { class: "t-dark", "text-anchor": "middle" });
+    el("path", { d: `M${cx + half - 2},${ry + 8} L${cx + half - 2},${ry + 14}`, fill: "none", stroke: C.line, "stroke-width": 1 }, ends);
+    text(ends, cx + half, ry + 28, t("rs.f.large"), { class: "t-dark", "text-anchor": "end" });
+    await T(0.6, e => op(ends, e));
+    // five predictions fall into different bands; each shows a schematic score
+    const preds = [[0, 1, 10], [2, -1, 8], [1, 1, 9], [4, -1, 6], [3, 1, 7]];   // band, side, score
+    for (const [k, side, score] of preds) {
+      const x = cx + side * half * (k + 0.5) / NB;
+      const p = el("circle", { cx: x, cy: ry - 20, r: 4.5, fill: C.hm, stroke: "#fbfaf7", "stroke-width": 1, opacity: 0 }, g);
+      const sl = text(g, x, ry - 12, String(score), { class: "t-hm", "text-anchor": "middle", opacity: 0 });
+      await T(0.6, e => { op(p, Math.min(1, e * 3)); p.setAttribute("cy", lerp(ry - 20, ry, e)); op(sl, Math.max(0, 2 * e - 1)); });
+    }
+    // mean score: one short bar on a faint 0-10 track, no number
+    const my = 304;
+    const ml = text(g, 16, my + 9, t("rs.f.mean"), { class: "t-dark", opacity: 0 });
+    const bx = 16 + ml.getComputedTextLength() + 12, maxW = Math.min(180, W - 16 - bx);
+    const track = el("rect", { x: bx, y: my, width: maxW, height: 10, fill: "none", stroke: C.faint, "stroke-width": 1, opacity: 0 }, g);
+    const bar = el("rect", { x: bx, y: my, width: 0, height: 10, fill: "#cfe3e0", stroke: C.hm, "stroke-width": 1 }, g);
+    const mean = preds.reduce((s, p) => s + p[2], 0) / preds.length / 10;
+    await T(0.8, e => { op(ml, Math.min(1, e * 2)); op(track, Math.min(1, e * 2)); bar.setAttribute("width", (maxW * mean * e).toFixed(1)); });
+  }
+
 
   SCENES[4] = async function (g, W, H, T) {
     const rnd = mulberry32(162);
@@ -1064,7 +1250,7 @@
       await overviewTo(S, n, T, inst);
       const parts = stepParts(n);
       await T(0.6, e => { parts.lede.style.opacity = e; });
-      await cfg.scenes[n](g, W, H_DETAIL, T, reduced && n === 1);
+      await cfg.scenes[n](g, W, H_DETAIL, T, reduced);
       await T(0.6, e => { parts.cap.style.opacity = e; });
       if (parts.go) await T(0.6, e => { parts.go.style.opacity = e; });
       S.visited.add(n);   // the tick appears once the visitor moves on to another step
@@ -1078,6 +1264,10 @@
       S.clock.paused = false;
       go(n);
     };
+    // replay the current step only (hidden under reduced motion, where every picture is already final)
+    const replay = root.querySelector(".rs-replay");
+    if (reduced) replay.hidden = true;
+    replay.addEventListener("click", () => { S.clock.paused = false; go(S.cur); });
     prevBtn.addEventListener("click", () => S.userGo(S.cur - 1));
     nextBtn.addEventListener("click", () => S.userGo(S.cur + 1));
 
