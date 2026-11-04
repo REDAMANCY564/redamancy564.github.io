@@ -69,7 +69,7 @@
   "rs.m1.lede": "From composition to a flavor score",
   "rs.m2.lede": "Turning time points into a curve",
   "rs.m3.lede": "From 25 experiments to the whole formulation space",
-  "rs.m1.cap": "Beef tallow residue was hydrolyzed with five enzymes and then used in the Maillard reaction, and GC×GC-MS identified 49 main volatile compounds. A neural network predicts sensory scores from compound contents; a model that considers several compounds at once is more accurate than one that looks at a single compound, showing that flavors interact. Combined hydrolysis with Flavourzyme and papain gave the strongest meaty note.",
+  "rs.m1.cap": "Beef tallow residue was hydrolyzed with five enzymes and then used in the Maillard reaction, and the products were analyzed for volatile compounds and evaluated by a sensory panel. A neural network predicts sensory scores from the contents of selected key volatile compounds; taking interactions and masking between compounds into account improves predictions for most attributes. Combined hydrolysis with Flavourzyme and papain gave the strongest meaty note.",
   "rs.m2.cap": "Beef tallow residue was hydrolyzed for 0 to 8 h before the Maillard reaction, and GC-O-MS with ROAV identified nine key flavor compounds, with the strongest roast note at 4 h. Three methods were compared for linking the five time points into a curve: polynomial fitting is not smooth, spline interpolation oscillates at both ends and goes negative, and the curve prediction model is smooth, never negative and has the smallest error in validation.",
   "rs.m3.cap": "Nine of 17 amino acids were selected, Latin hypercube sampling designed 25 combinations, and a neural network learned to predict six sensory attributes. The gap to the target flavor and the material cost are then combined into a total score to pick the best ratio from all combinations, followed by experimental validation.",
   "rs.m1.src": "Source: <a href=\"https://doi.org/10.1016/j.fochx.2022.100447\" target=\"_blank\" rel=\"noopener\">doi:10.1016/j.fochx.2022.100447</a>",
@@ -80,8 +80,6 @@
   "rs.mf.enzymes": "Five enzymes",
   "rs.mf.contents": "Compound contents",
   "rs.mf.score": "Sensory score",
-  "rs.mf.single": "Single compound",
-  "rs.mf.several": "Several compounds",
   "rs.mf.time": "Hydrolysis time 0–8 h",
   "rs.mf.roast": "Strongest roast note",
   "rs.mf.poly": "Polynomial fit",
@@ -93,5 +91,10 @@
   "rs.mf.lhs": "Latin hypercube sampling",
   "rs.mf.fc": "Flavor ↔ cost",
   "rs.mf.flavor_only": "Flavor only",
-  "rs.mf.with_cost": "With cost"
+  "rs.mf.with_cost": "With cost",
+  "rs.mf.nn": "Neural network",
+  "rs.mf.without": "Without interactions",
+  "rs.mf.with": "With interactions",
+  "rs.mf.cover": "Predictions cover the whole formulation space",
+  "rs.mf.lowcost": "Lower cost →"
 }

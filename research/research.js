@@ -703,10 +703,9 @@
 
   const SCENES_M = {};
 
-  // 1 point: five enzymes -> compound contents -> network -> one sensory score; one compound vs several
+  // 1 point: five enzymes -> compound contents -> neural network -> one sensory score; with and without interactions
   SCENES_M[1] = async function (g, W, H, T) {
     const rnd = mulberry32(447);
-    const narrow = W < 480;
     const colW = (W - 16) / 5, base = 100;
     const lab5 = text(g, 8, 16, t("rs.mf.enzymes"), { class: "t-dark", opacity: 0 });
     const vials = [], groups = [];
@@ -724,58 +723,82 @@
         bars.push({ r: el("rect", { x: cx - 21 + j * 9, y: base, width: 6, height: 0, fill: C.fill, stroke: C.muted, "stroke-width": 1 }, grp), h: 8 + rnd() * 30, x: cx - 21 + j * 9 + 3 });
       groups.push({ g: grp, bars, cx });
     }
+    // the two labels next to the predicted point; wrapped onto two lines if one line leaves too little room
+    const yTop = 146, yBot = 316, yTrue = 196, ySingle = 290, yNear = 204;
+    const mkLab = (k, cls) => { const e = text(g, 0, 0, t(k), { class: cls, opacity: 0 }); return e; };
+    const l1 = mkLab("rs.mf.without", "t-dark"), l2 = mkLab("rs.mf.with", "t-m");
+    let lw = Math.max(l1.getComputedTextLength(), l2.getComputedTextLength());
+    const wrap = W - 26 - lw < W * 0.62;
+    if (wrap) {
+      [l1, l2].forEach(l => {
+        const words = l.textContent.split(" "), half = Math.ceil(words.length / 2);
+        l.textContent = "";
+        [words.slice(0, half).join(" "), words.slice(half).join(" ")].forEach((s, i) => {
+          const ts = el("tspan", { x: 0, dy: i ? 16 : 0 }, l); ts.textContent = s;
+        });
+      });
+      lw = Math.max(...[l1, l2].map(l => Math.max(...[...l.childNodes].map(ts => ts.getComputedTextLength()))));
+    }
+    const axisX = Math.round(W - 26 - lw);
+    const placeLab = (l, y) => {
+      const x = axisX + 22, dy = l.childNodes.length > 1 ? -4 : 4;
+      l.setAttribute("x", x); l.setAttribute("y", y + dy);
+      [...l.querySelectorAll("tspan")].forEach(ts => ts.setAttribute("x", x));
+    };
+    placeLab(l1, ySingle); placeLab(l2, yNear);
+
     await T(0.6, e => { vials.forEach(v => op(v, e)); op(lab5, e); });
     // each vial becomes a group of thin bars (compound contents)
     for (let i = 0; i < 5; i++)
       await T(0.6, e => { op(vials[i], 1 - e); groups[i].bars.forEach(b => { b.r.setAttribute("y", base - b.h * e); b.r.setAttribute("height", b.h * e); }); });
     await T(0.6, e => { for (let i = 1; i < 5; i++) op(groups[i].g, lerp(1, 0.25, e)); });
-    // the first group moves down to the left of the network
-    const axisX = W - (narrow ? 30 : 70);
+    // the first group moves down, to the left of the network
     const by = 226, lowBase = by + 24;
-    const bx = Math.round((50 + axisX) / 2 + (narrow ? 4 : -8)), r = Math.min(narrow ? 42 : 50, (axisX - 50) / 2 - 28);
     const g0 = groups[0], dx = 8 - (g0.cx - 21), dy = lowBase - base;
-    const contLab = text(g, 8, lowBase + 18, t("rs.mf.contents"), { opacity: 0 });
+    const contLab = text(g, 8, by + 62, t("rs.mf.contents"), { opacity: 0 });   // below the bars, clear of the input column
     await T(0.8, e => { g0.g.setAttribute("transform", `translate(${(dx * e).toFixed(1)},${(dy * e).toFixed(1)})`); op(contLab, e); });
-    // network ball
-    const wireG = el("g", {}, g);
-    const ball = netBall(g, bx, by, r, rnd);
-    const dball = drawAll(ball.ls);
-    await T(0.8, e => { dball(e); op(ball.dots, e); });
-    // input wires from the bar tops to the left side of the ball (one first, the rest later)
-    const inNodes = [11, 0, 1, 2, 3];   // ball dots on the upper left, so the wires stay clear of the label below the bars
-    const wires = g0.bars.map((b, j) => {
-      const [nx, ny] = ball.P[inNodes[j]];
-      return el("path", { d: `M${(b.x + dx).toFixed(1)},${(lowBase - b.h).toFixed(1)} L${nx.toFixed(1)},${ny.toFixed(1)}`, fill: "none", stroke: C.line, "stroke-width": 0.9, opacity: 0 }, wireG);
-    });
-    const first = 2, dw1 = prepDraw(wires[first]);
-    op(wires[first], 1);
-    await T(0.6, dw1);
+    // a generic neural network: one input column, two hidden layers, one output
+    const nx0 = 76, nx3 = axisX - 40, cols = [0, 1, 2, 3].map(i => lerp(nx0, nx3, i / 3));
+    const layers = [[-36, -18, 0, 18, 36], [-27, -9, 9, 27], [-27, -9, 9, 27], [0]].map((ys, i) => ys.map(y => [cols[i], by + y]));
+    const wireG = el("g", {}, g), netG = el("g", {}, g), nodeG = el("g", { opacity: 0 }, g);
+    const links = [];
+    for (let i = 0; i < 3; i++)
+      layers[i].forEach(([x1, y1]) => layers[i + 1].forEach(([x2, y2]) =>
+        links.push(el("path", { d: `M${x1},${y1} L${x2},${y2}`, fill: "none", stroke: C.line, "stroke-width": 0.6 }, netG))));
+    layers.forEach((L, i) => L.forEach(([x, y]) => el("circle", { cx: x, cy: y, r: i === 3 ? 4 : 3.2, fill: "#fbfaf7", stroke: C.muted, "stroke-width": 1.1 }, nodeG)));
+    const nnLab = text(g, (nx0 + nx3) / 2, by - 50, t("rs.mf.nn"), { "text-anchor": "middle", opacity: 0 });   // above the network
+    const dl = drawAll(links);
+    await T(0.8, e => { dl(e); op(nodeG, e); op(nnLab, e); });
+    // first only a few bars are connected to the inputs
+    const wires = g0.bars.map((b, j) => el("path", { d: `M${(b.x + dx).toFixed(1)},${(lowBase - b.h).toFixed(1)} L${layers[0][j][0] - 4},${layers[0][j][1]}`,
+      fill: "none", stroke: C.line, "stroke-width": 0.9, opacity: 0 }, wireG));
+    const few = [1, 3];
+    const dfew = drawAll(few.map(j => wires[j]));
+    few.forEach(j => op(wires[j], 1));
+    await T(0.6, dfew);
     // sensory score axis
-    const yTop = 146, yBot = 316, yTrue = 196, ySingle = 292, yNear = 203;
     const axis = el("g", { opacity: 0 }, g);
     el("path", { d: `M${axisX},${yTop} L${axisX},${yBot}`, fill: "none", stroke: C.line, "stroke-width": 1 }, axis);
     [yTop, yBot].forEach(y => el("path", { d: `M${axisX - 3},${y} L${axisX + 3},${y}`, fill: "none", stroke: C.line, "stroke-width": 1 }, axis));
     const al = text(axis, axisX, yTop - 10, t("rs.mf.score"), { class: "t-dark", "text-anchor": "middle" });
     al.setAttribute("x", Math.min(axisX, W - 4 - al.getComputedTextLength() / 2));
     await T(0.6, e => op(axis, e));
-    // output: one filled point travels from the ball onto the axis
-    const ox = bx + r + 4;
+    // output: one filled point travels from the output node onto the axis
+    const ox = nx3 + 5;
     const outLine = el("path", { d: `M${ox},${by} L${axisX - 6},${ySingle}`, fill: "none", stroke: ML, "stroke-width": 1.2 }, g);
     const dout = prepDraw(outLine);
     const pred = el("circle", { cx: ox, cy: by, r: 5, fill: M, opacity: 0 }, g);
     await T(0.8, e => { dout(e); op(pred, Math.min(1, e * 3)); pred.setAttribute("cx", lerp(ox, axisX, e)); pred.setAttribute("cy", lerp(by, ySingle, e)); });
     outLine.removeAttribute("stroke-dasharray");
-    // compare with the measured value (hollow point)
+    // compare with the measured value (hollow point): far without interactions
     const cmp = el("g", { opacity: 0 }, g);
     el("circle", { cx: axisX, cy: yTrue, r: 5.5, fill: "#fbfaf7", stroke: C.text, "stroke-width": 1.3 }, cmp);
     const gapLine = el("path", { fill: "none", stroke: C.text, "stroke-width": 1 }, cmp);
     const setGap = y => gapLine.setAttribute("d", `M${axisX + 9},${yTrue} L${axisX + 13},${yTrue} M${axisX + 11},${yTrue} L${axisX + 11},${y} M${axisX + 9},${y} L${axisX + 13},${y}`);
     setGap(ySingle);
-    const l1 = text(g, W - 4, H - 6, t("rs.mf.single"), { class: "t-dark", "text-anchor": "end", opacity: 0 });
-    const l2 = text(g, W - 4, H - 6, t("rs.mf.several"), { class: "t-m", "text-anchor": "end", opacity: 0 });
     await T(0.6, e => { op(cmp, e); op(l1, e); });
-    // connect every compound
-    const rest = wires.filter((w, j) => j !== first);
+    // connect the remaining bars: with interactions the prediction moves next to the measured value
+    const rest = wires.filter((w, j) => !few.includes(j));
     const dr = drawAll(rest);
     rest.forEach(w => op(w, 1));
     await T(0.8, dr);
@@ -783,8 +806,9 @@
       const y = lerp(ySingle, yNear, e);
       pred.setAttribute("cy", y); setGap(y);
       outLine.setAttribute("d", `M${ox},${by} L${axisX - 6},${y}`);
+      op(l1, 1 - e); op(gapLine, 1 - e);
     });
-    await T(0.6, e => { op(l1, 1 - e); op(l2, e); });
+    await T(0.6, e => op(l2, e));
   };
 
   // 2 line: five time points, three ways to join them, checked against a validation point
@@ -801,7 +825,7 @@
     };
     const poly = h => 0.11514 + 0.27786 * h - 0.030357 * h * h;                           // least-squares quadratic
     const spline = h => model(h) - Math.sin(Math.PI * h / 2) * (0.12 + 0.9 * Math.pow((h - 4) / 4, 4));   // wiggles, most at the ends
-    const val = model(5) + 0.02;
+    const val = model(5) + 0.06;   // a measured value sits a little off the curve
     // legend: one row if it fits, otherwise three rows under the plot
     const names = ["rs.mf.poly", "rs.mf.spline", "rs.mf.model"], greys = ["#9aa0a6", "#6b7178", "#3d434a"];
     const leg = names.map(k => { const gg = el("g", { opacity: 0 }, g); return { g: gg, tx: text(gg, 0, 0, t(k), {}) }; });
@@ -866,16 +890,16 @@
     await T(0.6, e => op(vg, e));
     const fs = [poly, spline, model];
     const dists = fs.map((f, i) => {
-      const x = vx + 8 + i * 5, y = Y(f(5));
-      return el("path", { d: `M${x - 2},${vy} L${x + 2},${vy} M${x},${vy} L${x},${y} M${x - 2},${y} L${x + 2},${y}`, fill: "none", stroke: greys[i], "stroke-width": 1.2, opacity: 0 }, g);
+      const x = vx + 10 + i * 8, y = Y(f(5));
+      return el("path", { d: `M${x - 3},${vy} L${x + 3},${vy} M${x},${vy} L${x},${y} M${x - 3},${y} L${x + 3},${y}`, fill: "none", stroke: greys[i], "stroke-width": 1.3, opacity: 0 }, g);
     });
     for (let i = 0; i < 3; i++) await T(0.6, e => op(dists[i], e));
     // the curve prediction model takes the accent colour; the other two fade
     await T(0.8, e => {
       const c = mix(greys[2], M, e);
       curves[2].setAttribute("stroke", c); curves[2].setAttribute("stroke-width", lerp(1.6, 2.2, e));
-      leg[2].sw.setAttribute("stroke", c); leg[2].tx.style.fill = mix(C.muted, M, e); dists[2].setAttribute("stroke", c);
-      [curves[0], curves[1], neg, dists[0], dists[1], leg[0].g, leg[1].g].forEach(n => op(n, 1 - e));
+      leg[2].sw.setAttribute("stroke", c); leg[2].tx.style.fill = mix(C.muted, M, e);
+      [curves[0], curves[1], neg, leg[0].g, leg[1].g].concat(dists).forEach(n => op(n, 1 - e));   // the distance marks go too
     });
   };
 
@@ -898,7 +922,7 @@
     });
     await T(0.8, e => keep.forEach((i, k) => dots[i].setAttribute("cx", lerp(8 + s / 2 + i * s, 8 + s / 2 + k * s, e))));
     // the formulation space: a 10 x 10 grid
-    const gridTop = 108, G = Math.min(210, H - gridTop - 26, W - 16), cell = G / 10, gx0 = Math.round((W - G) / 2);
+    const gridTop = 108, G = Math.min(200, H - gridTop - 44, W - 16), cell = G / 10, gx0 = Math.round((W - G) / 2);
     const gcx = gx0 + G / 2, gcy = gridTop + G / 2;
     const heatG = el("g", {}, g), gridG = el("g", { opacity: 0 }, g);
     let gd = "";
@@ -914,7 +938,8 @@
       const q = Math.min(1, Math.max(0, (e - i * 0.08) / 0.28));
       op(c, q); c.setAttribute("cy", lerp(gridTop - 10, lhs[i].y, q));
     }));
-    const labL = text(g, W / 2, gridTop + G + 18, t("rs.mf.lhs"), { class: "t-dark", "text-anchor": "middle", opacity: 0 });
+    const labL = text(g, W / 2, gridTop + G + 34, t("rs.mf.lhs"), { class: "t-dark", "text-anchor": "middle", opacity: 0 });
+    const labCover = text(g, W / 2, gridTop + G + 34, t("rs.mf.cover"), { class: "t-dark", "text-anchor": "middle", opacity: 0 });
     await T(0.6, e => op(labL, e));
     // the points flow into a network ball at the centre of the grid
     const bwrap = el("g", { opacity: 0 }, g);
@@ -926,13 +951,13 @@
     const cells = [];
     for (let r = 0; r < 10; r++) for (let c = 0; c < 10; c++) {
       const x = (c + 0.5) / 10, y = (r + 0.5) / 10;
-      cells.push({ r, c, flav: Math.exp(-((x - 0.7) ** 2 + (y - 0.35) ** 2) / 0.18), cost: x,   // cost rises to the right
+      cells.push({ r, c, flav: Math.exp(-((x - 0.25) ** 2 + (y - 0.4) ** 2) / 0.18), cost: 1 - x,   // cost falls to the right
         d: Math.hypot(c - 4.5, r - 4.5) / Math.hypot(4.5, 4.5),
         el: el("rect", { x: gx0 + c * cell, y: gridTop + r * cell, width: cell, height: cell, opacity: 0 }, heatG) });
     }
-    const WMAX = 1.0;   // total = flavor x (1 - w x cost): the best region moves about two cells towards lower cost
+    const WMAX = 3.9;   // total = flavor x exp(-w x cost): the best region moves four cells towards lower cost
     const paint = w => {
-      const v = cells.map(q => q.flav * (1 - w * q.cost)), lo = Math.min(...v), hi = Math.max(...v);
+      const v = cells.map(q => q.flav * Math.exp(-w * q.cost)), lo = Math.min(...v), hi = Math.max(...v);
       cells.forEach((q, i) => q.el.setAttribute("fill", mix(MS, M, Math.pow((v[i] - lo) / (hi - lo), 1.8))));
       return v;
     };
@@ -951,7 +976,17 @@
     const wc = text(ind, pos1, ty + 18, t("rs.mf.with_cost"), { "text-anchor": "middle" });
     wc.setAttribute("x", Math.min(pos1, tx1 - wc.getComputedTextLength() / 2));
     const knob = el("circle", { cx: tx0, cy: ty, r: 5, fill: M }, ind);
+    await T(0.6, e => { op(labL, Math.max(0, 1 - 2 * e)); op(labCover, Math.max(0, 2 * e - 1)); });   // out, then in
     await T(0.6, e => op(ind, e));
+    // dashed box round the best cells when only flavor counts, and the direction of lower cost
+    const top3 = vals => vals.map((x, i) => [x, i]).sort((a, b) => b[0] - a[0]).slice(0, 3).map(b => cells[b[1]]);
+    const b0 = top3(paint(0));
+    const bx0 = Math.min(...b0.map(q => q.c)), bx1 = Math.max(...b0.map(q => q.c)) + 1, by0 = Math.min(...b0.map(q => q.r)), by1 = Math.max(...b0.map(q => q.r)) + 1;
+    const mark = el("g", { opacity: 0 }, g);
+    el("rect", { x: gx0 + bx0 * cell - 1.5, y: gridTop + by0 * cell - 1.5, width: (bx1 - bx0) * cell + 3, height: (by1 - by0) * cell + 3,
+      fill: "none", stroke: C.text, "stroke-width": 1.4, "stroke-dasharray": "4 3" }, mark);
+    text(mark, gx0 + G, gridTop + G + 15, t("rs.mf.lowcost"), { class: "t-m", "text-anchor": "end" });
+    await T(0.6, e => op(mark, e));
     let v = null;
     await T(1.0, e => { knob.setAttribute("cx", lerp(tx0, pos1, e)); v = paint(WMAX * e); });
     // tick the best cells
