@@ -555,10 +555,11 @@
     // the rest appear only in some of them.
     const NP = 10;
     const px = Array.from({ length: NP }, (_, k) => xa + (xR - xa) * ((k + 0.5) / NP + (rnd() - 0.5) * 0.03));
-    const SHARED = [1, 2, 4, 6, 8];
+    const SHARED = [1, 2, 4, 5, 8];
     const ODOR = [1, 3, 4, 7, 8];     // peaks with an odor, marked on the human milk trace while sniffing
     const KEYP = [1, 4, 7];           // the key flavor compounds among them
-    const SAME = [2, 6];              // two shared peaks joined by dashed lines: the same compound
+    const SAME = [2, 5];              // two shared peaks joined by dashed lines: the same compound
+                                      // (clear in every trace, human milk included, with different heights)
     const ALL = [0, 1, 2, 3, 4, 5, 6];
     const has = px.map((_, k) => {
       if (SHARED.includes(k)) return ALL;
@@ -582,7 +583,7 @@
       // and widths, so no two traces look alike
       const sc = 0.7 + rnd() * 0.6, wsc = 0.7 + rnd() * 0.8;
       const peaks = px.map((x, k) => has[k].includes(i)
-        ? [x, Math.max(3, Math.min(i ? 30 : 26, sc * big[k] * (0.12 + 1.18 * Math.pow(rnd(), 1.4)))) * hs, wsc * (2 + rnd() * 4)] : [x, 0, 3]);
+        ? [x, (SAME.includes(k) ? (i ? 9 : 16) + rnd() * (i ? 17 : 8) : Math.max(3, Math.min(i ? 30 : 26, sc * big[k] * (0.12 + 1.18 * Math.pow(rnd(), 1.4))))) * hs, wsc * (2 + rnd() * 4)] : [x, 0, 3]);
       const yAt = x => peaks.reduce((y, [p, h, w]) => y - h * Math.exp(-Math.pow((x - p) / w, 2)), base);
       if (i === 0) px.forEach((x, k) => humanTop.push(yAt(x)));
       let d = "";
@@ -632,18 +633,24 @@
       await T(1.1, e => place(lerp(from, to, e)));
       nx = to;
       const yt = humanTop[k] - 3;
-      const m = el("path", { d: `M${px[k] - 4},${yt - 7} L${px[k] + 4},${yt - 7} L${px[k]},${yt} Z`, fill: C.text, opacity: 0 }, g);
+      const m = el("path", { d: `M${px[k] - 4},${yt - 7} L${px[k] + 4},${yt - 7} L${px[k]},${yt} Z`, fill: C.text, stroke: C.text, "stroke-width": 1, "stroke-linejoin": "round", opacity: 0 }, g);
       marks[k] = { m, x: px[k], y: yt };
       await T(1.0, e => op(m, e));
     }
     const from = nx;
     await T(1.1, e => place(lerp(from, xEnd, e)));
-    // segment 4: ROAV picks out the key flavor compounds: three of the marked peaks, darker teal and a little larger
+    // segment 4: ROAV picks out the key flavor compounds: three of the marked peaks become filled darker teal
+    // and larger; the other two become light grey outlines
     await say(4);
-    await T(1.1, e => KEYP.forEach(k => {
-      const { m, x, y } = marks[k], s = lerp(1, 1.4, e);
-      m.setAttribute("fill", mix(C.text, KEY, e));
-      m.setAttribute("transform", `translate(${x},${y}) scale(${s.toFixed(3)}) translate(${-x},${-y})`);
+    await T(1.1, e => ODOR.forEach(k => {
+      const { m, x, y } = marks[k];
+      if (KEYP.includes(k)) {
+        const s = lerp(1, 1.4, e);
+        m.setAttribute("fill", mix(C.text, KEY, e)); m.setAttribute("stroke", mix(C.text, KEY, e));
+        m.setAttribute("transform", `translate(${x},${y}) scale(${s.toFixed(3)}) translate(${-x},${-y})`);
+      } else {
+        m.setAttribute("fill", mix(C.text, "#fbfaf7", e)); m.setAttribute("stroke", mix(C.text, "#b8b4ab", e));
+      }
     }));
     const kg = el("g", { opacity: 0 }, g);
     const keyLab = text(kg, (marks[KEYP[0]].x + marks[KEYP[2]].x) / 2, 14, t("rs.f.key"), { "text-anchor": "middle" });
