@@ -52,3 +52,18 @@
 /* master's part: brown accent */
 .rs-part-m .rs-step .rs-no { color: #8a5a2b; }
 .rs-part-m .rs-nav:hover:not(:disabled) { border-color: #8a5a2b; color: #8a5a2b; }
+
+/* research question under each part heading */
+.rs-q { color: var(--muted); margin: 0 0 var(--sp-3); }
+/* Replay and Pause / Resume side by side */
+.rs-acts { display: flex; gap: var(--sp-2); }
+.rs-replay:disabled { opacity: .45; cursor: default; text-decoration: none; }
+.rs-replay:disabled:hover { color: var(--muted); }
+/* the explanation line above the picture (PhD steps 1-3), one per segment */
+.rs-say { font-size: 1.125rem; line-height: 1.45; color: var(--text); margin: 0 0 var(--sp-2); }
+.rs-say[hidden], .rs-saylist[hidden] { display: none; }
+/* reduced motion: every explanation line of the step, in order, under the picture */
+.rs-saylist { margin: var(--sp-2) 0 0; padding-left: 1.4em; color: var(--text); }
+.rs-saylist li { margin: 0 0 var(--sp-1); }
+.rs-part-m .rs-replay:disabled:hover { color: var(--muted); }
+.rs-nw { white-space: nowrap; }

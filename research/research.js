@@ -4,8 +4,10 @@
  * - Every point, curve and bar is schematic, generated from fixed seeds (mulberry32); no paper or sample data.
  * - Animations are attribute tweens on one requestAnimationFrame clock, so they can be paused
  *   (stage out of view) and no inline style attributes are needed (strict CSP).
- * - One thing moves at a time; each change 0.6-1 s, ease-in-out; only move, fade and line drawing.
- * - prefers-reduced-motion: every step is drawn in its final state at once.
+ * - One thing moves at a time; each change 0.6-1 s (PhD steps 1-3: 1.0-1.2 s), ease-in-out; only move, fade and line drawing.
+ * - PhD steps 1-3 play in segments: before each one an explanation line fades in above the picture and stays
+ *   for 1.5 s before the picture moves; segments are 1.5 s apart. Pause / Resume holds the stage clock.
+ * - prefers-reduced-motion: every step is drawn in its final state at once, with its explanation lines as a list.
  * - Each stage plays its step 1 when it first comes into view; later steps start only when the visitor asks.
  */
 (async function () {
@@ -70,9 +72,9 @@
   const ease = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
   function makeClock() {
     let vt = 0, last = null;
-    const c = { paused: true, tweens: [] };
+    const c = { paused: true, held: false, tweens: [] };   // paused: out of view; held: the visitor pressed Pause
     c.tick = function (ts) {
-      if (last != null && !c.paused) vt += Math.min(ts - last, 100);
+      if (last != null && !c.paused && !c.held) vt += Math.min(ts - last, 100);
       last = ts;
       for (const tw of c.tweens.slice()) {
         const p = Math.min(1, Math.max(0, (vt - tw.t0) / tw.d));
@@ -334,7 +336,11 @@
     return { draws, labs };
   }
 
-  SCENES[1] = async function (g, W, H, T, staticView) {
+  // PhD steps 1-3 are slower: every change takes 1.1 s; plain waits (no function) keep their length
+  const slow = T => (sec, fn) => T(fn && sec < 1.0 ? 1.1 : sec, fn);
+
+  SCENES[1] = async function (g, W, H, T0, staticView, say) {
+    const T = slow(T0);
     const rnd = mulberry32(1303);
     const x0 = 8, y0 = 26;
     const x1 = staticView ? Math.round(W * 0.58) : W - 8;   // reduced motion: the three clusters sit to the right
@@ -348,16 +354,16 @@
     const clip = el("g", { "clip-path": "url(#" + clipId + ")" }, g);
     const pts = el("g", {}, clip);
     const hc = { x: x0 + pw * 0.27, y: y0 + ph * 0.55 }, ac = { x: x0 + pw * 0.72, y: y0 + ph * 0.5 };
-    const human = el("g", { opacity: 0 }, pts), animal = el("g", { opacity: 0 }, pts), stars = el("g", { opacity: 0 }, pts);
-    const hdots = [];
+    const human = el("g", {}, pts), animal = el("g", {}, pts), stars = el("g", { opacity: 0 }, pts);
+    const hdots = [], adots = [];   // every dot starts grey and hidden; they fall onto the plane in step (a)
     for (let i = 0; i < 78; i++) {
       const x = hc.x + gauss(rnd) * pw * 0.075, y = hc.y + gauss(rnd) * ph * 0.14;
-      hdots.push(el("circle", { cx: x.toFixed(1), cy: y.toFixed(1), r: 2.2, fill: C.hm }, human));
+      hdots.push(el("circle", { cx: x.toFixed(1), cy: y.toFixed(1), r: 2.2, fill: C.line, opacity: 0 }, human));
     }
     for (let k = 0; k < 19; k++) {
       const gx = ac.x + gauss(rnd) * pw * 0.08, gy = ac.y + gauss(rnd) * ph * 0.17;
       for (let j = 0; j < 3; j++)
-        el("circle", { cx: (gx + gauss(rnd) * 4).toFixed(1), cy: (gy + gauss(rnd) * 4).toFixed(1), r: 2.2, fill: C.line }, animal);
+        adots.push(el("circle", { cx: (gx + gauss(rnd) * 4).toFixed(1), cy: (gy + gauss(rnd) * 4).toFixed(1), r: 2.2, fill: C.line, opacity: 0 }, animal));
     }
     // Alpine Holstein milk: a few small filled stars just inside the edge of the human milk cluster
     const sc = { x: hc.x + pw * 0.065, y: hc.y - ph * 0.12 };
@@ -382,10 +388,54 @@
     el("circle", { cx: rc.x, cy: rc.y, r: 18, fill: "none", stroke: C.hm, "stroke-width": 1.6 }, halo);
     const haloScale = k => halo.setAttribute("transform", `translate(${rc.x},${rc.y}) scale(${k.toFixed(3)}) translate(${-rc.x},${-rc.y})`);
 
-    // (a)
-    await T(0.6, e => op(axes, e));
-    await T(0.8, e => op(human, e));
-    await T(0.8, e => op(animal, e));
+    // opening, segment 1: a drop of human milk goes into the e-nose; 14 sensor cells light up and become
+    // 14 thin bars, the odor fingerprint
+    const intro = el("g", {}, g);
+    const nbw = 136, nbh = 70, nbx = Math.round(W / 2 - nbw / 2), nby = 50, ncx = nbx + nbw / 2;
+    const nose = el("g", { opacity: 0 }, intro);
+    el("rect", { x: nbx, y: nby, width: nbw, height: nbh, rx: 6, fill: "#fbfaf7", stroke: C.text, "stroke-width": 1.2 }, nose);
+    text(nose, ncx, nby + 18, t("rs.f.enose"), { class: "t-dark", "text-anchor": "middle" });
+    const lv = Array.from({ length: 14 }, () => 0.12 + rnd() * 0.78);   // sensor responses: shade and bar height
+    const fpBase = nby + nbh + 96, fpX0 = ncx - (14 * 7 - 3) / 2;
+    const cells = lv.map((v, i) => {
+      const c = { x: nbx + (nbw - 7 * 16 + 4) / 2 + (i % 7) * 16, y: nby + 28 + Math.floor(i / 7) * 16, w: 12, h: 12 };
+      const b = { x: fpX0 + i * 7, y: fpBase - (8 + v * 46), w: 4, h: 8 + v * 46 };
+      return { r: el("rect", { x: c.x, y: c.y, width: 12, height: 12, fill: "#ffffff", stroke: C.line, "stroke-width": 1 }, nose), c, b, v };
+    });
+    const setRect = (r, a) => { r.setAttribute("x", a.x.toFixed(2)); r.setAttribute("y", a.y.toFixed(2)); r.setAttribute("width", a.w.toFixed(2)); r.setAttribute("height", a.h.toFixed(2)); };
+    const rlerp = (a, b, e) => ({ x: lerp(a.x, b.x, e), y: lerp(a.y, b.y, e), w: lerp(a.w, b.w, e), h: lerp(a.h, b.h, e) });
+    const drop = el("path", { d: `M0,-9 C6,-1 7,3 7,5 A7,7 0 0 1 -7,5 C-7,3 -6,-1 0,-9 Z`, fill: C.hm, opacity: 0 }, intro);
+    const dropAt = y => drop.setAttribute("transform", `translate(${ncx},${y.toFixed(1)})`);
+    const fpLab = text(intro, ncx, fpBase + 20, t("rs.f.fp"), { class: "t-dark", "text-anchor": "middle", opacity: 0 });
+    dropAt(14);
+    await say(1);
+    await T(1.1, e => { op(drop, e); op(nose, e); });
+    await T(1.1, e => { dropAt(lerp(14, nby + nbh / 2, e)); op(drop, 1 - e); });
+    await T(1.1, e => cells.forEach(c => c.r.setAttribute("fill", mix("#ffffff", "#5f6670", c.v * e))));
+    const bg = el("g", {}, intro);   // the cells leave the (soon fading) box
+    cells.forEach(c => bg.appendChild(c.r));
+    await T(1.1, e => { cells.forEach(c => setRect(c.r, rlerp(c.c, c.b, e))); op(fpLab, e); });
+    // segment 2: the fingerprint shrinks to one dot, which lands on the plane; the other samples follow
+    await say(2);
+    await T(1.1, e => { op(nose, 1 - e); op(fpLab, 1 - e); op(axes, e); });
+    const fc = { x: ncx, y: fpBase - 18 };
+    const dot = el("circle", { cx: fc.x, cy: fc.y, r: 0, fill: C.text }, intro);
+    await T(1.1, e => {
+      cells.forEach(c => { setRect(c.r, rlerp(c.b, { x: fc.x - 1, y: fc.y - 1, w: 2, h: 2 }, e)); op(c.r, 1 - e); });
+      dot.setAttribute("r", (3.5 * e).toFixed(2));
+    });
+    const first = hdots[5], fx = +first.getAttribute("cx"), fy = +first.getAttribute("cy");
+    await T(1.1, e => { dot.setAttribute("cx", lerp(fc.x, fx, e).toFixed(1)); dot.setAttribute("cy", lerp(fc.y, fy, e).toFixed(1)); dot.setAttribute("r", lerp(3.5, 2.2, e).toFixed(2)); dot.setAttribute("fill", mix(C.text, C.line, e)); });
+    op(first, 1);
+    intro.remove();
+    const rest = hdots.concat(adots).filter(d => d !== first);
+    const order = rest.map(() => rnd()), batches = [[], [], []];
+    rest.forEach((d, i) => batches[Math.min(2, Math.floor(order[i] * 3))].push([d, +d.getAttribute("cy")]));
+    for (const b of batches)
+      await T(1.1, e => b.forEach(([d, y]) => { op(d, Math.min(1, e * 2)); d.setAttribute("cy", (y - 22 * (1 - e)).toFixed(1)); }));
+    // (a) segment 3: human milk and animal milk on opposite sides; Alpine Holstein milk on the human side
+    await say(3);
+    await T(1.1, e => hdots.forEach(d => d.setAttribute("fill", mix(C.line, C.hm, e))));
     await T(0.6, e => { op(stars, e); op(lh, e); op(la, e); op(starLab, e); });
     await T(0.6, e => op(halo, e));
     for (let i = 0; i < 2; i++) await T(0.6, e => haloScale(1 + 0.15 * Math.sin(Math.PI * e)));
@@ -411,8 +461,9 @@
       await bars(g, W, y1 + 22, H, T);
       return;
     }
-    await T(3.0, () => {});   // let the halo stay
-    // (b) zoom into human milk, colour by city
+    await T(3.0);   // let the halo stay
+    // (b) segment 4: zoom into human milk, colour by city
+    await say(4);
     // only human milk goes into the zoom: labels, stars, halo and animal milk fade out first
     await T(0.6, e => { [lh, la, starLab, stars, animal, halo].forEach(n => op(n, 1 - e)); });
     // zoom so that every human milk point stays whole inside the clipped plot area
@@ -440,9 +491,10 @@
       text(legend, lx + 14, ly, t("rs.f.city", { n: i + 1 }), {});
     }
     await T(0.6, e => op(legend, e));
-    await T(1.4, () => {});
+    await T(1.4);
+    // (b2) segment 5: the same points, clustered by e-nose signals: three colours, three groups
+    await say(5);
     await T(0.6, e => op(legend, 1 - e));
-    // (b2) the same points, clustered by e-nose signals: three colours, three groups
     const box = { x: inner.x0 + 4, y: inner.y0 + 4, w: inner.x1 - inner.x0 - 8, h: inner.y1 - inner.y0 - 8 };
     const crnd = mulberry32(31);
     const ks = hdots.map(() => Math.floor(crnd() * 3));
@@ -464,8 +516,8 @@
     await T(0.6, e => mk.draws.forEach(f => f(e)));
     const cl = text(g, x0 + 2, 14, t("rs.f.clustered"), { class: "t-dark", opacity: 0 });
     await T(0.6, e => { mk.labs.forEach(l => op(l, e)); op(cl, e); });
-    await T(1.4, () => {});
-    // (c) association bars
+    // (c) segment 6: association bars
+    await say(6);
     await T(0.6, e => { op(pts, 1 - e); op(axes, 1 - e); op(cg, 1 - e); op(cl, 1 - e); });
     legend.remove();
     await bars(g, W, 26, H, T);
@@ -490,68 +542,119 @@
     }
   }
 
-  SCENES[2] = async function (root, W, Hfull, T, staticView) {
+  // Key flavor compounds in step 2: a darker step of the human milk teal (#0f6e6e)
+  const KEY = "#0a5252";
+  SCENES[2] = async function (root, W, Hfull, T0, staticView, say) {
+    const T = slow(T0);
     const rnd = mulberry32(2026);
     const H = staticView ? 206 : Hfull;   // reduced motion: spectra on top, ROAV scatter below
     const g = el("g", {}, root);
     const xL = 8, xR = W - 8, axisY = H - 44;
     const xa = xL + (xR - xL) * 0.36;
-    const keys = [0.22, 0.52, 0.83].map(f => xa + (xR - xa) * f);
-    const others = Array.from({ length: 6 }, () => xa + (xR - xa) * (0.05 + rnd() * 0.9));
-    const top = 58, step = (axisY - 22 - top) / 6;
+    // ten peak positions (retention times). Half are shared by every milk (same place, different heights),
+    // the rest appear only in some of them.
+    const NP = 10;
+    const px = Array.from({ length: NP }, (_, k) => xa + (xR - xa) * ((k + 0.5) / NP + (rnd() - 0.5) * 0.03));
+    const SHARED = [1, 2, 4, 6, 8];
+    const ODOR = [1, 3, 4, 7, 8];     // peaks with an odor, marked on the human milk trace while sniffing
+    const KEYP = [1, 4, 7];           // the key flavor compounds among them
+    const SAME = [2, 6];              // two shared peaks joined by dashed lines: the same compound
+    const ALL = [0, 1, 2, 3, 4, 5, 6];
+    const has = px.map((_, k) => {
+      if (SHARED.includes(k)) return ALL;
+      let set = ALL.filter(() => rnd() < 0.45);
+      if (ODOR.includes(k)) { if (!set.includes(0)) set.push(0); }
+      else set = set.filter(i => i !== 0);
+      while (set.length < 2) { const j = 1 + Math.floor(rnd() * 6); if (!set.includes(j)) set.push(j); }
+      return set;
+    });
+    const big = px.map(() => 12 + rnd() * 16);   // typical size of each peak
+    const hs = staticView ? 0.55 : 1;
+    const top = staticView ? 62 : 72, step = (axisY - 22 - top) / 6;
     const colours = [C.hm, C.fm, C.line, C.line, C.line, C.line, C.line];
     const names = { 0: ["rs.f.hm", "t-hm"], 1: ["rs.f.formula", "t-fm"], 4: ["rs.f.animals", ""] };
     const axis = el("path", { d: `M${xL},${axisY} L${xR},${axisY}`, stroke: C.faint, "stroke-width": 1, fill: "none", opacity: 0 }, g);
     const axisLab = text(g, xL, H - 8, t("rs.f.time"), { opacity: 0 });
-    const lines = [], labs = [];
+    const lines = [], labs = [], humanTop = [];
     for (let i = 0; i < 7; i++) {
       const base = top + i * step;
-      const peaks = keys.map(x => [x, 10 + rnd() * 16, 4 + rnd() * 2])
-        .concat(others.map(x => [x, rnd() < 0.6 ? 3 + rnd() * 12 : 0, 3 + rnd() * 3]));
+      // every trace has its own heights (0.12-1.3 of the typical size, times a scale for the whole trace)
+      // and widths, so no two traces look alike
+      const sc = 0.7 + rnd() * 0.6, wsc = 0.7 + rnd() * 0.8;
+      const peaks = px.map((x, k) => has[k].includes(i)
+        ? [x, Math.max(3, Math.min(i ? 30 : 26, sc * big[k] * (0.12 + 1.18 * Math.pow(rnd(), 1.4)))) * hs, wsc * (2 + rnd() * 4)] : [x, 0, 3]);
+      const yAt = x => peaks.reduce((y, [p, h, w]) => y - h * Math.exp(-Math.pow((x - p) / w, 2)), base);
+      if (i === 0) px.forEach((x, k) => humanTop.push(yAt(x)));
       let d = "";
-      for (let k = 0; k <= 160; k++) {
-        const x = xL + (xR - xL) * k / 160;
-        let y = base - Math.abs(gauss(rnd)) * 0.5;
-        for (const [px, ph, pwid] of peaks) y -= ph * Math.exp(-Math.pow((x - px) / pwid, 2));
-        d += (k ? "L" : "M") + x.toFixed(1) + "," + y.toFixed(1);
+      for (let k = 0; k <= 200; k++) {
+        const x = xL + (xR - xL) * k / 200;
+        d += (k ? "L" : "M") + x.toFixed(1) + "," + (yAt(x) - Math.abs(gauss(rnd)) * 0.4).toFixed(1);
       }
       lines.push(el("path", { d, fill: "none", stroke: colours[i], "stroke-width": i < 2 ? 1.4 : 1, opacity: 0 }, g));
       labs.push(names[i] ? text(g, xL, base - 5, t(names[i][0]), { class: names[i][1], opacity: 0 }) : null);
     }
+    // segment 1: the axis and the human milk trace only
+    await say(1);
     await T(0.6, e => { op(axis, e); op(axisLab, e); });
-    for (let i = 0; i < 7; i++) {
-      const d = prepDraw(lines[i]);
-      op(lines[i], 1);
-      await T(0.6, e => { d(e); if (labs[i]) op(labs[i], e); });
-    }
-    // the nose walks along the time axis and lights the key peaks
-    const nose = el("g", { opacity: 0 }, g);
-    el("path", { d: `M0,${axisY + 1} L0,${axisY + 7}`, stroke: C.text, "stroke-width": 1.2, fill: "none" }, nose);
-    const sniff = text(nose, 0, axisY + 21, t("rs.f.sniff"), { class: "t-dark", "text-anchor": "middle" });
+    const drawTrace = async (i, sec) => { const d = prepDraw(lines[i]); op(lines[i], 1); await T(sec, e => { d(e); if (labs[i]) op(labs[i], e); }); };
+    await drawTrace(0, 1.1);
+    // segment 2: the other six traces, then two shared peaks joined by dashed lines
+    await say(2);
+    for (let i = 1; i < 7; i++) await drawTrace(i, 1.0);
+    // each dashed line gets its own label; if the two labels would touch, the second one sits a line lower
+    const same = el("g", { opacity: 0 }, g), dashes = el("g", {}, same), sameLabs = el("g", {}, same);
+    let prevR = -1e9;
+    SAME.forEach(k => {
+      const lab = text(sameLabs, px[k], 14, t("rs.f.same"), { class: "t-dark", "text-anchor": "middle" });
+      const w = lab.getComputedTextLength(), x = Math.min(Math.max(px[k], xL + w / 2), xR - w / 2);
+      let y = 14;
+      if (x - w / 2 < prevR + 6) y = 28;
+      lab.setAttribute("x", x); lab.setAttribute("y", y);
+      prevR = x + w / 2;
+      el("path", { d: `M${px[k]},${y + 5} L${px[k]},${axisY - 2}`, fill: "none", stroke: C.muted, "stroke-width": 1, "stroke-dasharray": "3 3" }, dashes);
+    });
+    await T(1.1, e => op(same, e));
+    // segment 3 (GC-O): "Sniffing" walks along the time axis and marks the human milk peaks that have an odor
+    await say(3);
+    const sn = el("g", { opacity: 0 }, g);
+    el("path", { d: `M0,${axisY + 1} L0,${axisY + 7}`, stroke: C.text, "stroke-width": 1.2, fill: "none" }, sn);
+    const sniff = text(sn, 0, axisY + 21, t("rs.f.sniff"), { class: "t-dark", "text-anchor": "middle" });
     const sw = sniff.getComputedTextLength();
     let nx = Math.max(xa - 26, xL + sw / 2);
     const xEnd = xR - sw / 2;
-    const place = x => nose.setAttribute("transform", `translate(${x.toFixed(1)},0)`);
+    const place = x => sn.setAttribute("transform", `translate(${x.toFixed(1)},0)`);
     place(nx);
-    await T(0.6, e => op(nose, e));
-    const keyLab = text(g, (keys[0] + keys[2]) / 2, 16, t("rs.f.key"), { class: "t-dark", "text-anchor": "middle", opacity: 0 });
-    const kw = keyLab.getComputedTextLength();
-    keyLab.setAttribute("x", Math.min(Math.max((keys[0] + keys[2]) / 2, xL + kw / 2), xR - kw / 2));
-    const kx = +keyLab.getAttribute("x");
-    for (let k = 0; k < keys.length; k++) {
-      const from = nx, to = keys[k];
-      await T(0.8, e => place(lerp(from, to, e)));
+    // the "same compound" label gives way; its dashed lines stay, lighter
+    await T(1.1, e => { op(sn, e); op(sameLabs, 1 - e); op(dashes, lerp(1, 0.45, e)); });
+    const marks = {};
+    for (const k of ODOR) {
+      const from = nx, to = Math.min(Math.max(px[k], xL + sw / 2), xEnd);
+      await T(1.1, e => place(lerp(from, to, e)));
       nx = to;
-      const v = el("path", { d: `M${to},${axisY - 2} L${to},${top - 20}`, stroke: C.text, "stroke-width": 1, fill: "none" }, g);
-      const dv = prepDraw(v);
-      await T(0.6, dv);
-      const lead = el("g", { opacity: 0 }, g);
-      el("path", { d: `M${kx + (k - 1) * Math.min(24, kw / 3)},22 L${to},${top - 20}`, stroke: C.text, "stroke-width": 1, fill: "none" }, lead);
-      el("circle", { cx: to, cy: top - 20, r: 2.5, fill: C.text }, lead);
-      await T(0.6, e => { op(lead, e); if (k === 0) op(keyLab, e); });
+      const yt = humanTop[k] - 3;
+      const m = el("path", { d: `M${px[k] - 4},${yt - 7} L${px[k] + 4},${yt - 7} L${px[k]},${yt} Z`, fill: C.text, opacity: 0 }, g);
+      marks[k] = { m, x: px[k], y: yt };
+      await T(1.0, e => op(m, e));
     }
     const from = nx;
-    await T(0.6, e => place(lerp(from, xEnd, e)));
+    await T(1.1, e => place(lerp(from, xEnd, e)));
+    // segment 4: ROAV picks out the key flavor compounds: three of the marked peaks, darker teal and a little larger
+    await say(4);
+    await T(1.1, e => KEYP.forEach(k => {
+      const { m, x, y } = marks[k], s = lerp(1, 1.4, e);
+      m.setAttribute("fill", mix(C.text, KEY, e));
+      m.setAttribute("transform", `translate(${x},${y}) scale(${s.toFixed(3)}) translate(${-x},${-y})`);
+    }));
+    const kg = el("g", { opacity: 0 }, g);
+    const keyLab = text(kg, (marks[KEYP[0]].x + marks[KEYP[2]].x) / 2, 14, t("rs.f.key"), { "text-anchor": "middle" });
+    keyLab.style.fill = KEY; keyLab.style.fontWeight = "600";
+    const kw = keyLab.getComputedTextLength();
+    const kx = Math.min(Math.max(+keyLab.getAttribute("x"), xL + kw / 2), xR - kw / 2);
+    keyLab.setAttribute("x", kx);
+    KEYP.forEach(k => { const { x, y } = marks[k]; el("path", { d: `M${kx},19 L${x},${(y - 7 * 1.4 - 2).toFixed(1)}`, fill: "none", stroke: KEY, "stroke-width": 1 }, kg); });
+    await T(1.1, e => op(kg, e));
+    // segment 5
+    await say(5);
     // human milk ROAV data, using the three e-nose cluster labels from step 1
     let box;
     if (staticView) box = { x: 14, y: H + 26, w: W - 22, h: Hfull - H - 50 };
@@ -577,8 +680,39 @@
     await T(0.6, e => { mk.labs.forEach(l => op(l, e)); op(ul, e); });
   };
 
-  SCENES[3] = async function (g, W, H, T) {
+  SCENES[3] = async function (g, W, H, T0, staticView, say) {
+    const T = slow(T0);
     const rnd = mulberry32(14);
+    // segments 1-2, the question: the e-nose is fast, GC-O-MS slow; can the first stand in for the second?
+    await say(1);
+    const pr = el("g", {}, g);
+    const pbw = Math.min(170, Math.round((W - 16) * 0.36)), pbh = 44, pby = 96;
+    const plx = 8, prx = W - 8 - pbw;
+    const probBox = (x, name, sub) => {
+      const b = el("g", { opacity: 0 }, pr);
+      el("rect", { x, y: pby, width: pbw, height: pbh, rx: 5, fill: "#fbfaf7", stroke: C.text, "stroke-width": 1.2 }, b);
+      text(b, x + pbw / 2, pby + pbh / 2 + 5, name, { class: "t-strong", "text-anchor": "middle" });
+      const sl = text(b, x + pbw / 2, pby + pbh + 22, sub, { class: "t-dark", "text-anchor": "middle" });
+      const w = sl.getComputedTextLength();
+      sl.setAttribute("x", Math.min(Math.max(x + pbw / 2, 4 + w / 2), W - 4 - w / 2));
+      return b;
+    };
+    const pL = probBox(plx, t("rs.f.enose"), t("rs.f.fast")), pR = probBox(prx, "GC-O-MS", t("rs.f.slow"));
+    await T(1.1, e => op(pL, e));
+    await T(1.1, e => op(pR, e));
+    await say(2);
+    const ay = pby + pbh / 2, ax0 = plx + pbw + 6, ax1 = prx - 4;
+    const arrow = el("path", { d: `M${ax0},${ay} L${ax0},${ay}`, fill: "none", stroke: C.text, "stroke-width": 1.2, "stroke-dasharray": "4 3" }, pr);
+    const ah = el("g", { opacity: 0 }, pr);
+    arrowHead(ah, ax1, ay, 0, C.text);
+    const q = text(pr, (ax0 + ax1) / 2, ay - 10, "?", { class: "t-strong", "text-anchor": "middle", opacity: 0 });
+    q.style.fontSize = "20px";
+    await T(1.1, e => { arrow.setAttribute("d", `M${ax0},${ay} L${lerp(ax0, ax1 - 1, e).toFixed(1)},${ay}`); op(ah, Math.max(0, 3 * e - 2)); });
+    await T(1.1, e => op(q, e));
+    // segment 3: the boxes give way to the method
+    await say(3);
+    await T(1.1, e => op(pr, 1 - e));
+    pr.remove();
     const narrow = W < 480;
     const models = [1, 2, 3, 4, 5, 6].map(i => t("rs.f.m" + i));
     const L = { cells: [], points: [], boxes: [] };
@@ -629,7 +763,8 @@
     const dc = drawAll(cl);
     cl.forEach(p => op(p, 0.7));
     await T(0.8, e => { dc(e); op(pg, e); });
-    // six models
+    // segment 4: six models
+    await say(4);
     const ml = [], bg = el("g", { opacity: 0 }, g);
     L.boxes.forEach(([x, y, w, h], i) => {
       el("rect", { x, y, width: w, height: h, rx: 3, fill: "#fbfaf7", stroke: C.line, "stroke-width": 1 }, bg);
@@ -665,14 +800,16 @@
       const r = el("rect", { x, y: barBase, width: 10, height: 0, fill: C.fill, stroke: C.text, "stroke-width": 1 }, g);
       await T(0.6, e => { const h = heights[i] * e; r.setAttribute("y", barBase - h); r.setAttribute("height", h); });
     }
-    // GC-O-MS is no longer needed for new samples
+    // segment 5: GC-O-MS is no longer needed for new samples
+    await say(5);
     await T(0.8, e => {
       gcRect.setAttribute("stroke", mix(C.text, C.faint, e));
       gcLab.style.fill = mix(C.text, "#b8b4ab", e);
     });
     const ol = text(g, onlyLab[0], onlyLab[1], t("rs.f.enose_only"), { class: "t-dark", "text-anchor": onlyLab[2], opacity: 0 });
     await T(0.6, e => op(ol, e));
-    await T(1.0, () => {});
+    // segment 6: how accuracy is judged
+    await say(6);
     await T(0.6, e => op(g, 1 - e));
     while (g.firstChild) g.removeChild(g.firstChild);
     op(g, 1);
@@ -913,8 +1050,13 @@
     const yTop = 146, yBot = 316, yTrue = 196, ySingle = 290, yNear = 204;
     const mkLab = (k, cls) => { const e = text(g, 0, 0, t(k), { class: cls, opacity: 0 }); return e; };
     const l1 = mkLab("rs.mf.without", "t-dark"), l2 = mkLab("rs.mf.with", "t-m");
+    // "large error" / "small error" sit left of the two labels, by the gap between predicted and measured;
+    // on narrow screens there is no room for that, so they go on a line just above the label
+    const e1 = mkLab("rs.mf.err_large", ""), e2 = mkLab("rs.mf.err_small", "");
+    const ew = Math.max(e1.getComputedTextLength(), e2.getComputedTextLength()) + 8;
     let lw = Math.max(l1.getComputedTextLength(), l2.getComputedTextLength());
-    const wrap = W - 26 - lw < W * 0.62;
+    const side = W - 26 - ew - lw >= W * 0.62;
+    const wrap = !side && W - 26 - lw < W * 0.62;
     if (wrap) {
       [l1, l2].forEach(l => {
         const words = l.textContent.split(" "), half = Math.ceil(words.length / 2);
@@ -925,13 +1067,15 @@
       });
       lw = Math.max(...[l1, l2].map(l => Math.max(...[...l.childNodes].map(ts => ts.getComputedTextLength()))));
     }
-    const axisX = Math.round(W - 26 - lw);
-    const placeLab = (l, y) => {
-      const x = axisX + 22, dy = l.childNodes.length > 1 ? -4 : 4;
+    if (!side) lw = Math.max(lw, ew - 8);
+    const axisX = Math.round(W - 26 - (side ? ew : 0) - lw);
+    const placeLab = (l, er, y) => {
+      const x0 = axisX + 22, x = side ? x0 + ew : x0, dy = l.childNodes.length > 1 ? -4 : 4;
       l.setAttribute("x", x); l.setAttribute("y", y + dy);
       [...l.querySelectorAll("tspan")].forEach(ts => ts.setAttribute("x", x));
+      er.setAttribute("x", x0); er.setAttribute("y", side ? y + dy : y + dy - 16);
     };
-    placeLab(l1, ySingle); placeLab(l2, yNear);
+    placeLab(l1, e1, ySingle); placeLab(l2, e2, yNear);
 
     await T(0.6, e => { vials.forEach(v => op(v, e)); op(lab5, e); });
     // each vial becomes a group of thin bars (compound contents)
@@ -982,7 +1126,7 @@
     const gapLine = el("path", { fill: "none", stroke: C.text, "stroke-width": 1 }, cmp);
     const setGap = y => gapLine.setAttribute("d", `M${axisX + 9},${yTrue} L${axisX + 13},${yTrue} M${axisX + 11},${yTrue} L${axisX + 11},${y} M${axisX + 9},${y} L${axisX + 13},${y}`);
     setGap(ySingle);
-    await T(0.6, e => { op(cmp, e); op(l1, e); });
+    await T(0.6, e => { op(cmp, e); op(l1, e); op(e1, e); });
     // connect the remaining bars: with interactions the prediction moves next to the measured value
     const rest = wires.filter((w, j) => !few.includes(j));
     const dr = drawAll(rest);
@@ -992,9 +1136,9 @@
       const y = lerp(ySingle, yNear, e);
       pred.setAttribute("cy", y); setGap(y);
       outLine.setAttribute("d", `M${ox},${by} L${axisX - 6},${y}`);
-      op(l1, 1 - e); op(gapLine, 1 - e);
+      op(l1, 1 - e); op(e1, 1 - e); op(gapLine, 1 - e);
     });
-    await T(0.6, e => op(l2, e));
+    await T(0.6, e => { op(l2, e); op(e2, e); });
   };
 
   // 2 line: five time points, three ways to join them, checked against a validation point
@@ -1197,6 +1341,9 @@
     const prevBtn = root.querySelector(".rs-prev"), nextBtn = root.querySelector(".rs-next");
     const pos = root.querySelector(".rs-pos");
     const steps = [...root.querySelectorAll(".rs-step")];
+    const sayEl = root.querySelector(".rs-say"), sayList = root.querySelector(".rs-saylist");
+    const pauseBtn = root.querySelector(".rs-pause");
+    const nSay = n => (cfg.says && cfg.says[n]) || 0;
     root.classList.add("rs-live");
     S.ov.hidden = false; detail.hidden = false;
     root.querySelector(".rs-ctrl").hidden = false;
@@ -1214,6 +1361,45 @@
       if (p.go) p.go.style.opacity = state === "all" ? 1 : 0;
     }
     let gen = 0, started = false;
+    // explanation lines (PhD steps 1-3). The line keeps the height of the step's tallest line, so the picture
+    // does not jump between segments. Under reduced motion they are listed in order below the picture.
+    function prepSay(n, inst) {
+      const k = nSay(n);
+      sayEl.hidden = reduced || !k; sayList.hidden = !reduced || !k;
+      sayEl.style.minHeight = ""; sayEl.style.opacity = 0; sayList.textContent = "";
+      if (!k) return;
+      if (reduced) {
+        for (let i = 1; i <= k; i++) setLine(el2("li", sayList), t(cfg.sayKey(n, i)));
+        return;
+      }
+      let h = 0;
+      for (let i = 1; i <= k; i++) { setLine(sayEl, t(cfg.sayKey(n, i))); h = Math.max(h, sayEl.offsetHeight); }
+      sayEl.style.minHeight = h + "px";
+      if (inst) sayEl.style.opacity = 1;   // final state: the last line stays
+      else sayEl.textContent = "";
+    }
+    function el2(tag, parent) { return parent.appendChild(document.createElement(tag)); }
+    // write a line, keeping hyphenated names such as GC-O-MS on one line
+    function setLine(node, s) {
+      node.textContent = "";
+      s.split(/(GC-O-MS|GC-MS|GC-O|electronic-nose)/).forEach((part, i) => {
+        if (!part) return;
+        if (i % 2) { const sp = el2("span", node); sp.className = "rs-nw"; sp.textContent = part; }
+        else node.appendChild(document.createTextNode(part));
+      });
+    }
+    // segment i starts: the previous line (if any) stays 1.5 s more, fades out; the new one fades in and stays 1.5 s
+    function makeSay(n, T, inst) {
+      let shown = false;
+      return async function (i) {
+        if (inst || !nSay(n)) return;
+        if (shown) { await T(1.5); await T(0.4, e => { sayEl.style.opacity = 1 - e; }); }
+        setLine(sayEl, t(cfg.sayKey(n, i))); shown = true;
+        await T(0.6, e => { sayEl.style.opacity = e; });
+        await T(1.5);
+      };
+    }
+    function setPauseLabel() { pauseBtn.textContent = t(S.clock.held ? "rs.resume" : "rs.pause"); }
     function detailSize() {
       const W = Math.max(300, canvas.clientWidth);
       detail.setAttribute("viewBox", "0 0 " + W + " " + H_DETAIL);
@@ -1232,13 +1418,17 @@
       const T = S.clock.tweener(inst);
       const prev = S.cur;
       S.cur = n;
+      S.clock.held = false;
+      setPauseLabel();
+      pauseBtn.disabled = inst;
       updateControls();
       nextBtn.style.boxShadow = "";
       // fade out the previous picture and text
       if (!inst && started) {
         const p = stepParts(prev);
         const o0 = +(detail.getAttribute("opacity") || 1);
-        await T(0.4, e => { op(detail, lerp(o0, 0, e)); p.a.style.opacity = 1 - e; });
+        const s0 = +(sayEl.style.opacity || 0);
+        await T(0.4, e => { op(detail, lerp(o0, 0, e)); p.a.style.opacity = 1 - e; sayEl.style.opacity = lerp(s0, 0, e); });
         p.a.style.opacity = "";
       }
       started = true;
@@ -1247,12 +1437,14 @@
       const W = detailSize();
       const g = el("g", {}, detail);
       showText(n, "none");
+      prepSay(n, inst);
       await overviewTo(S, n, T, inst);
       const parts = stepParts(n);
       await T(0.6, e => { parts.lede.style.opacity = e; });
-      await cfg.scenes[n](g, W, H_DETAIL, T, reduced);
+      await cfg.scenes[n](g, W, H_DETAIL, T, reduced, makeSay(n, T, inst));
       await T(0.6, e => { parts.cap.style.opacity = e; });
       if (parts.go) await T(0.6, e => { parts.go.style.opacity = e; });
+      if (my === gen) pauseBtn.disabled = true;   // nothing left to pause
       S.visited.add(n);   // the tick appears once the visitor moves on to another step
       if (my !== gen || inst || n >= cfg.n) return;
       // one gentle hint on "Next" (no loop)
@@ -1266,20 +1458,25 @@
     };
     // replay the current step only (hidden under reduced motion, where every picture is already final)
     const replay = root.querySelector(".rs-replay");
-    if (reduced) replay.hidden = true;
+    if (reduced) { replay.hidden = true; pauseBtn.hidden = true; }
+    pauseBtn.disabled = true;
+    setPauseLabel();
+    pauseBtn.addEventListener("click", () => { S.clock.held = !S.clock.held; setPauseLabel(); });
     replay.addEventListener("click", () => { S.clock.paused = false; go(S.cur); });
     prevBtn.addEventListener("click", () => S.userGo(S.cur - 1));
     nextBtn.addEventListener("click", () => S.userGo(S.cur + 1));
 
     function rebuild() {   // new width or language: redraw the current step in its final state
       cfg.buildOverview(S);
+      setPauseLabel();
       if (started) go(S.cur, true);
-      else { detailSize(); showText(1, "none"); updateControls(); }
+      else { detailSize(); showText(1, "none"); prepSay(1, false); updateControls(); }
     }
     cfg.buildOverview(S);
     detailSize();
     showText(1, "none");
     updateControls();
+    prepSay(1, false);   // reserve the line's height before step 1 starts
     if (reduced) go(1, true);
 
     // play step 1 when this stage first comes into view; pause while it is out of view
@@ -1310,6 +1507,7 @@
 
   createStage(document.getElementById("rs-stage"), {
     n: 4, buildOverview, scenes: SCENES, accent: C.hm, hint: "15,110,110",
+    says: { 1: 6, 2: 5, 3: 6 }, sayKey: (n, i) => "rs.s" + n + ".say" + i,
     pos: n => t("rs.pos", { n }), name: n => t("rs.s" + n + ".name") });
   createStage(document.getElementById("rs-stage-m"), {
     n: 3, buildOverview: buildOverviewM, scenes: SCENES_M, accent: M, hint: "138,90,43",
