@@ -583,7 +583,7 @@
       // and widths, so no two traces look alike
       const sc = 0.7 + rnd() * 0.6, wsc = 0.7 + rnd() * 0.8;
       const peaks = px.map((x, k) => has[k].includes(i)
-        ? [x, (SAME.includes(k) ? (i ? 9 : 16) + rnd() * (i ? 17 : 8) : Math.max(3, Math.min(i ? 30 : 26, sc * big[k] * (0.12 + 1.18 * Math.pow(rnd(), 1.4))))) * hs, wsc * (2 + rnd() * 4)] : [x, 0, 3]);
+        ? [x, (SAME.includes(k) ? (i ? 12 : 16) + rnd() * (i ? 14 : 8) : Math.max(3, Math.min(i ? 30 : 26, sc * big[k] * (0.12 + 1.18 * Math.pow(rnd(), 1.4))))) * hs, wsc * (2 + rnd() * 4)] : [x, 0, 3]);
       const yAt = x => peaks.reduce((y, [p, h, w]) => y - h * Math.exp(-Math.pow((x - p) / w, 2)), base);
       if (i === 0) px.forEach((x, k) => humanTop.push(yAt(x)));
       let d = "";
@@ -723,19 +723,23 @@
     const narrow = W < 480;
     const models = [1, 2, 3, 4, 5, 6].map(i => t("rs.f.m" + i));
     const L = { cells: [], points: [], boxes: [] };
-    let gcBox, gcLab, onlyLab, sensLab, compLab, mergeP, weightLab, barBase, barX0, keyLab;
+    let gcBox, gcLab, onlyLab, sensLab, compLab, mergeP, weightLab, barBase, barX0, keyLab, frame;
     const wires = el("g", {}, g);   // all connecting lines sit behind the boxes
     const lineEl = (x1, y1, x2, y2, w) => el("path", { d: `M${x1},${y1} L${x2},${y2}`, stroke: C.line, "stroke-width": w || 1, fill: "none", opacity: 0 }, wires);
     if (narrow) {
+      // phones: the three compressed points join into one line into the frame round the six models, and the
+      // frame sends one line on to the weighting; no line crosses a model box. A free strip on the right
+      // carries the GC-O-MS arrow down to the bars.
       sensLab = [8, 16];
       for (let r = 0; r < 2; r++) for (let c = 0; c < 7; c++) L.cells.push([8 + c * 16, 26 + r * 16]);
-      L.points = [[40, 86], [64, 86], [88, 86]];
-      compLab = [100, 87, "start"];
-      const bw = (W - 24) / 2;
+      L.points = [[40, 82], [64, 82], [88, 82]];
+      compLab = [100, 83, "start"];
+      const bw = Math.floor((W - 38) / 2);
       for (let i = 0; i < 6; i++) L.boxes.push([8 + (i % 2) * (bw + 8), 116 + Math.floor(i / 2) * 32, bw, 26]);
-      mergeP = [60, 250]; weightLab = [8, 276, "start"];
-      barBase = 273; barX0 = 160; keyLab = [187, 296, "middle"];
-      gcBox = [W - 80, 8, 72, 28]; onlyLab = [W - 8, 56, "end"];
+      frame = { x: 4, y: 110, w: 2 * bw + 16, h: 102 };
+      mergeP = [64, 240]; weightLab = [8, 266, "start"];
+      barBase = 286; barX0 = 160; keyLab = [187, 306, "middle"];
+      gcBox = [W - 80, 8, 72, 28]; onlyLab = [W - 18, 99, "end"];
     } else {
       sensLab = [8, 78];
       for (let r = 0; r < 7; r++) for (let c = 0; c < 2; c++) L.cells.push([12 + c * 16, 92 + r * 16]);
@@ -745,7 +749,7 @@
       for (let i = 0; i < 6; i++) L.boxes.push([118, 40 + i * 44, bw, 28]);
       mergeP = [118 + bw + 44, 166]; weightLab = [118 + bw + 56, 156, "start"];
       barBase = 206; barX0 = null; keyLab = null;   // set once the label width is known
-      gcBox = [W - 82, 52, 76, 30]; onlyLab = [W - 6, 106, "end"];
+      gcBox = [W - 82, 52, 76, 30]; onlyLab = [W - 6, 40, "end"];
     }
     // GC-O-MS: the reference method
     const gc = el("g", { opacity: 0 }, g);
@@ -773,17 +777,24 @@
     // segment 4: six models
     await say(4);
     const ml = [], bg = el("g", { opacity: 0 }, g);
+    if (narrow) {   // one bundle into the frame round the six models
+      el("rect", { x: frame.x, y: frame.y, width: frame.w, height: frame.h, rx: 5, fill: "none", stroke: C.faint, "stroke-width": 1 }, bg);
+      const jx = L.points[1][0], jy = frame.y - 12;
+      L.points.forEach(([px, py]) => ml.push(lineEl(px, py + 4, jx, jy, 0.8)));
+      ml.push(lineEl(jx, jy, jx, frame.y - 1, 1.4));
+    }
     L.boxes.forEach(([x, y, w, h], i) => {
       el("rect", { x, y, width: w, height: h, rx: 3, fill: "#fbfaf7", stroke: C.line, "stroke-width": 1 }, bg);
       text(bg, x + w / 2, y + h / 2 + 4.5, models[i], { class: "t-dark", "text-anchor": "middle" });
-      L.points.forEach(([px, py]) => ml.push(narrow ? lineEl(px, py + 4, x + w / 2, y, 0.6) : lineEl(px + 4, py, x, y + h / 2, 0.6)));
+      if (!narrow) L.points.forEach(([px, py]) => ml.push(lineEl(px + 4, py, x, y + h / 2, 0.6)));
     });
     const dm = drawAll(ml);
-    ml.forEach(p => op(p, 0.7));
+    ml.forEach(p => op(p, narrow ? 1 : 0.7));
     await T(0.8, e => { dm(e); op(bg, e); });
-    // weighted merge
+    // weighted merge (phones: one line from the bottom of the model frame)
     const mg = [];
-    L.boxes.forEach(([x, y, w, h]) => mg.push(narrow ? lineEl(x + w / 2, y + h, mergeP[0], mergeP[1] - 5) : lineEl(x + w, y + h / 2, mergeP[0] - 5, mergeP[1])));
+    if (narrow) mg.push(lineEl(mergeP[0], frame.y + frame.h + 1, mergeP[0], mergeP[1] - 5, 1.4));
+    else L.boxes.forEach(([x, y, w, h]) => mg.push(lineEl(x + w, y + h / 2, mergeP[0] - 5, mergeP[1])));
     const mn = el("g", { opacity: 0 }, g);
     el("circle", { cx: mergeP[0], cy: mergeP[1], r: 5, fill: "none", stroke: C.text, "stroke-width": 1.3 }, mn);
     const wl = text(mn, weightLab[0], weightLab[1], t("rs.f.weight"), { class: "t-dark", "text-anchor": weightLab[2] });
@@ -807,16 +818,57 @@
       const r = el("rect", { x, y: barBase, width: 10, height: 0, fill: C.fill, stroke: C.text, "stroke-width": 1 }, g);
       await T(0.6, e => { const h = heights[i] * e; r.setAttribute("y", barBase - h); r.setAttribute("height", h); });
     }
-    // segment 5: GC-O-MS is no longer needed for new samples
+    // GC-O-MS supplies the measured values the models are trained on: a dashed arrow from its box to the bars
+    const barsR = barX0 + 3 * 16 + 10;
+    const route = narrow
+      ? [[W - 12, gcBox[1] + gcBox[3] + 2], [W - 12, barBase - 20], [barsR + 7, barBase - 20]]
+      : [[gcBox[0] + gcBox[2] / 2, gcBox[1] + gcBox[3] + 3], [barsR + 6, barBase - Math.max(...heights) - 4]];
+    const tg = el("g", {}, g);
+    const tLine = el("path", { fill: "none", stroke: C.text, "stroke-width": 1.2, "stroke-dasharray": "4 3" }, tg);
+    const last = route[route.length - 1], prev = route[route.length - 2];
+    const tHead = arrowHead(tg, last[0], last[1], Math.atan2(last[1] - prev[1], last[0] - prev[0]) * 180 / Math.PI, C.text);
+    op(tHead, 0);
+    const segLen = route.slice(1).map((q, i) => Math.hypot(q[0] - route[i][0], q[1] - route[i][1]));
+    const total = segLen.reduce((x, y) => x + y, 0);
+    const partial = e => {   // the route up to fraction e of its length (the dashes stay fixed)
+      let d = `M${route[0][0]},${route[0][1]}`, left = total * e;
+      for (let i = 0; i < segLen.length && left > 0; i++) {
+        const f = Math.min(1, left / segLen[i]);
+        d += ` L${lerp(route[i][0], route[i + 1][0], f).toFixed(1)},${lerp(route[i][1], route[i + 1][1], f).toFixed(1)}`;
+        left -= segLen[i];
+      }
+      tLine.setAttribute("d", d);
+    };
+    partial(0);
+    // its label sits left of the box (wide screens) or left of the arrow's first stretch (phones);
+    // it breaks into two lines when one does not fit
+    const tLab = text(tg, 0, 0, t("rs.f.measured_train"), { class: "t-dark", "text-anchor": "end", opacity: 0 });
+    const tx = narrow ? W - 20 : gcBox[0] - 8, ty = narrow ? 56 : gcBox[1] + 20;
+    const room = narrow ? tx - 124 : tx - (L.boxes[0][0] + L.boxes[0][2] + 10);
+    if (tLab.getComputedTextLength() > room && tLab.textContent.includes(" ")) {
+      const words = tLab.textContent.split(" "), half = Math.ceil(words.length / 2);
+      tLab.textContent = "";
+      [words.slice(0, half).join(" "), words.slice(half).join(" ")].forEach((w, i) => {
+        const ts = el("tspan", { x: tx, y: (narrow ? ty : ty - 8) + i * 16 }, tLab); ts.textContent = w;
+      });
+    } else { tLab.setAttribute("x", tx); tLab.setAttribute("y", ty); }
+    await T(1.1, e => { partial(e); op(tHead, e > 0.9 ? (e - 0.9) * 10 : 0); op(tLab, e); });
+    // segment 5: GC-O-MS (box and arrow) is no longer needed for new samples
     await say(5);
     await T(0.8, e => {
       gcRect.setAttribute("stroke", mix(C.text, C.faint, e));
       gcLab.style.fill = mix(C.text, "#b8b4ab", e);
+      tLine.setAttribute("stroke", mix(C.text, C.faint, e)); tHead.setAttribute("stroke", mix(C.text, C.faint, e));
+      tLab.style.fill = mix(C.text, "#b8b4ab", e);
     });
     const ol = text(g, onlyLab[0], onlyLab[1], t("rs.f.enose_only"), { class: "t-dark", "text-anchor": onlyLab[2], opacity: 0 });
     await T(0.6, e => op(ol, e));
-    // segment 6: how accuracy is judged
+    // segment 6: how accuracy is judged. Reduced motion keeps the method picture and adds this below it.
     await say(6);
+    if (staticView) {
+      await accuracy(el("g", { transform: `translate(0,${H})` }, g), W, H, T);
+      return;
+    }
     await T(0.6, e => op(g, 1 - e));
     while (g.firstChild) g.removeChild(g.firstChild);
     op(g, 1);
@@ -884,7 +936,7 @@
     const fa = ["rs.f.oa", "rs.f.la", "rs.f.pa", "rs.f.ala"];          // order before ranking
     const faSorted = ["rs.f.la", "rs.f.ala", "rs.f.oa", "rs.f.pa"];
     const aa = ["rs.f.glu", "rs.f.ala2", "rs.f.gly"];
-    const rh = 30, faTop = 50, aaHead = faTop + 4 * rh + 6, aaTop = aaHead + 26;
+    const rh = 30, faTop = 68, aaHead = faTop + 4 * rh + 6, aaTop = aaHead + 26;
     const rowY = i => faTop + i * rh;
     const hFa = text(g, 8, faTop - 22, t("rs.f.fa"), { opacity: 0 });
     const hAa = text(g, 8, aaHead, t("rs.f.aa"), { opacity: 0 });
@@ -892,9 +944,9 @@
     fa.forEach((k, i) => { labs[k] = text(g, 8, rowY(i), t(k), { class: "t-dark", opacity: 0 }); });
     aa.forEach((k, i) => { labs[k] = text(g, 8, aaTop + i * rh, t(k), { class: "t-dark", opacity: 0 }); });
     const lw = Math.max(...Object.values(labs).map(l => l.getComputedTextLength())) + 22;   // room for bold
-    const iconX = W - 24, iconY = 140;
+    const iconX = W - 24, iconY = 158;
     const nodeX = Math.round(lw + (iconX - 40 - lw) * 0.62);
-    const nodeYs = [72, 122, 172, 222];
+    const nodeYs = [90, 140, 190, 240];
     const hKey = text(g, nodeX, faTop - 22, t("rs.f.key"), { class: "t-dark", "text-anchor": "middle", opacity: 0 });
     const hkw = hKey.getComputedTextLength();
     hKey.setAttribute("x", Math.min(nodeX, W - 6 - hkw / 2));
@@ -931,6 +983,9 @@
       links[k].forEach(l => { l.setAttribute("stroke-width", lerp(w0[all.indexOf(l)], 0.4, e)); op(l, lerp(0.8, 0.25, e)); });
       labs[k].style.fill = mix(C.text, "#9aa0a6", e);
     }));
+    // once ranked: what the left column shows
+    const infl = text(g, 8, faTop - 44, t("rs.f.influence"), { class: "t-strong", opacity: 0 });
+    await T(0.6, e => op(infl, e));
     // arrow to infant formula, which then takes the colour of human milk
     const icon = el("g", { stroke: C.fm, "stroke-width": 1.5, fill: "none", opacity: 0, transform: `translate(${iconX},${iconY})` }, g);
     el("path", { d: "M-4,-16 Q-4,-24 0,-26 Q4,-24 4,-16" }, icon);
@@ -1389,7 +1444,7 @@
     // write a line, keeping hyphenated names such as GC-O-MS on one line
     function setLine(node, s) {
       node.textContent = "";
-      s.split(/(GC-O-MS|GC-MS|GC-O|electronic-nose)/).forEach((part, i) => {
+      s.split(/(GC-O-MS|GC-MS|GC-O|electronic-nose|24 h|24-h)/).forEach((part, i) => {
         if (!part) return;
         if (i % 2) { const sp = el2("span", node); sp.className = "rs-nw"; sp.textContent = part; }
         else node.appendChild(document.createTextNode(part));
@@ -1407,10 +1462,12 @@
       };
     }
     function setPauseLabel() { pauseBtn.textContent = t(S.clock.held ? "rs.resume" : "rs.pause"); }
-    function detailSize() {
+    // under reduced motion some steps (cfg.tallStatic) show two pictures, one above the other
+    function detailSize(n) {
       const W = Math.max(300, canvas.clientWidth);
-      detail.setAttribute("viewBox", "0 0 " + W + " " + H_DETAIL);
-      detail.setAttribute("width", W); detail.setAttribute("height", H_DETAIL);
+      const H = reduced && n && cfg.tallStatic && cfg.tallStatic.includes(n) ? 2 * H_DETAIL : H_DETAIL;
+      detail.setAttribute("viewBox", "0 0 " + W + " " + H);
+      detail.setAttribute("width", W); detail.setAttribute("height", H);
       return W;
     }
     function updateControls() {
@@ -1441,7 +1498,7 @@
       started = true;
       detail.textContent = "";
       op(detail, 1);
-      const W = detailSize();
+      const W = detailSize(n);
       const g = el("g", {}, detail);
       showText(n, "none");
       prepSay(n, inst);
@@ -1514,7 +1571,7 @@
 
   createStage(document.getElementById("rs-stage"), {
     n: 4, buildOverview, scenes: SCENES, accent: C.hm, hint: "15,110,110",
-    says: { 1: 6, 2: 5, 3: 6 }, sayKey: (n, i) => "rs.s" + n + ".say" + i,
+    says: { 1: 6, 2: 5, 3: 6 }, tallStatic: [3], sayKey: (n, i) => "rs.s" + n + ".say" + i,
     pos: n => t("rs.pos", { n }), name: n => t("rs.s" + n + ".name") });
   createStage(document.getElementById("rs-stage-m"), {
     n: 3, buildOverview: buildOverviewM, scenes: SCENES_M, accent: M, hint: "138,90,43",

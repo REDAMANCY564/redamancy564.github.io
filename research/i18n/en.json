@@ -12,7 +12,7 @@
   "rs.s2.lede": "Finding the compounds that matter",
   "rs.s3.lede": "Reading GC-O-MS results from an electronic nose",
   "rs.s4.lede": "From fatty acids back to infant formula",
-  "rs.s1.cap": "An electronic nose measured 303 human milk samples from six cities and 20 groups of animal milk (1,303 in total). The odor fingerprint of human milk is close to that of Alpine Holstein milk and clearly separate from other animal milks, but milk from the six cities cannot be told apart. Maternal lipid and protein intake show a stronger association with the odor fingerprint than region does, and clustering the electronic-nose signals splits human milk into three groups.",
+  "rs.s1.cap": "An electronic nose measured 303 human milk samples from six cities and 20 groups of animal milk (1,303 in total). The odor fingerprint of human milk is close to that of Alpine Holstein milk and clearly separate from other animal milks. Milk from the six cities cannot be told apart, but clustering the electronic-nose signals splits it into three groups. Maternal 24-h lipid and protein intake show a stronger association with the odor fingerprint than region does.",
   "rs.s2.cap": "Sensory evaluation and GC-O-MS compare human milk, infant formula and five animal milks, and ROAV identifies the key flavor compounds that set them apart. Using the three cluster labels from the electronic nose, the ROAV data of human milk can still be separated well.",
   "rs.s3.cap": "Fast electronic-nose signals are used to predict the key flavor compounds found by GC-O-MS: the 14 sensor signals are compressed first, then six models are combined with weights set per compound. Prediction accuracy is assessed in two ways: (1) rank consistency, whether predicted and measured intensities keep the same order; (2) numerical deviation, how far the predicted values are from the measured ones.",
   "rs.s4.cap": "Ranking fatty acids and free amino acids in human milk: linoleic and α-linolenic acid are most strongly associated with its flavor, while free amino acids matter little. This gives a basis for adjusting the fatty acid profile of infant formula.",
@@ -29,7 +29,7 @@
   "rs.f.animal": "Animal milk",
   "rs.f.alpine": "Alpine Holstein milk",
   "rs.f.city": "City {n}",
-  "rs.f.assoc": "Association with the odor fingerprint",
+  "rs.f.assoc": "Maternal 24-h diet and other factors vs. the odor fingerprint",
   "rs.f.fat": "Lipid",
   "rs.f.protein": "Protein",
   "rs.f.carb": "Carbohydrate",
@@ -118,8 +118,8 @@
   "rs.s1.say2": "Projected onto a plane, each dot is one sample; the closer two dots are, the more alike they smell.",
   "rs.s1.say3": "Human milk and animal milk fall on opposite sides; Alpine Holstein milk sits on the human milk side, the closest in odor.",
   "rs.s1.say4": "Looking at human milk only and coloring by city: the six cities overlap, so region is not the main factor.",
-  "rs.s1.say5": "Clustering the electronic-nose signals splits human milk into three groups.",
-  "rs.s1.say6": "Which factors are most associated with the fingerprint? Recent maternal lipid and protein intake rank highest.",
+  "rs.s1.say5": "But clustering the electronic-nose signals splits human milk into three groups.",
+  "rs.s1.say6": "Which factors are most associated with the fingerprint? Maternal 24-h lipid and protein intake rank highest.",
   "rs.s2.say1": "GC-MS separates the volatile compounds in a milk sample one by one: the horizontal axis is retention time, and each peak is one compound.",
   "rs.s2.say2": "The same compound appears at the same retention time in every sample, with different heights; some peaks appear only in certain milks.",
   "rs.s2.say3": "GC-O: as compounds leave the column, a person sniffs them to find which peaks have an odor.",
@@ -137,5 +137,7 @@
   "rs.f.fast": "Fast",
   "rs.f.slow": "Slow · needs sniffing",
   "rs.mf.err_large": "Large error",
-  "rs.mf.err_small": "Small error"
+  "rs.mf.err_small": "Small error",
+  "rs.f.measured_train": "Measured values used for training",
+  "rs.f.influence": "Influence of fatty acids and amino acids"
 }
