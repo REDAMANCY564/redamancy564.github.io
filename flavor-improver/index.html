@@ -133,6 +133,14 @@
         </span>
       </div>
       <div data-sec-scope id="bo-area">
+      <!-- try first: the base, thresholds and direction are preset; one click shows or plays the optimization -->
+      <div class="try-box" id="try-box">
+        <p class="try-line"><b data-i18n="try.title">试用示例</b><span class="muted" data-i18n="try.hint">（基底、阈值和改良方向已选好，点一下即可看到优化结果）：</span></p>
+        <div class="try-btns">
+          <button type="button" class="btn" id="try-result" data-i18n="try.result">直接看结果</button>
+          <button type="button" class="btn secondary" id="try-play" data-i18n="try.play">播放优化过程</button>
+        </div>
+      </div>
       <label class="field" for="preset" data-i18n="demo.select">选择乳品基底</label>
       <select id="preset" data-snap="preset"><option value="yogurt">常温酸奶（高酸度原料奶批次）</option><option value="milk">巴氏杀菌奶</option><option value="young_gouda">年轻豪达奶酪（巴氏奶制，成熟 4 周）</option><option value="mature_gouda">豪达奶酪（巴氏奶制，成熟 30 周）</option></select>
       <p class="small muted base-meta" id="base-meta" data-snap="base-meta">来源：Wang J, Zhang D, Li J, Zou T, Wen R, Hou Y, Song H, Li H, Ma H, Shi J. Aroma profiling of long shelf-life yoghurt from milk with varying acidity: insights from sensory evaluation and instrumental analysis. Food Chem X 2025. Table 1，GC-MS, standard addition。 <a href="https://doi.org/10.1016/j.fochx.2025.102215" target="_blank" rel="noopener">doi:10.1016/j.fochx.2025.102215</a><br>说明： 本研究未定量乙醛。</p>
@@ -279,7 +287,7 @@
       <p class="small muted" id="dir-rationale"></p>
       <div class="dirs" id="dirs"></div>
 
-      <div class="controls">
+      <div class="controls" id="bo-controls">
         <button type="button" class="btn" id="btn-run" data-i18n="ctl.start">开始优化</button>
         <button type="button" class="btn secondary" id="btn-skip" data-i18n="ctl.skip">跳到结果</button>
         <label><span data-i18n="ctl.speed">播放速度</span>

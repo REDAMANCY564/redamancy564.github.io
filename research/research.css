@@ -2,7 +2,7 @@
    the master's part uses a warm brown accent (beef tallow residue). */
 .rs .page-head { padding-bottom: var(--sp-3); }
 .rs-stage { margin: 0 0 var(--sp-4); }
-.rs-part { margin: 0 0 var(--sp-5); scroll-margin-top: 72px; }   /* clear of the sticky header (research/#master) */
+.rs-part { margin: 0 0 var(--sp-5); }   /* research/#master clears the sticky header through scroll-padding-top in style.css */
 .rs-part-h { margin: 0 0 var(--sp-2); }
 .rs-svg { display: block; max-width: 100%; overflow: visible; }
 .rs-svg text { font-size: 13px; fill: var(--muted); }

@@ -101,6 +101,9 @@
         A.want = p.want.map(x => x.slice());
         A.avoid = [];
         A.shown = PAGE;
+        // an example shows its result straight away (choosing descriptors by hand does not scroll);
+        // runA scrolls once the results are drawn (the first time, after the predictions have loaded)
+        A.scrollToResults = true;
         renderA();
       });
       box.appendChild(b);
@@ -227,6 +230,10 @@
     $("a-results").innerHTML = hits.slice(0, shown).map((h, k) => resultCard(k + 1, h, wantIds)).join("");
     $("a-results").querySelectorAll(".svg").forEach(el => drawInto(el, el.dataset.smiles));
     $("a-more").classList.toggle("hidden", shown >= hits.length || shown >= MAX_SHOWN);
+    if (A.scrollToResults) {
+      A.scrollToResults = false;
+      $("a-summary").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }
 
   function renderA() {

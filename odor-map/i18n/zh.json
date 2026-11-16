@@ -70,6 +70,7 @@
   "find.search": "查找分子",
   "find.search_ph": "输入分子名称（英文）或 SMILES，如 vanillin",
   "find.food": "高亮食品中的物质（可选两种对比）",
+  "find.food_example": "示例：高亮黄油中的关键风味物质",
   "find.food_b": "第二种食品（对比）",
   "find.food_none": "不高亮食品",
   "find.food_none_b": "对比：不选第二种食品",

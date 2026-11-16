@@ -282,6 +282,12 @@ a.help:hover { border-color: var(--accent); color: var(--accent); }
 /* tool pages: the full name under the short h1 */
 .hero-full { color: var(--muted); font-size: .9375rem; margin: -6px 0 0; }
 .nobr { white-space: nowrap; }
+/* "Try an example" box at the top of a tool: one click shows a complete result */
+.try-box { border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin: 12px 0 16px; }
+.try-box .try-line { margin: 0 0 4px; }
+.try-box .try-btns { display: flex; flex-wrap: wrap; gap: 8px 12px; margin: 8px 0 0; }
+.try-box .note-sim { margin: 6px 0 0; }
+.try-box .search-status:empty { display: none; }
 .paper-list li { margin-bottom: var(--sp-3); }
 .paper-list .venue { color: var(--muted); font-size: .875rem; }
 .paper-list .venue i { color: var(--text); }

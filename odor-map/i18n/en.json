@@ -70,6 +70,7 @@
   "find.search": "Find a molecule",
   "find.search_ph": "Molecule name or SMILES, e.g. vanillin",
   "find.food": "Highlight compounds of a food (pick two to compare)",
+  "find.food_example": "Example: highlight the key flavor compounds of butter",
   "find.food_b": "Second food (comparison)",
   "find.food_none": "No food highlighted",
   "find.food_none_b": "Compare: no second food",

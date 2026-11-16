@@ -576,6 +576,19 @@
         (ids.length > FOOD_CHIPS ? ' <span class="muted">' + esc(I18N.t("food.more", { n: ids.length - FOOD_CHIPS })) + "</span>" : "") + "</div>";
     }).join("") + '<p class="muted" style="margin:8px 0 0">' + esc(I18N.t("food.legend")) + "</p>";
   }
+  // example: the key flavor compounds of (cultured) butter, Dunkel 2014; on phones the map is below the panel
+  const FOOD_EXAMPLE = "dkcultured-butter";
+  $("food-example").addEventListener("click", () => {
+    loadFoods().then(() => {
+      S.foods[0] = foods.find(f => f.id === FOOD_EXAMPLE) || null;
+      S.foods[1] = null;
+      renderFoodSelects();
+      renderFoodNote();
+      request();
+      const r = $("map-wrap").getBoundingClientRect();
+      if (r.top > innerHeight * 0.6) $("map-wrap").scrollIntoView({ behavior: "smooth", block: "start" });
+    }, () => {});
+  });
   $("food-note").addEventListener("click", e => {
     const b = e.target.closest("[data-mol]");
     if (b) focus(+b.dataset.mol);
