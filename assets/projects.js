@@ -19,16 +19,23 @@
     return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
 
-  // Homepage: a plain table of contents (number, name linking to the tool, one sentence)
+  // " · doi:..." link after a paper's venue (homepage and CV page; same markup in tools/prerender.py)
+  function doiLink(p) {
+    return p.doi ? ' · <a class="nobr" href="https://doi.org/' + esc(p.doi) + '" target="_blank" rel="noopener">doi:' + esc(p.doi) + "</a>" : "";
+  }
+
+  // Homepage: a plain table of contents (number, short name linking to the tool, full name in grey, one sentence)
   function renderDirectory(el, root) {
     const t = I18N.t;
     el.innerHTML = PROJECTS.map(([dir, key], i) =>
       "<li>" +
         '<span class="no">' + (i + 1) + "</span>" +
-        '<div><a class="toc-title" href="' + root + dir + '/">' + esc(t("home." + key + ".title")) + "</a>" +
+        '<div><a class="toc-title" href="' + root + dir + '/">' + esc(t("home." + key + ".title")) + "</a> " +
+        '<span class="toc-full">' + esc(t("home." + key + ".full")) + "</span>" +
         "<p>" + esc(t("home." + key + ".one")) + "</p></div>" +
       "</li>"
     ).join("");
+    I18N.nobr(el);
   }
 
   // Projects page: the same list with screenshots and links to both project pages
@@ -45,11 +52,13 @@
         "</a>" +
         "<div>" +
           '<a class="pub-title" href="' + href + '" data-no="' + (i + 1) + '">' + title + "</a>" +
+          '<span class="toc-full">' + esc(t("home." + key + ".full")) + "</span>" +
           "<p>" + esc(t("home." + key + ".one")) + "</p>" +
           '<p class="links"><a href="' + href + '">' + esc(t("nav.tool")) + "</a>" +
             '<a href="' + href + 'about.html">' + esc(t("nav.about")) + "</a></p>" +
         "</div></div>";
     }).join("");
+    I18N.nobr(el);
   }
 
   // Project pages: number the title, the headings marked data-sec="1" / "2" and the method-page
@@ -190,7 +199,7 @@
     I18N.onChange(render);
   }
 
-  window.SITE = { PROJECTS, esc, renderDirectory, renderProjects };
+  window.SITE = { PROJECTS, esc, doiLink, renderDirectory, renderProjects };
   numberPage();
   I18N.ready.then(() => { tableHints(); floatingToc(); });
 })();

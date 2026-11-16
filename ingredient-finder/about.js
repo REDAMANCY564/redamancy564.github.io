@@ -41,6 +41,7 @@
     const by = {};
     ex.forEach(e => { (by[e.category] = by[e.category] || []).push(e); });
     $("excluded-note").textContent = I18N.t("excluded.note", { n: ex.length, total: D.n });
+    I18N.nobr($("excluded-note"));
     $("excluded-list").innerHTML = Object.keys(by).map(cat => "<li><b>" + esc(I18N.t("excluded.cat." + cat)) + "</b> (" + by[cat].length + "): " +
       esc(by[cat].map(e => e.name || e.smiles).join(", ")) + "</li>").join("");
   }

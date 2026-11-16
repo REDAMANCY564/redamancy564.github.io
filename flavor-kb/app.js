@@ -29,7 +29,7 @@
     const usp = new URLSearchParams();
     for (const [k, v] of Object.entries(params)) if (v) usp.set(k, v);
     const qs = usp.toString();
-    try { history.pushState(params, "", qs ? "?" + qs : location.pathname); } catch (e) { /* ignore */ }
+    try { history.pushState(params, "", I18N.keepLang(qs)); } catch (e) { /* ignore */ }
   }
 
   async function ensureKb() {

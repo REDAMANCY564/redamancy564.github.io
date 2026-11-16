@@ -29,7 +29,22 @@
   function storeLang(lang) {
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* storage unavailable: ignore */ }
   }
+  // ?lang=en / ?lang=zh in the address wins and is remembered (links such as the one on the English CV)
+  function urlLang() {
+    try { const v = new URLSearchParams(location.search).get("lang"); return LANGS.includes(v) ? v : null; } catch (e) { return null; }
+  }
+  // keep ?lang= in the address in step with the language, without reloading or adding history entries
+  function syncUrl(lang) {
+    try {
+      const u = new URL(location.href);
+      if (u.searchParams.get("lang") === lang) return;
+      u.searchParams.set("lang", lang);
+      history.replaceState(history.state, "", u.pathname + u.search + u.hash);
+    } catch (e) { /* file:// or sandboxed: ignore */ }
+  }
   function detectLang() {
+    const fromUrl = urlLang();
+    if (fromUrl) { storeLang(fromUrl); return fromUrl; }
     const saved = storedLang();
     if (LANGS.includes(saved)) return saved;
     const nav = (navigator.languages && navigator.languages[0]) || navigator.language || "en";
@@ -38,6 +53,33 @@
 
   const dicts = {};
   const listeners = [];
+
+  // Instrument names with hyphens (GC-MS, GC-O-MS, GC×GC-MS ...) must not break at the end of a line.
+  // Matches are wrapped in <span class="nobr"> (white-space: nowrap); the characters stay ordinary hyphens,
+  // so copying and searching are unaffected. tools/prerender.py applies the same rule (NOBR_RE) to the static HTML.
+  const NOBR_RE = /GC×GC-(?:TOF)?MS|GC-O-MS|GC-IMS|GC-MS(?:\/MS)?|GC-O|HS-SPME|LC-MS/g;
+  const NOBR_SKIP = "script,style,textarea,option,title,svg,.nobr";
+  function nobr(el) {
+    if (!el || el.closest && el.closest(NOBR_SKIP)) return;
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const hits = [];
+    for (let n; (n = walker.nextNode());) {
+      NOBR_RE.lastIndex = 0;
+      if (NOBR_RE.test(n.nodeValue) && !n.parentElement.closest(NOBR_SKIP)) hits.push(n);
+    }
+    hits.forEach(n => {
+      const s = n.nodeValue, frag = document.createDocumentFragment();
+      let last = 0;
+      s.replace(NOBR_RE, (m, at) => {
+        if (at > last) frag.append(s.slice(last, at));
+        const sp = document.createElement("span"); sp.className = "nobr"; sp.textContent = m; frag.append(sp);
+        last = at + m.length;
+        return m;
+      });
+      if (last < s.length) frag.append(s.slice(last));
+      n.replaceWith(frag);
+    });
+  }
 
   async function loadJson(url) {
     const res = await fetch(url);
@@ -68,8 +110,8 @@
     },
     apply(root) {
       root = root || document;
-      root.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = I18N.t(el.dataset.i18n); });
-      root.querySelectorAll("[data-i18n-html]").forEach(el => { el.innerHTML = I18N.t(el.dataset.i18nHtml); });
+      root.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = I18N.t(el.dataset.i18n); nobr(el); });
+      root.querySelectorAll("[data-i18n-html]").forEach(el => { el.innerHTML = I18N.t(el.dataset.i18nHtml); nobr(el); });
       root.querySelectorAll("[data-i18n-attr]").forEach(el => {
         el.dataset.i18nAttr.split(";").forEach(pair => {
           const [attr, key] = pair.split(":").map(s => s.trim());
@@ -90,10 +132,20 @@
       await loadLang(lang);
       I18N.lang = lang;
       storeLang(lang);
+      syncUrl(lang);
       I18N.apply();
       listeners.forEach(fn => fn(lang));
     },
     onChange(fn) { listeners.push(fn); },
+    nobr,   // for page scripts that write text containing instrument names
+    // For page scripts that rewrite the address: "?<qs>" (or the bare path) with the current ?lang= kept
+    keepLang(qs) {
+      const usp = new URLSearchParams(qs || "");
+      const lang = urlLang();
+      if (lang && !usp.has("lang")) usp.set("lang", lang);
+      const s = usp.toString();
+      return s ? "?" + s : location.pathname;
+    },
     // Recorded output of a data-snap element (undefined if none, or while tools/snapshot.py records afresh)
     snap(name) {
       return window.__noSnap ? undefined : (dicts[I18N.lang] || {})["snap." + name];

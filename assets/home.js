@@ -33,11 +33,13 @@
       rest = rest.slice(at + link.length);
     }
     bioEl.append(rest);
+    I18N.nobr(bioEl);
 
     // One contact line: Email / CV (PDF) / GitHub
     const links = [];
     if (profile.email) links.push('<a href="mailto:' + esc(profile.email) + '">' + esc(t("home.email")) + "</a>");
-    if (profile.cv_pdf) links.push('<a href="' + esc(profile.cv_pdf) + '" target="_blank" rel="noopener">' + esc(t("home.cv_pdf")) + "</a>");
+    const cvPdf = (profile.cv_pdf_lang && I18N.pick(profile.cv_pdf_lang)) || profile.cv_pdf;   // one PDF per language
+    if (cvPdf) links.push('<a href="' + esc(cvPdf) + '" target="_blank" rel="noopener">' + esc(t("home.cv_pdf")) + "</a>");
     if (profile.github) links.push('<a href="' + esc(profile.github) + '" target="_blank" rel="noopener">GitHub</a>');
     if (profile.linkedin) links.push('<a href="' + esc(profile.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
     document.getElementById("contact").innerHTML = links.join("");
@@ -45,7 +47,8 @@
     SITE.renderDirectory(document.getElementById("dir-list"), "");
 
     document.getElementById("paper-list").innerHTML = (profile.papers || []).map(p =>
-      "<li>" + esc(p.title) + '<br><span class="venue"><i>' + esc(p.venue) + "</i> · " + esc(t("home.first_author")) + "</span></li>"
+      "<li>" + esc(p.title) + '<br><span class="venue"><i>' + esc(p.venue) + "</i>" + (p.year ? " " + esc(p.year) : "") +
+        " · " + esc(t("home.first_author")) + SITE.doiLink(p) + "</span></li>"
     ).join("");
     document.getElementById("patent-list").innerHTML = (profile.patents || []).concat(profile.talks || []).map(p =>
       "<li>" + esc(I18N.pick(p.title)) + '<br><span class="venue">' + esc(I18N.pick(p.note)) + "</span></li>"

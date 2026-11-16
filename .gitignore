@@ -10,6 +10,8 @@ training/data/
 # Copyrighted reference PDFs (e.g. van Gemert odour threshold compilation): never publish
 *.pdf
 !assets/cv.pdf
+!assets/cv-zh.pdf
+!assets/cv-en.pdf
 
 # Model checkpoints (only the exported ONNX file is published)
 *.pt
@@ -37,6 +39,10 @@ desktop.ini
 
 # Local working files: Word CV source, text export and edit lists
 /简历-*.docx
+/Jingwei_Cui_CV_English.docx
+/Jingwei_Cui_CV_English.pdf
+/崔京伟_简历_中文.docx
+/崔京伟_简历_中文.pdf
 /site-text.md
 /TEXT-EDITS.md
 /CV-EDITS.md

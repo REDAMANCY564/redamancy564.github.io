@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://pubchem.ncbi.nlm.nih.gov; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>方法与来源 | 4 风味改良 | 崔京伟</title>
+  <title>方法与来源 | 4 乳品风味改良 | 崔京伟</title>
   <meta name="description" content="Method, results, limitations and data sources of Bayesian Optimization for Dairy Flavor Improvement and Gap Analysis.">
   <link rel="canonical" href="https://redamancy564.github.io/flavor-improver/about.html">
   <meta name="theme-color" content="#fbfaf7">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="崔京伟 Jingwei Cui">
-  <meta property="og:title" content="方法与来源 | 4 风味改良 | 崔京伟">
+  <meta property="og:title" content="方法与来源 | 4 乳品风味改良 | 崔京伟">
   <meta property="og:description" content="Method, results, limitations and data sources of Bayesian Optimization for Dairy Flavor Improvement and Gap Analysis.">
   <meta property="og:url" content="https://redamancy564.github.io/flavor-improver/about.html">
   <meta property="og:image" content="https://redamancy564.github.io/assets/og/flavor-improver.jpg">
@@ -20,11 +20,11 @@
   <meta property="og:locale" content="zh_CN">
   <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="方法与来源 | 4 风味改良 | 崔京伟">
+  <meta name="twitter:title" content="方法与来源 | 4 乳品风味改良 | 崔京伟">
   <meta name="twitter:description" content="Method, results, limitations and data sources of Bayesian Optimization for Dairy Flavor Improvement and Gap Analysis.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/flavor-improver.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261104c">
-  <script src="../assets/i18n.js?v=20261104c" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261116a">
+  <script src="../assets/i18n.js?v=20261116a" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -41,7 +41,8 @@
     <div class="container">
       <a class="brand" href="../" data-i18n="site.name">崔京伟</a>
       <nav class="site-nav" aria-label="Site">
-        <a href="../projects/" data-i18n="nav.projects" aria-current="page">在线工具</a>
+        <a href="../projects/" aria-current="page"><span class="nav-long" data-i18n="nav.projects">在线工具</span><span class="nav-short" data-i18n="nav.projects_short">在线工具</span></a>
+        <a href="../research/" data-i18n="nav.research">研究</a>
         <a href="../cv/" data-i18n="nav.cv">简历</a>
         <button class="lang-toggle" id="lang-toggle" type="button">
           <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
@@ -52,7 +53,8 @@
 
   <main class="container about">
     <div class="hero">
-      <h1 data-i18n="hero.title" data-no="4">基于贝叶斯优化的乳品风味改良与差距分析</h1>
+      <h1 data-i18n="hero.short" data-no="4">乳品风味改良</h1>
+      <p class="hero-full" data-i18n="hero.title">基于贝叶斯优化的乳品风味改良与差距分析</p>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool">工具</a>
         <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
@@ -70,8 +72,8 @@
     <section id="overview">
       <h2 data-sec="1" data-i18n="about.overview" data-no="4.1">概述</h2>
       <p data-i18n="hero.intro">开发产品风味要反复调整配方，每调一次都要做感官评价，费时费钱。贝叶斯优化从每次试验的结果中学习，尽量用更少的试验接近目标。这里用一个虚拟评价函数代替感官评价小组：选一种乳品作为基底，设定改良方向，页面逐步显示算法每次加了哪些物质、加多少。</p>
-      <p data-i18n-html="hero.disclaimer"><b>这是方法演示，不是配方建议。</b>评价函数由单分子气味预测和简化的加和规则构成，不包含掩蔽、协同和基质效应；实际使用时应换成感官评价或 GC-O 实验。</p>
-      <p data-i18n="about.practice">比较两个乳品的风味差距，最常用的是 GC-O 和感官评价，但 GC-O 只能逐个看物质，看不到整体，感官评价又比较主观。我的研究是把婴儿配方奶粉的风味向母乳方向优化。这里不能直接添加风味物质：一是不符合相关法规，二是要考虑稳定性；而且母乳中许多风味物质本来就来自脂肪氧化，从前体物质入手更能还原这个过程。所以对婴儿配方奶粉，本页的结果只作为前体方向的参考，不作为添加建议。</p>
+      <p data-i18n-html="hero.disclaimer"><b>这是方法演示，不是配方建议。</b>评价函数由单分子气味预测和简化的加和规则构成，不包含掩蔽、协同和基质效应；实际使用时应换成感官评价或 <span class="nobr">GC-O</span> 实验。</p>
+      <p data-i18n="about.practice">比较两个乳品的风味差距，最常用的是 <span class="nobr">GC-O</span> 和感官评价，但 <span class="nobr">GC-O</span> 只能逐个看物质，看不到整体，感官评价又比较主观。我的研究是把婴儿配方奶粉的风味向母乳方向优化。这里不能直接添加风味物质：一是不符合相关法规，二是要考虑稳定性；而且母乳中许多风味物质本来就来自脂肪氧化，从前体物质入手更能还原这个过程。所以对婴儿配方奶粉，本页的结果只作为前体方向的参考，不作为添加建议。</p>
     </section>
 
     <section id="method">
@@ -100,7 +102,7 @@
 
       <h3 data-sec="2" data-i18n="method.user_title" data-no="4.2.2">用自己的数据时</h3>
       <ol class="steps">
-        <li data-i18n-html="method.user.1"><b>读取：</b>在 GC-MS 风味解读中，按你的标准文件匹配目标物质；有定量浓度时计算 OAV，只有峰面积时计算 ROAV。两份结果（当前样品、目标）发送到本页或以 CSV 上传，按化合物合并。</li>
+        <li data-i18n-html="method.user.1"><b>读取：</b>在 <span class="nobr">GC-MS</span> 风味解读中，按你的标准文件匹配目标物质；有定量浓度时计算 OAV，只有峰面积时计算 ROAV。两份结果（当前样品、目标）发送到本页或以 CSV 上传，按化合物合并。</li>
         <li data-i18n-html="method.user.2"><b>轮廓：</b>与示例相同的加和规则：强度 = log<sub>10</sub>(OAV 或 ROAV)，乘以每个物质的气味向量后相加并归一化。气味向量来自风味知识库中的模型预测；不在知识库中的物质，可提供结构后由本站模型在浏览器中预测。</li>
         <li data-i18n-html="method.user.3"><b>对比：</b>两条轮廓的余弦相似度；逐个物质比较 OAV 倍数（两边都定量时）或贡献占比（有一边只有峰面积时），超过可调的标准记为一方较高。</li>
         <li data-i18n-html="method.user.4"><b>推荐：</b>目标更高的物质作为添加方向；两边都定量时，按「只把这一种物质补到目标水平后轮廓相似度」排序。当前样品偏高的物质无法靠添加解决，单独列出。不做添加量计算。</li>
@@ -203,7 +205,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261104c" defer></script>
-  <script src="about.js?v=20261104c" defer></script>
+  <script src="../assets/projects.js?v=20261116a" defer></script>
+  <script src="about.js?v=20261116a" defer></script>
 </body>
 </html>

@@ -379,7 +379,7 @@
       renderSelect();
       renderDemo();
       try {
-        history.replaceState(null, "", "?q=" + encodeURIComponent(q) + "#demo");
+        history.replaceState(null, "", I18N.keepLang("q=" + encodeURIComponent(q)) + "#demo");
       } catch (err) { /* sandboxed frames may block history: ignore */ }
     } catch (e) {
       const code = e.code || "invalid_smiles";

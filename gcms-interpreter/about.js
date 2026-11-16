@@ -16,6 +16,7 @@
     const items = [];
     for (let k = 1; I18N.t("lim." + k) !== "lim." + k; k++) items.push("<li>" + esc(I18N.t("lim." + k)) + "</li>");
     $("lim-list").innerHTML = items.join("");
+    I18N.nobr($("lim-list"));
   }
 
   // One sample at a time; batch processing by email
