@@ -75,7 +75,7 @@
   "footer.data": "<b>数据与致谢：</b>模型用 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href=\"https://arxiv.org/abs/1910.10685\" target=\"_blank\" rel=\"noopener\">arXiv:1910.10685</a>，CC BY-NC 协议）的数据训练，由 <a href=\"https://github.com/BioMachineLearning/openpom\" target=\"_blank\" rel=\"noopener\">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅供非商业学术演示。</b>",
   "footer.thr": "<b>气味阈值：</b>L.J. van Gemert, Odour Thresholds: Compilations of Odour Threshold Values in Air, Water and Other Media, 2nd ed., Oliemans Punter &amp; Partners, 2011。代表值优先取自其中收录的 Czerny et al., <i>Eur. Food Res. Technol.</i> 228, 265-273 (2008)。",
   "footer.ref": "<b>相关文献：</b>Lee et al., A principal odor map unifies diverse tasks in olfactory perception, <i>Science</i> 381, 999-1006 (2023). <a href=\"https://doi.org/10.1126/science.ade4401\" target=\"_blank\" rel=\"noopener\">doi:10.1126/science.ade4401</a>；Liu et al., PharmaGNN: a model for odor prediction based on graph neural networks, <i>J Sci Food Agric</i> 106, 8114-8120 (2026). <a href=\"https://doi.org/10.1002/jsfa.70826\" target=\"_blank\" rel=\"noopener\">doi:10.1002/jsfa.70826</a>",
-  "footer.fi": "<b>用于：</b><a href=\"../flavor-improver/\">风味改良</a>（作为单分子气味来源）。",
+  "footer.fi": "<b>用于：</b><a href=\"../flavor-improver/\">乳品风味改良</a>（作为单分子气味来源）。",
   "status.kb_dunkel": "风味知识库中的气味描述（Dunkel et al. 2014, p. {page}）：",
   "status.kb_flavordb": "风味知识库中的气味描述（FlavorDB）：",
   "demo.finder_link": "查找替代原料",

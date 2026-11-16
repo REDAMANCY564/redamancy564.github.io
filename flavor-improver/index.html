@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://pubchem.ncbi.nlm.nih.gov; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>4 风味改良 | 崔京伟</title>
+  <title>4 乳品风味改良 | 崔京伟</title>
   <meta name="description" content="Shows how Bayesian optimization adjusts a dairy flavor, or compares your sample with a target.">
   <link rel="canonical" href="https://redamancy564.github.io/flavor-improver/">
   <meta name="theme-color" content="#fbfaf7">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="崔京伟 Jingwei Cui">
-  <meta property="og:title" content="4 风味改良 | 崔京伟">
+  <meta property="og:title" content="4 乳品风味改良 | 崔京伟">
   <meta property="og:description" content="Shows how Bayesian optimization adjusts a dairy flavor, or compares your sample with a target.">
   <meta property="og:url" content="https://redamancy564.github.io/flavor-improver/">
   <meta property="og:image" content="https://redamancy564.github.io/assets/og/flavor-improver.jpg">
@@ -20,11 +20,11 @@
   <meta property="og:locale" content="zh_CN">
   <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="4 风味改良 | 崔京伟">
+  <meta name="twitter:title" content="4 乳品风味改良 | 崔京伟">
   <meta name="twitter:description" content="Shows how Bayesian optimization adjusts a dairy flavor, or compares your sample with a target.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/flavor-improver.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261104c">
-  <script src="../assets/i18n.js?v=20261104c" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261116a">
+  <script src="../assets/i18n.js?v=20261116a" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -101,7 +101,8 @@
     <div class="container">
       <a class="brand" href="../" data-i18n="site.name">崔京伟</a>
       <nav class="site-nav" aria-label="Site">
-        <a href="../projects/" data-i18n="nav.projects" aria-current="page">在线工具</a>
+        <a href="../projects/" aria-current="page"><span class="nav-long" data-i18n="nav.projects">在线工具</span><span class="nav-short" data-i18n="nav.projects_short">在线工具</span></a>
+        <a href="../research/" data-i18n="nav.research">研究</a>
         <a href="../cv/" data-i18n="nav.cv">简历</a>
         <button class="lang-toggle" id="lang-toggle" type="button">
           <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
@@ -112,13 +113,14 @@
 
   <main class="container">
     <section class="hero">
-      <h1 data-i18n="hero.title" data-no="4">基于贝叶斯优化的乳品风味改良与差距分析</h1>
+      <h1 data-i18n="hero.short" data-no="4">乳品风味改良</h1>
+      <p class="hero-full" data-i18n="hero.title">基于贝叶斯优化的乳品风味改良与差距分析</p>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool" aria-current="page">工具</a>
         <a href="about.html" data-i18n="nav.about">方法与来源</a>
       </nav>
       <p class="sub" data-i18n="hero.sub">用贝叶斯优化建议往乳品基底里加哪些风味物质、加多少，让风味接近设定的方向。</p>
-      <div class="note warn" data-i18n-html="hero.disclaimer"><b>这是方法演示，不是配方建议。</b>评价函数由单分子气味预测和简化的加和规则构成，不包含掩蔽、协同和基质效应；实际使用时应换成感官评价或 GC-O 实验。</div>
+      <div class="note warn" data-i18n-html="hero.disclaimer"><b>这是方法演示，不是配方建议。</b>评价函数由单分子气味预测和简化的加和规则构成，不包含掩蔽、协同和基质效应；实际使用时应换成感官评价或 <span class="nobr">GC-O</span> 实验。</div>
     </section>
 
     <!-- Demo -->
@@ -131,6 +133,14 @@
         </span>
       </div>
       <div data-sec-scope id="bo-area">
+      <!-- try first: the base, thresholds and direction are preset; one click shows or plays the optimization -->
+      <div class="try-box" id="try-box">
+        <p class="try-line"><b data-i18n="try.title">试用示例</b><span class="muted" data-i18n="try.hint">（基底、阈值和改良方向已选好，点一下即可看到优化结果）：</span></p>
+        <div class="try-btns">
+          <button type="button" class="btn" id="try-result" data-i18n="try.result">直接看结果</button>
+          <button type="button" class="btn secondary" id="try-play" data-i18n="try.play">播放优化过程</button>
+        </div>
+      </div>
       <label class="field" for="preset" data-i18n="demo.select">选择乳品基底</label>
       <select id="preset" data-snap="preset"><option value="yogurt">常温酸奶（高酸度原料奶批次）</option><option value="milk">巴氏杀菌奶</option><option value="young_gouda">年轻豪达奶酪（巴氏奶制，成熟 4 周）</option><option value="mature_gouda">豪达奶酪（巴氏奶制，成熟 30 周）</option></select>
       <p class="small muted base-meta" id="base-meta" data-snap="base-meta">来源：Wang J, Zhang D, Li J, Zou T, Wen R, Hou Y, Song H, Li H, Ma H, Shi J. Aroma profiling of long shelf-life yoghurt from milk with varying acidity: insights from sensory evaluation and instrumental analysis. Food Chem X 2025. Table 1，GC-MS, standard addition。 <a href="https://doi.org/10.1016/j.fochx.2025.102215" target="_blank" rel="noopener">doi:10.1016/j.fochx.2025.102215</a><br>说明： 本研究未定量乙醛。</p>
@@ -277,7 +287,7 @@
       <p class="small muted" id="dir-rationale"></p>
       <div class="dirs" id="dirs"></div>
 
-      <div class="controls">
+      <div class="controls" id="bo-controls">
         <button type="button" class="btn" id="btn-run" data-i18n="ctl.start">开始优化</button>
         <button type="button" class="btn secondary" id="btn-skip" data-i18n="ctl.skip">跳到结果</button>
         <label><span data-i18n="ctl.speed">播放速度</span>
@@ -422,7 +432,7 @@
 
       <!-- Use my own data (PLAN-userdata.md): sample vs target from gcms-interpreter -->
       <div data-sec-scope id="user-area" hidden>
-        <p style="margin-top:12px" data-i18n-html="user.intro"><b>用自己的数据：</b>先在 <a href="../gcms-interpreter/">GC-MS 风味解读</a> 中分别处理当前样品（如自己的奶粉）和目标样品（如母乳），在「风味解读」一步点「作为当前样品发送」或「作为目标发送」；也可以把那里导出的排名 CSV 上传到下面。两份数据可以用不同的标准文件处理，本页按化合物合并。</p>
+        <p style="margin-top:12px" data-i18n-html="user.intro"><b>用自己的数据：</b>先在 <a href="../gcms-interpreter/"><span class="nobr">GC-MS</span> 风味解读</a> 中分别处理当前样品（如自己的奶粉）和目标样品（如母乳），在「风味解读」一步点「作为当前样品发送」或「作为目标发送」；也可以把那里导出的排名 CSV 上传到下面。两份数据可以用不同的标准文件处理，本页按化合物合并。</p>
         <p class="small" data-i18n-html="user.privacy">数据只在你的浏览器中处理和保存，不会上传。只有当你在下面点击「从 PubChem 查结构」时，页面才会把缺少结构的物质的 CAS 号或名称发给 PubChem（不发送含量等数据）。</p>
         <details class="card user-req">
           <summary><b data-i18n="user.req_title">上传 CSV 的要求</b></summary>
@@ -431,7 +441,7 @@
             <li data-i18n-html="user.req.2"><b>必需：</b>物质名称列，列名为 Compound、化合物、物质或名称。</li>
             <li data-i18n-html="user.req.3"><b>必需，以下数值列至少一个</b>（同时有多个时按此顺序使用）：(1) 定量浓度（Amount、浓度或含量；单位写在列名里，如「浓度 (µg/kg)」，没写时按 µg/kg），按 OAV 比较；(2) 相对含量或峰面积（Relative content、相对含量或峰面积），按 ROAV 比较；(3) 已经算好的 OAV（列名 OAV）；(4) 已经算好的 ROAV（列名 ROAV）。</li>
             <li data-i18n-html="user.req.4"><b>建议：</b>CAS 号列（CAS），用于准确匹配风味知识库中的物质和气味；气味阈值列（Odor threshold 或阈值；单位写在列名里，没写时按 mg/kg），使用 ① 或 ② 时需要，缺少阈值的物质改用内置值，没有内置值的不参与计算；直接给出 OAV 或 ROAV 时不需要阈值。</li>
-            <li data-i18n-html="user.req.5">未检出的物质可以在数值列中写「not detected」或「未检出」。GC-MS 风味解读页面「导出排名（CSV）」得到的文件已符合以上要求，可以直接上传。</li>
+            <li data-i18n-html="user.req.5">未检出的物质可以在数值列中写「not detected」或「未检出」。<span class="nobr">GC-MS</span> 风味解读页面「导出排名（CSV）」得到的文件已符合以上要求，可以直接上传。</li>
           </ul>
           <p class="small" style="margin:6px 0 0"><a href="examples/userdata_template.csv" download data-i18n="user.req_template">下载 CSV 模板</a></p>
         </details>
@@ -500,14 +510,14 @@
   </footer>
 
   <script src="../assets/vendor/chartjs/chart.umd.min.js" defer></script>
-  <script src="../assets/libs.js?v=20261104c" defer></script>
-  <script src="../assets/projects.js?v=20261104c" defer></script>
-  <script src="../assets/flavor-handoff.js?v=20261104c" defer></script>
-  <script src="mixture.js?v=20261104c" defer></script>
-  <script src="bo.js?v=20261104c" defer></script>
-  <script src="reference.js?v=20261104c" defer></script>
-  <script src="userdata-core.js?v=20261104c" defer></script>
-  <script src="userdata.js?v=20261104c" defer></script>
-  <script src="app.js?v=20261104c" defer></script>
+  <script src="../assets/libs.js?v=20261116a" defer></script>
+  <script src="../assets/projects.js?v=20261116a" defer></script>
+  <script src="../assets/flavor-handoff.js?v=20261116a" defer></script>
+  <script src="mixture.js?v=20261116a" defer></script>
+  <script src="bo.js?v=20261116a" defer></script>
+  <script src="reference.js?v=20261116a" defer></script>
+  <script src="userdata-core.js?v=20261116a" defer></script>
+  <script src="userdata.js?v=20261116a" defer></script>
+  <script src="app.js?v=20261116a" defer></script>
 </body>
 </html>

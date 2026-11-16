@@ -46,7 +46,7 @@
 
 * { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 72px; }   /* jumps and scrollIntoView clear the sticky header */
 
 body {
   margin: 0;
@@ -81,6 +81,15 @@ img, svg { max-width: 100%; }
 .site-nav a { color: var(--muted); text-decoration: none; white-space: nowrap; }
 .site-nav a:hover, .site-nav a[aria-current] { color: var(--text); }
 @media (max-width: 400px) { .site-nav { gap: var(--sp-3); font-size: .9rem; } }
+/* "Online Tools" becomes "Tools" on phones in English, so the header stays on one row with "Research" added */
+.site-nav .nav-short { display: none; }
+@media (max-width: 400px) {
+  :lang(en) .site-nav .nav-long { display: none; }
+  :lang(en) .site-nav .nav-short { display: inline; }
+  :lang(en) .site-nav { gap: 12px; }
+  :lang(en) .lang-toggle { padding: 4px 8px; }
+  :lang(en) .lang-toggle .sep { margin: 0 4px; }
+}
 
 /* Project tabs (SwissADME-style), under the project title */
 .proj-tabs { display: flex; gap: var(--sp-4); line-height: 1.5; border-bottom: 1px solid var(--border); margin: var(--sp-2) 0 var(--sp-4); font-size: .95rem; }
@@ -266,6 +275,31 @@ a.help:hover { border-color: var(--accent); color: var(--accent); }
 .dir-list .toc-title { font-weight: 600; text-decoration: none; }
 .dir-list .toc-title:hover { text-decoration: underline; }
 .dir-list p { margin: 2px 0 0; }
+/* small result screenshot left of each tool: no frame or background; it sits within the row's own height */
+.dir-list li { display: flex; align-items: flex-start; gap: 16px; }
+.dir-list li > div { flex: 1; min-width: 0; }
+.dir-list .toc-thumb { flex: 0 0 96px; margin-top: 3px; }
+.dir-list .toc-thumb img { display: block; width: 96px; height: 64px; }
+@media (max-width: 600px) {
+  /* phones: smaller, floated left of the title so the sentence can use the full width below it */
+  .dir-list li { display: block; }
+  .dir-list li::after { content: ""; display: block; clear: both; }
+  .dir-list .toc-thumb { float: left; margin: 3px 12px 2px 0; }
+  .dir-list .toc-thumb img { width: 64px; height: 43px; }
+}
+/* full tool name after the short one: grey, smaller (homepage on the same line, projects page below) */
+.toc-full { color: var(--muted); font-size: .8125rem; }
+.pub-item .toc-full { display: block; margin: 2px 0 4px; }
+@media (max-width: 600px) { .dir-list .toc-full { display: block; line-height: 1.45; margin-top: 1px; } }
+/* tool pages: the full name under the short h1 */
+.hero-full { color: var(--muted); font-size: .9375rem; margin: -6px 0 0; }
+.nobr { white-space: nowrap; }
+/* "Try an example" box at the top of a tool: one click shows a complete result */
+.try-box { border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin: 12px 0 16px; }
+.try-box .try-line { margin: 0 0 4px; }
+.try-box .try-btns { display: flex; flex-wrap: wrap; gap: 8px 12px; margin: 8px 0 0; }
+.try-box .note-sim { margin: 6px 0 0; }
+.try-box .search-status:empty { display: none; }
 .paper-list li { margin-bottom: var(--sp-3); }
 .paper-list .venue { color: var(--muted); font-size: .875rem; }
 .paper-list .venue i { color: var(--text); }
@@ -351,8 +385,10 @@ button.linklike { font: inherit; border: 0; background: none; padding: 0; color:
                   text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
 button.linklike:hover { text-decoration-thickness: 2px; }
 button.linklike.on { color: var(--text); font-weight: 600; text-decoration: none; }
-.ex-list .linklike + .linklike::before { content: ", "; display: inline-block; white-space: pre; color: var(--muted); }
-:lang(zh) .ex-list .linklike + .linklike::before { content: "、"; }
+/* each example name stays on one line; the separator follows the previous name, so no line starts with it */
+.ex-list .linklike { white-space: nowrap; }
+.ex-list .linklike:not(:last-child)::after { content: ", "; display: inline-block; white-space: pre; color: var(--muted); text-decoration: none; }
+:lang(zh) .ex-list .linklike:not(:last-child)::after { content: "、"; }
 .error-text { color: var(--error); }
 .warn-text { color: var(--warn); }
 

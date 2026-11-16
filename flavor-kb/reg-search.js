@@ -93,7 +93,7 @@
     query = q.trim();
     $("rq-input").value = query;
     if (push) {
-      try { history.pushState({ q: query }, "", query ? "?q=" + encodeURIComponent(query) : location.pathname); } catch (e) { /* ignore */ }
+      try { history.pushState({ q: query }, "", I18N.keepLang(query ? "q=" + encodeURIComponent(query) : "")); } catch (e) { /* ignore */ }
     }
     if (!query) { render(); return; }
     setStatus("reg.loading");

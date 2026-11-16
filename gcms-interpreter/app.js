@@ -198,13 +198,31 @@
   }
 
   dropZone("drop", "file-input", f => load(f));
+  // Examples (top of the page): one click loads the peak table and its standard file, confirms them,
+  // runs the matching and scrolls to the ranking. Uploading one's own files keeps the step-by-step flow.
+  let exampleBusy = false;
   document.querySelectorAll("[data-example]").forEach(b => b.addEventListener("click", async () => {
     const id = b.dataset.example;
-    await resources.catch(() => {});
-    if (!exampleFiles[id]) return;
-    await load(exampleFiles[id], id);
-    await loadStd(exampleStd[id], true);
-    setTolerances(examples.examples[id].tolerances, true);
+    if (exampleBusy) return;
+    exampleBusy = true;
+    const name = b.textContent;
+    const status = $("try-status");
+    status.textContent = I18N.t("try.busy", { name });
+    try {
+      await resources.catch(() => {});
+      if (!exampleFiles[id]) return;
+      await load(exampleFiles[id], id);
+      await loadStd(exampleStd[id], true);
+      setTolerances(examples.examples[id].tolerances, true);
+      if (!(await confirmNow())) return;
+      await runMatch();
+      status.textContent = I18N.t("try.done", { name });
+      const target = !$("step-flavor").classList.contains("hidden") ? $("step-flavor") : $("results");
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    } finally {
+      exampleBusy = false;
+      if (status.textContent === I18N.t("try.busy", { name })) status.textContent = "";
+    }
   }));
 
   $("dl-template").addEventListener("click", e => {
@@ -459,8 +477,9 @@
   const CHUNK = 200;   // rows identified between two progress updates
 
   let confirming = false;
-  $("files-confirm").addEventListener("click", async () => {
-    if (confirming || !S.file || !STD.file || !peakMappingOk() || !stdMappingOk()) return;
+  /** "Files read correctly": identify both files' rows; true when ready to run. */
+  async function confirmNow() {
+    if (confirming || !S.file || !STD.file || !peakMappingOk() || !stdMappingOk()) return false;
     confirming = true;
     $("files-confirm").disabled = true;
     try {
@@ -470,7 +489,10 @@
       setProgress(null);
       renderAll();
     }
-    if (RUN.ready) $("step-match").scrollIntoView({ behavior: "smooth", block: "start" });
+    return RUN.ready;
+  }
+  $("files-confirm").addEventListener("click", async () => {
+    if (await confirmNow()) $("step-match").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   async function confirmFiles() {
@@ -548,9 +570,10 @@
     });
     RUN.stale = false;
   }
-  $("run-btn").addEventListener("click", async () => {
-    if (!RUN.ready || $("run-btn").disabled) return;
-    if (tolNum(TOL.range) == null) { renderMatch(); return; }
+  /** "Run": match the standard file against the peak table; false if it could not run (no range set). */
+  async function runMatch() {
+    if (!RUN.ready || $("run-btn").disabled) return false;
+    if (tolNum(TOL.range) == null) { renderMatch(); return false; }
     // large files take about a second: say so before the page is busy
     $("run-btn").disabled = true;
     $("run-msg").textContent = I18N.t("run.busy");
@@ -565,7 +588,10 @@
       document.body.classList.remove("busy");
     }
     renderMatch();
-    $("results").scrollIntoView({ behavior: "smooth", block: "start" });
+    return true;
+  }
+  $("run-btn").addEventListener("click", async () => {
+    if (await runMatch()) $("results").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   // ---------- Results ----------

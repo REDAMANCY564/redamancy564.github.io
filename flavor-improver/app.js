@@ -183,6 +183,7 @@
     $("base-meta").innerHTML = esc(t("base.meta", { citation: s.citation, table: s.table, method: s.method })) +
       ` <a href="https://doi.org/${esc(s.doi)}" target="_blank" rel="noopener">doi:${esc(s.doi)}</a>` +
       (b.note ? `<br>${esc(t("base.note_label"))} ${esc(I18N.pick({ zh: b.note_zh || b.note, en: b.note }))}` : "");
+    I18N.nobr($("base-meta"));
   }
 
   // ---- charts ----
@@ -370,6 +371,21 @@
     stopPlayer();
     player.pos = player.steps.length - 1;
     renderPlayer();
+  });
+  // "Try an example" (top of the demo): the preset is ready, so one click shows the result or plays the run;
+  // both scroll to the controls and charts. With edited thresholds the buttons start the browser run instead.
+  const toCharts = () => $("bo-controls").scrollIntoView({ behavior: "smooth", block: "start" });
+  $("try-result").addEventListener("click", () => {
+    if (!$("btn-skip").disabled) $("btn-skip").click();
+    else if (!player.steps.length && !liveRunning) $("btn-run").click();
+    toCharts();
+  });
+  $("try-play").addEventListener("click", () => {
+    if (!player.playing && !liveRunning) {
+      if (player.steps.length && player.pos >= player.steps.length - 1) player.pos = -1;   // replay from the start
+      $("btn-run").click();
+    }
+    toCharts();
   });
 
   // ---- render all ----

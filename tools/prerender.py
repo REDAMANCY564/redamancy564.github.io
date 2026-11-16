@@ -116,20 +116,53 @@ def pick(o):
     return o[LANG] if o.get(LANG) is not None else o.get("en")
 
 
+# ---- instrument names kept on one line (same rule as nobr() in assets/i18n.js) ----
+NOBR_RE = re.compile(r"GC×GC-(?:TOF)?MS|GC-O-MS|GC-IMS|GC-MS(?:/MS)?|GC-O|HS-SPME|LC-MS")
+NOBR_SKIP_TAGS = {"script", "style", "textarea", "option", "title", "svg"}
+
+
+def nobr_html(s):
+    """Wrap matches in <span class="nobr"> in the text parts of an HTML string (tags and elements already .nobr untouched)."""
+    out, depth = [], 0   # depth: inside an element with class nobr
+    for part in re.split(r"(<[^>]*>)", s):
+        if part.startswith("<"):
+            if depth:
+                if part.startswith("</"): depth -= 1
+                elif not part.endswith("/>"): depth += 1
+            elif re.search(r'class="[^"]*nobr', part): depth = 1
+            out.append(part)
+        elif depth: out.append(part)
+        else: out.append(NOBR_RE.sub(lambda m: '<span class="nobr">' + m.group(0) + "</span>", part))
+    return "".join(out)
+
+
 # ---- profile-driven lists (same markup as the page scripts) ----
+def year(x):
+    return " " + esc(x["year"]) if x.get("year") else ""
+
+
+def doi_link(x):   # same as SITE.doiLink in assets/projects.js
+    return (' · <a class="nobr" href="https://doi.org/' + esc(x["doi"]) + '" target="_blank" rel="noopener">doi:' + esc(x["doi"]) + "</a>"
+            if x.get("doi") else "")
+
+
 def home_lists(t, root):
     p = PROFILE
     links = []
     if p.get("email"): links.append('<a href="mailto:' + esc(p["email"]) + '">' + esc(t("home.email")) + "</a>")
-    if p.get("cv_pdf"): links.append('<a href="' + esc(p["cv_pdf"]) + '" target="_blank" rel="noopener">' + esc(t("home.cv_pdf")) + "</a>")
+    cv_pdf = pick(p.get("cv_pdf_lang")) or p.get("cv_pdf")   # one PDF per language
+    if cv_pdf: links.append('<a href="' + esc(cv_pdf) + '" target="_blank" rel="noopener">' + esc(t("home.cv_pdf")) + "</a>")
     if p.get("github"): links.append('<a href="' + esc(p["github"]) + '" target="_blank" rel="noopener">GitHub</a>')
     if p.get("linkedin"): links.append('<a href="' + esc(p["linkedin"]) + '" target="_blank" rel="noopener">LinkedIn</a>')
     directory = "".join(
         "<li>" + '<span class="no">' + str(i + 1) + "</span>" +
-        '<div><a class="toc-title" href="' + root + d + '/">' + esc(t("home." + k + ".title")) + "</a>" +
+        '<a class="toc-thumb" href="' + root + d + '/" tabindex="-1" aria-hidden="true"><img src="' + root + "assets/thumbs/small/" + d +
+        '.webp" width="96" height="64" loading="lazy" alt=""></a>' +
+        '<div><a class="toc-title" href="' + root + d + '/">' + esc(t("home." + k + ".title")) + "</a> " +
+        '<span class="toc-full">' + esc(t("home." + k + ".full")) + "</span>" +
         "<p>" + esc(t("home." + k + ".one")) + "</p></div>" + "</li>" for i, (d, k) in enumerate(PROJECTS))
-    papers = "".join("<li>" + esc(x["title"]) + '<br><span class="venue"><i>' + esc(x["venue"]) + "</i> · " +
-                     esc(t("home.first_author")) + "</span></li>" for x in p.get("papers") or [])
+    papers = "".join("<li>" + esc(x["title"]) + '<br><span class="venue"><i>' + esc(x["venue"]) + "</i>" + year(x) + " · " +
+                     esc(t("home.first_author")) + doi_link(x) + "</span></li>" for x in p.get("papers") or [])
     patents = "".join("<li>" + esc(pick(x["title"])) + '<br><span class="venue">' + esc(pick(x["note"])) + "</span></li>"
                       for x in (p.get("patents") or []) + (p.get("talks") or []))
     rest, bio_html = pick(p.get("bio")) or "", ""   # same as assets/home.js: each bio_link part becomes a link
@@ -139,9 +172,9 @@ def home_lists(t, root):
         if at < 0: continue
         bio_html += esc(rest[:at]) + '<a href="' + root + esc(l["href"]) + '">' + esc(link) + "</a>"
         rest = rest[at + len(link):]
-    bio_html += esc(rest)
+    bio_html = nobr_html(bio_html + esc(rest))
     return {"role": esc(pick(p.get("role")) or ""), "bio": bio_html, "contact": "".join(links),
-            "dir-list": directory, "paper-list": papers, "patent-list": patents}
+            "dir-list": nobr_html(directory), "paper-list": papers, "patent-list": patents}
 
 
 def projects_list(t, root):
@@ -153,10 +186,11 @@ def projects_list(t, root):
                    '<img src="' + root + "assets/thumbs/" + d + '.webp" width="200" height="150" loading="lazy" alt="' +
                    esc(t("home.thumb_alt", {"name": t("home." + k + ".title")})) + '">' + "</a>" +
                    "<div>" + '<a class="pub-title" href="' + href + '" data-no="' + str(i + 1) + '">' + title + "</a>" +
+                   '<span class="toc-full">' + esc(t("home." + k + ".full")) + "</span>" +
                    "<p>" + esc(t("home." + k + ".one")) + "</p>" +
                    '<p class="links"><a href="' + href + '">' + esc(t("nav.tool")) + "</a>" +
                    '<a href="' + href + 'about.html">' + esc(t("nav.about")) + "</a></p>" + "</div></div>")
-    return {"pub-list": "".join(out)}
+    return {"pub-list": nobr_html("".join(out))}
 
 
 def cv_lists(t, root):
@@ -164,7 +198,7 @@ def cv_lists(t, root):
     pk = lambda o: esc(pick(o))
     noted = lambda lst: "".join("<li>" + pk(x["title"]) + '<br><span class="venue">' + pk(x["note"]) + "</span></li>" for x in lst or [])
     return {
-        "pub-published": "".join("<li>" + esc(x["title"]) + '<br><span class="venue"><i>' + esc(x["venue"]) + "</i> · " + pk(x["rank"]) + "</span></li>"
+        "pub-published": "".join("<li>" + esc(x["title"]) + '<br><span class="venue"><i>' + esc(x["venue"]) + "</i>" + year(x) + " · " + pk(x["rank"]) + doi_link(x) + "</span></li>"
                                  for x in p.get("papers") or []),
         "pub-submitted": "".join("<li>" + esc(s) + "</li>" for s in p.get("submitted") or []),
         "pub-cn": "".join("<li>" + pk(x["title"]) + '<br><span class="venue"><i>' + pk(x["venue"]) + "</i>" + ("，" if LANG == "zh" else ", ") + pk(x["note"]) + "</span></li>"
@@ -244,10 +278,17 @@ def render(rel):
     def tag_of(n):
         return tag_edits.get(n, text[n.start:n.start_end])
 
+    def wrap_ok(n):   # same exclusions as nobr() in assets/i18n.js
+        return n.tag not in NOBR_SKIP_TAGS and n.closest(lambda x: x.tag in NOBR_SKIP_TAGS or "nobr" in x.attrs.get("class", "").split()) is None
+
     for n in nodes:
         a = n.attrs
-        if "data-i18n" in a: content[n] = html.escape(t(a["data-i18n"]), quote=False)
-        if "data-i18n-html" in a: content[n] = t(a["data-i18n-html"])
+        if "data-i18n" in a:
+            content[n] = html.escape(t(a["data-i18n"]), quote=False)
+            if wrap_ok(n): content[n] = nobr_html(content[n])
+        if "data-i18n-html" in a:
+            content[n] = t(a["data-i18n-html"])
+            if wrap_ok(n): content[n] = nobr_html(content[n])
         if "data-snap" in a: content[n] = t("snap." + a["data-snap"])   # generated by tools/snapshot.py
         if "data-i18n-attr" in a:
             s = tag_of(n)

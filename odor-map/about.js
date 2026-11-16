@@ -60,6 +60,7 @@
     const ex = lib.excluded || [], by = {};
     ex.forEach(e => { (by[e.category] = by[e.category] || []).push(e); });
     $("excluded-note").textContent = I18N.t("excluded.note", { n: ex.length, total: n });
+    I18N.nobr($("excluded-note"));
     $("excluded-list").innerHTML = Object.keys(by).map(c => "<li><b>" + esc(I18N.t("excluded.cat." + c)) + "</b> (" + by[c].length + "): " +
       esc(by[c].map(e => e.name || e.smiles).join(", ")) + "</li>").join("");
   }

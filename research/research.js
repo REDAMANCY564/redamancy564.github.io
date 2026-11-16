@@ -5,8 +5,9 @@
  * - Animations are attribute tweens on one requestAnimationFrame clock, so they can be paused
  *   (stage out of view) and no inline style attributes are needed (strict CSP).
  * - One thing moves at a time; each change 0.6-1 s (PhD steps 1-3: 1.0-1.2 s), ease-in-out; only move, fade and line drawing.
- * - PhD steps 1-3 play in segments: before each one an explanation line fades in above the picture and stays
- *   for 1.5 s before the picture moves; segments are 1.5 s apart. Pause / Resume holds the stage clock.
+ * - Choosing a step shows its heading, first explanation line and opening picture at once; the picture starts
+ *   moving 0.5 s later. PhD steps 1-3 play in segments: before each later one the next line fades in above the
+ *   picture and stays 1.5 s before the picture moves; segments are 1.5 s apart. Pause / Resume holds the stage clock.
  * - prefers-reduced-motion: every step is drawn in its final state at once, with its explanation lines as a list.
  * - Each stage plays its step 1 when it first comes into view; later steps start only when the visitor asks.
  */
@@ -1450,15 +1451,26 @@
         else node.appendChild(document.createTextNode(part));
       });
     }
-    // segment i starts: the previous line (if any) stays 1.5 s more, fades out; the new one fades in and stays 1.5 s
+    // The first line appears at once, with the step's opening picture (see openAtOnce): the picture then
+    // waits 0.5 s. Later segments: the previous line stays 1.5 s more, fades out; the new one fades in and stays 1.5 s.
     function makeSay(n, T, inst) {
       let shown = false;
       return async function (i) {
         if (inst || !nSay(n)) return;
-        if (shown) { await T(1.5); await T(0.4, e => { sayEl.style.opacity = 1 - e; }); }
-        setLine(sayEl, t(cfg.sayKey(n, i))); shown = true;
+        if (!shown) { setLine(sayEl, t(cfg.sayKey(n, i))); sayEl.style.opacity = 1; shown = true; return; }
+        await T(1.5); await T(0.4, e => { sayEl.style.opacity = 1 - e; });
+        setLine(sayEl, t(cfg.sayKey(n, i)));
         await T(0.6, e => { sayEl.style.opacity = e; });
         await T(1.5);
+      };
+    }
+    // Every scene opens by fading in its starting picture (its first tween with a function). That tween runs
+    // at once, so the picture is there as soon as the step is chosen; then a 0.5 s pause before anything moves.
+    function openAtOnce(T, inst) {
+      let first = !inst;
+      return function (sec, fn) {
+        if (first && fn) { first = false; fn(1); return T(0.5); }
+        return T(sec, fn);
       };
     }
     function setPauseLabel() { pauseBtn.textContent = t(S.clock.held ? "rs.resume" : "rs.pause"); }
@@ -1487,25 +1499,20 @@
       pauseBtn.disabled = inst;
       updateControls();
       nextBtn.style.boxShadow = "";
-      // fade out the previous picture and text
-      if (!inst && started) {
-        const p = stepParts(prev);
-        const o0 = +(detail.getAttribute("opacity") || 1);
-        const s0 = +(sayEl.style.opacity || 0);
-        await T(0.4, e => { op(detail, lerp(o0, 0, e)); p.a.style.opacity = 1 - e; sayEl.style.opacity = lerp(s0, 0, e); });
-        p.a.style.opacity = "";
-      }
+      // the new step replaces the previous one at once: its heading, first line and opening picture show
+      // straight away, while the overview diagram moves its frame to the new node at the same time
+      if (started && prev) stepParts(prev).a.style.opacity = "";
       started = true;
       detail.textContent = "";
       op(detail, 1);
       const W = detailSize(n);
       const g = el("g", {}, detail);
-      showText(n, "none");
+      showText(n, "lede");
       prepSay(n, inst);
-      await overviewTo(S, n, T, inst);
+      const ovDone = overviewTo(S, n, T, inst);
       const parts = stepParts(n);
-      await T(0.6, e => { parts.lede.style.opacity = e; });
-      await cfg.scenes[n](g, W, H_DETAIL, T, reduced, makeSay(n, T, inst));
+      await cfg.scenes[n](g, W, H_DETAIL, openAtOnce(T, inst), reduced, makeSay(n, T, inst));
+      await ovDone;
       await T(0.6, e => { parts.cap.style.opacity = e; });
       if (parts.go) await T(0.6, e => { parts.go.style.opacity = e; });
       if (my === gen) pauseBtn.disabled = true;   // nothing left to pause
