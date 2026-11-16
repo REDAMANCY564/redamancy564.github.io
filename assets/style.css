@@ -46,7 +46,7 @@
 
 * { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 72px; }   /* jumps and scrollIntoView clear the sticky header */
 
 body {
   margin: 0;

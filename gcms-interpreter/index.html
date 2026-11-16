@@ -66,6 +66,10 @@
     .progress-box progress { width: min(320px, 100%); height: 10px; accent-color: var(--accent); }
     body.busy, body.busy * { cursor: progress !important; }
     .note-sim { font-size: .875rem; color: var(--muted); margin-top: 6px; }
+    .try-box { border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin: 12px 0 16px; }
+    .try-box .try-line { margin: 0 0 4px; }
+    .try-box .note-sim { margin: 6px 0 0; }
+    .try-box .search-status:empty { display: none; }
     .inputs { display: grid; grid-template-columns: 1fr; gap: 16px; }
     @media (min-width: 820px) { .inputs { grid-template-columns: 1fr 1fr; } }
     .inputs .card h3 { margin-top: 0; }
@@ -117,6 +121,13 @@
         <a href="about.html" data-i18n="nav.about">方法与来源</a>
       </nav>
       <p class="sub" data-i18n="hero.sub">上传一个样品的峰表和目标物质清单，得到关键风味物质、OAV/ROAV 和风味轮廓。</p>
+      <!-- try first: one click loads an example, reads it, runs the matching and scrolls to the ranking -->
+      <div class="try-box" id="try-box">
+        <p class="try-line"><b data-i18n="try.title">试用示例</b><span class="muted" data-i18n="try.hint">（点一下即载入峰表和标准文件，自动运行并显示结果）：</span></p>
+        <p class="try-line"><span class="ex-list"><button type="button" class="linklike" data-example="example1" data-i18n="ex.1">酸奶，Agilent 风格 CSV</button><button type="button" class="linklike" data-example="example2" data-i18n="ex.2">巴氏奶，岛津风格 TXT（GBK 编码）</button><button type="button" class="linklike" data-example="example3" data-i18n="ex.3">高达奶酪，Thermo 风格 XLSX</button></span></p>
+        <p class="small search-status" id="try-status" aria-live="polite"></p>
+        <p class="note-sim" data-i18n="ex.note">示例为模拟数据：物质组成和浓度参考已发表文献，保留时间、峰面积和格式问题是模拟的，不是真实仪器导出的文件。</p>
+      </div>
       <div class="privacy" id="privacy">
         <details>
           <summary><b class="lead" data-i18n="privacy.lead">你的数据不会离开你的电脑。</b> <span class="verify" data-i18n="privacy.verify">如何自己验证</span></summary>
@@ -173,11 +184,6 @@
           <div class="info hidden" id="std-file-info"></div>
         </div>
       </div>
-      <div class="row-wrap">
-        <span class="muted small" data-i18n="import.examples">或者试试示例（同时载入峰表和配套的标准文件）：</span>
-        <span class="ex-list"><button type="button" class="linklike" data-example="example1" data-i18n="ex.1">酸奶，Agilent 风格 CSV</button><button type="button" class="linklike" data-example="example2" data-i18n="ex.2">巴氏奶，岛津风格 TXT（GBK 编码）</button><button type="button" class="linklike" data-example="example3" data-i18n="ex.3">高达奶酪，Thermo 风格 XLSX</button></span>
-      </div>
-      <p class="note-sim" data-i18n="ex.note">示例为模拟数据：物质组成和浓度参考已发表文献，保留时间、峰面积和格式问题是模拟的，不是真实仪器导出的文件。</p>
     </section>
 
     <!-- Step 2: columns -->
