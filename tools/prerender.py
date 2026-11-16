@@ -156,6 +156,8 @@ def home_lists(t, root):
     if p.get("linkedin"): links.append('<a href="' + esc(p["linkedin"]) + '" target="_blank" rel="noopener">LinkedIn</a>')
     directory = "".join(
         "<li>" + '<span class="no">' + str(i + 1) + "</span>" +
+        '<a class="toc-thumb" href="' + root + d + '/" tabindex="-1" aria-hidden="true"><img src="' + root + "assets/thumbs/small/" + d +
+        '.webp" width="96" height="64" loading="lazy" alt=""></a>' +
         '<div><a class="toc-title" href="' + root + d + '/">' + esc(t("home." + k + ".title")) + "</a> " +
         '<span class="toc-full">' + esc(t("home." + k + ".full")) + "</span>" +
         "<p>" + esc(t("home." + k + ".one")) + "</p></div>" + "</li>" for i, (d, k) in enumerate(PROJECTS))

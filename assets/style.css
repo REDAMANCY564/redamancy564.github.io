@@ -275,6 +275,18 @@ a.help:hover { border-color: var(--accent); color: var(--accent); }
 .dir-list .toc-title { font-weight: 600; text-decoration: none; }
 .dir-list .toc-title:hover { text-decoration: underline; }
 .dir-list p { margin: 2px 0 0; }
+/* small result screenshot left of each tool: no frame or background; it sits within the row's own height */
+.dir-list li { display: flex; align-items: flex-start; gap: 16px; }
+.dir-list li > div { flex: 1; min-width: 0; }
+.dir-list .toc-thumb { flex: 0 0 96px; margin-top: 3px; }
+.dir-list .toc-thumb img { display: block; width: 96px; height: 64px; }
+@media (max-width: 600px) {
+  /* phones: smaller, floated left of the title so the sentence can use the full width below it */
+  .dir-list li { display: block; }
+  .dir-list li::after { content: ""; display: block; clear: both; }
+  .dir-list .toc-thumb { float: left; margin: 3px 12px 2px 0; }
+  .dir-list .toc-thumb img { width: 64px; height: 43px; }
+}
 /* full tool name after the short one: grey, smaller (homepage on the same line, projects page below) */
 .toc-full { color: var(--muted); font-size: .8125rem; }
 .pub-item .toc-full { display: block; margin: 2px 0 4px; }

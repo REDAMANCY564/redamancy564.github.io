@@ -1,7 +1,8 @@
 /*
  * Project list and numbering, shared by every page. The order of PROJECTS is the project number
  * (1 to 7) used on the homepage, the projects page, project titles, section headings and tab titles.
- * Needs assets/i18n.js loaded first. Screenshots live in assets/thumbs/<directory>.webp.
+ * Needs assets/i18n.js loaded first. Screenshots live in assets/thumbs/<directory>.webp (projects page) and
+ * assets/thumbs/small/<directory>.webp (homepage; made by tools/make_thumbs_small.py).
  */
 (function () {
   // [directory, i18n key prefix]; the first three are the main projects
@@ -24,12 +25,15 @@
     return p.doi ? ' · <a class="nobr" href="https://doi.org/' + esc(p.doi) + '" target="_blank" rel="noopener">doi:' + esc(p.doi) + "</a>" : "";
   }
 
-  // Homepage: a plain table of contents (number, short name linking to the tool, full name in grey, one sentence)
+  // Homepage: a plain table of contents (number, small result screenshot, short name linking to the tool,
+  // full name in grey, one sentence)
   function renderDirectory(el, root) {
     const t = I18N.t;
     el.innerHTML = PROJECTS.map(([dir, key], i) =>
       "<li>" +
         '<span class="no">' + (i + 1) + "</span>" +
+        '<a class="toc-thumb" href="' + root + dir + '/" tabindex="-1" aria-hidden="true"><img src="' + root + "assets/thumbs/small/" + dir +
+          '.webp" width="96" height="64" loading="lazy" alt=""></a>' +
         '<div><a class="toc-title" href="' + root + dir + '/">' + esc(t("home." + key + ".title")) + "</a> " +
         '<span class="toc-full">' + esc(t("home." + key + ".full")) + "</span>" +
         "<p>" + esc(t("home." + key + ".one")) + "</p></div>" +
