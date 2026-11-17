@@ -83,6 +83,8 @@
   check("match", "forIdent: no CAS, no KB: exact name", I.forIdent({ casStatus: "missing", kbId: null, method: null }, "ISO E super", "").en, "ISO E super");
   check("match", "link points to the curve page with ?cas=", /curves\.html\?cas=138-86-3"/.test(I.link(lim)), true);
   check("match", "no curve, no link", I.link(null), "");
+  check("match", "link opens in a new tab", /target="_blank" rel="noopener"/.test(I.link(lim)), true);
+  check("search", "diacetyl is not in the source: 丁二酮, diacetyl, 431-03-8 give nothing", [I.search("丁二酮"), I.search("diacetyl"), I.search("431-03-8")], [[], [], []]);
 
   // ---------- report ----------
   const passed = results.filter(r => r.ok).length;

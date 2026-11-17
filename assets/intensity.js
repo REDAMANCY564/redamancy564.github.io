@@ -122,10 +122,10 @@
 
   const name = e => (I18N.lang === "zh" && e.zh ? e.zh : e.en);
   const href = e => PAGE_URL.pathname + "?cas=" + encodeURIComponent(e.cas);
-  /** The small link placed next to a compound name ("" without a curve). */
+  /** The small link placed next to a compound name ("" without a curve); opens in a new tab so the tool's results stay. */
   function link(e) {
     if (!e || e.nolink) return "";
-    return ' <a class="int-link" href="' + esc(href(e)) + '">' + esc(I18N.t("int.link")) + "</a>";
+    return ' <a class="int-link" href="' + esc(href(e)) + '" target="_blank" rel="noopener">' + esc(I18N.t("int.link")) + "</a>";
   }
 
   window.Intensity = {

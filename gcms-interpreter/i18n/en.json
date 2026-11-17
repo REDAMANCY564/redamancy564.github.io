@@ -251,8 +251,8 @@
   "curve.empty": "Search for a compound and add it to draw its curve here.",
   "curve.max": "4 compounds selected, the most that can be compared at once.",
   "curve.full": "4 compounds are already shown. Remove one before adding another.",
-  "curve.none": "No matching compound.",
-  "curve.cas_none": "No curve for this CAS number: {cas}",
+  "curve.none": "Not among the 315 compounds in the source paper",
+  "curve.cas_none": "Not among the 315 compounds in the source paper (CAS {cas})",
   "curve.remove": "Remove {name}",
   "curve.remove_short": "Remove",
   "curve.thr": "Threshold {v} µg/L air (X = {x})",
@@ -280,6 +280,7 @@
   "curve.formula": "Curve: Ψ = Imax / (1 + exp(-(X - C) / D)), with X = log10(gas-phase concentration, µg/L air). The threshold is the concentration at Ψ = 1.4 (barely detectable): X = C - D · ln((Imax - 1.4) / 1.4).",
   "curve.lms": "Intensity scale: the labeled magnitude scale (LMS, 0 to 100): barely detectable 1.4, weak 6.1, moderate 17.2, strong 35.4, very strong 53.3, strongest imaginable 100.",
   "curve.range_note": "The horizontal axis runs from -5 to 5, the plotting range of the paper; outside it no value is given. For 5 compounds with D below 0.1 (such as vanillin) the curve is close to a step: they can be found, but no curve is drawn and no conversion is given.",
+  "curve.extrap": "The curves are fits to the evaluation data. The paper does not give the concentration range measured for each compound; the horizontal axis from -5 to 5 is the plotting range of the paper, and parts far from the measured concentrations are extrapolation. Concentrations above the saturated vapor concentration of the compound at room temperature cannot be reached in practice, and conversions there have no meaning. For example, the saturated concentration of linalool in air at 25 °C is about 1300 µg/L (X ≈ 3).",
   "curve.name_note": "Chinese names are given for common compounds only; trade names stay in English.",
   "curve.privacy": "All calculations run in your browser; the page makes no external request."
 }
