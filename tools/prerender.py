@@ -361,13 +361,16 @@ def render(rel):
         if n.end is None: raise SystemExit(f"{rel}: <{n.tag}> without end tag")
         if not inside_replaced(n): edits.append((n.start_end, n.end, s))
     edits.sort()
+    # inserted text (snapshots hold "\n") takes the file's own line ending, so a CRLF checkout (Windows,
+    # core.autocrlf) is not reported as out of date; git stores the pages with "\n" either way
+    nl = "\r\n" if "\r\n" in text else "\n"
     out, pos = [], 0
     for a, b, s in edits:
         if a < pos: raise SystemExit(f"{rel}: overlapping edits at {a}")
-        out.append(text[pos:a]); out.append(s); pos = b
+        out.append(text[pos:a]); out.append(s.replace("\r\n", "\n").replace("\n", nl)); pos = b
     out.append(text[pos:])
     if missing: raise SystemExit(f"{rel}: keys missing from the {LANG} dictionaries: {sorted(missing)}")
-    result = share_block(rel, "".join(out), title or "", "\r\n" if "\r\n" in text else "\n")
+    result = share_block(rel, "".join(out), title or "", nl)
     return text, result
 
 
