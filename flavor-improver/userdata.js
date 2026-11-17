@@ -115,7 +115,15 @@ window.UserMode = (function () {
   }
 
   // ---------- rendering ----------
+  // "intensity curve" link beside a compound name (assets/intensity.js): by the row's CAS; rows without a CAS only by
+  // the exact name (the knowledge-base id of a handed-over row does not say how it was identified, so it is not used)
+  function curveLink(r) {
+    if (!window.Intensity || !Intensity.ready) return "";
+    return Intensity.link(r.cas ? Intensity.byCas(r.cas) : Intensity.byName(r.label));
+  }
+
   function render() {
+    if (window.Intensity && !Intensity.ready) Intensity.load().then(() => { if (FL) renderMerge(); }, () => { /* no links */ });
     readSlots();
     renderSlots();
     if (!FL) {
@@ -173,7 +181,7 @@ window.UserMode = (function () {
         else if (r.thrUse.from === "builtin") notes.push(t("user.note_thr_builtin"));
       }
       const vec = r.vec ? (r.vec.src === "kb" ? t("user.vec_kb") : t("user.vec_model")) : '<span class="error">' + esc(t("user.vec_none")) + "</span>";
-      h += "<tr><td>" + esc(r.label) + '</td><td class="nw">' + esc(r.cas) + '</td><td class="num nw">' + (r.s ? fmt(r.s.value) : "-") +
+      h += "<tr><td>" + esc(r.label) + curveLink(r) + '</td><td class="nw">' + esc(r.cas) + '</td><td class="num nw">' + (r.s ? fmt(r.s.value) : "-") +
         '</td><td class="num nw">' + (r.t ? fmt(r.t.value) : "-") + '</td><td class="num"><input class="thr" type="number" min="0" step="any" data-uthr="' +
         esc(r.key) + '" value="' + (r.thrUse.v ? r.thrUse.v : "") + '" aria-label="' + esc(r.label) + '"></td><td class="nw">' +
         (r.vec ? esc(vec) : vec) + '</td><td class="small">' + esc(notes.join("; ")) + "</td></tr>";
@@ -264,7 +272,7 @@ window.UserMode = (function () {
     $("user-gap-head").innerHTML = "<tr><th>" + esc(t("col.compound")) + '</th><th class="num">' + esc(t("user.slot_sample")) + " " + sc +
       '</th><th class="num">' + esc(t("user.slot_target")) + " " + sc + '</th><th class="num">' + esc(t(A.mode === "oav" ? "user.col.ratio" : "user.col.share")) +
       "</th><th>" + esc(t("user.col.higher")) + "</th><th>" + esc(t("user.col.odor")) + "</th></tr>";
-    $("user-gap-body").innerHTML = A.gaps.length ? A.gaps.map(g => '<tr><td>' + esc(g.row.label) + '</td><td class="num nw">' + esc(val(g.s)) +
+    $("user-gap-body").innerHTML = A.gaps.length ? A.gaps.map(g => '<tr><td>' + esc(g.row.label) + curveLink(g.row) + '</td><td class="num nw">' + esc(val(g.s)) +
       '</td><td class="num nw">' + esc(val(g.t)) + '</td><td class="num nw">' + esc(gapText(g)) + '</td><td class="nw">' + esc(higher(g)) +
       '</td><td class="small">' + esc(vecText(g.row)) + "</td></tr>").join("")
       : '<tr><td colspan="6" class="muted">' + esc(t("user.no_gaps")) + "</td></tr>";
@@ -288,7 +296,7 @@ window.UserMode = (function () {
       h += "<ol class=\"small rec-list\">" + R.items.map(g => {
         const effect = A.mode === "oav" && g.cosAfter != null && A.cos != null
           ? t("user.rec_effect", { from: A.cos.toFixed(3), to: g.cosAfter.toFixed(3), d: (g.cosAfter - A.cos >= 0 ? "+" : "") + (g.cosAfter - A.cos).toFixed(3) }) : "";
-        return "<li><b>" + esc(g.row.label) + "</b>" + (g.row.cas ? ' <span class="muted">' + esc(g.row.cas) + "</span>" : "") + esc(t("ref.colon")) +
+        return "<li><b>" + esc(g.row.label) + "</b>" + curveLink(g.row) + (g.row.cas ? ' <span class="muted">' + esc(g.row.cas) + "</span>" : "") + esc(t("ref.colon")) +
           esc(t("user.rec_item", { gap: gapText(g), odor: vecText(g.row) })) + (effect ? " " + esc(effect) : "") +
           (g.row.vec.src === "model" ? ' <span class="muted">' + esc(t("user.rec_model")) + "</span>" : "") + "</li>";
       }).join("") + "</ol>";

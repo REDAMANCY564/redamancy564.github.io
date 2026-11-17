@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- No external request: connections, form posts and scripts are limited to this site. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>气相强度曲线 | 1 GC-MS 风味解读 | 崔京伟</title>
+  <meta name="description" content="Odor intensity curves in air for 315 fragrance and flavor compounds (Wakayama et al. 2019): search, compare up to four curves and convert a gas-phase concentration to an intensity level.">
+  <link rel="canonical" href="https://redamancy564.github.io/gcms-interpreter/curves.html">
+  <meta name="theme-color" content="#fbfaf7">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="崔京伟 Jingwei Cui">
+  <meta property="og:title" content="气相强度曲线 | 1 GC-MS 风味解读 | 崔京伟">
+  <meta property="og:description" content="Odor intensity curves in air for 315 fragrance and flavor compounds (Wakayama et al. 2019): search, compare up to four curves and convert a gas-phase concentration to an intensity level.">
+  <meta property="og:url" content="https://redamancy564.github.io/gcms-interpreter/curves.html">
+  <meta property="og:image" content="https://redamancy564.github.io/assets/og/gcms-interpreter.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="气相强度曲线 | 1 GC-MS 风味解读 | 崔京伟">
+  <meta name="twitter:description" content="Odor intensity curves in air for 315 fragrance and flavor compounds (Wakayama et al. 2019): search, compare up to four curves and convert a gas-phase concentration to an intensity level.">
+  <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/gcms-interpreter.jpg">
+  <link rel="stylesheet" href="../assets/style.css?v=20261117a">
+  <script src="../assets/i18n.js?v=20261117a" data-page-dict="i18n/"></script>
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <style>
+    .search-row { display: flex; gap: 8px; max-width: 560px; }
+    .search-row input { flex: 1 1 auto; min-width: 0; max-width: none; }
+    .suggest { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .suggest .chip-btn { text-align: left; max-width: 100%; }
+    .status { min-height: 1.5em; margin: 8px 0 0; color: var(--muted); font-size: .875rem; }
+    .chart-box { position: relative; margin-top: 12px; max-width: 760px; }
+    .chart-box svg { display: block; max-width: 100%; height: auto; touch-action: pan-y; }
+    .chart-empty { border: 1px dashed var(--border); border-radius: var(--radius); padding: 28px 16px; text-align: center; margin: 0; }
+    .chart-box .grid { stroke: var(--border); stroke-width: 1; }
+    .chart-box .axis { stroke: var(--muted); stroke-width: 1; }
+    .chart-box .lead { stroke: var(--muted); stroke-width: 1; }
+    .chart-box .tick, .chart-box .lv { font-size: 12px; fill: var(--muted); }
+    .chart-box .lv { fill: var(--text); }
+    .chart-box .axis-title { font-size: 12px; fill: var(--text); }
+    .chart-box .curve { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+    .chart-box .thr { fill: var(--surface); stroke-width: 2; }
+    .chart-box .conc { stroke: var(--text); stroke-width: 1; stroke-dasharray: 4 3; }
+    .chart-box .cross { stroke: var(--muted); stroke-width: 1; }
+    .tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+           padding: 6px 8px; font-size: .8125rem; line-height: 1.45; max-width: 240px; box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+    .tip .sw { display: inline-block; width: 10px; height: 0; border-top: 2.5px solid; margin-right: 6px; vertical-align: middle; }
+    .legend-list { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 10px; max-width: 760px; }
+    .legend-list li { display: grid; grid-template-columns: 38px 1fr auto; gap: 8px; align-items: start; }
+    .legend-list .sw-line { margin-top: 6px; }
+    .linkbtn { font: inherit; font-size: .875rem; border: 0; background: none; color: var(--accent); text-decoration: underline; cursor: pointer; padding: 0; }
+    .conv-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+    .conv-row input { width: 160px; max-width: 100%; }
+    table.conv { margin-top: 8px; }
+    table.conv td, table.conv th { white-space: normal; }
+    .warn-text { color: var(--warn); font-weight: 600; }
+    .error-text { color: var(--error); }
+    .scope-box { border: 1px solid var(--accent-soft); background: var(--accent-soft); border-radius: var(--radius); padding: 8px 14px; margin: 16px 0 0; }
+    .scope-box p { margin: 4px 0; }
+    @media (max-width: 599px), (pointer: coarse) { .legend-list .linkbtn, .suggest .chip-btn { min-height: 44px; } }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../" data-i18n="site.name">崔京伟</a>
+      <nav class="site-nav" aria-label="Site">
+        <a href="../projects/" aria-current="page"><span class="nav-long" data-i18n="nav.projects">在线工具</span><span class="nav-short" data-i18n="nav.projects_short">在线工具</span></a>
+        <a href="../research/" data-i18n="nav.research">研究</a>
+        <a href="../cv/" data-i18n="nav.cv">简历</a>
+        <button class="lang-toggle" id="lang-toggle" type="button">
+          <span data-lang="zh">中</span><span class="sep">/</span><span data-lang="en">EN</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1 data-i18n="hero.short" data-no="1"><span class="nobr">GC-MS</span> 风味解读</h1>
+      <p class="hero-full" data-i18n="hero.title">兼容多仪器格式的 <span class="nobr">GC-MS</span> 数据自动分析</p>
+      <nav class="proj-tabs" aria-label="Project">
+        <a href="./" data-i18n="nav.tool">工具</a>
+        <a href="curves.html" data-i18n="nav.curves" aria-current="page">气相强度曲线</a>
+        <a href="about.html" data-i18n="nav.about">方法与来源</a>
+      </nav>
+      <p class="sub" data-i18n="curve.sub">查看 315 个香料物质在空气中的浓度与气味强度的关系，并把气相浓度换算成强度等级。</p>
+      <div class="scope-box">
+        <p class="small" data-i18n="curve.gas">浓度为空气中（气相）浓度，数据来自调香师和训练有素的评价员的嗅闻评价。</p>
+        <p class="small" data-i18n="curve.medium">不适用于水、乳等介质中的浓度，也不能用 OAV 或相对气味活性值换算。</p>
+      </div>
+      <p class="small muted" id="load-status" data-i18n="curve.loading" aria-live="polite">正在载入曲线数据……</p>
+    </section>
+
+    <section class="section" id="curve-pick">
+      <h2 data-sec="1" data-i18n="curve.pick_title" data-no="1.1">选择物质</h2>
+      <label class="field" for="q" data-i18n="curve.search_label">按中文名、英文名或 CAS 号搜索（最多同时比较 4 个物质）</label>
+      <div class="search-row">
+        <input type="text" inputmode="search" enterkeyhint="search" id="q" autocomplete="off" spellcheck="false" disabled data-i18n-attr="placeholder:curve.search_ph" placeholder="如 柠檬烯、linalool、138-86-3">
+      </div>
+      <div class="suggest" id="suggest"></div>
+      <p class="status" id="status" aria-live="polite"></p>
+    </section>
+
+    <section class="section" id="curve-chart">
+      <h2 data-sec="1" data-i18n="curve.chart_title" data-no="1.2">强度曲线</h2>
+      <p class="small" data-i18n="curve.chart_intro">横轴为 log10 气相浓度（μg/L 空气），纵轴为气味强度（LMS 标尺，0 到 100），右侧文字为强度等级；空心圆为阈值点（强度 1.4，刚能察觉）。</p>
+      <div class="chart-box" id="chart"></div>
+      <ul class="legend-list" id="legend"></ul>
+    </section>
+
+    <section class="section" id="curve-conv">
+      <h2 data-sec="1" data-i18n="curve.conv_title" data-no="1.3">浓度换算</h2>
+      <div class="conv-row">
+        <label for="conc" data-i18n="curve.conv_label">气相浓度（μg/L 空气，等于 mg/m³）</label>
+        <input type="text" inputmode="decimal" id="conc" autocomplete="off" disabled data-i18n-attr="placeholder:curve.conv_ph" placeholder="如 46.8 或 1e-3">
+      </div>
+      <div id="conv-out" aria-live="polite"></div>
+    </section>
+
+    <section class="section" id="curve-source">
+      <h2 data-sec="1" data-i18n="curve.src_title" data-no="1.4">数据来源与计算方法</h2>
+      <p class="small" data-i18n-html="curve.src">数据来自 Wakayama H, Sakasai M, Yoshikawa K, Inoue M. Method for Predicting Odor Intensity of Perfumery Raw Materials Using Dose-Response Curve Database. <i>Ind. Eng. Chem. Res.</i> 2019, 58(32): 15036-15044，doi: <a href="https://doi.org/10.1021/acs.iecr.9b01225" target="_blank" rel="noopener">10.1021/acs.iecr.9b01225</a>。314 个物质的参数取自补充材料 Table S2，异戊酸取自正文 Table 3。</p>
+      <p class="small" data-i18n="curve.formula">曲线公式：Ψ = Imax / (1 + exp(-(X - C) / D))，X 为 log10（气相浓度，μg/L 空气）。阈值为 Ψ = 1.4（刚能察觉）时的浓度：X = C - D · ln((Imax - 1.4) / 1.4)。</p>
+      <p class="small" data-i18n="curve.lms">强度标尺为标记量值标尺（LMS，0 到 100）：刚能察觉 1.4，弱 6.1，中等 17.2，强 35.4，很强 53.3，能想象的最强 100。</p>
+      <p class="small" data-i18n="curve.range_note">横轴范围 -5 到 5 与原文作图范围相同；超出这个范围不给出换算值。D 小于 0.1 的 5 个物质（如香兰素）曲线近似阶跃，可以搜到，但不画曲线，也不提供换算。</p>
+      <p class="small" data-i18n="curve.name_note">中文名只给常见物质，商品名保留英文。</p>
+      <p class="small" data-i18n="curve.privacy">所有计算都在浏览器里完成，页面不发出外部请求。</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n-html="footer.site">© 2026 崔京伟 · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">代码（GitHub）</a></p>
+    </div>
+  </footer>
+
+  <script src="../assets/projects.js?v=20261117a" defer></script>
+  <script src="../assets/intensity.js?v=20261117a" defer></script>
+  <script src="curves.js?v=20261117a" defer></script>
+</body>
+</html>

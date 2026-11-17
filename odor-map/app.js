@@ -440,6 +440,8 @@
     renderCard();
     request();
   }
+  // "intensity curve" link in the card title (library molecule matched by CAS when the data are built; assets/intensity.js)
+  Intensity.load().then(() => { if (S.selected >= 0) renderCard(); }, () => { /* no link without the data */ });
   function renderCard() {
     const box = $("detail");
     const i = S.selected;
@@ -451,7 +453,7 @@
     const enc = encodeURIComponent(smiles);
     box.innerHTML = '<div class="card det-card"><button type="button" class="close" id="card-close" aria-label="' + esc(I18N.t("card.close")) + '">×</button>' +
       '<div class="det"><div class="svg" id="card-svg" data-smiles="' + esc(smiles) + '"></div><div>' +
-      "<h3>" + esc(m[1] || smiles) + "</h3>" + '<p class="smi mono">' + esc(smiles) + "</p>" +
+      "<h3>" + esc(m[1] || smiles) + (Intensity.ready ? Intensity.link(Intensity.byLib(i)) : "") + "</h3>" + '<p class="smi mono">' + esc(smiles) + "</p>" +
       '<p class="small muted" style="margin:0">' + esc(I18N.t(m[2] === 0 ? "card.train_help" : "card.unseen_help")) + "</p>" +
       '<p class="small" style="margin:10px 0 0"><b>' + esc(I18N.t("card.profile")) + "</b></p>" +
       '<div class="bars">' + tops.map(([j, p]) => "<span>" + esc(labelName(j)) + '</span><span><span class="bar" style="display:block;width:' +

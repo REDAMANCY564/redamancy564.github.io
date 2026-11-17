@@ -161,5 +161,14 @@
   "reg.us.not_found": "The FDA list cites 21 CFR {sec}, but the name is not found in the current text.",
   "reg.nf.us_note": "The CAS number may simply not have matched; this does not mean the substance is not permitted.",
   "reg.src_us": "Source: 21 CFR Parts 172, 182, 184 and 189, current <a href=\"{ecfr}\" target=\"_blank\" rel=\"noopener\">eCFR</a> text (up to date as of 2026-10-20), checked 2026-10-22; the eCFR is an unofficial editorial compilation, not an official legal edition of the CFR. Of Part 189, only the flavour-related prohibitions are included. CAS matching and FEMA notes from the FDA list <a href=\"{fda}\" target=\"_blank\" rel=\"noopener\">\"Substances Added to Food\"</a> (updated 2026-09-08, checked 2026-10-22); FDA states that it is only a partial list and that information from non-FDA sources in it does not indicate FDA approval or evaluation. US government work, public domain.",
-  "reg.disc": "For reference only; the latest official texts prevail. Not regulatory advice."
+  "reg.disc": "For reference only; the latest official texts prevail. Not regulatory advice.",
+  "int.link": "Intensity curve",
+  "int.lv.barely": "barely detectable",
+  "int.lv.weak": "weak",
+  "int.lv.moderate": "moderate",
+  "int.lv.strong": "strong",
+  "int.lv.very_strong": "very strong",
+  "int.lv.strongest": "strongest imaginable",
+  "int.lv_below": "below “{a}”",
+  "int.lv_between": "between “{a}” and “{b}”"
 }

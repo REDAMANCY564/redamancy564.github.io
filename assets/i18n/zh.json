@@ -161,5 +161,14 @@
   "reg.us.not_found": "FDA 清单引用 21 CFR {sec}，但现行条文中未找到该名称。",
   "reg.nf.us_note": "可能是 CAS 号未对上，不等于不允许。",
   "reg.src_us": "来源：21 CFR 第 172、182、184、189 部分，<a href=\"{ecfr}\" target=\"_blank\" rel=\"noopener\">eCFR</a> 现行文本（更新至 2026-10-20），2026-10-22 查阅；eCFR 是非官方汇编，不是 CFR 的法定版本。189 部分只收录与香料相关的禁用条款。CAS 对应和 FEMA 标注取自 FDA <a href=\"{fda}\" target=\"_blank\" rel=\"noopener\">「Substances Added to Food」清单</a>（2026-09-08 更新，2026-10-22 核对）；FDA 说明该清单只是部分清单，其中非 FDA 来源的信息不代表 FDA 的批准或评估。美国政府作品，公有领域。",
-  "reg.disc": "仅供参考，以官方最新文件为准，不构成法规建议。"
+  "reg.disc": "仅供参考，以官方最新文件为准，不构成法规建议。",
+  "int.link": "强度曲线",
+  "int.lv.barely": "刚能察觉",
+  "int.lv.weak": "弱",
+  "int.lv.moderate": "中等",
+  "int.lv.strong": "强",
+  "int.lv.very_strong": "很强",
+  "int.lv.strongest": "能想象的最强",
+  "int.lv_below": "低于“{a}”",
+  "int.lv_between": "介于“{a}”和“{b}”之间"
 }

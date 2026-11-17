@@ -79,6 +79,16 @@ eCFR 香料条款（21 CFR 172、182、184、189 部分）或 FDA「Substances A
 - 更新 `?v=` 版本号：所有 HTML 里的 `?v=` 换成新值（如 `grep -rl "v=20261022d" --include=*.html . | xargs sed -i "s/v=20261022d/v=<新版本>/g"`），否则浏览器可能继续用缓存的旧数据和脚本。
 - 跑 `ingredient-finder/tests/unit.html`（含三地法规数据检查，测试中的计数需随数据更新）和 `python tools/prerender.py`。
 
+## 1 GC-MS 风味解读：气相强度曲线（gcms-interpreter/curves.html）
+
+GC-MS 风味解读的第二个标签（2026-11-17）。315 个香料物质在空气中的剂量反应曲线，来自 Wakayama H, Sakasai M, Yoshikawa K, Inoue M. *Ind. Eng. Chem. Res.* 2019, 58(32): 15036-15044，doi:10.1021/acs.iecr.9b01225（补充材料 Table S2 的 314 个物质，异戊酸来自正文 Table 3）。公式 Ψ = Imax / (1 + exp(-(X - C)/D))，X = log10(气相浓度, μg/L 空气)；阈值为 Ψ = 1.4 时的 X = C - D·ln((Imax-1.4)/1.4)；强度标尺为 LMS（刚能察觉 1.4、弱 6.1、中等 17.2、强 35.4、很强 53.3、能想象的最强 100）。
+
+- **页面**：按中文名、英文名或 CAS 搜索，最多叠加 4 条曲线（自写 SVG，无外部库、无外部请求），输入气相浓度（μg/L 空气 = mg/m³）换算强度和等级；X 超出 -5 到 5（原文作图范围）只提示“超出原文作图范围”，不给数值；D < 0.1 的 5 个物质（如香兰素）可以搜到，但不画曲线、不换算。`?cas=` 直接打开一个物质。浓度是空气中的浓度，不适用于水、乳等介质，也不能用 OAV 或相对气味活性值换算。
+- **数据**：`gcms-interpreter/data/intensity.json`（只含必要字段，不提供整表下载）由 `training/intensity/build_intensity.py` 从本地 `_inputs/wakayama2019_curves.json` 生成（`_inputs/` 和 PDF 不提交）。脚本断言 5 个自测值（柠檬烯 X=1.67 时 Ψ≈25.3；芳樟醇 X=-2.55 时 Ψ≈0.87；粪臭素阈值 ≈4.89e-4 μg/L；异戊酸来自正文 Table 3；2,6-壬二烯醛 CAS 557-48-2），并写出本地匹配报告 `training/intensity/match_report.md`（不提交）。原文数据的问题记在脚本的 `DATA_NOTES` 里，页面图例中也会显示：2,6-nonadienal 的 CAS 原文印为 140-88-5，改为 557-48-2；furaneol 给的 CAS 4166-20-5 是 furaneol 乙酸酯，diethyl malonate 给的 CAS 108-59-8 是丙二酸二甲酯，无法确定测的是哪个物质：这两条按原文保留，中文名留空，曲线页可以搜到并显示说明，但其他页面不加链接（脚本的 `NO_LINK`）。异戊酸的参数已对照正文 Table 3 核对；正文 Table 3 有 5 个物质的 CAS 与补充材料 Table S2 不同（参数相同），网站沿用 Table S2 的 CAS。
+- **中文名**：`training/intensity/zh_names.csv`（2026-11-17 审核通过：245 个中文名，其余 70 个显示英文名），只有 `status=approved` 的行进入网站数据；`python training/intensity/build_intensity.py --propose` 重新生成候选（保留已通过的行）和本地审核表 `/INTENSITY-ZH-REVIEW.md`。来源顺序：GB 2760-2024 中文名（法规数据中按 CAS 已有的）、本站已有中文名、作者为常见物质拟的名字；商品名保留英文。
+- **全站链接**：`assets/intensity.js` 在物质名旁加小链接“强度曲线”（跳到 `curves.html?cas=`），只按 CAS 精确匹配（构建时算好：风味知识库按 `names.json` 的 CAS，寻香原料库分子按 `lib_cas.json` 的 CAS，气味预测按库分子的 InChIKey 第一段）；没有 CAS 的地方只在名称完全一致（去掉首尾空格，英文不分大小写）时匹配。链接点：GC-MS 结果表、关键风味物质排序和气味阈值表的名称列（文件 CAS，或按 CAS / 同义词完全一致鉴定到的知识库物质）；乳品风味改良的物质表、配方表和“我的 GC-MS 数据”的对比表、差距表、推荐列表；风味知识库物质卡片标题；法规查询结果；寻香原料的查询分子和结果卡片；气味图谱详情卡片；气味预测的分子名。OAV、相对气味活性值等数字上不加链接。一个库分子的 CAS 同时命中多条曲线时只链接名称相同的那条（异冰片）。
+- **测试**：`gcms-interpreter/tests/intensity.html`（40 项，含上述 5 个自测值）。改数据或 `assets/intensity.js` 后跑这个页面和 `gcms-interpreter/tests/unit.html`，再跑 `python tools/prerender.py`，并更新 `?v=` 版本号。
+
 ## 4 基于贝叶斯优化的乳品风味改良与差距分析（flavor-improver/）
 
 方法框架演示：选择一种乳制品基底和改良方向，用贝叶斯优化搜索「添加哪些风味物质、加多少」。评价函数是虚拟的（OAV → log 强度 → 描述词「提升度」向量加和 → 与目标轮廓的余弦相似度，减去种数和用量惩罚），不含掩蔽、协同、基质效应。
@@ -321,6 +331,8 @@ python ablation_to_site.py  # 把摘要写入 odor-predictor/data/metrics.json
 - The Good Scents Company；Leffingwell & Associates（Sanchez-Lengeling et al., 2019, arXiv:1910.10685，CC BY-NC，仅限非商业用途）
 - 合并清洗数据集：OpenPOM（Barsainyan et al., 2023），https://github.com/BioMachineLearning/openpom
 - Lee et al., A principal odor map unifies diverse tasks in human olfactory perception, *Science* 381, 999-1006 (2023)
+
+- 气相强度曲线：Wakayama H, Sakasai M, Yoshikawa K, Inoue M. Method for Predicting Odor Intensity of Perfumery Raw Materials Using Dose-Response Curve Database. *Ind. Eng. Chem. Res.* 2019, 58(32), 15036-15044, doi:10.1021/acs.iecr.9b01225
 
 原始数据不在本仓库中转载。
 

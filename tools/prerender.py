@@ -32,7 +32,7 @@ PROJECTS = [("gcms-interpreter", "gcms"), ("ingredient-finder", "finder"), ("odo
             ("flavor-kb", "kb")]
 PAGES = (["index.html", "projects/index.html", "cv/index.html", "research/index.html", "404.html"] +
          [f"{d}/{f}" for d, _ in PROJECTS for f in ("index.html", "about.html")] +
-         ["flavor-kb/regulatory.html"])
+         ["flavor-kb/regulatory.html", "gcms-interpreter/curves.html"])
 SITE = "https://redamancy564.github.io/"
 THEME = "#fbfaf7"
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
@@ -335,7 +335,8 @@ def render(rel):
             if target is None: continue
             h = target if "data-sec" in target.attrs else next((x for x in target.descendants() if "data-sec" in x.attrs), None)
             if h is not None: tag_edits[a] = set_attr(tag_of(a), "data-no", sec_no[h])
-        sub = "nav.about" if rel.endswith("about.html") else "nav.reg" if rel.endswith("regulatory.html") else None
+        sub = ("nav.about" if rel.endswith("about.html") else "nav.reg" if rel.endswith("regulatory.html")
+               else "nav.curves" if rel.endswith("curves.html") else None)
         title = (t(sub) + " | " if sub else "") + f"{no} " + t("hero.short") + " | " + t("site.name")
     else:
         key = {"index.html": "home.page_title", "projects/index.html": "projects.page_title",

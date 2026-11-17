@@ -175,6 +175,7 @@
       name = I18N.lang === "zh" ? current.name_zh + "  " + current.name_en : current.name_en;
     }
     $("mol-name").textContent = name;
+    renderCurveLink();
     $("mol-smiles").textContent = current.smiles;
     const link = $("mol-pubchem");
     link.hidden = !current.pubchem_cid;
@@ -233,6 +234,29 @@
       if (my !== kbSeq) return;
       box.textContent = I18N.t("kb.failed");
     }
+  }
+
+  // ---------- "Intensity curve" link beside the name (assets/intensity.js) ----------
+  // A CAS number typed in the search box is matched directly; otherwise the first InChIKey block of the molecule is
+  // matched to the library molecule that the curve was linked to by CAS when the data were built (as for the regulatory panel)
+  let curveSeq = 0;
+  async function renderCurveLink() {
+    const my = ++curveSeq;
+    const box = $("mol-name");
+    box.querySelectorAll(".int-link").forEach(a => a.remove());
+    try {
+      await Intensity.load();
+      let e = current.source === "search" && Intensity.ncas(current.query) ? Intensity.byCas(current.query) : null;
+      if (!e) {
+        const rd = await rdkitReady();
+        const mol = rd.get_mol(current.smiles);
+        let ik = null;
+        try { if (mol) ik = rd.get_inchikey_for_inchi(mol.get_inchi()); } finally { if (mol) mol.delete(); }
+        e = Intensity.byIk(ik);
+      }
+      if (my !== curveSeq || !e) return;
+      box.insertAdjacentHTML("beforeend", Intensity.link(e));
+    } catch (err) { /* no link without the data */ }
   }
 
   // ---------- Regulatory status (EU, China, US; assets/regulatory.js) ----------
@@ -368,7 +392,7 @@
       const order = Array.from(probs.keys()).sort((a, b) => probs[b] - probs[a]).slice(0, TOP_K);
 
       current = {
-        source: "search", smiles, title, pubchem_cid: cid,
+        source: "search", query: q, smiles, title, pubchem_cid: cid,
         top: order.map(j => ({ label: labels[j].id, prob: probs[j] })),
         contrib: Object.fromEntries(order.map(j => [labels[j].id, contrib.map(c => c[j])])),
       };

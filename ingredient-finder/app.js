@@ -42,6 +42,9 @@
     A.filters.only = REG.only;
     ["f-reg", "fb-reg"].forEach(id => { $(id).value = region; });
   }
+  // "intensity curve" link beside a library molecule's name (matched by CAS when the data are built; assets/intensity.js)
+  const curveLink = i => (i >= 0 && Intensity.ready ? Intensity.link(Intensity.byLib(i)) : "");
+  Intensity.load().then(() => renderAll(), () => { /* no links without the data */ });
   const regLoad = Reg.load().then(() => { REG.ready = true; setRegion(REG.region); renderAll(); },
     err => { console.error(err); REG.failed = true; ["f-reg", "fb-reg"].forEach(id => { $(id).disabled = true; }); renderAll(); });
 
@@ -199,7 +202,7 @@
     const badge = trainNote(m.group === 0);
     return '<div class="card res"><div class="svg" data-smiles="' + esc(m.smiles) + '"></div><div>' +
       '<p class="small muted" style="margin:0">' + esc(I18N.t("r.rank", { n: rank })) + " · " + esc(I18N.t("r.score")) + " <b>" + (100 * hit.score).toFixed(1) + "</b> " + badge + "</p>" +
-      '<p class="name">' + esc(m.name || m.smiles) + "</p>" +
+      '<p class="name">' + esc(m.name || m.smiles) + curveLink(hit.index) + "</p>" +
       (m.name ? '<p class="smi mono">' + esc(m.smiles) + "</p>" : "") +
       '<div class="meta"><span class="muted">' + esc(I18N.t("r.top")) + '</span><div class="preds">' +
       predText(top, j => wantIds.has(D.lib.labels[j].id)) +
@@ -458,7 +461,7 @@
     const top = F.topLabelsOf(q.vec, TOP_PRED);
     const qBadge = q.index < 0 ? "" : " " + trainNote(D.lib.molecules[q.index][2] === 0);
     $("b-query").innerHTML = '<h3 style="margin-top:0">' + esc(I18N.t("b.query")) + '</h3><div class="qsvg svg" data-smiles="' + esc(q.smiles) + '" data-big="1"></div>' +
-      '<p class="name" style="font-weight:700;margin:6px 0 0">' + esc(qName) + qBadge + '</p><p class="smi mono small muted" style="word-break:break-all;margin:2px 0 6px">' + esc(q.smiles) + "</p>" +
+      '<p class="name" style="font-weight:700;margin:6px 0 0">' + esc(qName) + curveLink(q.index) + qBadge + '</p><p class="smi mono small muted" style="word-break:break-all;margin:2px 0 6px">' + esc(q.smiles) + "</p>" +
       '<div class="preds">' + predText(top) + "</div>" +
       (q.note ? '<p class="small muted">' + esc(I18N.t(q.note)) + "</p>" : "") +
       (q.index >= 0 ? regBlock(q.index) : "");
@@ -483,7 +486,7 @@
         '<p class="small muted" style="margin:0">' + esc(I18N.t("r.rank", { n: k + 1 })) + " · " + esc(I18N.t("b.odor")) + " <b>" + h.odor.toFixed(3) + "</b> · " +
         esc(I18N.t("b.struct")) + " <b>" + h.tanimoto.toFixed(2) + "</b></p>" +
         (h.highlight ? '<span class="hi-text">' + esc(I18N.t("b.hi_badge")) + "</span> " : "") + badge +
-        '<p class="name">' + esc(m.name || m.smiles) + "</p>" + (m.name ? '<p class="smi mono">' + esc(m.smiles) + "</p>" : "") +
+        '<p class="name">' + esc(m.name || m.smiles) + curveLink(h.index) + "</p>" + (m.name ? '<p class="smi mono">' + esc(m.smiles) + "</p>" : "") +
         '<div class="meta"><div class="preds">' + predText(preds) + "</div>" + foods +
         '<div><button type="button" class="linklike small" data-cmp="' + h.index + '" style="margin-top:6px">' + esc(I18N.t(open ? "b.compare_hide" : "b.compare")) + "</button></div>" +
         "</div></div>" + regBlock(h.index) +

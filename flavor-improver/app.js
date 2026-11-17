@@ -62,6 +62,8 @@
   const fmtInput = v => String(Number(v.toPrecision(4)));
   const nameOf = n => (I18N.lang === "zh" ? comps[n].name_zh : comps[n].name_en);
   const dimName = d => t("dim." + d);
+  // "intensity curve" link beside a compound name, by the compound's CAS (assets/intensity.js); never on OAV values
+  const curveLink = n => (Intensity.ready && comps[n] ? Intensity.link(Intensity.byCas(comps[n].cas)) : "");
   const baseName = b => (I18N.lang === "zh" ? b.name_zh : b.name_en);
   const unitOf = b => (/dry/.test(b.unit) ? t("base.unit_dm") : t("base.unit"));
 
@@ -115,7 +117,7 @@
     $("conc-unit").textContent = unitOf(base);
     $("add-unit").textContent = unitOf(base);
     $("base-body").innerHTML = names.map(n => `<tr class="${thrOverride[n] != null ? "modified" : ""}" data-row="${esc(n)}">
-        <td>${esc(nameOf(n))}</td>
+        <td>${esc(nameOf(n))}${curveLink(n)}</td>
         <td class="num">${fmt(comp[n])}</td>
         <td class="num">${thrCell(n)}</td>
         <td class="num" data-oav="${esc(n)}">${fmt(comp[n] / thr[n])}</td>
@@ -123,7 +125,7 @@
         <td class="num small">${rangeCell(n)}</td>
       </tr>`).join("");
     $("palette-body").innerHTML = candidates.slice().sort((a, b) => nameOf(a).localeCompare(nameOf(b), locale())).map(n => `<tr class="${thrOverride[n] != null ? "modified" : ""}" data-row="${esc(n)}">
-        <td>${esc(nameOf(n))}</td>
+        <td>${esc(nameOf(n))}${curveLink(n)}</td>
         <td class="num">${thrCell(n)}</td>
         <td class="small">${sourceCell(n)}</td>
         <td class="num small">${rangeCell(n)}</td>
@@ -321,7 +323,7 @@
       const b = player.steps[bi];
       $("step-info").innerHTML = t("step.info", { n: player.pos + 1, total: n, score: b.score.toFixed(4), cos: b.cos.toFixed(4) });
       $("recipe-body").innerHTML = b.recipe.length
-        ? b.recipe.map(r => `<tr><td>${esc(nameOf(r.compound))}</td><td class="num">${fmt(r.added_ug_kg)}</td><td class="num">${fmt(r.added_oav)}</td><td class="num">${fmt(r.oav_after)}</td></tr>`).join("")
+        ? b.recipe.map(r => `<tr><td>${esc(nameOf(r.compound))}${curveLink(r.compound)}</td><td class="num">${fmt(r.added_ug_kg)}</td><td class="num">${fmt(r.added_oav)}</td><td class="num">${fmt(r.oav_after)}</td></tr>`).join("")
         : `<tr><td colspan="4" class="muted">${esc(t("recipe.none"))}</td></tr>`;
       $("recipe-note").textContent = (b.nHidden ? t("recipe.hidden", { n: b.nHidden }) + " " : "") + t("recipe.unit_note");
     } else {
@@ -400,6 +402,8 @@
 
   makeCharts();
   renderAll();
+  // the curve data arrive after the first draw: redraw only the compound tables (renderAll would reset the optimizer)
+  Intensity.load().then(() => renderThresholdTables(), () => { /* no links without the data */ });
   RefMode.init({ ref: refData, pre: precursors, spec, t, esc, fmt, pick: o => I18N.pick(o) });
   UserMode.init({ t, esc, fmt, pick: o => I18N.pick(o) });
   function showArea() {
