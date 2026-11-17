@@ -78,3 +78,9 @@ desktop.ini
 # Mentor optimisation package (RD-001..RD-014): kept local only
 /redamancy-优化意见包/
 /redamancy-优化意见包.zip
+
+# Odor intensity curves: raw inputs (Wakayama 2019 curve table and supplementary PDF), Chinese-name review table
+# and the local match report: kept local only (the site file is gcms-interpreter/data/intensity.json)
+/_inputs/
+/INTENSITY-ZH-REVIEW.md
+/training/intensity/match_report.md

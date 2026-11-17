@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Intensity curve tests | GC-MS Flavor Interpreter</title>
+  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="icon" href="../../favicon.ico" sizes="any">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <style>
+    .pass { color: #1a7f37; font-weight: 700; }
+    .fail { color: #c0392b; font-weight: 700; }
+    #summary { font-size: 1.25rem; margin: 16px 0; }
+    td { vertical-align: top; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1>Intensity curve tests</h1>
+      <p class="muted">Tests for assets/intensity.js and gcms-interpreter/data/intensity.json (Wakayama et al. 2019), run in the
+        browser: curve values, thresholds, search, step-like curves, the plotting range and the CAS / name matching rules.</p>
+      <div id="summary" data-status="running">Running...</div>
+    </section>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>group</th><th>case</th><th>result</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </main>
+  <script src="intensity-stub.js"></script>
+  <script src="../../assets/intensity.js"></script>
+  <script src="intensity.js"></script>
+</body>
+</html>
