@@ -177,6 +177,7 @@
     }).join("");
     $("dirs").innerHTML = dirs;
     $("dir-rationale").textContent = t("dir.rationale", { text: I18N.pick({ zh: preset.rationale_zh, en: preset.rationale_en }) }) + " " + t("dir.note");
+    I18N.nobr($("dir-rationale"));
   }
 
   function renderBaseMeta() {

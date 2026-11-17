@@ -25,8 +25,8 @@
   <meta name="twitter:title" content="1 GC-MS 风味解读 | 崔京伟">
   <meta name="twitter:description" content="Upload one sample's GC-MS peak table to rank key flavor compounds by OAV or ROAV. Data stay in your browser.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/gcms-interpreter.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261117b">
-  <script src="../assets/i18n.js?v=20261117b" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261117c">
+  <script src="../assets/i18n.js?v=20261117c" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -111,13 +111,13 @@
   <main class="container">
     <section class="hero">
       <h1 data-i18n="hero.short" data-no="1"><span class="nobr">GC-MS</span> 风味解读</h1>
-      <p class="hero-full" data-i18n="hero.title">兼容多仪器格式的 <span class="nobr">GC-MS</span> 数据自动分析</p>
+      <p class="hero-full" data-i18n="hero.title">兼容多仪器格式的 <span class="nobr">GC-MS</span> 数据<span class="nobr">自动分析</span></p>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool" aria-current="page">工具</a>
         <a href="curves.html" data-i18n="nav.curves">气相强度曲线</a>
-        <a href="about.html" data-i18n="nav.about">方法与来源</a>
+        <a href="about.html" data-i18n="nav.about"><span class="nobr">方法与来源</span></a>
       </nav>
-      <p class="sub" data-i18n="hero.sub">上传一个样品的峰表和目标物质清单，得到关键风味物质、OAV/ROAV 和风味轮廓。</p>
+      <p class="sub" data-i18n="hero.sub">上传一个样品的峰表和目标物质清单，得到关键风味物质、OAV/ROAV 和<span class="nobr">风味轮廓</span>。</p>
       <!-- try first: one click loads an example, reads it, runs the matching and scrolls to the ranking -->
       <div class="try-box" id="try-box">
         <p class="try-line"><b data-i18n="try.title">试用示例</b><span class="muted" data-i18n="try.hint">（点一下即载入峰表和标准文件，自动运行并显示结果）：</span></p>
@@ -130,10 +130,10 @@
           <summary><b class="lead" data-i18n="privacy.lead">你的数据不会离开你的电脑。</b> <span class="verify" data-i18n="privacy.verify">如何自己验证</span></summary>
           <p class="small" data-i18n="privacy.text" style="margin:6px 0 0">所有分析都在你的浏览器里完成，文件不会上传到任何服务器。页面没有统计或追踪脚本，适合对企业保密数据做初步分析。</p>
           <ol class="steps">
-            <li data-i18n="privacy.v1">方法一：页面加载完后断开网络（关闭 Wi-Fi 或拔掉网线），再上传和分析文件，功能照常可用。</li>
-            <li data-i18n="privacy.v2">方法二：按 F12 打开开发者工具，切到「网络」（Network）面板，再上传和分析文件，面板里不会出现任何数据请求。</li>
+            <li data-i18n="privacy.v1">方法一：页面加载完后断开网络（关闭 Wi-Fi 或拔掉网线），再上传和分析文件，功能<span class="nobr">照常可用</span>。</li>
+            <li data-i18n="privacy.v2">方法二：按 F12 打开开发者工具，切到「网络」（Network）面板，再上传和分析文件，面板里不会出现任何<span class="nobr">数据请求</span>。</li>
           </ol>
-          <p class="small" data-i18n="privacy.tech" style="margin:6px 0 0">页面的内容安全策略（CSP）只允许连接本站，发往其他地址的请求会被浏览器拦截。你保存的仪器模板和设置只存在你自己的浏览器里。</p>
+          <p class="small" data-i18n="privacy.tech" style="margin:6px 0 0">页面的内容安全策略（CSP）只允许连接本站，发往其他地址的请求会被浏览器拦截。你保存的仪器模板和设置只存在你自己的<span class="nobr">浏览器里</span>。</p>
         </details>
       </div>
       <!-- the analysis resources load in the background (app.js); this line says when the page works offline -->
@@ -161,7 +161,7 @@
         </div>
         <div class="card">
           <h3 data-sec="2" data-i18n="std.title" data-no="1.1.2">标准文件（目标物质清单）</h3>
-          <p class="small"><span data-i18n="std.short">需要三列：名称或 CAS 号 · 参考保留时间（你自己的方法）· 气味阈值（列名中写明单位）。</span> <a class="help" href="about.html#standard-file" aria-label="?">?</a></p>
+          <p class="small"><span data-i18n="std.short">需要三列：名称或 CAS 号 · 参考保留时间（你自己的方法）· 气味阈值（列名中<span class="nobr">写明单位</span>）。</span> <a class="help" href="about.html#standard-file" aria-label="?">?</a></p>
           <label class="drop" id="std-drop">
             <input type="file" id="std-input" accept=".csv,.tsv,.txt,.xlsx,.xls">
             <div data-i18n="std.drop">把标准文件拖到这里，或点击选择文件（CSV、TSV、TXT、XLSX、XLS）</div>
@@ -290,7 +290,7 @@
         <p class="small" id="handoff-status" aria-live="polite" style="margin:8px 0 0"></p>
       </div>
 
-      <h3 data-sec="2" style="margin-top:20px" data-i18n="radar.title" data-no="1.4.2">风味轮廓</h3>
+      <h3 data-sec="2" style="margin-top:20px" data-i18n="radar.title" data-no="1.4.2"><span class="nobr">风味轮廓</span></h3>
       <div class="row-wrap">
         <span class="field-inline"><label for="radar-view" data-i18n="radar.view">轮廓维度</label>
           <select id="radar-view">
@@ -311,20 +311,20 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p class="tool-src" data-i18n-html="footer.short">所有计算都在浏览器本地完成。气味标签来自本站的气味预测模型（CC BY-NC，仅供非商业学术演示）。详见<a href="about.html">方法与来源</a>。</p>
+      <p class="tool-src" data-i18n-html="footer.short">所有计算都在浏览器本地完成。气味标签来自本站的气味预测模型（CC BY-NC，仅供非商业学术演示）。详见<a href="about.html"><span class="nobr">方法与来源</span></a>。</p>
       <p data-i18n-html="footer.site">© 2026 崔京伟 · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">代码（GitHub）</a></p>
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261117b" defer></script>
-  <script src="../assets/intensity.js?v=20261117b" defer></script>
-  <script src="io.js?v=20261117b" defer></script>
-  <script src="mapping.js?v=20261117b" defer></script>
-  <script src="cas.js?v=20261117b" defer></script>
-  <script src="names.js?v=20261117b" defer></script>
-  <script src="rules.js?v=20261117b" defer></script>
-  <script src="flavor.js?v=20261117b" defer></script>
-  <script src="../assets/flavor-handoff.js?v=20261117b" defer></script>
-  <script src="app.js?v=20261117b" defer></script>
+  <script src="../assets/projects.js?v=20261117c" defer></script>
+  <script src="../assets/intensity.js?v=20261117c" defer></script>
+  <script src="io.js?v=20261117c" defer></script>
+  <script src="mapping.js?v=20261117c" defer></script>
+  <script src="cas.js?v=20261117c" defer></script>
+  <script src="names.js?v=20261117c" defer></script>
+  <script src="rules.js?v=20261117c" defer></script>
+  <script src="flavor.js?v=20261117c" defer></script>
+  <script src="../assets/flavor-handoff.js?v=20261117c" defer></script>
+  <script src="app.js?v=20261117c" defer></script>
 </body>
 </html>

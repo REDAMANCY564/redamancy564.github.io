@@ -43,11 +43,12 @@
     }
     $("known-body").innerHTML = krows.join("");
     const wins = Object.values(jsCheck.presets).reduce((a, p) => a + p.bo_wins, 0);
-    $("jsbo-text").innerHTML = t("jsbo.text", { wins });
+    $("jsbo-text").innerHTML = t("jsbo.text", { wins }); I18N.nobr($("jsbo-text"));
 
     const seen = new Set();
     $("footer-bases").innerHTML = bases.filter(b => { const k = b.source.doi; if (seen.has(k)) return false; seen.add(k); return true; })
       .map(b => `<li>${esc(b.source.citation)} <a href="https://doi.org/${esc(b.source.doi)}" target="_blank" rel="noopener">doi:${esc(b.source.doi)}</a> (${esc(b.source.license)})</li>`).join("");
+    I18N.nobr($("footer-bases"));
   }
 
   function renderAll() {

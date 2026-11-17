@@ -22,8 +22,8 @@
   <meta name="twitter:title" content="方法与来源 | 5 气味地图 | 崔京伟">
   <meta name="twitter:description" content="Odor Space vs Structure Space Map of Flavor Molecules: how the map was made, how well it groups similar-smelling molecules, its limitations and data sources.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/odor-map.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261117b">
-  <script src="../assets/i18n.js?v=20261117b" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261117c">
+  <script src="../assets/i18n.js?v=20261117c" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -51,10 +51,10 @@
   <main class="container about">
     <div class="hero">
       <h1 data-i18n="hero.short" data-no="5">气味地图</h1>
-      <p class="hero-full" data-i18n="hero.title">风味分子的气味空间与结构空间对比图谱</p>
+      <p class="hero-full" data-i18n="hero.title">风味分子的气味空间与结构空间<span class="nobr">对比图谱</span></p>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool">工具</a>
-        <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
+        <a href="about.html" data-i18n="nav.about" aria-current="page"><span class="nobr">方法与来源</span></a>
       </nav>
     </div>
     <nav class="toc">
@@ -68,7 +68,7 @@
     <section id="overview">
       <h2 data-sec="1" data-i18n="about.overview" data-no="5.1">概述</h2>
       <p id="hero-intro" data-snap="hero-intro">图中每个点是一个分子，共 5,072 个。点的位置由气味预测模型给出的 138 个描述词概率决定，两个点越近，模型认为它们的气味越相似。</p>
-      <p data-i18n="about.practice">结构差别大、气味却相近的分子，主要用于寻找替代物：原分子受法规限制时，替代物可能可以使用，或者成本更低、稳定性更好。这类分子也有助于理解气味和结构之间的关系，为风味优化和调香提供思路。</p>
+      <p data-i18n="about.practice">结构差别大、气味却相近的分子，主要用于寻找替代物：原分子受法规限制时，替代物可能可以使用，或者成本更低、稳定性更好。这类分子也有助于理解气味和结构之间的关系，为风味优化和调香<span class="nobr">提供思路</span>。</p>
     </section>
 
     <section id="method">
@@ -99,8 +99,8 @@
       <h2 data-sec="1" data-i18n="about.limits" data-no="5.4">局限</h2>
       <ul class="plain">
         <li data-i18n="limits.1">地图反映的是模型学到的气味表征，不是对人真实嗅觉感知的测量。</li>
-        <li data-i18n="limits.2">UMAP 降维会扭曲距离：局部的邻近关系比较可靠，远距离以及不同区域之间的相对位置不宜解读。</li>
-        <li data-i18n="limits.3">气味预测本身有误差，点的位置和颜色都继承了这些误差；未参与训练的分子误差可能更大。</li>
+        <li data-i18n="limits.2">UMAP 降维会扭曲距离：局部的邻近关系比较可靠，远距离以及不同区域之间的相对位置<span class="nobr">不宜解读</span>。</li>
+        <li data-i18n="limits.3">气味预测本身有误差，点的位置和颜色都继承了这些误差；未参与训练的分子误差<span class="nobr">可能更大</span>。</li>
         <li data-i18n="limits.4">本地图只讨论有机分子，硫化氢等小分子无机气味物质未纳入；这类物质在部分食品中很重要，例如硫化氢与加热乳、UHT 奶的蒸煮味和硫味有关。</li>
         <li data-i18n="limits.5">颜色和位置只反映气味的类别，不反映气味强度、阈值和在食品中的实际贡献。</li>
       </ul>
@@ -108,8 +108,8 @@
 
     <section id="data">
       <h2 data-sec="1" data-i18n="about.data" data-no="5.5">数据、许可与引用</h2>
-      <p data-i18n-html="footer.data"><b>数据与致谢：</b>气味预测来自本站<a href="../odor-predictor/">气味预测</a>的图神经网络，训练数据来自 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC），由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始气味标签，页面只展示模型预测。<b>模型及预测结果仅供非商业学术演示。</b></p>
-      <p data-i18n-html="footer.ref"><b>参考工作：</b>Lee BK, Mayhew EJ, Sanchez-Lengeling B, et al. A principal odor map unifies diverse tasks in olfactory perception. <i>Science</i> 2023, 381(6661): 999-1006. <a href="https://doi.org/10.1126/science.ade4401" target="_blank" rel="noopener">doi:10.1126/science.ade4401</a>。本页借鉴这一思路，用本站模型的预测和 UMAP 绘制，不是该论文的结果。</p>
+      <p data-i18n-html="footer.data"><b>数据与致谢：</b>气味预测来自本站<a href="../odor-predictor/">气味预测</a>的图神经网络，训练数据来自 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC），由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始气味标签，页面只展示模型预测。<b>模型及预测结果仅供非商业<span class="nobr">学术演示</span>。</b></p>
+      <p data-i18n-html="footer.ref"><b>参考工作：</b>Lee BK, Mayhew EJ, Sanchez-Lengeling B, et al. A principal odor map unifies diverse tasks in olfactory perception. <i>Science</i> 2023, 381(6661): 999-1006. <a href="https://doi.org/10.1126/science.ade4401" target="_blank" rel="noopener">doi:10.1126/science.ade4401</a>。本页借鉴这一思路，用本站模型的预测和 UMAP 绘制，不是该<span class="nobr">论文的结果</span>。</p>
       <p data-i18n-html="footer.kb"><b>分子名称与食品：</b>来自本站<a href="../flavor-kb/">风味知识库</a>（Dunkel et al. 2014；FlavorDB2，Garg et al., <i>NAR</i> 2018，CC BY-NC-SA 3.0）或 PubChem。</p>
       <p id="excluded-note" data-snap="excluded-note">本地图与「原料与替代物检索」使用同一个候选库，共 5072 个有机分子。已移除 47 个非风味分子：不含碳的无机物（包括硫化氢、氨、二氧化硫等无机气味物质）、有机硅（如 D6 硅氧烷，GC-MS 色谱柱流失的常见杂质）、非挥发性物质，以及原始数据中只以混合物形式出现的条目（其气味标签描述的是混合物，不能对应到单个分子）。</p>
       <details class="small">
@@ -125,7 +125,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261117b" defer></script>
-  <script src="about.js?v=20261117b" defer></script>
+  <script src="../assets/projects.js?v=20261117c" defer></script>
+  <script src="about.js?v=20261117c" defer></script>
 </body>
 </html>

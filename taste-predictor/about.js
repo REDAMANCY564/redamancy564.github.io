@@ -43,13 +43,14 @@
     rows.push('<tr class="highlight"><td>' + I18N.t("results.mean3") + '</td><td class="num"></td><td class="num">' +
       fmt(mean(id => g.test_per_label_mean[id])) + '</td><td class="num">' + fmt(mean(id => lr.per_label[id].auroc)) + "</td></tr>");
     $("results-body").innerHTML = rows.join("");
-    $("results-note").textContent = I18N.t("results.note");
+    $("results-note").textContent = I18N.t("results.note"); I18N.nobr($("results-note"));
 
     const u = metrics.umami_valid_reference;
     $("results-umami").textContent = I18N.t("results.umami", {
       n: g.umami_nucleotides.nucleotides_vs_all_negatives.n_nucleotides, pos: g.per_label.umami.test_pos,
       vpos: u.pos, gnn: fmt(u.gnn), lr: fmt(u.morgan_logreg),
     });
+    I18N.nobr($("results-umami"));
     const bd = g.bitter_by_drug;
     $("results-drug").textContent = I18N.t("results.drug", {
       drug: fmt(bd.drug.auroc), nodrug: fmt(bd.non_drug.auroc),

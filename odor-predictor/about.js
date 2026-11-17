@@ -37,6 +37,7 @@
       mean: fmt(metrics.gnn.test_macro_auroc_mean),
       std: metrics.gnn.test_macro_auroc_std.toFixed(4),
     });
+    I18N.nobr($("seed-note"));
 
     const robust = Object.entries(metrics.gnn.per_label)
       .filter(([, v]) => v.auroc != null && v.test_positives >= 10)

@@ -21,7 +21,7 @@
   const pct = x => Math.round(100 * x) + "%";
 
   function renderText() {
-    $("hero-intro").textContent = I18N.t("hero.intro", { n: n.toLocaleString(I18N.lang === "zh" ? "zh-CN" : "en") });
+    $("hero-intro").textContent = I18N.t("hero.intro", { n: n.toLocaleString(I18N.lang === "zh" ? "zh-CN" : "en") }); I18N.nobr($("hero-intro"));
     $("desc-odor").textContent = I18N.t("map.desc.odor", { n: meta.k });
     $("desc-structure").textContent = I18N.t("map.desc.structure", { n: meta.k });
     const fr = meta.top1_counts.fruity || 0;
@@ -40,7 +40,7 @@
         .map(([k, a, b]) => "<tr><th>" + esc(I18N.t(k)) + "</th><td>" + esc(a) + "</td><td>" + esc(b) + "</td></tr>").join("") + "</tbody>";
 
     const T = meta.eval.test;
-    $("res-intro").textContent = I18N.t("results.intro", { n: T.n, k: meta.k });
+    $("res-intro").textContent = I18N.t("results.intro", { n: T.n, k: meta.k }); I18N.nobr($("res-intro"));
     const row = (key, r, cls) => '<tr class="' + (cls || "") + '"><td>' + esc(I18N.t(key)) + '</td><td class="num">' + f3(r.share_common_label) +
       '</td><td class="num">' + f3(r.mean_jaccard) + "</td></tr>";
     const ci = T.map_diff_ci95;
