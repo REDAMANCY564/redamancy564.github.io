@@ -25,8 +25,8 @@
   <meta name="twitter:title" content="气相强度曲线 | 1 GC-MS 风味解读 | 崔京伟">
   <meta name="twitter:description" content="Odor intensity curves in air for 315 fragrance and flavor compounds (Wakayama et al. 2019): search, compare up to four curves and convert a gas-phase concentration to an intensity level.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/gcms-interpreter.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261117a">
-  <script src="../assets/i18n.js?v=20261117a" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261117b">
+  <script src="../assets/i18n.js?v=20261117b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -130,6 +130,7 @@
       <p class="small" data-i18n="curve.formula">曲线公式：Ψ = Imax / (1 + exp(-(X - C) / D))，X 为 log10（气相浓度，μg/L 空气）。阈值为 Ψ = 1.4（刚能察觉）时的浓度：X = C - D · ln((Imax - 1.4) / 1.4)。</p>
       <p class="small" data-i18n="curve.lms">强度标尺为标记量值标尺（LMS，0 到 100）：刚能察觉 1.4，弱 6.1，中等 17.2，强 35.4，很强 53.3，能想象的最强 100。</p>
       <p class="small" data-i18n="curve.range_note">横轴范围 -5 到 5 与原文作图范围相同；超出这个范围不给出换算值。D 小于 0.1 的 5 个物质（如香兰素）曲线近似阶跃，可以搜到，但不画曲线，也不提供换算。</p>
+      <p class="small" data-i18n="curve.extrap">曲线是对评价数据的拟合结果。原文没有给出每个物质实测的浓度范围，横轴 -5 到 5 是原文的作图范围，离实测浓度较远的部分属于外推。浓度超过该物质在室温下的饱和蒸气浓度时，实际达不到，换算值没有意义。例如芳樟醇在 25 ℃ 空气中的饱和浓度约为 1300 μg/L（X≈3）。</p>
       <p class="small" data-i18n="curve.name_note">中文名只给常见物质，商品名保留英文。</p>
       <p class="small" data-i18n="curve.privacy">所有计算都在浏览器里完成，页面不发出外部请求。</p>
     </section>
@@ -141,8 +142,8 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261117a" defer></script>
-  <script src="../assets/intensity.js?v=20261117a" defer></script>
-  <script src="curves.js?v=20261117a" defer></script>
+  <script src="../assets/projects.js?v=20261117b" defer></script>
+  <script src="../assets/intensity.js?v=20261117b" defer></script>
+  <script src="curves.js?v=20261117b" defer></script>
 </body>
 </html>

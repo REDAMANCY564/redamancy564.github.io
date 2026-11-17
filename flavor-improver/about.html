@@ -23,8 +23,8 @@
   <meta name="twitter:title" content="方法与来源 | 4 乳品风味改良 | 崔京伟">
   <meta name="twitter:description" content="Method, results, limitations and data sources of Bayesian Optimization for Dairy Flavor Improvement and Gap Analysis.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/flavor-improver.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261117a">
-  <script src="../assets/i18n.js?v=20261117a" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261117b">
+  <script src="../assets/i18n.js?v=20261117b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -90,7 +90,7 @@
       <p data-i18n-html="method.acq"><b>采集函数</b>决定下一次试什么，在已知高分附近细找（利用）和尝试没试过的区域（探索）之间权衡。本项目使用「期望改进」（Expected Improvement）：选择预计超过目前最好成绩最多的方案。</p>
       <h3 data-sec="2" data-i18n="method.eval_title" data-no="4.2.1">虚拟评价函数</h3>
       <div class="formula">
-        <p data-i18n-html="formula.1">气味活度值：OAV<sub>i</sub> = 浓度<sub>i</sub> ÷ 阈值<sub>i</sub></p>
+        <p data-i18n-html="formula.1">气味活性值：OAV<sub>i</sub> = 浓度<sub>i</sub> ÷ 阈值<sub>i</sub></p>
         <p data-i18n-html="formula.2">感知强度：I<sub>i</sub> = log<sub>10</sub>(OAV<sub>i</sub>)，OAV<sub>i</sub> ≤ 1 时 I<sub>i</sub> = 0</p>
         <p data-i18n-html="formula.3">气味轮廓 = 归一化(Σ I<sub>i</sub> × v<sub>i</sub>)，v<sub>i</sub> 是物质 i 的描述词向量</p>
         <p data-i18n-html="formula.4">目标轮廓 = 归一化(基底轮廓 + 0.1 × 方向)</p>
@@ -205,7 +205,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261117a" defer></script>
-  <script src="about.js?v=20261117a" defer></script>
+  <script src="../assets/projects.js?v=20261117b" defer></script>
+  <script src="about.js?v=20261117b" defer></script>
 </body>
 </html>
