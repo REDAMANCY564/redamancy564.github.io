@@ -70,7 +70,9 @@
     // links only for substances in the site's molecule library; one row per molecule when several match
     const links = it.links.length === 1 ? '<p class="rq-links">' + linkRow(it.links[0]) + "</p>"
       : it.links.map(l => '<p class="rq-links"><span class="muted">' + esc(l.name) + "</span>" + linkRow(l) + "</p>").join("");
-    return '<div class="card rq-item"><h3>' + title(it) + "</h3>" +
+    // "intensity curve" link beside the name: first of the entry's CAS numbers with an odor intensity curve (assets/intensity.js)
+    const curve = Intensity.ready ? it.cas.map(c => Intensity.byCas(c)).find(Boolean) : null;
+    return '<div class="card rq-item"><h3>' + title(it) + (curve ? "<span>" + Intensity.link(curve) + "</span>" : "") + "</h3>" +
       '<p class="rq-cas">' + (it.cas.length ? "CAS " + esc(it.cas.slice(0, 4).join(", ")) : esc(I18N.t("rq.nocas"))) + "</p>" +
       links + Reg.html(it, { bare: true }) + "</div>";
   }
@@ -105,6 +107,7 @@
   document.querySelectorAll("button[data-q]").forEach(b => b.addEventListener("click", () => run(b.dataset.q, true)));
   window.addEventListener("popstate", () => run(new URLSearchParams(location.search).get("q") || "", false));
   I18N.onChange(() => { if (Reg.meta) render(); });
-  Reg.loadLookup().catch(() => {});   // start the download (static file, about 125 KB compressed) while the visitor types
+  Reg.loadLookup().catch(() => {});
+  Intensity.load().then(() => { if (Reg.meta && query) render(); }, () => { /* no links without the data */ });   // start the download (static file, about 125 KB compressed) while the visitor types
   run(new URLSearchParams(location.search).get("q") || "", false);
 })();

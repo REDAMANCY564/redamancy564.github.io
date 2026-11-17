@@ -496,3 +496,6 @@ button.linklike.on { color: var(--text); font-weight: 600; text-decoration: none
 .reg.compact > summary { cursor: pointer; padding: 6px 0; }
 .reg.compact[open] > summary { margin-bottom: 6px; }
 @media (max-width: 599px), (pointer: coarse) { .reg.compact > summary { padding: 11px 0; } }   /* tap height >= 44 px */
+
+/* "intensity curve" link beside a compound name (assets/intensity.js) */
+.int-link { font-size: .8125rem; font-weight: 400; white-space: nowrap; margin-left: 2px; }

@@ -138,7 +138,10 @@
     const d = $("detail");
     d.innerHTML = "";
     const card = el("div", { class: "card" });
-    card.append(el("h3", {}, [c.name, (c.kfo || c.dunkel) ? tag("t1k") : null]));
+    // "intensity curve" link beside the name when this compound has an odor intensity curve (matched by CAS, assets/intensity.js)
+    const curve = el("span", {});
+    card.append(el("h3", {}, [c.name, (c.kfo || c.dunkel) ? tag("t1k") : null, curve]));
+    Intensity.load().then(() => { curve.innerHTML = Intensity.link(Intensity.byKb(id)); }, () => { /* no link without the data */ });
     if (c.alt || c.syn) {
       card.append(el("p", { class: "small muted", text: I18N.t("cmp.synonyms") + ": " + (c.alt || []).concat(c.syn || []).slice(0, 10).join("; ") }));
     }

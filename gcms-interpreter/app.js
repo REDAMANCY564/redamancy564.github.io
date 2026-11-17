@@ -630,6 +630,10 @@
     renderFlavor();
   }
 
+  // "intensity curve" link next to a target name (assets/intensity.js): file CAS, else the knowledge-base compound
+  // identified by CAS or exact synonym, else (no CAS at all) the exact name; never on OAV / ROAV values
+  const curveLink = t => (window.Intensity && Intensity.ready ? Intensity.link(Intensity.forIdent(t.ident, t.name, t.cas)) : "");
+
   function renderResults() {
     const res = RUN.result;
     // result: every target of the standard file, relative content or "-"
@@ -650,7 +654,7 @@
       } else if (free.length) {
         act = ' <button type="button" class="linkbtn" data-look="' + i + '">' + esc(I18N.t(RUN.open.has(i) ? "manual.hide" : "manual.look", { n: free.length })) + "</button>";
       }
-      html += "<tr><td>" + (i + 1) + '</td><td class="wrap">' + esc(t.label) + act + "</td><td><b>" + esc(r.found ? fmtRel(r.rel) : "-") + "</b></td><td>" +
+      html += "<tr><td>" + (i + 1) + '</td><td class="wrap">' + esc(t.label) + curveLink(t) + act + "</td><td><b>" + esc(r.found ? fmtRel(r.rel) : "-") + "</b></td><td>" +
         (r.found ? esc(fmtRt(r.peak.rt)) : "-") + "</td><td>" + esc(fmtRt(t.rt)) + "</td><td>" + esc(t.ident.casNorm || t.cas || "") + "</td></tr>";
       if (free.length && RUN.open.has(i)) {
         let sub = '<p class="small muted" style="margin:0 0 4px">' + esc(I18N.t("manual.intro")) + "</p>";
@@ -779,7 +783,7 @@
     F.items.forEach(x => {
       const src = x.edited ? I18N.t("thr.src_user") : x.fromFile ? I18N.t("thr.src_file") : x.built ? x.built.src + I18N.t("thr.src_builtin") : I18N.t("thr.src_none");
       const range = !x.fromFile && !x.edited && x.built && x.built.range ? sig(x.built.range[0]) + " - " + sig(x.built.range[1]) : "";
-      th += '<tr class="' + (x.thr > 0 ? "" : "no-thr") + '"><td>' + esc(x.t.label) + "</td><td>" + esc(x.t.ident.casNorm || x.t.cas || "") +
+      th += '<tr class="' + (x.thr > 0 ? "" : "no-thr") + '"><td>' + esc(x.t.label) + curveLink(x.t) + "</td><td>" + esc(x.t.ident.casNorm || x.t.cas || "") +
         '</td><td><input type="number" class="thr-in' + (x.edited ? " edited" : "") + '" min="0" step="any" data-thr="' + esc(x.key) +
         '" value="' + (x.thr > 0 ? x.thr : "") + '" aria-label="' + esc(I18N.t("thr.col.value") + ": " + x.t.label) + '"></td><td class="wrap">' +
         esc(src) + "</td><td>" + esc(range) + "</td><td>" +
@@ -802,7 +806,7 @@
       const shown = F.mode === "oav" ? x.value : x.r.rel;
       const chip = dt.d.src ? '<span class="m ' + (dt.d.src === "gnn" ? "warn" : "name") + '">' + esc(I18N.t("rank.src_" + dt.d.src)) + "</span> " : "";
       const scoreCell = c.status === "ok" ? "<b>" + esc(fmtScore(c.score)) + "</b>" : '<span class="muted">' + esc(I18N.t("rank." + c.status)) + "</span>";
-      rh += '<tr class="' + (c.status === "no_threshold" ? "no-thr" : "") + '"><td>' + (c.status === "ok" ? ++rank : "") + "</td><td>" + esc(x.t.label) +
+      rh += '<tr class="' + (c.status === "no_threshold" ? "no-thr" : "") + '"><td>' + (c.status === "ok" ? ++rank : "") + "</td><td>" + esc(x.t.label) + curveLink(x.t) +
         "</td><td>" + esc(shown == null ? "-" : sig(shown, 3)) + "</td><td>" + esc(x.thr > 0 ? sig(x.thr) : "-") + "</td><td>" + scoreCell +
         '</td><td class="wrap">' + chip + (dt.short ? '<span title="' + esc(dt.text) + '">' + esc(dt.short) + "</span>"
           : dt.d.src ? esc(dt.text) : odorLink(I18N.t("rank.no_kb"))) + "</td></tr>";
@@ -947,5 +951,7 @@
 
   renderAll();
   I18N.onChange(renderAll);
+  // intensity curves load in the background; tables drawn before that get their links on the next draw
+  if (window.Intensity) Intensity.load().then(() => { if (RUN.result) renderMatch(); }, () => { /* no links without the data */ });
   I18N.onChange(() => { const el = $("res-status"); if (el.dataset.key) el.textContent = I18N.t(el.dataset.key); });
 })();
