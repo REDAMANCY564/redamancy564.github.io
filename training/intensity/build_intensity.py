@@ -13,6 +13,8 @@ Matching to the compounds of the site, by CAS only (exact string after removing 
   lib  ingredient-finder library index, CAS from training/data/regulatory/out/lib_cas.json (same list the
        regulatory feature uses); ik is the first InChIKey block of that molecule (used by the odor predictor)
   A site compound whose CAS list hits several curves is linked only to the curve with exactly the same name.
+  NO_LINK: published name and CAS disagree, so it is not known which compound was measured: the curve can be found
+  on the curve page (with its note) but no other page links to it (no kb, lib, ik; nolink = 1).
 
 Chinese names: training/intensity/zh_names.csv; only rows with status "approved" go to the site file.
     python training/intensity/build_intensity.py            build the site file and the local match report
@@ -36,11 +38,16 @@ ALIAS = {"151-05-3": ["dimethyl benzyl carbinyl acetate"]}
 # notes on the published data, shown in the review table and the match report
 DATA_NOTES = {
     "4166-20-5": "SI Table S2 gives furaneol with CAS 4166-20-5, which is furaneol acetate (furaneol is 3658-77-3); "
-                 "kept as published, linked by this CAS only",
+                 "kept as published, not linked from other pages",
     "557-48-2": "SI Table S2 prints 140-88-5 (ethyl acrylate); corrected to 557-48-2",
     "108-59-8": "SI Table S2 gives diethyl malonate with CAS 108-59-8, which is dimethyl malonate (diethyl malonate is "
-                "105-53-3); kept as published, linked by this CAS only",
+                "105-53-3); kept as published, not linked from other pages",
 }
+# name and CAS disagree in the source: searchable on the curve page only (reviewer decision 2026-11-17)
+NO_LINK = {"4166-20-5", "108-59-8"}
+# checked against the main-text PDF (Table 3) on 2026-11-17: parameters of all 11 rows agree with the transcription;
+# its CAS numbers differ from SI Table S2 for 5 compounds (the site keeps the SI numbers)
+T3_CAS = {"105-54-4": "105-54-7", "7785-26-4": "80-56-8", "138-86-3": "5989-27-5", "127-91-3": "18172-67-3", "141-78-6": "140-88-5"}
 
 
 def ncas(s):
@@ -71,6 +78,8 @@ def load():
     assert abs(10 ** threshold_x(by["skatole"]) / 4.89e-4 - 1) < 0.01
     assert by["isovaleric acid"]["src"] == "main text Table 3"
     assert by["2,6-nonadienal"]["cas"] == "557-48-2"
+    iv = by["isovaleric acid"]
+    assert (iv["cas"], iv["Imax"], iv["C"], iv["D"]) == ("503-74-2", 54.37, -1.01, 0.52)   # main text Table 3, checked
     return src, comps
 
 
@@ -211,8 +220,10 @@ def build():
     rows = []
     for i, c in enumerate(comps):
         k = ncas(c["cas"])
+        free = k not in NO_LINK
         r = [k, c["name_en"], zh.get(k, ""), c["Imax"], c["C"], c["D"], 1 if c["step_like"] else 0,
-             "t3" if c["src"] == "main text Table 3" else "s2", kb.get(i, ""), li.get(i, -1), ik.get(i, ""), ALIAS.get(k, [])]
+             "t3" if c["src"] == "main text Table 3" else "s2", kb.get(i, "") if free else "", li.get(i, -1) if free else -1,
+             ik.get(i, "") if free else "", ALIAS.get(k, []), 0 if free else 1]
         rows.append(r)
     meta = {
         "source": "Wakayama H, Sakasai M, Yoshikawa K, Inoue M. Method for Predicting Odor Intensity of Perfumery Raw Materials "
@@ -222,7 +233,7 @@ def build():
         "equation": "Psi = Imax / (1 + exp(-(X - C) / D)), X = log10(gas-phase concentration, ug/L air = mg/m3)",
         "threshold": "X at Psi = 1.4: C - D * ln((Imax - 1.4) / 1.4)",
         "lms": LMS, "x_range": [-5, 5],
-        "fields": ["cas", "name_en", "name_zh", "Imax", "C", "D", "step_like", "table", "kb", "lib", "ik", "alias"],
+        "fields": ["cas", "name_en", "name_zh", "Imax", "C", "D", "step_like", "table", "kb", "lib", "ik", "alias", "nolink"],
         "notes": {k: v for k, v in DATA_NOTES.items()},
         "n": len(rows), "built": datetime.date.today().isoformat(),
     }
@@ -238,6 +249,9 @@ def build():
     rep += ["", "## Curves not in the ingredient-finder library (no link from the finder, odor map, odor predictor)", ""]
     rep += [f"- {r[0]} {r[1]}" for r in rows if r[9] < 0]
     rep += ["", "## Data notes", ""] + [f"- {k}: {v}" for k, v in DATA_NOTES.items()]
+    rep += ["", "## Not linked from other pages (name and CAS disagree)", ""] + [f"- {k}" for k in sorted(NO_LINK)]
+    rep += ["", "## CAS numbers in main-text Table 3 that differ from SI Table S2 (parameters identical; site keeps SI)", ""]
+    rep += [f"- {by_cas} {next(r[1] for r in rows if r[0] == by_cas)}: Table 3 prints {t3}" for by_cas, t3 in T3_CAS.items()]
     REPORT.write_text("\n".join(rep) + "\n", encoding="utf-8")
 
 

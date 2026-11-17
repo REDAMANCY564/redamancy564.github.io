@@ -213,7 +213,7 @@
     let cas = null;
     try { cas = new URLSearchParams(location.search).get("cas"); } catch (e) { /* ignore */ }
     if (cas) {
-      const e = I.byCas(cas);
+      const e = I.entry(cas);
       if (e) add(e); else S.msg = { key: "curve.cas_none", vars: { cas } };
     }
     render();

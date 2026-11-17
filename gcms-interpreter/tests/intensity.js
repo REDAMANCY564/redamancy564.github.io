@@ -17,7 +17,9 @@
   check("data", "CAS unique", new Set(I.items.map(e => e.cas)).size, 315);
   check("data", "5 step-like curves, exactly those with D < 0.1", [I.items.filter(e => e.step).length, I.items.every(e => e.step === (e.D < 0.1))], [5, true]);
   check("data", "source and DOI in meta", [I.meta.doi, /Wakayama/.test(I.meta.source)], ["10.1021/acs.iecr.9b01225", true]);
-  check("data", "only the needed fields", I.meta.fields, ["cas", "name_en", "name_zh", "Imax", "C", "D", "step_like", "table", "kb", "lib", "ik", "alias"]);
+  check("data", "only the needed fields", I.meta.fields, ["cas", "name_en", "name_zh", "Imax", "C", "D", "step_like", "table", "kb", "lib", "ik", "alias", "nolink"]);
+  check("data", "reviewed Chinese names: 245, the rest in English", [I.items.filter(e => e.zh).length, I.items.filter(e => !e.zh).length], [245, 70]);
+  check("data", "isovaleric acid parameters as in main-text Table 3", (e => [e.cas, e.Imax, e.C, e.D, e.table])(by("isovaleric acid")), ["503-74-2", 54.37, -1.01, 0.52, "t3"]);
 
   // ---------- the five self-tests of the task ----------
   check("self-test", "limonene at X = 1.67: Psi = 25.3", r1(I.psi(by("limonene"), 1.67)), 25.3);
@@ -55,6 +57,18 @@
   check("search", "alias finds the published spelling", I.search("dimethyl benzyl carbinyl acetate")[0].en, "dimethy benzyl carbinyl acetate");
   check("search", "pollenal II", I.search("pollenal")[0].en, "pollenal Ⅱ");
   check("search", "at most 8 suggestions", I.search("a").length, 8);
+
+  check("search", "Chinese name: 异戊酸", I.search("异戊酸")[0].cas, "503-74-2");
+  check("search", "Chinese name: 柠檬烯 and reviewed (-)-α-蒎烯", [I.search("柠檬烯")[0].cas, by("alpha-pinene").zh], ["138-86-3", "(-)-α-蒎烯"]);
+  check("search", "trade names stay in English", [by("ISO E super").zh, by("lilial").zh], ["", ""]);
+
+  // ---------- name and CAS disagree: searchable, never linked ----------
+  for (const [cas, n] of [["4166-20-5", "furaneol"], ["108-59-8", "diethyl malonate"]]) {
+    const e = I.entry(cas);
+    check("no link", n + ": found by search and ?cas=, no Chinese name", [I.search(cas)[0] === e, I.search(n)[0] === e, e.nolink, e.zh], [true, true, true, ""]);
+    check("no link", n + ": no lookup returns it and no link is made",
+      [I.byCas(cas), I.byName(n), e.kb, e.lib, e.ik, I.link(e), I.forIdent({ casStatus: "ok", casNorm: cas }, n, "")], [null, null, null, -1, null, "", null]);
+  }
 
   // ---------- matching ----------
   check("match", "byCas", I.byCas("138-86-3").en, "limonene");

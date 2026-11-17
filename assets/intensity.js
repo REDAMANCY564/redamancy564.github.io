@@ -4,6 +4,8 @@
  * Data: gcms-interpreter/data/intensity.json (built by training/intensity/build_intensity.py), a static file on this
  * site: no other request. Site compounds are matched by CAS when the data are built (kb id, library index, InChIKey
  * first block); byName is only for places without a CAS: exact name after trimming, English letters case-insensitive.
+ * Curves marked nolink (published name and CAS disagree) are left out of every lookup used for links; the curve page
+ * still finds them by search and by ?cas= (entry).
  *   Psi = Imax / (1 + exp(-(X - C) / D)), X = log10(gas-phase concentration, ug/L air)
  *   threshold: X at Psi = 1.4 = C - D ln((Imax - 1.4) / 1.4)
  * Step-like curves (D < 0.1) are listed but never converted.
@@ -20,7 +22,7 @@
 
   let loading = null;
   const R = { items: [], meta: null };
-  const byCas = new Map(), byKb = new Map(), byLib = new Map(), byIk = new Map(), byNm = new Map();
+  const allCas = new Map(), byCas = new Map(), byKb = new Map(), byLib = new Map(), byIk = new Map(), byNm = new Map();
 
   function ncas(s) {
     const m = /^0*(\d+)-(\d{2})-(\d)$/.exec(String(s == null ? "" : s).trim());
@@ -31,7 +33,7 @@
 
   function decode(a) {
     return { cas: a[0], en: a[1], zh: a[2] || "", Imax: a[3], C: a[4], D: a[5], step: !!a[6], table: a[7],
-             kb: a[8] || null, lib: a[9], ik: a[10] || null, alias: a[11] || [] };
+             kb: a[8] || null, lib: a[9], ik: a[10] || null, alias: a[11] || [], nolink: !!a[12] };
   }
 
   function load() {
@@ -43,6 +45,8 @@
         R.meta = d.meta;
         R.items = d.c.map(decode);
         R.items.forEach(e => {
+          allCas.set(e.cas, e);
+          if (e.nolink) return;
           byCas.set(e.cas, e);
           if (e.kb) byKb.set(e.kb, e);
           if (e.lib >= 0) byLib.set(e.lib, e);
@@ -104,7 +108,7 @@
     const raw = String(q == null ? "" : q).trim();
     if (!raw) return [];
     const c = ncas(raw);
-    if (c) return byCas.has(c) ? [byCas.get(c)] : [];
+    if (c) return allCas.has(c) ? [allCas.get(c)] : [];
     const k = nameKey(raw);
     const hits = [];
     R.items.forEach(e => {
@@ -120,7 +124,7 @@
   const href = e => PAGE_URL.pathname + "?cas=" + encodeURIComponent(e.cas);
   /** The small link placed next to a compound name ("" without a curve). */
   function link(e) {
-    if (!e) return "";
+    if (!e || e.nolink) return "";
     return ' <a class="int-link" href="' + esc(href(e)) + '">' + esc(I18N.t("int.link")) + "</a>";
   }
 
@@ -130,6 +134,8 @@
     get meta() { return R.meta; },
     get ready() { return !!R.meta; },
     byCas: c => byCas.get(ncas(c)) || null,
+    /** Any curve by CAS, including nolink ones (curve page only). */
+    entry: c => allCas.get(ncas(c)) || null,
     byKb: id => (id ? byKb.get(id) || null : null),
     byLib: i => (i == null ? null : byLib.get(i) || null),
     byIk: ik => (ik ? byIk.get(String(ik).slice(0, 14)) || null : null),
