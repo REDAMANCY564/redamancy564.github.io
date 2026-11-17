@@ -23,8 +23,8 @@
   <meta name="twitter:title" content="方法与来源 | 4 乳品风味改良 | 崔京伟">
   <meta name="twitter:description" content="Method, results, limitations and data sources of Bayesian Optimization for Dairy Flavor Improvement and Gap Analysis.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/flavor-improver.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261117b">
-  <script src="../assets/i18n.js?v=20261117b" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261117d">
+  <script src="../assets/i18n.js?v=20261117d" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -54,10 +54,10 @@
   <main class="container about">
     <div class="hero">
       <h1 data-i18n="hero.short" data-no="4">乳品风味改良</h1>
-      <p class="hero-full" data-i18n="hero.title">基于贝叶斯优化的乳品风味改良与差距分析</p>
+      <p class="hero-full" data-i18n="hero.title">基于贝叶斯优化的乳品风味改良与<span class="nobr">差距分析</span></p>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool">工具</a>
-        <a href="about.html" data-i18n="nav.about" aria-current="page">方法与来源</a>
+        <a href="about.html" data-i18n="nav.about" aria-current="page"><span class="nobr">方法与来源</span></a>
       </nav>
     </div>
     <nav class="toc">
@@ -73,7 +73,7 @@
       <h2 data-sec="1" data-i18n="about.overview" data-no="4.1">概述</h2>
       <p data-i18n="hero.intro">开发产品风味要反复调整配方，每调一次都要做感官评价，费时费钱。贝叶斯优化从每次试验的结果中学习，尽量用更少的试验接近目标。这里用一个虚拟评价函数代替感官评价小组：选一种乳品作为基底，设定改良方向，页面逐步显示算法每次加了哪些物质、加多少。</p>
       <p data-i18n-html="hero.disclaimer"><b>这是方法演示，不是配方建议。</b>评价函数由单分子气味预测和简化的加和规则构成，不包含掩蔽、协同和基质效应；实际使用时应换成感官评价或 <span class="nobr">GC-O</span> 实验。</p>
-      <p data-i18n="about.practice">比较两个乳品的风味差距，最常用的是 <span class="nobr">GC-O</span> 和感官评价，但 <span class="nobr">GC-O</span> 只能逐个看物质，看不到整体，感官评价又比较主观。我的研究是把婴儿配方奶粉的风味向母乳方向优化。这里不能直接添加风味物质：一是不符合相关法规，二是要考虑稳定性；而且母乳中许多风味物质本来就来自脂肪氧化，从前体物质入手更能还原这个过程。所以对婴儿配方奶粉，本页的结果只作为前体方向的参考，不作为添加建议。</p>
+      <p data-i18n="about.practice">比较两个乳品的风味差距，最常用的是 <span class="nobr">GC-O</span> 和感官评价，但 <span class="nobr">GC-O</span> 只能逐个看物质，看不到整体，感官评价又比较主观。我的研究是把婴儿配方奶粉的风味向母乳方向优化。这里不能直接添加风味物质：一是不符合相关法规，二是要考虑稳定性；而且母乳中许多风味物质本来就来自脂肪氧化，从前体物质入手更能还原这个过程。所以对婴儿配方奶粉，本页的结果只作为前体方向的参考，不作为<span class="nobr">添加建议</span>。</p>
     </section>
 
     <section id="method">
@@ -139,7 +139,7 @@
         </table>
       </div>
       <p class="small muted" style="margin-top:8px" data-i18n="known.note">表中为「贝叶斯优化（均匀随机初始化）」的结果。物质重合度 = 找到的物质与实际物质的交集 ÷ 并集。</p>
-      <p data-i18n-html="known.takeaway">轮廓几乎都能找回（相似度 0.997 以上），但物质身份往往只能部分找回。原因是很多物质的描述词向量非常接近（例如几种内酯之间、几种二酮之间），用不同物质组合也能得到几乎相同的轮廓。这说明<b>仅凭气味轮廓无法唯一确定配方</b>。两种豪达奶酪无法进行这项检验：它们本身含有很多高 OAV 的物质，加入 1 至 3 种候选物质（不超过 100 倍阈值）后，轮廓变化太小（余弦相似度仍高于 0.98），无法构造出有意义的目标。</p>
+      <p data-i18n-html="known.takeaway">轮廓几乎都能找回（相似度 0.997 以上），但物质身份往往只能部分找回。原因是很多物质的描述词向量非常接近（例如几种内酯之间、几种二酮之间），用不同物质组合也能得到几乎相同的轮廓。这说明<b>仅凭气味轮廓无法唯一确定配方</b>。两种豪达奶酪无法进行这项检验：它们本身含有很多高 OAV 的物质，加入 1 至 3 种候选物质（不超过 100 倍阈值）后，轮廓变化太小（余弦相似度仍高于 0.98），无法构造出<span class="nobr">有意义的目标</span>。</p>
 
       <h3 data-sec="2" data-i18n="jsbo.title" data-no="4.3.3">浏览器中的优化算法</h3>
       <p id="jsbo-text"></p>
@@ -154,7 +154,7 @@
     <section id="tried">
       <h2 data-sec="1" data-i18n="about.tried" data-no="4.4">试过但未采用</h2>
       <h3 data-sec="2" data-i18n="mix.title" data-no="4.4.1">混合物气味相似度模型（未采用）</h3>
-      <p data-i18n-html="mix.why">本页的加和规则把各物质的气味轮廓按强度相加，忽略了真实混合物中的掩蔽和协同，这是本项目最大的局限。2026 年 Monell 化学感官中心、耶鲁大学、IBM 研究院等机构的研究表明，用单分子的气味描述词特征可以较好地预测两个混合物闻起来有多像（Satarifard et al., <i>PNAS</i> 2026）。本项目借鉴这一思路，试着训练一个能比较两个混合物的小模型，计划只用于「参照食品」示例（目标本身是一个真实混合物），不用于贝叶斯优化演示中的方向型目标。</p>
+      <p data-i18n-html="mix.why">本页的加和规则把各物质的气味轮廓按强度相加，忽略了真实混合物中的掩蔽和协同，这是本项目最大的局限。2026 年 Monell 化学感官中心、耶鲁大学、IBM 研究院等机构的研究表明，用单分子的气味描述词特征可以较好地预测两个混合物闻起来有多像（Satarifard et al., <i>PNAS</i> 2026）。本项目借鉴这一思路，试着训练一个能比较两个混合物的小模型，计划只用于「参照食品」示例（目标本身是一个真实混合物），不用于贝叶斯优化演示中的<span class="nobr">方向型目标</span>。</p>
       <p data-i18n-html="mix.how">该研究整理的大数据集没有开放许可（挑战赛条款禁止用于其他目的），所以只用了 Snitz et al. (2013) 公开的人类相似度评分（CC BY 4.0）：等强度的单分子或混合物两两比较，0~100 评分。混合物表示为各组分预测气味向量（138 个描述词）的幂平均，距离为带可学习维度权重的角度。按混合物分组划分：实验 2、3 共 165 对用于训练和交叉验证，实验 1 中组分不重叠的 141 对作为测试集，只计算一次。下表为测试集上预测距离与人类评分（不相似度）的相关系数。</p>
       <div class="table-wrap">
         <table>
@@ -169,17 +169,17 @@
         </table>
       </div>
       <p style="margin-top:8px" data-i18n-html="mix.result">新模型的 Pearson 最高，但 Spearman 低于 Snitz 角距离和 138 维加和，与各对照的 Pearson 差值的 95% 置信区间都包含 0（按混合物重抽样；对 Snitz 21 描述符 [-0.23, +0.24]，对本页加和规则 [-0.02, +0.41]）。事先约定的替换条件（两项指标都高于对照、差值显著）没有达到，<b>所以本页的评价函数没有更换</b>。另一个观察：本页现用的 12 维加和规则在所有方法中最弱，但这是看到测试结果后才注意到的，没有据此修改。</p>
-      <p class="small muted" data-i18n-html="mix.note">这次检验本身也有局限：训练和测试数据都是等强度、非食品基质的混合物，只有约 300 对，来自同一实验室；用于乳品风味还需要按浓度（如 OAV）给组分加权，这一做法没有被这些数据验证。模型预测的是整体相似度，也不能说明具体是哪种掩蔽或协同作用。</p>
+      <p class="small muted" data-i18n-html="mix.note">这次检验本身也有局限：训练和测试数据都是等强度、非食品基质的混合物，只有约 300 对，来自同一实验室；用于乳品风味还需要按浓度（如 OAV）给组分加权，这一做法没有被这些数据验证。模型预测的是整体相似度，也不能说明具体是哪种掩蔽或<span class="nobr">协同作用</span>。</p>
     </section>
 
     <section id="limits">
       <h2 data-sec="1" data-i18n="about.limits" data-no="4.5">局限</h2>
       <ul class="plain">
-        <li data-i18n-html="limits.1"><b>评价函数是虚拟的。</b>它忽略了真实混合物中的掩蔽、协同和基质效应，推荐方案<b>必须经过实验验证</b>，不能直接用于产品。</li>
+        <li data-i18n-html="limits.1"><b>评价函数是虚拟的。</b>它忽略了真实混合物中的掩蔽、协同和基质效应，推荐方案<b>必须经过<span class="nobr">实验验证</span></b>，不能直接用于产品。</li>
         <li data-i18n-html="limits.2">加和模型<b>无法直接降低</b>某个气味，只能改变各气味的相对占比。</li>
         <li data-i18n-html="limits.3">单分子的气味来自本站<a href="../odor-predictor/">气味预测</a>模型，本身有误差。</li>
-        <li data-i18n-html="limits.4">阈值是水中的文献值，基底浓度来自单一研究中的单一样品。不同介质、不同测定方法之间的差异可达几个数量级（见表中的文献范围），这也是本页允许你修改阈值的原因。</li>
-        <li data-i18n-html="limits.5">豪达奶酪的浓度以干物质计，原文未给出换算所需的水分含量，因此与水中阈值相除得到的 OAV 只是近似。</li>
+        <li data-i18n-html="limits.4">阈值是水中的文献值，基底浓度来自单一研究中的单一样品。不同介质、不同测定方法之间的差异可达几个数量级（见表中的文献范围），这也是本页允许你修改<span class="nobr">阈值的原因</span>。</li>
+        <li data-i18n-html="limits.5">豪达奶酪的浓度以干物质计，原文未给出换算所需的水分含量，因此与水中阈值相除得到的 OAV <span class="nobr">只是近似</span>。</li>
         <li data-i18n-html="limits.6">很多候选物质的气味向量非常接近，同一个目标可以由不同配方达到，推荐的具体物质不唯一。</li>
         <li data-i18n-html="limits.7">感知强度用 log<sub>10</sub>(OAV) 近似，没有考虑每个物质各自的浓度-强度曲线。</li>
         <li data-i18n-html="limits.8">不考虑成本、法规限量、溶解度和稳定性。</li>
@@ -192,8 +192,8 @@
       <p><b data-i18n="footer.bases">基底组成数据：</b></p>
       <ul class="plain" id="footer-bases"></ul>
       <p style="margin-top:8px" data-i18n-html="footer.thr"><b>气味阈值（水中）：</b>L.J. van Gemert, <i>Odour Thresholds: Compilations of Odour Threshold Values in Air, Water and Other Media</i>, 2nd ed., Oliemans Punter &amp; Partners, 2011。按事先固定的规则选取：优先 Czerny et al., <i>Eur. Food Res. Technol.</i> 228, 265-273 (2008) 的觉察阈值，其次为该汇编收录的 Buttery 等人的觉察阈值，再次为 Karagül-Yüceer 等人（2003/2004）的觉察阈值；都没有的物质不纳入。乙偶姻采用 0.8 mg/kg（Buttery 等人）。</p>
-      <p data-i18n-html="footer.ref5"><b>婴儿配方奶粉与母乳的风味差距分析：</b>浓度数据来自 Zhang et al., <i>Food Chem</i> 382, 132348 (2022)；前体对照表的文献见表中各行。</p>
-      <p data-i18n-html="footer.odor_model"><b>气味模型：</b>本页的气味预测来自本站<a href="../odor-predictor/">气味预测</a>的图神经网络，训练数据来自 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC），由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅供非商业学术演示。</b></p>
+      <p data-i18n-html="footer.ref5"><b>婴儿配方奶粉与母乳的风味<span class="nobr">差距分析</span>：</b>浓度数据来自 Zhang et al., <i>Food Chem</i> 382, 132348 (2022)；前体对照表的文献见<span class="nobr">表中各行</span>。</p>
+      <p data-i18n-html="footer.odor_model"><b>气味模型：</b>本页的气味预测来自本站<a href="../odor-predictor/">气味预测</a>的图神经网络，训练数据来自 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC），由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅供非商业<span class="nobr">学术演示</span>。</b></p>
       <p data-i18n-html="footer.mix"><b>混合物相似度实验（未采用）：</b>数据来自 Snitz K, Yablonka A, Weiss T, Frumin I, Khan RM, Sobel N. Predicting odor perceptual similarity from odor structure. <i>PLoS Comput Biol</i> 2013, 9(9): e1003184. <a href="https://doi.org/10.1371/journal.pcbi.1003184" target="_blank" rel="noopener">doi:10.1371/journal.pcbi.1003184</a>（CC BY 4.0）；思路参考 Satarifard V, Sisson L, Han Y, et al. A semantic-based community model for high-fidelity tuning of olfactory mixture distances. <i>PNAS</i> 2026, 123(32): e2611057123. <a href="https://doi.org/10.1073/pnas.2611057123" target="_blank" rel="noopener">doi:10.1073/pnas.2611057123</a>。</p>
       <p data-i18n-html="footer.code"><b>代码：</b><a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">github.com/REDAMANCY564/redamancy564.github.io</a>（优化实验代码在 training/flavor_improver/，混合物实验代码在 training/mixture/）</p>
     </section>
@@ -205,7 +205,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261117b" defer></script>
-  <script src="about.js?v=20261117b" defer></script>
+  <script src="../assets/projects.js?v=20261117d" defer></script>
+  <script src="about.js?v=20261117d" defer></script>
 </body>
 </html>

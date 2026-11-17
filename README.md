@@ -220,6 +220,8 @@ git push
 
 **不断行的术语**：GC-MS、GC-O-MS、GC×GC-TOFMS、HS-SPME、LC-MS 等带连字符的术语不在连字符处换行。`assets/i18n.js` 的 `NOBR_RE` 列出这些写法，`I18N.apply` 之后把匹配的文字包进 `span.nobr`；脚本自己画出的文字调用 `I18N.nobr(元素)`；`tools/prerender.py` 的 `NOBR_RE` 是同一份列表（静态中文页面），两处要一起改。
 
+**孤字换行**：段落最后一行不能只剩 1 到 2 个字（如“似。”）或一个英文单词。`assets/style.css` 给正文段落、列表项、图注和研究页旁白加了 `text-wrap: pretty`，标题加了 `text-wrap: balance`；剩下的由 `assets/i18n.js` 的 `NOBR_END` 处理：其中的词只在文字末尾（后面只有标点）时包进 `span.nobr`，文字不变（`tools/prerender.py` 直接读这份列表；研究页旁白在 `research.js` 的 `setLine` 里调用 `I18N.nobr`；页面脚本写出的文字要调用 `I18N.nobr(元素)`）。改了文字后运行 `python tools/check_orphans.py`（需要 `pip install playwright`，使用本机 Chrome）：375、768、1280 三种宽度、中英文打开全站每个页面，研究页两段动画逐步播放，列出孤字（页面、宽度、语言、元素、整句）；出现新的孤字就把句末的词加进 `NOBR_END`，再运行 `prerender.py`。已知保留 6 处：化合物名清单（`#excluded-list`）的最后一项是一个长化学名，与前一项连在一起在手机上会超出屏幕；SMILES 字符串（`#mol-smiles`）不是单词，按字符断行。
+
 **试用示例**：GC-MS 风味解读和乳品风味改良（贝叶斯优化模式）页面顶部有「试用示例」框，点一下就载入示例并跑出结果，然后滚动到结果处（GC-MS 停在风味轮廓，乳品风味改良可选「直接看结果」或「播放优化过程」）。原料与替代物检索点示例后滚到结果；气味地图搜索框下有「示例：高亮黄油中的关键风味物质」；风味知识库搜索只有一个匹配时直接打开卡片。上传自己数据的流程不变。
 
 **页眉遮挡与锚点**：页眉固定在顶部，`assets/style.css` 的 `html { scroll-padding-top: 72px }` 让所有锚点跳转（方法页目录、`research/#master` 等）停在页眉下方。页面里不要再给标题另加 `scroll-margin-top`，否则偏移会叠加。

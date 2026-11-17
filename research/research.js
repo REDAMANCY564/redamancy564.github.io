@@ -1450,6 +1450,7 @@
         if (i % 2) { const sp = el2("span", node); sp.className = "rs-nw"; sp.textContent = part; }
         else node.appendChild(document.createTextNode(part));
       });
+      I18N.nobr(node);   // and the words kept whole at the end of a line (NOBR_END in assets/i18n.js)
     }
     // The first line appears at once, with the step's opening picture (see openAtOnce): the picture then
     // waits 0.5 s. Later segments: the previous line stays 1.5 s more, fades out; the new one fades in and stays 1.5 s.

@@ -57,7 +57,24 @@
   // Instrument names with hyphens (GC-MS, GC-O-MS, GC×GC-MS ...) must not break at the end of a line.
   // Matches are wrapped in <span class="nobr"> (white-space: nowrap); the characters stay ordinary hyphens,
   // so copying and searching are unaffected. tools/prerender.py applies the same rule (NOBR_RE) to the static HTML.
-  const NOBR_RE = /GC×GC-(?:TOF)?MS|GC-O-MS|GC-IMS|GC-MS(?:\/MS)?|GC-O|HS-SPME|LC-MS/g;
+  const NOBR_TERMS = "GC×GC-(?:TOF)?MS|GC-O-MS|GC-IMS|GC-MS(?:\\/MS)?|GC-O|HS-SPME|LC-MS";
+  // Words kept whole when they end a text (only there: followed by nothing but punctuation), so a
+  // paragraph's last line never holds just one or two characters ("纹”。", "似。") or one English word.
+  // Regular-expression sources, one per entry; the text itself is unchanged. tools/prerender.py reads
+  // this list from here. Found with tools/check_orphans.py (text-wrap: pretty in assets/style.css does the rest).
+  const NOBR_END = [
+    "表中各行", "气味指纹", "页面加载", "方法与来源", "相互作用", "协同作用", "统计方法", "关联更强", "仅供参考",
+    "整体信号", "接近母乳", "数据请求", "一种物质", "风味物质", "也不支持", "风味和成本", "替代物", "有意义的目标",
+    "方向型目标", "文件为准", "复核为准", "提供换算", "分成三簇", "浏览器里", "问题写的", "几个特征", "才会高",
+    "直接展示", "拟合曲线", "差距分析", "自动分析", "风味轮廓", "提供思路", "只是近似", "加权组合", "浏览器里运行",
+    "分开标注", "归一化", "实验验证", "可能更大", "照常可用", "配方奶粉", "阈值的原因", "构效关系", "法规状态",
+    "较好区分", "学术演示", "排在前面", "对比图谱", "替代物的筛选", "法规查询", "排序相同", "发布的数据",
+    "训练 ?3 次", "气味来源", "黄油、烘烤", "的结果", "写明单位", "添加建议", "逻辑回归预测", "学习方法预测",
+    "论文的结果", "计算一次", "粗略提示", "长得像", "决定了味觉", "同样很小", "之和为 1", "一个示例", "加进来",
+    "指标测定", "不宜解读", "偏乐观", "气味越相似", "越相似", "1\\.4\\) / 1\\.4\\)",
+    "CC BY-NC", "method (?:&|&amp;) sources", "not cherry-picked", "Flavor Interpreter", "the header"];
+  const NOBR_RE = new RegExp(NOBR_TERMS + "|(?:" + NOBR_END.join("|") +
+    ")(?=[\\s。，、；：？！?!.,;:）)」』”’\"']*$)", "g");
   const NOBR_SKIP = "script,style,textarea,option,title,svg,.nobr";
   function nobr(el) {
     if (!el || el.closest && el.closest(NOBR_SKIP)) return;

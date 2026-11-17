@@ -124,6 +124,12 @@ h3 { font-size: 1rem; margin: 0 0 6px; }
                     font-variant-numeric: tabular-nums; text-decoration: none; font-weight: 400; }
 h1[data-no]::before { margin-right: .75em; }
 p { margin: 0 0 12px; }
+/* No one- or two-character last lines ("纹。", "似。") or single-word last lines: the browser rebalances
+   the last lines of body text, list items, captions and the research-page explanation lines; headings
+   get lines of similar length. Phrases that must not be split are wrapped in .nobr (assets/i18n.js,
+   tools/prerender.py) or .rs-nw (research/research.js). Checked by tools/check_orphans.py. */
+p, li, dd, dt, blockquote, figcaption, caption, .rs-say { text-wrap: pretty; }
+h1, h2, h3, h4 { text-wrap: balance; }
 .muted { color: var(--muted); }
 .small { font-size: .875rem; }
 code, .mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: .9em; }

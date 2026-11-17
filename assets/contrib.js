@@ -92,6 +92,7 @@
     note.className = "small muted contrib-note";
     note.textContent = I18N.t("contrib.note");
     el.appendChild(note);
+    I18N.nobr(el);
   }
 
   window.ContribView = { drawSvg, renderPicker, renderLegend, atomColors };
