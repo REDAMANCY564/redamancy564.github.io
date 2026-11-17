@@ -59,7 +59,7 @@
   check("search", "at most 8 suggestions", I.search("a").length, 8);
 
   check("search", "Chinese name: 异戊酸", I.search("异戊酸")[0].cas, "503-74-2");
-  check("search", "Chinese name: 柠檬烯 and reviewed (-)-α-蒎烯", [I.search("柠檬烯")[0].cas, by("alpha-pinene").zh], ["138-86-3", "(-)-α-蒎烯"]);
+  check("search", "Chinese names without configuration: 柠檬烯, α-蒎烯, β-蒎烯 (Table S2 and Table 3 CAS disagree)", [I.search("柠檬烯")[0].cas, by("alpha-pinene").zh, by("beta-pinene").zh, I.search("α-蒎烯")[0].cas], ["138-86-3", "α-蒎烯", "β-蒎烯", "7785-26-4"]);
   check("search", "trade names stay in English", [by("ISO E super").zh, by("lilial").zh], ["", ""]);
 
   // ---------- name and CAS disagree: searchable, never linked ----------

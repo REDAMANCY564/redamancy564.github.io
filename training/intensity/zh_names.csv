@@ -26,7 +26,7 @@ cas,name_en,name_zh,source,note,status
 7493-74-5,allyl phenoxyacetate,苯氧乙酸烯丙酯,GB 2760-2024,,approved
 43052-87-5,alpha-damascone,α-突厥酮,GB 2760-2024,,approved
 127-41-3,alpha-ionone,α-紫罗兰酮,GB 2760-2024,,approved
-7785-26-4,alpha-pinene,(-)-α-蒎烯,author; reviewer change,reviewer: (-)-α-蒎烯（这个 CAS 是左旋体）,approved
+7785-26-4,alpha-pinene,α-蒎烯,author; reviewer change,"reviewer 2026-11-17: no configuration in the name (SI Table S2 CAS is the (-) form, main-text Table 3 gives 80-56-8, the racemate); same as limonene and beta-pinene; CAS kept from Table S2, no cross-configuration link",approved
 99-86-5,alpha-terpinene,α-松油烯,GB 2760-2024,,approved
 98-55-5,alpha-terpineol,α-松油醇,GB 2760-2024,,approved
 139504-68-0,amber core,,none (shown in English),,approved
