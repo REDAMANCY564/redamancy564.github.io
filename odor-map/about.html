@@ -85,6 +85,7 @@
           <video id="train-video" src="media/training.mp4?v=20261118d" poster="media/training-poster.webp?v=20261118d" width="800" height="800" muted playsinline controls preload="none" data-i18n-attr="aria-label:train.video_label" aria-label="气味地图在训练过程中逐渐成形的动画"></video>
           <span class="train-epoch" id="train-epoch" aria-hidden="true"></span>
         </div>
+        <ul class="train-legend" id="train-legend" data-i18n-attr="aria-label:train.legend_label" aria-label="颜色图例"></ul>
         <figcaption class="small muted" data-i18n="train.note">点的移动表示模型预测的变化，分子本身没有移动。为了让前后两帧连贯，每一帧都以后一帧的坐标为起点计算，帧与帧之间做了平滑过渡，所以中间过程只是一种可视化；团与团之间的距离不能精确解读。</figcaption>
       </figure>
     </section>

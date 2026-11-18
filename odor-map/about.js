@@ -102,8 +102,24 @@
     io.observe(video);
   }
 
+  // colour legend under the video: the 10 colours of map.json + other, same colours as the map page.
+  // Swatch colours are set through element.style (the page CSP does not allow style attributes).
+  function renderLegend() {
+    const ul = $("train-legend");
+    ul.textContent = "";
+    const items = meta.colours.map(id => [labelName(labelIndex[id]), meta.colour_hex[id]]).concat([[I18N.t("legend.other"), "#adb5bd"]]);
+    for (const [name, hex] of items) {
+      const li = document.createElement("li"), sw = document.createElement("span");
+      sw.className = "sw";
+      sw.style.background = hex;
+      li.append(sw, document.createTextNode(name));
+      ul.append(li);
+    }
+  }
+
   function renderAll() {
     renderText();
+    renderLegend();
     shown = null;
     showEpoch();
   }

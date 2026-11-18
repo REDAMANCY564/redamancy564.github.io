@@ -104,6 +104,7 @@
   "train.epoch": "Epoch {n}",
   "train.epoch_final": "Epoch {n} (the model used on this site)",
   "train.video_label": "Animation of the odor map taking shape during training",
+  "train.legend_label": "Color legend",
   "snap.colour-note": "With \"by main predicted descriptor\", each molecule takes the descriptor with the highest predicted probability; the 10 most common ones have their own color and the rest are \"other\". fruity molecules are the most common (20%), which mainly reflects the dataset itself: fragrance databases contain many fruity molecules such as esters.",
   "snap.desc-odor": "Odor map: molecules arranged by the model's predicted probabilities for 138 odor descriptors.",
   "snap.desc-structure": "Structure map: molecules arranged by Morgan fingerprints (structure only); colors are still the predicted odor. Compared with the odor map, dots of the same color are clearly more scattered.",
