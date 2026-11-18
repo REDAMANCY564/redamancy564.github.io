@@ -80,7 +80,7 @@
   "rs.mf.enzymes": "五种酶",
   "rs.mf.contents": "物质含量",
   "rs.mf.score": "感官评分",
-  "rs.mf.time": "酶解时间 0–8 h",
+  "rs.mf.time": "酶解时间 0 到 8 h",
   "rs.mf.roast": "烤香最突出",
   "rs.mf.poly": "多项式拟合",
   "rs.mf.spline": "样条插值",

@@ -5,6 +5,7 @@
 .rs-part { margin: 0 0 var(--sp-5); }   /* research/#master clears the sticky header through scroll-padding-top in style.css */
 .rs-part-h { margin: 0 0 var(--sp-2); }
 .rs-svg { display: block; max-width: 100%; overflow: visible; }
+.rs-svg[hidden] { display: none; }   /* display: block above would otherwise override the hidden attribute */
 .rs-svg text { font-size: 13px; fill: var(--muted); }
 .rs-svg .t-strong { fill: var(--text); font-weight: 600; font-size: 14px; }
 .rs-svg .t-dark { fill: var(--text); }
@@ -27,11 +28,13 @@
 .rs-nav:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
 .rs-nav:disabled { opacity: .4; cursor: default; }
 
-.rs-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); }
-@media (min-width: 720px) {
-  .rs-body { grid-template-columns: minmax(0, 1fr) 280px; gap: var(--sp-4); align-items: start; }
-}
-.rs-canvas { min-width: 0; }
+/* One column at every width, top to bottom: the step's lede, its explanation line, the picture (centred, at most
+   536 px wide; research.js sizes it), under reduced motion the list of lines, then the conclusion and source.
+   research.js moves the line, the picture and the list from .rs-canvas into the current step, after its lede.
+   Without the script .rs-canvas stays empty and every step is listed in order. */
+.rs-body { display: block; }
+.rs-text p, .rs-saylist { max-width: 760px; }
+.rs-detail { margin: 0 auto var(--sp-3); }
 
 /* Without the script every step is listed in order; with it only the current one is shown. */
 .rs-step { margin: 0 0 var(--sp-4); }

@@ -57,6 +57,7 @@
     el.dataset.key = key;
     el.textContent = I18N.t(key);
     el.classList.toggle("error", key === "res.error");
+    el.classList.toggle("ready", key === "res.ready");   // one grey line once ready (no space kept for two)
   }
   setResStatus("res.loading");
   const resources = new Promise(r => requestAnimationFrame(() => setTimeout(r, 0))).then(() => Promise.all([
@@ -241,7 +242,7 @@
     allTemplates().forEach((t, i) => {
       const o = document.createElement("option");
       o.value = String(i);
-      o.textContent = (t.builtin ? "" : "★ ") + t.name;
+      o.textContent = t.name + (t.builtin ? "" : I18N.t("tpl.mine"));   // the visitor's own templates: "(mine)"
       o.selected = t.name === S.templateName;
       sel.appendChild(o);
     });

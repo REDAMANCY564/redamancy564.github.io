@@ -120,7 +120,8 @@ def pick(o):
 # plus the words kept whole at the end of a text (NOBR_END, read from assets/i18n.js so the two stay the same)
 NOBR_END = json.loads(re.search(r"const NOBR_END = (\[.*?\]);", (ROOT / "assets/i18n.js").read_text(encoding="utf-8"),
                                 re.S).group(1))
-NOBR_RE = re.compile(r"GC×GC-(?:TOF)?MS|GC-O-MS|GC-IMS|GC-MS(?:/MS)?|GC-O|HS-SPME|LC-MS|(?:" + "|".join(NOBR_END) +
+NOBR_RE = re.compile(r"GC×GC-(?:TOF)?MS|GC-O-MS|GC-IMS|GC-MS(?:/MS)?|GC-O|HS-SPME|LC-MS|24[ -]h\b"
+                     r"|X = C - D · ln\(\(Imax - 1\.4\) / 1\.4\)|(?:" + "|".join(NOBR_END) +
                      r")(?=[\s。，、；：？！?!.,;:）)」』”’\"']*$)")
 NOBR_SKIP_TAGS = {"script", "style", "textarea", "option", "title", "svg"}
 

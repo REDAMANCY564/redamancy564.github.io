@@ -112,7 +112,7 @@ async (stageId) => {
   const say = root.querySelector(".rs-say");
   const mo = new MutationObserver(() => { if (say.textContent.trim() && !say.hidden) take(say); });
   mo.observe(say, { childList: true, subtree: true, characterData: true });
-  const canvas = root.querySelector(".rs-canvas");
+  const canvas = root.querySelector(".rs-detail");   // the picture (research.js moves it into the current step)
   const next = root.querySelector(".rs-next"), pause = root.querySelector(".rs-pause");
   const n = root.querySelectorAll(".rs-step").length;
   const sleep = ms => new Promise(r => setTimeout(r, ms));
