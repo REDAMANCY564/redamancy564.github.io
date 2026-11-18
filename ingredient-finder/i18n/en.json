@@ -137,5 +137,8 @@
   "f.reg.us": "US",
   "f.reg.all3": "All three (EU, China, US)",
   "b.reg_note": "The list only has molecules permitted in the chosen region ({region}); the scatter plot still shows all molecules.",
-  "footer.reg": "<b>Regulatory status:</b> the EU Union list (Regulation (EC) No 1334/2008, Annex I, EUR-Lex consolidated version of 2026-02-16, CC BY 4.0), China's GB 2760-2024 tables B.2 and B.3 (no amendments included) and US 21 CFR (eCFR, 2026-10-20) with the FDA list \"Substances Added to Food\" (2026-09-08), matched to the site's molecules by CAS number. Sources, matching and limitations: <a href=\"../flavor-kb/about.html#regulatory\">flavor knowledge base, regulatory lookup</a>."
+  "footer.reg": "<b>Regulatory status:</b> the EU Union list (Regulation (EC) No 1334/2008, Annex I, EUR-Lex consolidated version of 2026-02-16, CC BY 4.0), China's GB 2760-2024 tables B.2 and B.3 (no amendments included) and US 21 CFR (eCFR, 2026-10-20) with the FDA list \"Substances Added to Food\" (2026-09-08), matched to the site's molecules by CAS number. Sources, matching and limitations: <a href=\"../flavor-kb/about.html#regulatory\">flavor knowledge base, regulatory lookup</a>.",
+  "a.no_label": "No such descriptor",
+  "a.added": "Added “{name}”",
+  "a.removed": "Removed “{name}”"
 }

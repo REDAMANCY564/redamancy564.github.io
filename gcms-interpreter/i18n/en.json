@@ -282,5 +282,7 @@
   "curve.range_note": "The horizontal axis runs from -5 to 5, the plotting range of the paper; outside it no value is given. For 5 compounds with D below 0.1 (such as vanillin) the curve is close to a step: they can be found, but no curve is drawn and no conversion is given.",
   "curve.extrap": "The curves are fits to the evaluation data. The paper does not give the concentration range measured for each compound; the horizontal axis from -5 to 5 is the plotting range of the paper, and parts far from the measured concentrations are extrapolation. Concentrations above the saturated vapor concentration of the compound at room temperature cannot be reached in practice, and conversions there have no meaning. For example, the saturated concentration of linalool in air at 25 °C is about 1300 µg/L (X ≈ 3).",
   "curve.name_note": "Chinese names are given for common compounds only; trade names stay in English.",
-  "curve.privacy": "All calculations run in your browser; the page makes no external request."
+  "curve.privacy": "All calculations run in your browser; the page makes no external request.",
+  "curve.slider_aria": "Concentration slider: X = log10 (gas-phase concentration)",
+  "curve.slider_value": "X = {x}, {c} µg/L"
 }

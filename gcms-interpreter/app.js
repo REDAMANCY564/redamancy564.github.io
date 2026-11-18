@@ -808,7 +808,7 @@
       const scoreCell = c.status === "ok" ? "<b>" + esc(fmtScore(c.score)) + "</b>" : '<span class="muted">' + esc(I18N.t("rank." + c.status)) + "</span>";
       rh += '<tr class="' + (c.status === "no_threshold" ? "no-thr" : "") + '"><td>' + (c.status === "ok" ? ++rank : "") + "</td><td>" + esc(x.t.label) + curveLink(x.t) +
         "</td><td>" + esc(shown == null ? "-" : sig(shown, 3)) + "</td><td>" + esc(x.thr > 0 ? sig(x.thr) : "-") + "</td><td>" + scoreCell +
-        '</td><td class="wrap">' + chip + (dt.short ? '<span title="' + esc(dt.text) + '">' + esc(dt.short) + "</span>"
+        '</td><td class="wrap">' + chip + (dt.short ? '<span tabindex="0" data-tip title="' + esc(dt.text) + '">' + esc(dt.short) + "</span>"
           : dt.d.src ? esc(dt.text) : odorLink(I18N.t("rank.no_kb"))) + "</td></tr>";
     });
     if (!F.items.length) rh += '<tr><td></td><td colspan="5" class="muted">' + esc(I18N.t("rank.none")) + "</td></tr>";

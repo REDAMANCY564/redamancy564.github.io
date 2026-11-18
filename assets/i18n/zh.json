@@ -170,5 +170,15 @@
   "int.lv.very_strong": "很强",
   "int.lv.strongest": "能想象的最强",
   "int.lv_below": "低于“{a}”",
-  "int.lv_between": "介于“{a}”和“{b}”之间"
+  "int.lv_between": "介于“{a}”和“{b}”之间",
+  "copy.doi": "复制 DOI",
+  "copy.email": "复制邮箱地址",
+  "copy.smiles": "复制 SMILES",
+  "copy.cas": "复制 CAS 号",
+  "copy.done": "已复制",
+  "copy.manual": "请手动复制",
+  "home.msg_sent": "已发送",
+  "term.oav": "OAV（气味活性值）：物质浓度除以它的气味阈值。大于 1 时，一般认为对整体气味有贡献。",
+  "term.roav": "相对气味活性值（ROAV）：把 OAV 最大的物质记为 100，其他物质按比例换算，用来比较各物质的相对贡献。",
+  "term.lms": "LMS（标记量值标尺）：0 到 100 的强度标尺，用“刚能察觉、弱、中等、强、很强”等文字标出位置，刻度间距不均匀。"
 }

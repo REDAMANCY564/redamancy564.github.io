@@ -170,5 +170,15 @@
   "int.lv.very_strong": "very strong",
   "int.lv.strongest": "strongest imaginable",
   "int.lv_below": "below “{a}”",
-  "int.lv_between": "between “{a}” and “{b}”"
+  "int.lv_between": "between “{a}” and “{b}”",
+  "copy.doi": "Copy DOI",
+  "copy.email": "Copy email address",
+  "copy.smiles": "Copy SMILES",
+  "copy.cas": "Copy CAS number",
+  "copy.done": "Copied",
+  "copy.manual": "Please copy it manually",
+  "home.msg_sent": "Sent",
+  "term.oav": "OAV (odor activity value): the concentration of a compound divided by its odor threshold. A value above 1 is generally taken to mean that it contributes to the overall odor.",
+  "term.roav": "ROAV (relative odor activity value): the compound with the highest OAV is set to 100 and the others are scaled in proportion, to compare the relative contributions of the compounds.",
+  "term.lms": "LMS (labeled magnitude scale): an intensity scale from 0 to 100 with positions marked by words such as “barely detectable”, “weak”, “moderate”, “strong” and “very strong”; the marks are not evenly spaced."
 }

@@ -162,6 +162,9 @@
       : (I18N.lang === "zh" ? current.name_zh + "  " + current.name_en : current.name_en);
     $("mol-name").textContent = name;
     $("mol-smiles").textContent = drawn();
+    // copy button after the SMILES (assets/i18n.js); on failure the SMILES text itself is selected
+    const smilesText = $("mol-smiles").firstChild, smiles = drawn();
+    $("mol-smiles").append(" ", UI.copyButton({ text: smiles, label: "copy.smiles", select: smilesText }));
     const rawForm = $("mol-raw");
     rawForm.hidden = drawn() === current.smiles;
     if (!rawForm.hidden) rawForm.textContent = I18N.t("demo.raw_form", { smiles: current.smiles });
