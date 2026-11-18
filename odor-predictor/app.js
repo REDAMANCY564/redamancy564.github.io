@@ -177,6 +177,9 @@
     $("mol-name").textContent = name;
     renderCurveLink();
     $("mol-smiles").textContent = current.smiles;
+    // copy button after the SMILES (assets/i18n.js); on failure the SMILES text itself is selected
+    const smilesText = $("mol-smiles").firstChild;
+    $("mol-smiles").append(" ", UI.copyButton({ text: current.smiles, label: "copy.smiles", select: smilesText }));
     const link = $("mol-pubchem");
     link.hidden = !current.pubchem_cid;
     if (current.pubchem_cid) link.href = "https://pubchem.ncbi.nlm.nih.gov/compound/" + current.pubchem_cid;

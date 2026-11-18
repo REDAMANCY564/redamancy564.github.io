@@ -137,5 +137,8 @@
   "f.reg.us": "美国",
   "f.reg.all3": "三地都许可",
   "b.reg_note": "列表只含在所选地区（{region}）许可的分子；散点图仍显示全部分子。",
-  "footer.reg": "<b>法规状态：</b>欧盟 Union list（Regulation (EC) No 1334/2008 附件 I，EUR-Lex 合并版 2026-02-16，CC BY 4.0）、中国 GB 2760-2024 表 B.2、B.3（未包含修改单）和美国 21 CFR（eCFR 2026-10-20）及 FDA「Substances Added to Food」清单（2026-09-08），按 CAS 号与本站分子对应。数据来源、对应方法和局限见<a href=\"../flavor-kb/about.html#regulatory\">风味知识库「法规查询」</a>。"
+  "footer.reg": "<b>法规状态：</b>欧盟 Union list（Regulation (EC) No 1334/2008 附件 I，EUR-Lex 合并版 2026-02-16，CC BY 4.0）、中国 GB 2760-2024 表 B.2、B.3（未包含修改单）和美国 21 CFR（eCFR 2026-10-20）及 FDA「Substances Added to Food」清单（2026-09-08），按 CAS 号与本站分子对应。数据来源、对应方法和局限见<a href=\"../flavor-kb/about.html#regulatory\">风味知识库「法规查询」</a>。",
+  "a.no_label": "没有这个描述词",
+  "a.added": "已添加“{name}”",
+  "a.removed": "已移除“{name}”"
 }

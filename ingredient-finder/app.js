@@ -121,15 +121,47 @@
       .sort((a, b) => labelName(a.j).localeCompare(labelName(b.j), I18N.lang === "zh" ? "zh" : "en"));
     $("label-list").innerHTML = items.map(({ l, j }) =>
       '<button type="button" class="chip-btn" data-add="' + esc(l.id) + '">' + esc(labelName(j)) + "</button>").join("");
+    $("label-status").textContent = q && !items.length ? I18N.t("a.no_label") : "";
+  }
+  // descriptors added by hand, newest last (Backspace in the empty filter box removes the newest still selected)
+  const added = [];
+  function addLabel(id) {
+    A[A.addTo].push([id, "high"]);
+    added.push([A.addTo, id]);
+    A.justAdded = [A.addTo, A[A.addTo].length - 1];   // drawn with the appear animation (renderSel)
+    A.shown = PAGE;
+    renderA();
+    UI.announce(I18N.t("a.added", { name: labelName(labelById(id)) }));
   }
   $("label-list").addEventListener("click", e => {
     const b = e.target.closest("[data-add]");
     if (!b) return;
-    A[A.addTo].push([b.dataset.add, "high"]);
-    A.shown = PAGE;
-    renderA();
+    addLabel(b.dataset.add);
   });
   $("label-filter").addEventListener("input", renderLabelList);
+  // Enter: add the first descriptor of the filtered list to the chosen column (wanted / unwanted)
+  // Backspace in the empty box: remove the descriptor added last
+  $("label-filter").addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.isComposing) {
+      e.preventDefault();
+      const first = $("label-list").querySelector("[data-add]");
+      if (!$("label-filter").value.trim()) return;
+      if (!first) { $("label-status").textContent = I18N.t("a.no_label"); return; }
+      $("label-filter").value = "";
+      addLabel(first.dataset.add);
+    } else if (e.key === "Backspace" && !$("label-filter").value && !e.isComposing) {
+      while (added.length) {
+        const [kind, id] = added.pop();
+        const k = A[kind].findIndex(x => x[0] === id);
+        if (k < 0) continue;   // already removed in another way
+        A[kind].splice(k, 1);
+        A.shown = PAGE;
+        renderA();
+        UI.announce(I18N.t("a.removed", { name: labelName(labelById(id)) }));
+        break;
+      }
+    }
+  });
   ["want", "avoid"].forEach(k => $("add-" + k).addEventListener("click", () => {
     A.addTo = k;
     $("add-want").setAttribute("aria-pressed", String(k === "want"));
@@ -139,7 +171,8 @@
   function renderSel(kind) {
     const list = A[kind];
     $(kind + "-list").innerHTML = !list.length ? '<span class="small muted">' + esc(I18N.t("a.none_selected")) + "</span>"
-      : list.map(([id, w], k) => '<span class="sel-item' + (kind === "avoid" ? " avoid" : "") + '">' + esc(labelName(labelById(id))) +
+      : list.map(([id, w], k) => '<span class="sel-item' + (kind === "avoid" ? " avoid" : "") +
+        (A.justAdded && A.justAdded[0] === kind && A.justAdded[1] === k ? " sel-new" : "") + '">' + esc(labelName(labelById(id))) +
         ' <select data-w="' + kind + ":" + k + '" aria-label="weight">' +
         ["high", "mid", "low"].map(x => '<option value="' + x + '"' + (x === w ? " selected" : "") + ">" + esc(I18N.t("w." + x)) + "</option>").join("") +
         '</select><button type="button" class="x" data-rm="' + kind + ":" + k + '" aria-label="' + esc(I18N.t("a.remove")) + '">×</button></span>').join("");
@@ -244,6 +277,7 @@
     renderLabelList();
     renderSel("want");
     renderSel("avoid");
+    A.justAdded = null;
     $("f-unseen-label").title = I18N.t("f.unseen_help", { n: nUnseen });
     runA();
   }

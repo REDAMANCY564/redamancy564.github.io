@@ -25,8 +25,8 @@
   <meta name="twitter:title" content="气相强度曲线 | 1 GC-MS 风味解读 | 崔京伟">
   <meta name="twitter:description" content="Odor intensity curves in air for 315 fragrance and flavor compounds (Wakayama et al. 2019): search, compare up to four curves and convert a gas-phase concentration to an intensity level.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/gcms-interpreter.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261117d">
-  <script src="../assets/i18n.js?v=20261117d" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261118a">
+  <script src="../assets/i18n.js?v=20261118a" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -57,6 +57,29 @@
     .linkbtn { font: inherit; font-size: .875rem; border: 0; background: none; color: var(--accent); text-decoration: underline; cursor: pointer; padding: 0; }
     .conv-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
     .conv-row input { width: 160px; max-width: 100%; }
+    /* concentration slider: X = log10(concentration), -5 to 5; the thumb grows and a bubble shows X and the
+       concentration while it is dragged (curves.js); motion only with transform and opacity */
+    .conc-slider { position: relative; display: inline-flex; align-items: center; flex: 1 1 220px; max-width: 360px; min-width: 180px; height: 44px; }
+    .conc-slider input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 44px; margin: 0; background: none; cursor: pointer; }
+    .conc-slider input[type="range"]:disabled { cursor: default; opacity: .45; }
+    .conc-slider input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--border); }
+    .conc-slider input[type="range"]::-moz-range-track { height: 4px; border-radius: 2px; background: var(--border); }
+    .conc-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; margin-top: -7px; border-radius: 50%;
+      background: var(--accent); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--accent); }
+    .conc-slider input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--accent);
+      border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--accent); }
+    .conc-slider input[type="range"]:focus-visible { outline: none; }
+    .conc-slider input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft); }
+    .conc-slider.active input[type="range"]::-webkit-slider-thumb { transform: scale(1.35); }
+    .conc-slider.active input[type="range"]::-moz-range-thumb { transform: scale(1.35); }
+    .conc-bubble { position: absolute; left: 0; bottom: 100%; margin-bottom: -4px; padding: 3px 8px; border-radius: 4px; background: #1f2328; color: #fff;
+      font-size: .8125rem; white-space: nowrap; pointer-events: none; font-variant-numeric: tabular-nums; opacity: 0; }
+    .conc-slider.active .conc-bubble { opacity: 1; }
+    @media (prefers-reduced-motion: no-preference) {
+      .conc-slider input[type="range"]::-webkit-slider-thumb { transition: transform .15s ease-out; }
+      .conc-slider input[type="range"]::-moz-range-thumb { transition: transform .15s ease-out; }
+      .conc-bubble { transition: opacity .15s ease-out; }
+    }
     table.conv { margin-top: 8px; }
     table.conv td, table.conv th { white-space: normal; }
     .warn-text { color: var(--warn); font-weight: 600; }
@@ -120,6 +143,10 @@
       <div class="conv-row">
         <label for="conc" data-i18n="curve.conv_label">气相浓度（μg/L 空气，等于 mg/m³）</label>
         <input type="text" inputmode="decimal" id="conc" autocomplete="off" disabled data-i18n-attr="placeholder:curve.conv_ph" placeholder="如 46.8 或 1e-3">
+        <span class="conc-slider" id="conc-slider">
+          <input type="range" id="conc-x" min="-5" max="5" step="0.01" value="0" disabled data-i18n-attr="aria-label:curve.slider_aria" aria-label="浓度滑块：X = log10（气相浓度）">
+          <span class="conc-bubble" id="conc-bubble" aria-hidden="true"></span>
+        </span>
       </div>
       <div id="conv-out" aria-live="polite"></div>
     </section>
@@ -142,8 +169,8 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261117d" defer></script>
-  <script src="../assets/intensity.js?v=20261117d" defer></script>
-  <script src="curves.js?v=20261117d" defer></script>
+  <script src="../assets/projects.js?v=20261118a" defer></script>
+  <script src="../assets/intensity.js?v=20261118a" defer></script>
+  <script src="curves.js?v=20261118a" defer></script>
 </body>
 </html>

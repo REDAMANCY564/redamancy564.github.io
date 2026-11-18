@@ -2,6 +2,8 @@
  * Odor intensity curves in air (curves.html): search, up to 4 curves on one SVG chart, concentration conversion.
  * Data and formula: assets/intensity.js (Wakayama et al. 2019). No external library, no external request.
  * ?cas=<CAS> opens one compound.
+ * The concentration slider (X = log10 concentration, -5 to 5) and the text box stay in step (concentration = 10^X);
+ * while it is dragged only the dashed line moves and the conversion table is redrawn, once per animation frame.
  */
 (function () {
   const $ = id => document.getElementById(id);
@@ -156,13 +158,16 @@
       const sw = '<svg class="sw-line" width="34" height="10" aria-hidden="true"><line x1="1" x2="33" y1="5" y2="5" stroke="' + COLORS[slot] +
         '" stroke-width="2.5"' + (DASH[slot] ? ' stroke-dasharray="' + DASH[slot] + '"' : "") + "/></svg>";
       return '<li>' + (e.step ? '<span class="sw-gap"></span>' : sw) + "<span><b>" + esc(dispName(e)) + "</b>" +
-        (subName(e) ? " " + esc(subName(e)) : "") + ' <span class="muted">CAS ' + esc(e.cas) + "</span><br>" +
+        (subName(e) ? " " + esc(subName(e)) : "") + ' <span class="muted">CAS <span class="cas-no">' + esc(e.cas) + "</span></span><br>" +
         '<span class="small">' + esc(thr) + "</span>" +
         (e.step ? "" : '<br><span class="small muted">' + esc(t("curve.params", { imax: e.Imax, c: e.C, d: e.D, table: t("curve.table_" + e.table) })) + "</span>") +
         (I.meta.notes && I.meta.notes[e.cas] ? '<br><span class="small muted">' + esc(t("curve.note_" + e.cas.replace(/-/g, "_"))) + "</span>" : "") +
         '</span><button type="button" class="linkbtn" data-remove="' + esc(e.cas) + '" aria-label="' + esc(t("curve.remove", { name: dispName(e) })) + '">' +
         esc(t("curve.remove_short")) + "</button></li>";
     }).join("");
+    // copy button after each CAS number (assets/i18n.js); on failure the number is selected
+    $("legend").querySelectorAll(".cas-no").forEach(n =>
+      n.parentElement.after(UI.copyButton({ text: n.textContent, label: "copy.cas", select: n })));
   }
 
   // ---------- conversion ----------
@@ -194,8 +199,64 @@
     out.innerHTML = h + "</tbody></table></div>";
   }
 
+  // ---------- concentration slider ----------
+  const slider = $("conc-x"), sliderBox = $("conc-slider"), bubble = $("conc-bubble");
+  let dragging = false, frame = 0;
+  function sliderText(x) { return t("curve.slider_value", { x: fmtX(x), c: sig(10 ** x) }); }
+  // from the text box (and after a compound is added or removed): position, state and spoken value
+  function syncSlider() {
+    const c = Number(String(S.conc).trim().replace(/,/g, ""));
+    if (c > 0) slider.value = String(Math.max(I.X_MIN, Math.min(I.X_MAX, Math.log10(c))));
+    slider.disabled = !S.list.length || $("conc").disabled;   // like the chart, it needs a compound
+    if (slider.disabled) setActive(false);
+    slider.setAttribute("aria-valuetext", sliderText(+slider.value));
+  }
+  function placeBubble() {
+    const x = +slider.value;
+    bubble.textContent = sliderText(x);
+    const w = slider.clientWidth, thumb = 18, bw = bubble.offsetWidth;
+    const at = thumb / 2 + (x - I.X_MIN) / (I.X_MAX - I.X_MIN) * (w - thumb);
+    bubble.style.transform = "translateX(" + Math.round(Math.max(0, Math.min(w - bw, at - bw / 2))) + "px)";
+  }
+  function setActive(on) {
+    sliderBox.classList.toggle("active", on);
+    if (on) placeBubble();
+  }
+  // move only the dashed line of the drawn chart (the curves stay as they are)
+  function moveConcLine() {
+    const svg = $("chart-svg");
+    if (!svg || !geo) return;
+    let line = svg.querySelector("line.conc");
+    const cx = convX();
+    if (cx == null) { if (line) line.remove(); return; }
+    if (!line) {
+      line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("class", "conc");
+      line.setAttribute("y1", geo.m.t); line.setAttribute("y2", geo.sy(0));
+      svg.insertBefore(line, svg.querySelector("path.curve, circle.thr, #cross"));
+    }
+    line.setAttribute("x1", geo.sx(cx)); line.setAttribute("x2", geo.sx(cx));
+  }
+  function fromSlider() {
+    frame = 0;
+    const x = +slider.value;
+    S.conc = sig(10 ** x);
+    $("conc").value = S.conc;
+    slider.setAttribute("aria-valuetext", sliderText(x));
+    moveConcLine();
+    renderConv();
+    if (sliderBox.classList.contains("active")) placeBubble();
+  }
+  slider.addEventListener("input", () => { if (!frame) frame = requestAnimationFrame(fromSlider); });
+  slider.addEventListener("pointerdown", () => { dragging = true; setActive(true); });
+  const endDrag = () => { if (!dragging) return; dragging = false; setActive(slider.matches(":focus-visible")); };
+  window.addEventListener("pointerup", endDrag);
+  window.addEventListener("pointercancel", endDrag);
+  slider.addEventListener("focus", () => { if (slider.matches(":focus-visible")) setActive(true); });   // keyboard: arrows move it
+  slider.addEventListener("blur", () => { if (!dragging) setActive(false); });
+
   function render() {
-    renderSuggest(); renderStatus(); renderChart(); renderLegend(); renderConv();
+    renderSuggest(); renderStatus(); renderChart(); renderLegend(); renderConv(); syncSlider();
   }
 
   // ---------- events ----------
@@ -203,7 +264,7 @@
   $("q").addEventListener("keydown", ev => { if (ev.key === "Enter") { ev.preventDefault(); if (S.suggest.length) add(S.suggest[0]); } });
   $("suggest").addEventListener("click", ev => { const b = ev.target.closest("[data-pick]"); if (b) add(S.suggest[+b.dataset.pick]); });
   $("legend").addEventListener("click", ev => { const b = ev.target.closest("[data-remove]"); if (b) remove(b.dataset.remove); });
-  $("conc").addEventListener("input", () => { S.conc = $("conc").value; renderConv(); renderChart(); });
+  $("conc").addEventListener("input", () => { S.conc = $("conc").value; renderConv(); renderChart(); syncSlider(); });
   let rz = 0;
   window.addEventListener("resize", () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(renderChart); });
 
