@@ -82,36 +82,37 @@ img, svg { max-width: 100%; }
   position: sticky; top: 0; z-index: 10;
   backdrop-filter: saturate(1.2) blur(6px);
 }
-/* Header: identical on every page (name | Projects CV 中/EN), fixed height */
+/* Header: identical on every page (name | Home Online Tools Research CV 中/EN), fixed height */
 .site-header .container {
   display: flex; align-items: center; justify-content: space-between;
   gap: 12px; height: 56px; flex-wrap: nowrap;
 }
 .site-header .brand { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 600; color: var(--text); text-decoration: none; white-space: nowrap; }
 .site-nav { display: flex; align-items: center; gap: var(--sp-4); font-size: .95rem; }
-.site-nav a { color: var(--muted); text-decoration: none; white-space: nowrap; }
+.site-nav a { color: var(--muted); text-decoration: none; white-space: nowrap; display: inline-flex; align-items: center; min-height: 40px; }
 .site-nav a:hover, .site-nav a[aria-current] { color: var(--text); }
-@media (max-width: 400px) { .site-nav { gap: var(--sp-3); font-size: .9rem; } }
-/* "Online Tools" becomes "Tools" on phones in English, so the header stays on one row with "Research" added */
+/* Phones (400 px and below): five items (name | Home, Online Tools, Research, CV, 中/EN) stay on one row in
+   both languages: tighter gaps (8 px, English 7 px), nav text 13 px (not smaller), and in English "Online Tools" becomes "Tools". */
 .site-nav .nav-short { display: none; }
 @media (max-width: 400px) {
+  .site-header .container { gap: 6px; }
+  .site-header .brand { font-size: .95rem; }
+  .site-nav { gap: 8px; font-size: .8125rem; }
+  :lang(en) .site-nav { gap: 7px; font-size: .8125rem; }
+  .lang-toggle, :lang(en) .lang-toggle { padding: 3px 6px; font-size: 13px; }
+  .lang-toggle .sep, :lang(en) .lang-toggle .sep { margin: 0 3px; }
   :lang(en) .site-nav .nav-long { display: none; }
   :lang(en) .site-nav .nav-short { display: inline; }
-  :lang(en) .site-nav { gap: 12px; }
-  :lang(en) .lang-toggle { padding: 4px 8px; }
-  :lang(en) .lang-toggle .sep { margin: 0 4px; }
 }
-/* Narrowest phones (320-359 px): the header row still fits in both languages (it overflowed by 3 px in Chinese
-   and 20 px in English): a 16 px page gutter, tighter gaps and a narrower language switch. Placed after the
-   400 px rules above, which it overrides. */
+/* Narrowest phones (320-359 px): a 16 px page gutter; English pages still did not fit, so there the
+   language switch shows only the language it switches to ("中"; the full meaning is in its aria-label,
+   set by assets/i18n.js) and the gaps are 6 px (Chinese 7 px). Placed after the 400 px rules above, which it overrides. */
 @media (max-width: 359px) {
   .container { padding: 0 16px; }
-  .site-header .container { gap: 8px; }
-  .site-header .brand { font-size: 1rem; }
-  .site-nav { gap: 10px; font-size: .875rem; }
-  :lang(en) .site-nav { gap: 8px; font-size: .875rem; }
-  .lang-toggle, :lang(en) .lang-toggle { padding: 4px 8px; font-size: 13px; }
-  .lang-toggle .sep, :lang(en) .lang-toggle .sep { margin: 0 4px; }
+  .site-nav { gap: 7px; }
+  :lang(en) .site-nav { gap: 6px; }
+  :lang(en) .lang-toggle { padding: 3px 8px; }
+  :lang(en) .lang-toggle .sep, :lang(en) .lang-toggle .active { display: none; }
 }
 
 /* Project tabs (SwissADME-style), under the project title */
@@ -452,6 +453,8 @@ button.linklike.on { color: var(--text); font-weight: 600; text-decoration: none
     content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
     width: max(100%, 44px); height: max(100%, 44px);
   }
+  /* header nav links sit 6-8 px apart on phones: their tap area widens by the gap only (height stays 44 px) */
+  .site-nav a::after { width: calc(100% + 6px); }
   /* the first card link sits right next to the second one: it grows to the left only */
   .pub-item .links a:first-child::after { left: auto; right: 0; transform: translateY(-50%); width: max(100%, 46px); }
   .chip-btn { min-height: 36px; }
