@@ -10,7 +10,9 @@ Presets also carry per-atom occlusion contributions (occlusion.py) for their top
 Raw dataset labels are NOT published (no license explicitly allows it; user decision 2026-10-18):
 each preset carries its odor description from the flavor knowledge base instead (Dunkel et al.
 2014 with page number, else FlavorDB terms) plus whether it is in the training data.
-Predictions come from onnxruntime (the same model file the browser loads).
+Predictions come from onnxruntime (the same model file the browser loads: feature_spec.json
+"model_file"). Since 2026-11 the odor model is the bond-aware MPNN (featurize_mpnn.py, inputs X/E/mask);
+fixtures store the bonds as [i, j, bond features] for i < j instead of the GCN's adjacency matrix.
 """
 import json
 from pathlib import Path
@@ -22,8 +24,8 @@ from rdkit import Chem
 
 from clean_data import standardize
 from evaluate import load_split
-from featurize import featurize, featurize_many
-from occlusion import contributions
+from featurize_mpnn import featurize, featurize_many
+from occlusion import contributions_mpnn as contributions
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "odor-predictor"
@@ -83,10 +85,13 @@ def write_json(path, obj, indent=None):
 
 def main():
     smiles, labels, Y, split, _ = load_split()
-    sess = ort.InferenceSession(str(SITE / "model" / "odor_gnn.onnx"), providers=["CPUExecutionProvider"])
+    spec = json.loads((SITE / "model" / "feature_spec.json").read_text(encoding="utf-8"))
+    assert spec.get("model_type") == "mpnn"
+    sess = ort.InferenceSession(str(SITE / "model" / spec["model_file"]), providers=["CPUExecutionProvider"])
 
-    def run(X, A, M):
-        return sess.run(None, {"X": X, "A": A, "mask": M})[0]
+    def run(X, E, M):
+        return np.concatenate([sess.run(None, {"X": X[i:i + 16], "E": E[i:i + 16], "mask": M[i:i + 16]})[0]
+                               for i in range(0, len(X), 16)])
 
     # labels.json
     tr = pd.read_csv(Path(__file__).parent / "label_translations.csv", keep_default_na=False)
@@ -126,8 +131,8 @@ def main():
     test_idx = np.flatnonzero(split == "test")
     pick = np.random.default_rng(SEED).choice(test_idx, size=N_PARITY, replace=False)
     pick_smiles = [smiles[i] for i in pick] + [p[3] for p in PRESETS] + EDGE_CASES
-    X, A, M = featurize_many(pick_smiles)
-    probs = run(X, A, M)
+    X, E, M = featurize_many(pick_smiles)
+    probs = run(X, E, M)
     fixtures = []
     for k, s in enumerate(pick_smiles):
         n = int(M[k].sum())
@@ -135,7 +140,8 @@ def main():
         fixtures.append({
             "smiles": s, "num_atoms": n,
             "X": X[k, :n].astype(int).tolist(),
-            "A": A[k, :n, :n].tolist(),
+            "bonds": [[int(i), int(j), E[k, i, j].astype(int).tolist()]
+                      for i, j in np.argwhere(np.triu(E[k, :n, :n].sum(-1)) > 0)],
             "probs": probs[k].tolist(),
         })
     # Occlusion fixtures: contributions for the top-8 labels of each molecule
@@ -147,7 +153,7 @@ def main():
         occlusion.append({"smiles": s, "labels": top.tolist(), "contrib": c[:, top].tolist()})
 
     write_json(SITE / "tests" / "parity_fixtures.json",
-               {"tolerance": {"A": 1e-6, "probs": 1e-5, "contrib": 1e-5}, "molecules": fixtures,
+               {"tolerance": {"E": 0, "probs": 1e-5, "contrib": 1e-5}, "molecules": fixtures,
                 "occlusion": occlusion})
 
 

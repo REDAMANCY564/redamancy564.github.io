@@ -1127,333 +1127,335 @@
     }
   },
   "gnn": {
+    "architecture": "MPNN with bond features (training/model_mpnn.py), idea from Lee et al. 2023",
     "params": {
-      "hidden": 128,
       "num_layers": 3,
+      "hidden": 256,
+      "update": "res",
       "dropout": 0.2,
       "lr": 0.001,
       "batch": 64,
       "patience": 20,
-      "n_parameters": 137738
+      "n_parameters": 936330
     },
     "seeds": [
       {
         "seed": 0,
-        "best_epoch": 71,
-        "valid_macro_auroc": 0.8491,
-        "test_macro_auroc": 0.8602
+        "best_epoch": 24,
+        "valid_macro_auroc": 0.8514,
+        "test_macro_auroc": 0.8641
       },
       {
         "seed": 1,
-        "best_epoch": 82,
-        "valid_macro_auroc": 0.8488,
-        "test_macro_auroc": 0.8602
+        "best_epoch": 29,
+        "valid_macro_auroc": 0.8532,
+        "test_macro_auroc": 0.8661
       },
       {
         "seed": 2,
-        "best_epoch": 86,
-        "valid_macro_auroc": 0.8512,
-        "test_macro_auroc": 0.8595
+        "best_epoch": 26,
+        "valid_macro_auroc": 0.857,
+        "test_macro_auroc": 0.8687
       }
     ],
-    "test_macro_auroc_mean": 0.86,
-    "test_macro_auroc_std": 0.0003,
+    "test_macro_auroc_mean": 0.8663,
+    "test_macro_auroc_std": 0.0019,
     "deployed_seed": 2,
-    "valid_macro_auroc": 0.8512,
-    "macro_auroc": 0.8595,
-    "macro_auroc_cyclic": 0.7994,
-    "macro_auroc_acyclic": 0.8623,
+    "valid_macro_auroc": 0.857,
+    "macro_auroc": 0.8687,
+    "macro_auroc_cyclic": 0.8126,
+    "macro_auroc_acyclic": 0.8738,
     "per_label": {
       "alcoholic": {
-        "auroc": 0.8379,
+        "auroc": 0.8533,
         "test_positives": 12
       },
       "aldehydic": {
-        "auroc": 0.9341,
+        "auroc": 0.9024,
         "test_positives": 11
       },
       "alliaceous": {
-        "auroc": 0.9736,
+        "auroc": 0.9851,
         "test_positives": 10
       },
       "almond": {
-        "auroc": 0.9959,
+        "auroc": 0.9924,
         "test_positives": 3
       },
       "amber": {
-        "auroc": 0.853,
+        "auroc": 0.8276,
         "test_positives": 20
       },
       "animal": {
-        "auroc": 0.8893,
+        "auroc": 0.8669,
         "test_positives": 6
       },
       "anisic": {
-        "auroc": 0.9778,
+        "auroc": 0.9385,
         "test_positives": 4
       },
       "apple": {
-        "auroc": 0.882,
+        "auroc": 0.871,
         "test_positives": 23
       },
       "apricot": {
-        "auroc": 0.8577,
+        "auroc": 0.8955,
         "test_positives": 7
       },
       "aromatic": {
-        "auroc": 0.8126,
+        "auroc": 0.8604,
         "test_positives": 7
       },
       "balsamic": {
-        "auroc": 0.8446,
+        "auroc": 0.8763,
         "test_positives": 29
       },
       "banana": {
-        "auroc": 0.961,
+        "auroc": 0.9563,
         "test_positives": 14
       },
       "beefy": {
-        "auroc": 0.9681,
+        "auroc": 0.9712,
         "test_positives": 2
       },
       "bergamot": {
-        "auroc": 0.9959,
+        "auroc": 1.0,
         "test_positives": 2
       },
       "berry": {
-        "auroc": 0.7907,
+        "auroc": 0.7884,
         "test_positives": 14
       },
       "bitter": {
-        "auroc": 0.9773,
+        "auroc": 0.9282,
         "test_positives": 4
       },
       "black currant": {
-        "auroc": 0.9602,
+        "auroc": 0.9649,
         "test_positives": 4
       },
       "brandy": {
-        "auroc": 0.9322,
+        "auroc": 0.961,
         "test_positives": 1
       },
       "burnt": {
-        "auroc": 0.8805,
+        "auroc": 0.8893,
         "test_positives": 8
       },
       "buttery": {
-        "auroc": 0.9121,
+        "auroc": 0.9064,
         "test_positives": 13
       },
       "cabbage": {
-        "auroc": 0.9847,
+        "auroc": 0.9867,
         "test_positives": 5
       },
       "camphoreous": {
-        "auroc": 0.9065,
+        "auroc": 0.9067,
         "test_positives": 38
       },
       "caramellic": {
-        "auroc": 0.8354,
+        "auroc": 0.8303,
         "test_positives": 15
       },
       "cedar": {
-        "auroc": 0.8441,
+        "auroc": 0.849,
         "test_positives": 15
       },
       "celery": {
-        "auroc": 0.8008,
+        "auroc": 0.8198,
         "test_positives": 8
       },
       "chamomile": {
-        "auroc": 0.9638,
+        "auroc": 0.9923,
         "test_positives": 4
       },
       "cheesy": {
-        "auroc": 0.959,
+        "auroc": 0.9577,
         "test_positives": 15
       },
       "cherry": {
-        "auroc": 0.9688,
+        "auroc": 0.9667,
         "test_positives": 7
       },
       "chocolate": {
-        "auroc": 0.899,
+        "auroc": 0.9148,
         "test_positives": 3
       },
       "cinnamon": {
-        "auroc": 0.8647,
+        "auroc": 0.968,
         "test_positives": 4
       },
       "citrus": {
-        "auroc": 0.8362,
+        "auroc": 0.8328,
         "test_positives": 34
       },
       "clean": {
-        "auroc": 0.5071,
+        "auroc": 0.5172,
         "test_positives": 10
       },
       "clove": {
-        "auroc": 0.9002,
+        "auroc": 0.8951,
         "test_positives": 2
       },
       "cocoa": {
-        "auroc": 0.7438,
+        "auroc": 0.656,
         "test_positives": 4
       },
       "coconut": {
-        "auroc": 0.9656,
+        "auroc": 0.9739,
         "test_positives": 5
       },
       "coffee": {
-        "auroc": 0.9401,
+        "auroc": 0.97,
         "test_positives": 4
       },
       "cognac": {
-        "auroc": 0.9453,
+        "auroc": 0.9205,
         "test_positives": 11
       },
       "cooked": {
-        "auroc": 0.827,
+        "auroc": 0.8311,
         "test_positives": 12
       },
       "cooling": {
-        "auroc": 0.9251,
+        "auroc": 0.906,
         "test_positives": 14
       },
       "cortex": {
-        "auroc": 0.8926,
+        "auroc": 0.9058,
         "test_positives": 9
       },
       "coumarinic": {
-        "auroc": 0.9312,
+        "auroc": 0.907,
         "test_positives": 6
       },
       "creamy": {
-        "auroc": 0.6789,
+        "auroc": 0.7576,
         "test_positives": 17
       },
       "cucumber": {
-        "auroc": 0.978,
+        "auroc": 0.9897,
         "test_positives": 3
       },
       "dairy": {
-        "auroc": 0.7586,
+        "auroc": 0.8489,
         "test_positives": 6
       },
       "dry": {
-        "auroc": 0.7049,
+        "auroc": 0.716,
         "test_positives": 19
       },
       "earthy": {
-        "auroc": 0.6831,
+        "auroc": 0.6933,
         "test_positives": 35
       },
       "ethereal": {
-        "auroc": 0.9586,
+        "auroc": 0.962,
         "test_positives": 31
       },
       "fatty": {
-        "auroc": 0.8615,
+        "auroc": 0.8562,
         "test_positives": 69
       },
       "fermented": {
-        "auroc": 0.9538,
+        "auroc": 0.9485,
         "test_positives": 10
       },
       "fishy": {
-        "auroc": 0.9315,
+        "auroc": 0.9654,
         "test_positives": 6
       },
       "floral": {
-        "auroc": 0.7926,
+        "auroc": 0.8415,
         "test_positives": 91
       },
       "fresh": {
-        "auroc": 0.75,
+        "auroc": 0.7559,
         "test_positives": 70
       },
       "fruit skin": {
-        "auroc": 0.907,
+        "auroc": 0.877,
         "test_positives": 7
       },
       "fruity": {
-        "auroc": 0.8405,
+        "auroc": 0.8457,
         "test_positives": 161
       },
       "garlic": {
-        "auroc": 0.9724,
+        "auroc": 0.9776,
         "test_positives": 10
       },
       "gassy": {
-        "auroc": 0.9199,
+        "auroc": 0.961,
         "test_positives": 1
       },
       "geranium": {
-        "auroc": 0.7413,
+        "auroc": 0.7719,
         "test_positives": 7
       },
       "grape": {
-        "auroc": 0.8828,
+        "auroc": 0.9035,
         "test_positives": 5
       },
       "grapefruit": {
-        "auroc": 0.8332,
+        "auroc": 0.9304,
         "test_positives": 9
       },
       "grassy": {
-        "auroc": 0.9768,
+        "auroc": 0.9824,
         "test_positives": 4
       },
       "green": {
-        "auroc": 0.7912,
+        "auroc": 0.826,
         "test_positives": 141
       },
       "hawthorn": {
-        "auroc": 0.9527,
+        "auroc": 0.9331,
         "test_positives": 2
       },
       "hay": {
-        "auroc": 0.8642,
+        "auroc": 0.8157,
         "test_positives": 5
       },
       "hazelnut": {
-        "auroc": 0.6307,
+        "auroc": 0.8457,
         "test_positives": 2
       },
       "herbal": {
-        "auroc": 0.7487,
+        "auroc": 0.7387,
         "test_positives": 90
       },
       "honey": {
-        "auroc": 0.9023,
+        "auroc": 0.9034,
         "test_positives": 8
       },
       "hyacinth": {
-        "auroc": 0.9499,
+        "auroc": 0.9685,
         "test_positives": 6
       },
       "jasmin": {
-        "auroc": 0.831,
+        "auroc": 0.8561,
         "test_positives": 10
       },
       "juicy": {
-        "auroc": 0.9466,
+        "auroc": 0.9118,
         "test_positives": 5
       },
       "ketonic": {
-        "auroc": 0.9969,
+        "auroc": 0.9979,
         "test_positives": 2
       },
       "lactonic": {
-        "auroc": 0.9241,
+        "auroc": 0.9556,
         "test_positives": 4
       },
       "lavender": {
-        "auroc": 0.7882,
+        "auroc": 0.7327,
         "test_positives": 7
       },
       "leafy": {
-        "auroc": 0.7819,
+        "auroc": 0.8095,
         "test_positives": 16
       },
       "leathery": {
@@ -1461,215 +1463,215 @@
         "test_positives": 1
       },
       "lemon": {
-        "auroc": 0.906,
+        "auroc": 0.9161,
         "test_positives": 8
       },
       "lily": {
-        "auroc": 0.9255,
+        "auroc": 0.9424,
         "test_positives": 8
       },
       "malty": {
-        "auroc": 0.91,
+        "auroc": 0.9065,
         "test_positives": 3
       },
       "meaty": {
-        "auroc": 0.9656,
+        "auroc": 0.948,
         "test_positives": 31
       },
       "medicinal": {
-        "auroc": 0.7893,
+        "auroc": 0.7345,
         "test_positives": 4
       },
       "melon": {
-        "auroc": 0.8889,
+        "auroc": 0.9147,
         "test_positives": 16
       },
       "metallic": {
-        "auroc": 0.6656,
+        "auroc": 0.7057,
         "test_positives": 13
       },
       "milky": {
-        "auroc": 0.6199,
+        "auroc": 0.6149,
         "test_positives": 5
       },
       "mint": {
-        "auroc": 0.8422,
+        "auroc": 0.8537,
         "test_positives": 33
       },
       "muguet": {
-        "auroc": 0.8613,
+        "auroc": 0.8704,
         "test_positives": 5
       },
       "mushroom": {
-        "auroc": 0.8017,
+        "auroc": 0.7801,
         "test_positives": 9
       },
       "musk": {
-        "auroc": 0.8887,
+        "auroc": 0.8691,
         "test_positives": 18
       },
       "musty": {
-        "auroc": 0.5721,
+        "auroc": 0.6008,
         "test_positives": 12
       },
       "natural": {
-        "auroc": 0.6748,
+        "auroc": 0.7101,
         "test_positives": 15
       },
       "nutty": {
-        "auroc": 0.6192,
+        "auroc": 0.6884,
         "test_positives": 23
       },
       "odorless": {
-        "auroc": 0.9828,
+        "auroc": 0.9812,
         "test_positives": 10
       },
       "oily": {
-        "auroc": 0.8168,
+        "auroc": 0.8059,
         "test_positives": 40
       },
       "onion": {
-        "auroc": 0.9709,
+        "auroc": 0.9696,
         "test_positives": 18
       },
       "orange": {
-        "auroc": 0.8411,
+        "auroc": 0.9128,
         "test_positives": 9
       },
       "orangeflower": {
-        "auroc": 0.8926,
+        "auroc": 0.905,
         "test_positives": 4
       },
       "orris": {
-        "auroc": 0.8637,
+        "auroc": 0.8417,
         "test_positives": 7
       },
       "ozone": {
-        "auroc": 0.7469,
+        "auroc": 0.6656,
         "test_positives": 6
       },
       "peach": {
-        "auroc": 0.8757,
+        "auroc": 0.8963,
         "test_positives": 9
       },
       "pear": {
-        "auroc": 0.8926,
+        "auroc": 0.8913,
         "test_positives": 19
       },
       "phenolic": {
-        "auroc": 0.9318,
+        "auroc": 0.949,
         "test_positives": 10
       },
       "pine": {
-        "auroc": 0.9159,
+        "auroc": 0.9306,
         "test_positives": 26
       },
       "pineapple": {
-        "auroc": 0.9397,
+        "auroc": 0.9604,
         "test_positives": 15
       },
       "plum": {
-        "auroc": 0.8858,
+        "auroc": 1.0,
         "test_positives": 2
       },
       "popcorn": {
-        "auroc": 0.9993,
+        "auroc": 0.9986,
         "test_positives": 3
       },
       "potato": {
-        "auroc": 0.9716,
+        "auroc": 0.9723,
         "test_positives": 6
       },
       "powdery": {
-        "auroc": 0.8576,
+        "auroc": 0.8517,
         "test_positives": 21
       },
       "pungent": {
-        "auroc": 0.8389,
+        "auroc": 0.868,
         "test_positives": 16
       },
       "radish": {
-        "auroc": 0.9615,
+        "auroc": 0.9856,
         "test_positives": 3
       },
       "raspberry": {
-        "auroc": 0.8807,
+        "auroc": 0.9794,
         "test_positives": 2
       },
       "ripe": {
-        "auroc": 0.9706,
+        "auroc": 0.9445,
         "test_positives": 8
       },
       "roasted": {
-        "auroc": 0.9721,
+        "auroc": 0.9708,
         "test_positives": 25
       },
       "rose": {
-        "auroc": 0.8854,
+        "auroc": 0.8846,
         "test_positives": 28
       },
       "rummy": {
-        "auroc": 0.9343,
+        "auroc": 0.9381,
         "test_positives": 6
       },
       "sandalwood": {
-        "auroc": 0.9529,
+        "auroc": 0.9755,
         "test_positives": 13
       },
       "savory": {
-        "auroc": 0.9175,
+        "auroc": 0.9165,
         "test_positives": 18
       },
       "sharp": {
-        "auroc": 0.5723,
+        "auroc": 0.6435,
         "test_positives": 6
       },
       "smoky": {
-        "auroc": 0.1317,
+        "auroc": 0.18,
         "test_positives": 2
       },
       "soapy": {
-        "auroc": 0.7021,
+        "auroc": 0.706,
         "test_positives": 7
       },
       "solvent": {
-        "auroc": 0.9614,
+        "auroc": 0.9578,
         "test_positives": 7
       },
       "sour": {
-        "auroc": 0.8617,
+        "auroc": 0.8095,
         "test_positives": 6
       },
       "spicy": {
-        "auroc": 0.782,
+        "auroc": 0.7859,
         "test_positives": 55
       },
       "strawberry": {
-        "auroc": 0.8838,
+        "auroc": 0.9038,
         "test_positives": 3
       },
       "sulfurous": {
-        "auroc": 0.9805,
+        "auroc": 0.9724,
         "test_positives": 47
       },
       "sweaty": {
-        "auroc": 0.8501,
+        "auroc": 0.9014,
         "test_positives": 1
       },
       "sweet": {
-        "auroc": 0.7176,
+        "auroc": 0.7309,
         "test_positives": 129
       },
       "tea": {
-        "auroc": 0.6131,
+        "auroc": 0.593,
         "test_positives": 4
       },
       "terpenic": {
-        "auroc": 0.9844,
+        "auroc": 0.981,
         "test_positives": 6
       },
       "tobacco": {
-        "auroc": 0.8324,
+        "auroc": 0.8086,
         "test_positives": 13
       },
       "tomato": {
@@ -1677,43 +1679,43 @@
         "test_positives": 1
       },
       "tropical": {
-        "auroc": 0.7991,
+        "auroc": 0.822,
         "test_positives": 35
       },
       "vanilla": {
-        "auroc": 0.9035,
+        "auroc": 0.9163,
         "test_positives": 9
       },
       "vegetable": {
-        "auroc": 0.7724,
+        "auroc": 0.7915,
         "test_positives": 25
       },
       "vetiver": {
-        "auroc": 0.7548,
+        "auroc": 0.778,
         "test_positives": 6
       },
       "violet": {
-        "auroc": 0.9419,
+        "auroc": 0.9174,
         "test_positives": 6
       },
       "warm": {
-        "auroc": 0.7232,
+        "auroc": 0.8298,
         "test_positives": 13
       },
       "waxy": {
-        "auroc": 0.9049,
+        "auroc": 0.8902,
         "test_positives": 47
       },
       "weedy": {
-        "auroc": 0.6174,
+        "auroc": 0.4961,
         "test_positives": 5
       },
       "winey": {
-        "auroc": 0.8988,
+        "auroc": 0.9189,
         "test_positives": 13
       },
       "woody": {
-        "auroc": 0.8922,
+        "auroc": 0.8812,
         "test_positives": 113
       }
     }
@@ -1795,6 +1797,90 @@
       "all_seeds_beat_A_mean": false,
       "rare_not_lower": false,
       "replace": false
+    }
+  },
+  "gcn_previous": {
+    "architecture": "GCN, 3 layers x 128, atom features only (training/model.py)",
+    "params": {
+      "hidden": 128,
+      "num_layers": 3,
+      "dropout": 0.2,
+      "lr": 0.001,
+      "batch": 64,
+      "patience": 20,
+      "n_parameters": 137738
+    },
+    "seeds": [
+      {
+        "seed": 0,
+        "best_epoch": 71,
+        "valid_macro_auroc": 0.8491,
+        "test_macro_auroc": 0.8602
+      },
+      {
+        "seed": 1,
+        "best_epoch": 82,
+        "valid_macro_auroc": 0.8488,
+        "test_macro_auroc": 0.8602
+      },
+      {
+        "seed": 2,
+        "best_epoch": 86,
+        "valid_macro_auroc": 0.8512,
+        "test_macro_auroc": 0.8595
+      }
+    ],
+    "test_macro_auroc_mean": 0.86,
+    "test_macro_auroc_std": 0.0003,
+    "deployed_seed": 2,
+    "valid_macro_auroc": 0.8512,
+    "macro_auroc": 0.8595,
+    "macro_auroc_cyclic": 0.7994,
+    "macro_auroc_acyclic": 0.8623
+  },
+  "model_comparison": {
+    "note": "test macro AUROC, mean and std over seeds 0 1 2; same split and training settings",
+    "gcn": {
+      "test": [
+        0.86,
+        0.0003
+      ],
+      "test_cyclic": [
+        0.8002,
+        0.0011
+      ],
+      "test_acyclic": [
+        0.8639,
+        0.0018
+      ]
+    },
+    "mpnn": {
+      "test": [
+        0.8663,
+        0.0019
+      ],
+      "test_cyclic": [
+        0.8108,
+        0.0018
+      ],
+      "test_acyclic": [
+        0.8722,
+        0.0015
+      ]
+    },
+    "mpnn_no_bond_features": {
+      "test": [
+        0.8631,
+        0.0018
+      ],
+      "test_cyclic": [
+        0.8025,
+        0.0021
+      ],
+      "test_acyclic": [
+        0.8685,
+        0.0018
+      ]
     }
   }
 }

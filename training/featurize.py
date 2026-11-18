@@ -107,8 +107,9 @@ def featurize_many(smiles_list, pharma=False):
     return tuple(np.stack(a) for a in zip(*out))
 
 
-def write_spec():
-    spec = {
+def spec_dict():
+    """Feature spec of this (GCN) featurizer. The taste predictor's spec is built from it."""
+    return {
         "max_atoms": MAX_ATOMS,
         "num_features": NUM_FEATURES,
         "atom_features": [
@@ -124,6 +125,12 @@ def write_spec():
         "atom_order": "RDKit atom index of the parsed (non-stereo) SMILES, hydrogens implicit",
         "model_inputs": {"X": "[B, 64, F] float32", "A": "[B, 64, 64] float32", "mask": "[B, 64] float32"},
     }
+
+
+def write_spec():
+    """Writes the GCN spec to odor-predictor/model/feature_spec.json. Since the odor model became the
+    MPNN (2026-11), the odor spec is written by featurize_mpnn.write_spec instead; kept for the record."""
+    spec = spec_dict()
     SPEC_PATH.parent.mkdir(parents=True, exist_ok=True)
     SPEC_PATH.write_text(json.dumps(spec, indent=2), encoding="utf-8")
     print(f"Wrote {SPEC_PATH}")

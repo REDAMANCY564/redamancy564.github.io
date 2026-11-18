@@ -3,6 +3,8 @@
 Stage 1 (before the user decides on adoption) writes only to training/data/mpnn/, never into
 the website: this measures the file size and checks ONNX against PyTorch.
   python export_onnx_mpnn.py            -> training/data/mpnn/odor_mpnn.onnx
+Stage 2 (adopted 2026-11-18):
+  python export_onnx_mpnn.py --site     -> odor-predictor/model/odor_mpnn.onnx + feature_spec.json
 
 Inputs: X [B,64,26], E [B,64,64,6], mask [B,64] (float32, dynamic batch). Output: probs [B,138].
 Checks: test set |ONNX - PyTorch| < 1e-4; batch-1 run; extra padding atoms do not change output;
@@ -10,19 +12,24 @@ occlusion batch (n+1 inputs) equals running each input alone.
 """
 from pathlib import Path
 
+import json
+import sys
+
 import numpy as np
 import onnxruntime as ort
 import torch
 from torch import nn
 
 from evaluate import load_split
-from featurize_mpnn import featurize_many
+from featurize import SPEC_PATH
+from featurize_mpnn import featurize_many, write_spec
 from model_mpnn import OdorMPNN
 from occlusion import occlusion_batch_mpnn
 
 HERE = Path(__file__).parent
 CKPT = HERE / "checkpoints" / "odor_mpnn.pt"
 ONNX_PATH = HERE / "data" / "mpnn" / "odor_mpnn.onnx"
+SITE_ONNX = HERE.parent / "odor-predictor" / "model" / "odor_mpnn.onnx"
 
 
 class WithSigmoid(nn.Module):
@@ -77,5 +84,18 @@ def main(onnx_path=ONNX_PATH):
     print(f"padding diff {pad:.2e} | occlusion batch vs single {float(np.abs(ob - oi).max()):.2e}")
 
 
+def site():
+    main(SITE_ONNX)
+    _, ck = load_model()
+    write_spec()
+    spec = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
+    spec.update(model_file=SITE_ONNX.name, onnx_opset=17, num_labels=len(ck["labels"]),
+                model_output={"name": "probs", "shape": "[B, num_labels]", "sigmoid_applied": True,
+                              "label_order": "same as labels.json"},
+                model_config={**ck["config"], "seed": ck["seed"]})
+    SPEC_PATH.write_text(json.dumps(spec, indent=2), encoding="utf-8")
+    print(f"Updated {SPEC_PATH}")
+
+
 if __name__ == "__main__":
-    main()
+    site() if "--site" in sys.argv else main()

@@ -110,7 +110,7 @@ python flavor_improver/make_parity_fixtures.py                         # 更新�
 
 **用自己的数据（2026-10-18）**：在 GC-MS 风味解读中分别处理当前样品和目标样品，点「作为当前样品发送 / 作为目标发送」（`assets/flavor-handoff.js`，浏览器本地存储，不上传），或上传其导出的排名 CSV（也接受自己整理的 CSV：物质名称列 + 浓度、相对含量 / 峰面积、OAV 或 ROAV 中至少一列，列名中英文均可，单位写在列名里；页面上有「上传 CSV 的要求」和模板 `flavor-improver/examples/userdata_template.csv`）；在乳品风味改良页面选「我的 GC-MS 数据」（或打开 `flavor-improver/?mode=user`）。页面按化合物合并两边（阈值可改），两边都定量时按 OAV 比较，否则按 ROAV（贡献占比）；轮廓维度默认母乳 / 奶粉 12 维，可切换；「一方较高」的标准默认 2 倍 / 2 个百分点，可在设置窗口调整；只推荐添加哪些物质（OAV 模式按补到目标水平后的轮廓相似度排序），不给添加量。不在风味知识库中的物质可提供 SMILES（或点击后从 PubChem 按 CAS / 名称查询）由 odor-predictor 模型在浏览器中预测气味。页面有内容安全策略（脚本只来自本站；数据只能发往本站和用户点击时的 PubChem）。逻辑在 `userdata-core.js`，单元测试 `flavor-improver/tests/userdata.html`；示例数据 `flavor-improver/examples/` 由 `training/flavor_improver/make_userdata_examples.py` 从「配方奶粉对比母乳」的已发表数据生成。
 
-**尝试过的改进：混合物气味相似度模型（2026-10-18，未采用）**：借鉴 Satarifard et al., *PNAS* 2026（doi:10.1073/pnas.2611057123），想用一个比较两个混合物的小模型替换参照食品模式的加和规则。DREAM 挑战赛整理的数据没有开放许可（Synapse 条款禁止用于其他目的），只用了 Snitz et al. 2013（*PLoS Comput Biol*，CC BY 4.0）的相似度评分。按混合物分组：实验 2、3 共 165 对训练和交叉验证，实验 1 的 141 对不重叠比较作测试集（只算一次；实验 1 的 11 号混合物在补充表中组成被截断，已去掉）。测试集 Pearson / Spearman：新模型（GNN 预测概率幂平均 + 138 维权重的角距离）0.537 / 0.516，Snitz 21 描述符角距离 0.504 / 0.563，现用加和规则（12 维）0.315 / 0.382，138 维加和 0.449 / 0.553；与各基线的 Pearson 差值置信区间都包含 0，未达到替换条件，评价函数不变，只在网页「局限」部分报告。
+**尝试过的改进：混合物气味相似度模型（2026-10-18，未采用）**：借鉴 Satarifard et al., *PNAS* 2026（doi:10.1073/pnas.2611057123），想用一个比较两个混合物的小模型替换参照食品模式的加和规则。DREAM 挑战赛整理的数据没有开放许可（Synapse 条款禁止用于其他目的），只用了 Snitz et al. 2013（*PLoS Comput Biol*，CC BY 4.0）的相似度评分。按混合物分组：实验 2、3 共 165 对训练和交叉验证，实验 1 的 141 对不重叠比较作测试集（只算一次；实验 1 的 11 号混合物在补充表中组成被截断，已去掉）。测试集 Pearson / Spearman：新模型（GNN 预测概率幂平均 + 138 维权重的角距离）0.537 / 0.516，Snitz 21 描述符角距离 0.504 / 0.563，现用加和规则（12 维）0.315 / 0.382，138 维加和 0.449 / 0.553；与各基线的 Pearson 差值置信区间都包含 0，未达到替换条件，评价函数不变，只在网页「局限」部分报告。（2026-11-18 气味模型更新为消息传递网络后，用同样流程重新计算一次：交叉验证选 λ = 10；测试集新模型 0.563 / 0.594，Snitz 21 描述符 0.504 / 0.563，现用加和规则 0.318 / 0.395，138 维加和 0.446 / 0.554；与现用加和规则和 138 维加和的 Pearson 差值置信区间不含 0，与 Snitz 两种角距离的仍包含 0，替换条件仍未完全达到，评价函数不变。）
 ```powershell
 cd training
 .\.venv\Scripts\Activate.ps1
@@ -126,7 +126,7 @@ cd training
 .\.venv-bo\Scripts\Activate.ps1      # 首次：python -m venv .venv-bo，再安装 CPU 版 torch 和 botorch
 python flavor_improver/mixture.py               # 写出 mixture_spec.json
 python flavor_improver/run_experiments.py       # 4 示例 × 4 方法 × 10 种子 + 已知答案检验（可中断续跑）
-python flavor_improver/analyze.py               # 生成 bo_metrics.json、bo_traces.json
+python flavor_improver/analyze.py               # 生成 bo_metrics.json、bo_traces.json（含与随机稀疏搜索的 Mann-Whitney 检验）
 python flavor_improver/make_parity_fixtures.py  # 生成一致性测试数据
 ```
 
@@ -134,15 +134,17 @@ python flavor_improver/make_parity_fixtures.py  # 生成一致性测试数据
 
 用图神经网络（GNN）从分子结构预测风味分子的气味描述词。模型导出为 ONNX，网页为纯 HTML/CSS/JS，托管在 GitHub Pages，不需要服务器。
 
+- **模型（2026-11-18 起）**：带键特征的消息传递网络（`training/model_mpnn.py`，结构参考 Lee et al. 2023 的消息传递思路，不是复现）。原子特征 26 维（与原 GCN 相同），键特征 6 维（单 / 双 / 三 / 芳香 / 其他键型 + 是否在环中，`training/featurize_mpnn.py`）；3 层、256 维、残差更新，约 94 万个参数，ONNX 3.75 MB。层数、维度、更新方式在验证集上从 12 组中选出（`training/train_mpnn.py`，结果 `training/mpnn_results.json`）。测试集 macro AUROC 3 个种子均值 0.866 ± 0.002（原 GCN 0.860 ± 0.0003；去掉键特征的对照 0.863）。原 GCN（`training/model.py`、`featurize.py`）仍用于味觉预测，不要修改。
+
 - **搜索任意分子**：输入英文名称、CAS 号或 SMILES。名称和 CAS 号通过 PubChem 转为结构，然后在访客的浏览器中实时计算特征并运行模型。网址可带参数直接分享，例如 `odor-predictor/?q=linalool`。
 - **原子贡献高亮（遮挡法）**：依次删去每个原子重新预测，概率变化即该原子的贡献，橙色为提高、蓝色为降低（`training/occlusion.py`；浏览器端 `OdorEngine.occlusion`；绘图与图例在共用的 `assets/contrib.js`）。预设分子在 Python 中预计算，搜索的分子在浏览器中现场计算。页面注明高亮只反映模型的判断依据，不代表构效因果。
-- **一致性测试**：https://redamancy564.github.io/odor-predictor/tests/parity.html ，检查浏览器端（`odor-predictor/engine.js`）的特征和预测与 Python 完全一致（50 个随机测试分子 + 10 个预设分子 + 15 个边界结构），以及 20 个分子的原子贡献。**修改特征或重新训练后，必须先打开这个页面确认全部 PASS 再上线。**
-- **尝试过的改进（未采用，2026-10-17）**：参考 PharmaGNN（Liu et al., J Sci Food Agric 106, 8114-8120, 2026, doi:10.1002/jsfa.70826），在同一骨架划分上做消融：非对称损失、原子药效团标记（供体 / 受体 / 疏水，RDKit BaseFeatures 定义，冻结在 `training/pharmacophore_smarts.json`）及两者组合。测试集 macro AUROC：原模型 0.860 ± 0.0003，ASL 0.8615 ± 0.0029，药效团 0.8606 ± 0.0017，两者 0.8595 ± 0.0013；稀有标签未改善，未达到事先约定的替换条件（提升 ≥ 0.005、3 个种子都更好、稀有标签不下降），线上模型不变。详见 `training/ablation_results.json`。
+- **一致性测试**：https://redamancy564.github.io/odor-predictor/tests/parity.html ，检查浏览器端（`odor-predictor/engine.js`）的特征和预测与 Python 完全一致（50 个随机测试分子 + 10 个预设分子 + 15 个边界结构），以及 20 个分子的原子贡献。`tests/features-all.html` 对训练数据和候选库全部 5,112 个分子逐项比对原子和键特征（`training/make_feature_parity.py` 生成参考数据）。**修改特征或重新训练后，必须先打开这个页面确认全部 PASS 再上线。**
+- **尝试过的改进（未采用，2026-10-17）**：参考 PharmaGNN（Liu et al., J Sci Food Agric 106, 8114-8120, 2026, doi:10.1002/jsfa.70826），在同一骨架划分上、对上一版模型（GCN）做消融：非对称损失、原子药效团标记（供体 / 受体 / 疏水，RDKit BaseFeatures 定义，冻结在 `training/pharmacophore_smarts.json`）及两者组合。测试集 macro AUROC：原模型 0.860 ± 0.0003，ASL 0.8615 ± 0.0029，药效团 0.8606 ± 0.0017，两者 0.8595 ± 0.0013；稀有标签未改善，未达到事先约定的替换条件（提升 ≥ 0.005、3 个种子都更好、稀有标签不下降），当时线上模型不变。详见 `training/ablation_results.json`（网页注明这些实验在上一版模型上进行）。
 - **气味阈值**：仅 10 个预设分子显示水中阈值文献值（van Gemert 2011 汇编；数据在 `training/odor_thresholds.json`）。该书有版权，PDF 已加入 `.gitignore`，不会上传。
 
 ## 6 基于图神经网络的小分子味觉预测（taste-predictor/）
 
-沿用气味预测的 GNN 结构、原子特征和 ONNX 流程，预测小分子的甜、苦、鲜、无味四类（多标签，各一个概率）。酸、咸样本太少，不建模；数据中记载为酸或咸的预设分子在页面上单独提示。
+沿用气味预测上一版的 GCN 结构（`training/model.py`，不区分键型）、原子特征和 ONNX 流程，预测小分子的甜、苦、鲜、无味四类（多标签，各一个概率）。酸、咸样本太少，不建模；数据中记载为酸或咸的预设分子在页面上单独提示。
 
 - **数据**：ChemTastesDB v2.1（Zenodo 15051366，CC BY 4.0）为主，VirtuousMultiTaste（GitHub，MIT，固定 commit）为辅。BitterDB 为 CC BY-NC-ND（禁止演绎），未直接使用；SuperSweet 已下线。清洗后 3,937 个分子：甜 1,799、苦 1,569、鲜 127、无味 201。剔除多肽（3 个及以上残基，二肽如阿斯巴甜保留）、无机物和超过 64 个重原子的分子。
 - **标签规则**（`training/taste/clean.py`）：同一分子在不同记录中冲突时取阳性；「非甜」等只给该类记阴性，其余为未知；未知标签不计入损失和 AUROC。
@@ -170,17 +172,20 @@ python taste/make_site_assets.py   # labels、presets、一致性测试数据
 
 ## 5 风味分子的气味空间与结构空间对比图谱（odor-map/）
 
-把原料与替代物检索的候选库（5,072 个有机分子）用 UMAP 降到二维：气味地图按 GNN 的 138 维预测概率排列（余弦距离，邻居数 30，最小距离 0.3），结构地图按 Morgan 指纹排列（Jaccard 距离，15，0.1），随机种子 42。参数各取验证集上最好的一组（3 组中选），测试集定稿后只算一次。
+把原料与替代物检索的候选库（5,072 个有机分子）用 UMAP 降到二维：气味地图按 GNN 的 138 维预测概率排列（余弦距离，邻居数 30，最小距离 0.3），结构地图按 Morgan 指纹排列（Jaccard 距离，15，0.1），随机种子 42。参数在验证集上从 3 组中选，以「至少一个标签相同」的比例为准；结构地图取最好的一组。2026-11-18 换用消息传递网络后，气味地图在验证集上 (15, 0.1) 略高（0.755 对 0.746），但分子被拉成细条、成团不明显，为可读性保留 (30, 0.3)（用户决定，页面如实说明）。测试集定稿后只算一次。颜色按描述词固定（`training/odormap/make_site_data.py` 的 `COLOUR_OF`，写入 `map.json` 的 `colour_hex`），新进前十的描述词须先在那里指定颜色。
 
 - **页面**：Canvas 2D 绘图，d3-zoom 缩放拖动，d3-quadtree 悬停查找（固定版本，本站托管于 `assets/vendor/`）；两张地图平滑切换；按主要预测描述词或单个描述词的概率着色；自动区域标签；点击打开详情卡片（跳转气味预测、找替代原料、风味知识库）；搜索；食品高亮（Dunkel 2014 的 16 种食品为关键风味物质，其余 FlavorDB 食品为检出物质）。分子、名称和预测概率直接读取 `ingredient-finder/data/`，不重复存储。
 - **链接参数**：`?smiles=`、`?food=` / `?food2=`（知识库食品 id）、`?map=structure`、`?colour=<描述词 id>`。
-- **测试集结果**（486 个分子，二维地图上最近 15 个有标签邻居）：至少一个真实标签相同的比例，气味地图 0.752、结构地图 0.647、随机 0.387；平均 Jaccard 0.192 / 0.156 / 0.059；差值 95% 置信区间不含 0。
+- **测试集结果**（486 个分子，二维地图上最近 15 个有标签邻居）：至少一个真实标签相同的比例，气味地图 0.756、结构地图 0.647、随机 0.387；平均 Jaccard 0.196 / 0.156 / 0.059；差值 95% 置信区间不含 0。
 
 **重新生成：**
 ```powershell
 cd training
 .\.venv\Scripts\Activate.ps1
 python ingredient/build_library.py   # 候选库（含非风味分子的排除规则）
+python ingredient/export_embed.py    # 新气味模型对候选库的预测（features.npz）
+python ingredient/evaluate_finder.py --embedding probs   # 原料检索评估（嵌入按用户决定用概率向量）
+python ingredient/make_site_data.py  # ingredient-finder/data/（probs.bin 等）
 python odormap/umap_compare.py      # 第 1 阶段：3 组参数对比（效果图和验证集指标）
 python odormap/build_maps.py        # 定稿地图 + 评估（测试集只算一次）
 python odormap/make_site_data.py    # odor-map/data/：坐标、区域标签、食品列表
@@ -278,10 +283,10 @@ assets/                 全站共用：样式、中英切换、个人信息、�
 odor-predictor/         3 气味预测
   index.html, app.js    页面与交互逻辑
   i18n/                 页面中英文案
-  model/                odor_gnn.onnx、labels.json、feature_spec.json
+  model/                odor_mpnn.onnx、labels.json、feature_spec.json（model_type: mpnn）
   data/                 presets.json（预设分子预测）、metrics.json（评估结果）
-  engine.js             浏览器端特征提取 + ONNX 推理（须与 training/featurize.py 一致）
-  tests/                一致性测试页 parity.html 及测试数据
+  engine.js             浏览器端特征提取 + ONNX 推理（按 spec.model_type：mpnn 须与 training/featurize_mpnn.py 一致，GCN 路径供味觉预测）
+  tests/                一致性测试页 parity.html、features-all.html 及测试数据
 flavor-improver/        4 乳品风味改良
   index.html, app.js    页面与交互逻辑
   mixture.js, bo.js     浏览器端评价函数（须与 training/flavor_improver/mixture.py 一致）与贝叶斯优化
@@ -289,7 +294,7 @@ flavor-improver/        4 乳品风味改良
   data/                 palette、bases、presets、mixture_spec、bo_traces、bo_metrics、reference（配方奶粉对比母乳）、precursors（前体对照表）
   tests/                parity.html（一致性）、bo_check.html（浏览器版算法表现）
 flavor-kb/              7 风味知识库与法规查询（regulatory.html 为法规查询页）
-taste-predictor/        6 味觉预测（结构同 odor-predictor；engine.js 在气味引擎上加中和步骤）
+taste-predictor/        6 味觉预测（GCN，结构同上一版 odor-predictor；engine.js 在气味引擎上加中和步骤）
 odor-map/               5 气味地图（data/：coords.bin、map.json、foods.json；分子数据读 ingredient-finder/data/）
 research/               研究概览（博士课题四步 + 硕士课题三步动画，不是在线工具，不参与编号）：research.js 用固定种子生成示意数据并播放动画（不读论文或样本数据），文字在 i18n/；严格 CSP，不发外部请求
 training/               训练代码（原始数据不上传）
@@ -307,9 +312,18 @@ python download_data.py     # 下载 GS-LF 数据到 training/data/（不上传�
 python clean_data.py        # 清洗、去重、过滤
 python split.py             # 骨架 / 随机混合划分（80/10/10）
 python baseline.py          # Morgan 指纹 + 逻辑回归 / 随机森林
-python train.py             # GNN，3 个随机种子
-python export_onnx.py       # 导出 ONNX 并验证与 PyTorch 一致
+python train_mpnn.py pilot  # 计时试跑（只看验证集）
+python train_mpnn.py grid   # 12 组超参数 × 3 个种子，只看验证集（约 1 小时，GPU）
+python train_mpnn.py final  # 选定组合重训 3 个种子（存训练过程检查点）+ 去掉键特征的对照 + 测试集只算一次
+python export_onnx_mpnn.py --site   # 导出 odor_mpnn.onnx 和 feature_spec.json 并验证与 PyTorch 一致
+python mpnn_to_site.py      # 把结果写入 odor-predictor/data/metrics.json（只运行一次）
 python make_site_assets.py  # 生成 labels.json、presets.json（含原子贡献）、一致性测试数据
+python make_feature_parity.py   # 全部分子的特征参考数据（tests/features-all.html）
+# 之后按顺序重新生成下游：原料检索与气味地图（见第 5 节）、gcms/build_flavor.py、
+# 乳品风味改良（prepare_data.py --final、prepare_reference.py、mixture.py、run_experiments.py、analyze.py、
+# make_parity_fixtures.py）、混合物实验（mixture/snitz_data.py、evaluate.py）。下游脚本都通过
+# training/site_model.py 调用 feature_spec.json 指定的线上模型。
+# 上一版 GCN：python train.py / export_onnx.py（保留作记录，不再写入网站）
 
 # 可选：PharmaGNN 思路的消融实验（约 15 分钟，GPU）
 python ablation.py          # 4 组设置 × 3 个种子，写出 ablation_results.json
@@ -322,7 +336,8 @@ python ablation_to_site.py  # 把摘要写入 odor-predictor/data/metrics.json
 
 | 模型 | 全部 | 含环 | 无环 |
 |---|---|---|---|
-| GNN（部署模型；3 个种子均值 0.860 ± 0.0003） | 0.860 | 0.799 | 0.862 |
+| GNN：消息传递网络（部署模型 seed 2；3 个种子均值 0.866 ± 0.002） | 0.869 | 0.813 | 0.874 |
+| 上一版 GCN（3 个种子均值） | 0.860 | 0.800 | 0.864 |
 | Morgan 指纹 + 随机森林 | 0.841 | 0.781 | 0.816 |
 | Morgan 指纹 + 逻辑回归 | 0.837 | 0.779 | 0.814 |
 
@@ -340,7 +355,7 @@ python ablation_to_site.py  # 把摘要写入 odor-predictor/data/metrics.json
 
 ## 后续迭代清单
 
-- 模型：加入键类型特征；改用更强的 GNN（如 MPNN）；与 OpenPOM 结果对比
+- 模型：与 OpenPOM 结果对比（键类型特征与 MPNN 已于 2026-11-18 完成）
 - 展示：气味空间二维可视化（UMAP），可点击浏览分子
 - 领域：加入乳品风味相关分子子集分析
 - 主页：完整个人主页（教育经历、论文、专利、其他项目）

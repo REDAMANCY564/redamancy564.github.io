@@ -18,7 +18,9 @@ the taste predictor depends on them.
 import numpy as np
 from rdkit import Chem
 
-from featurize import MAX_ATOMS, NUM_FEATURES, atom_features
+import json
+
+from featurize import MAX_ATOMS, NUM_FEATURES, SPEC_PATH, atom_features, spec_dict
 
 BOND_TYPES = ["SINGLE", "DOUBLE", "TRIPLE", "AROMATIC"]
 NUM_BOND_FEATURES = len(BOND_TYPES) + 1 + 1   # + other, + in ring
@@ -72,6 +74,27 @@ def check_bonds(smiles_list):
             mismatch += b.GetIsAromatic() != (name == "AROMATIC")
             other += name not in BOND_TYPES
     return {"bond_type_counts": counts, "aromatic_flag_mismatches": mismatch, "other_type_bonds": other}
+
+
+def write_spec():
+    """odor-predictor/model/feature_spec.json for the MPNN (export_onnx_mpnn.py --site adds the model fields).
+    The browser (odor-predictor/engine.js) dispatches on model_type."""
+    spec = spec_dict()
+    del spec["adjacency"]
+    spec.update({
+        "model_type": "mpnn",
+        "num_bond_features": NUM_BOND_FEATURES,
+        "bond_features": [
+            {"name": "bond_type", "values": [t.lower() for t in BOND_TYPES], "other_bucket": True,
+             "note": "aromatic bonds (RDKit AROMATIC) count as aromatic, not by Kekule order"},
+            {"name": "is_in_ring", "binary": True},
+        ],
+        "bond_tensor": "E[i, j] = E[j, i] = bond features of the bond i-j; all zero where i and j are not bonded "
+                       "(no self loops); padded rows/cols 0. The model uses E.sum(-1) > 0 as adjacency",
+        "model_inputs": {"X": "[B, 64, F] float32", "E": "[B, 64, 64, 6] float32", "mask": "[B, 64] float32"},
+    })
+    SPEC_PATH.write_text(json.dumps(spec, indent=2), encoding="utf-8")
+    print(f"Wrote {SPEC_PATH}")
 
 
 if __name__ == "__main__":

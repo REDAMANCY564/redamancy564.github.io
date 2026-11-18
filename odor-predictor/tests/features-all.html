@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Feature test | Odor Predictor</title>
+  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="icon" href="../../favicon.ico" sizes="any">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <style>
+    .pass { color: #1a7f37; font-weight: 700; }
+    .fail { color: #c0392b; font-weight: 700; }
+    #summary { font-size: 1.25rem; margin: 16px 0; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1>Browser / Python feature test, all molecules</h1>
+      <p class="muted">Featurizes every training molecule and every ingredient-finder library molecule with the browser
+        featurizer (engine.js) and compares the atom features X and bond features E (bond type, in ring) with
+        training/make_feature_parity.py. Must be exact: 0 mismatches. Molecules with elements outside the model's list must be refused.</p>
+      <div id="summary" data-status="running">Running...</div>
+    </section>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>SMILES</th><th>problem</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="../../assets/vendor/rdkit/RDKit_minimal.js"></script>
+  <script src="../engine.js"></script>
+  <script>
+    (async function () {
+      const summary = document.getElementById("summary");
+      try {
+        const [rdkit, spec, ref] = await Promise.all([
+          initRDKitModule({ locateFile: () => new URL("../../assets/vendor/rdkit/RDKit_minimal.wasm", location.href).href }),
+          fetch("../model/feature_spec.json").then(r => r.json()),
+          fetch("features_all.json").then(r => r.json()),
+        ]);
+        const N = spec.max_atoms, F = spec.num_features, FB = spec.num_bond_features;
+        const bad = [];
+        let nBonds = 0, nAtoms = 0, nReject = 0;
+        for (const [smiles, atoms, bonds] of ref.molecules) {
+          let problem = "";
+          if (atoms === "reject") {   // element outside the model's list: the browser must refuse it
+            try {
+              const { mol } = OdorEngine.parseLargestFragment(rdkit, smiles);
+              try { OdorEngine.featurizeMol(mol, spec); problem = "should be refused"; }
+              catch (e) { if (e.code !== "unsupported_element") problem = "wrong error " + (e.code || e); }
+              finally { mol.delete(); }
+            } catch (e) { problem = "parse " + (e.code || e); }
+            if (problem) bad.push([smiles, problem]); else nReject++;
+            continue;
+          }
+          try {
+            const { mol } = OdorEngine.parseLargestFragment(rdkit, smiles);
+            const f = OdorEngine.featurizeMol(mol, spec);
+            mol.delete();
+            if (f.numAtoms !== atoms.length) throw new Error("atom count " + f.numAtoms + " vs " + atoms.length);
+            for (let i = 0; i < f.numAtoms; i++) {
+              let code = 0;
+              for (let k = 0; k < F; k++) if (f.X[i * F + k] === 1) code += 2 ** k;
+              if (code !== atoms[i]) { problem = "atom " + i + " X"; break; }
+            }
+            const got = [];
+            for (let i = 0; i < f.numAtoms; i++) {
+              for (let j = i + 1; j < f.numAtoms; j++) {
+                const base = (i * N + j) * FB;
+                let t = -1, sum = 0;
+                for (let k = 0; k < FB - 1; k++) { sum += f.E[base + k]; if (f.E[base + k] === 1) t = k; }
+                const back = (j * N + i) * FB;
+                for (let k = 0; k < FB; k++) if (f.E[base + k] !== f.E[back + k]) problem = problem || "E not symmetric";
+                if (sum === 0 && f.E[base + FB - 1] === 0) continue;
+                if (sum !== 1) problem = problem || "bond " + i + "-" + j + " type not one-hot";
+                got.push(((i * 64 + j) * 8 + t) * 2 + f.E[base + FB - 1]);
+              }
+            }
+            if (!problem && got.join() !== bonds.join()) problem = "bonds differ: " + got.join() + " vs " + bonds.join();
+            nAtoms += atoms.length;
+            nBonds += bonds.length;
+          } catch (e) {
+            problem = e.code || String(e.message || e);
+          }
+          if (problem) bad.push([smiles, problem]);
+        }
+        document.getElementById("rows").innerHTML = bad.slice(0, 200).map((b, i) =>
+          "<tr><td>" + (i + 1) + "</td><td class=\"mono\">" + b[0].replace(/</g, "&lt;") + "</td><td>" + b[1] + "</td></tr>").join("");
+        const n = ref.molecules.length;
+        summary.textContent = (bad.length ? "FAIL " : "PASS ") + (n - bad.length) + "/" + n +
+          " molecules (" + nAtoms + " atoms, " + nBonds + " bonds; " + nReject + " refused as expected: unsupported element)";
+        summary.className = bad.length ? "fail" : "pass";
+        summary.dataset.status = bad.length ? "fail" : "pass";
+      } catch (e) {
+        summary.textContent = "ERROR " + e;
+        summary.className = "fail";
+        summary.dataset.status = "error";
+      }
+    })();
+  </script>
+</body>
+</html>

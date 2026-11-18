@@ -1,10 +1,11 @@
 """Stage 2 of ingredient-finder: ONNX with embedding outputs + per-molecule features of the library.
 
-The deployed odor model (checkpoints/odor_gnn.pt, same weights as odor-predictor/model/odor_gnn.onnx)
-is exported again with three outputs, without touching the online file:
+The deployed odor model (checkpoints/odor_mpnn.pt, same weights as odor-predictor/model/odor_mpnn.onnx;
+the bond-feature MPNN since 2026-11, before that the GCN odor_gnn) is exported again with three
+outputs, without touching the online file:
   probs    [B, 138]  sigmoid probabilities (as the online model)
-  readout  [B, 256]  mean + max pooled atom states (graph readout)
-  hidden   [B, 256]  first head layer after ReLU (the layer before the output)
+  readout  [B, 2H]   mean + max pooled atom states (graph readout; H = 256 for the MPNN)
+  hidden   [B, 2H]   first head layer after ReLU (the layer before the output)
 The third embedding candidate is the probability vector itself. Stage 3 picks one on the
 validation split.
 
@@ -14,7 +15,7 @@ much int8 quantization of each embedding changes the nearest-neighbour lists.
 
 Output: training/data/ingredient/features.npz (+ the check-only ONNX next to it).
 Stage 3 chose the probability vector as the odor embedding (user decision 2026-10-18), so the page
-uses the online odor_gnn.onnx and this embedding ONNX is not published.
+uses the online odor model and this embedding ONNX is not published.
 """
 import json
 import sys
@@ -29,29 +30,26 @@ from torch import nn
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "training"))
-from featurize import featurize_many  # noqa: E402
-from model import OdorGNN  # noqa: E402
+from featurize_mpnn import featurize_many  # noqa: E402
+from model_mpnn import OdorMPNN  # noqa: E402
 
-CKPT = ROOT / "training" / "checkpoints" / "odor_gnn.pt"
-ONLINE = ROOT / "odor-predictor" / "model" / "odor_gnn.onnx"
-OUT_ONNX = ROOT / "training" / "data" / "ingredient" / "odor_gnn_embed.onnx"   # check only, not published
+CKPT = ROOT / "training" / "checkpoints" / "odor_mpnn.pt"
+ONLINE = ROOT / "odor-predictor" / "model" / "odor_mpnn.onnx"
+OUT_ONNX = ROOT / "training" / "data" / "ingredient" / "odor_mpnn_embed.onnx"   # check only, not published
 DATA = ROOT / "training" / "data" / "ingredient"
 
 
 class WithEmbeddings(nn.Module):
-    """Same computation as OdorGNN.forward + sigmoid, also returning the two intermediate vectors."""
+    """Same computation as OdorMPNN.forward + sigmoid, also returning the two intermediate vectors."""
 
     def __init__(self, model):
         super().__init__()
         self.m = model
 
-    def forward(self, X, A, mask):
-        m = mask.unsqueeze(-1)
-        H = X
-        for conv in self.m.convs:
-            H = torch.relu(A @ conv(H)) * m
-        n_atoms = m.sum(dim=1).clamp(min=1.0)
-        readout = torch.cat([H.sum(dim=1) / n_atoms, H.max(dim=1).values], dim=-1)
+    def forward(self, X, E, mask):
+        for H in self.m.layers(X, E, mask):
+            pass
+        readout = self.m.readout(H, mask)
         hidden = self.m.head[1](self.m.head[0](readout))          # Linear + ReLU (dropout is off in eval)
         probs = torch.sigmoid(self.m.head[3](hidden))
         return probs, readout, hidden
@@ -77,28 +75,34 @@ def main():
     smiles = [r["smiles"] for r in lib]
 
     ckpt = torch.load(CKPT, map_location="cpu")
-    model = OdorGNN(ckpt["num_features"], len(ckpt["labels"]), **ckpt["config"])
+    model = OdorMPNN(ckpt["num_features"], ckpt["num_bond_features"], len(ckpt["labels"]), **ckpt["config"])
     model.load_state_dict(ckpt["state_dict"])
     net = WithEmbeddings(model).eval()
 
-    X, A, M = featurize_many(smiles)
+    X, A, M = featurize_many(smiles)   # A here is the bond tensor E
     OUT_ONNX.parent.mkdir(parents=True, exist_ok=True)
     dummy = tuple(torch.from_numpy(a[:2]) for a in (X, A, M))
     torch.onnx.export(
         net, dummy, str(OUT_ONNX), opset_version=17, dynamo=False,
-        input_names=["X", "A", "mask"], output_names=["probs", "readout", "hidden"],
-        dynamic_axes={k: {0: "batch"} for k in ("X", "A", "mask", "probs", "readout", "hidden")},
+        input_names=["X", "E", "mask"], output_names=["probs", "readout", "hidden"],
+        dynamic_axes={k: {0: "batch"} for k in ("X", "E", "mask", "probs", "readout", "hidden")},
     )
     print(f"wrote {OUT_ONNX} ({OUT_ONNX.stat().st_size / 1e6:.2f} MB)")
 
     with torch.no_grad():
-        ref = [t.numpy() for t in net(*(torch.from_numpy(a) for a in (X, A, M)))]
-    new = ort.InferenceSession(str(OUT_ONNX), providers=["CPUExecutionProvider"]).run(None, {"X": X, "A": A, "mask": M})
-    online = ort.InferenceSession(str(ONLINE), providers=["CPUExecutionProvider"]).run(None, {"X": X, "A": A, "mask": M})[0]
+        parts = [net(*(torch.from_numpy(a[i:i + 256]) for a in (X, A, M))) for i in range(0, len(X), 256)]
+        ref = [torch.cat([p[k] for p in parts]).numpy() for k in range(3)]
+    def run_batched(path, n_out):
+        sess = ort.InferenceSession(str(path), providers=["CPUExecutionProvider"])
+        outs = [sess.run(None, {"X": X[i:i + 64], "E": A[i:i + 64], "mask": M[i:i + 64]})[:n_out]
+                for i in range(0, len(X), 64)]
+        return [np.concatenate([o[k] for o in outs]) for k in range(n_out)]
+    new = run_batched(OUT_ONNX, 3)
+    online = run_batched(ONLINE, 1)[0]
     d_torch = max(float(np.abs(a - b).max()) for a, b in zip(new, ref))
     d_online = float(np.abs(new[0] - online).max())
     print(f"molecules {len(smiles)} | max |new ONNX - PyTorch| (all outputs) = {d_torch:.2e} | "
-          f"max |new probs - online odor_gnn.onnx probs| = {d_online:.2e}")
+          f"max |new probs - online model probs| = {d_online:.2e}")
     assert d_torch < 1e-4 and d_online < 1e-6
 
     gen = rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=2048)
@@ -124,7 +128,7 @@ def main():
                         fps=np.packbits(fps, axis=1))
     n = len(smiles)
     print("size estimates for the site (binary files):")
-    print(f"  embedding 256-d int8: {n * 256 / 1e6:.2f} MB | probability vector 138 uint8: {n * 138 / 1e6:.2f} MB | "
+    print(f"  embedding {readout.shape[1]}-d int8: {n * 256 / 1e6:.2f} MB | probability vector 138 uint8: {n * 138 / 1e6:.2f} MB | "
           f"fingerprints 2048 bits: {n * 256 / 1e6:.2f} MB")
 
 

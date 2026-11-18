@@ -19,13 +19,13 @@
     <section class="hero">
       <h1>Browser / Python parity test</h1>
       <p class="muted">Compares the JavaScript featurizer and onnxruntime-web output against values computed in Python
-        (training/make_site_assets.py) for 50 random test-set molecules, the 10 preset molecules and 15 edge cases. Part 2 checks
+        (training/make_site_assets.py) for 50 random test-set molecules, the 10 preset molecules and 15 edge cases (atom features X, bond features E, probabilities). Part 2 checks
         the occlusion attribution (per-atom contributions to the top 8 labels) for 20 molecules. Live input on the main page is enabled only if all pass.</p>
       <div id="summary" data-status="running">Running...</div>
     </section>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>#</th><th>SMILES</th><th class="num">atoms</th><th class="num">max |ΔX|</th><th class="num">max |ΔA|</th><th class="num">max |Δprob|</th><th>result</th></tr></thead>
+        <thead><tr><th>#</th><th>SMILES</th><th class="num">atoms</th><th class="num">max |ΔX|</th><th class="num">bond mismatches</th><th class="num">max |Δprob|</th><th>result</th></tr></thead>
         <tbody id="rows"></tbody>
       </table>
     </div>
@@ -51,12 +51,12 @@
           fetch("parity_fixtures.json").then(r => r.json()),
         ]);
         const session = await OdorEngine.loadModel("../model/" + spec.model_file);
-        const N = spec.max_atoms, F = spec.num_features, tol = fixtures.tolerance;
+        const N = spec.max_atoms, F = spec.num_features, FB = spec.num_bond_features, tol = fixtures.tolerance;
         const rows = [];
         let passed = 0;
 
         for (const [idx, fx] of fixtures.molecules.entries()) {
-          let dX = 0, dA = 0, dP = 0, n = -1, ok = false, err = "";
+          let dX = 0, dE = 0, dP = 0, n = -1, ok = false, err = "";
           try {
             const { mol } = OdorEngine.parseLargestFragment(rdkit, fx.smiles);
             const feats = OdorEngine.featurizeMol(mol, spec);
@@ -65,11 +65,16 @@
             if (n === fx.num_atoms) {
               for (let i = 0; i < n; i++) {
                 for (let k = 0; k < F; k++) dX = Math.max(dX, Math.abs(feats.X[i * F + k] - fx.X[i][k]));
-                for (let k = 0; k < n; k++) dA = Math.max(dA, Math.abs(feats.A[i * N + k] - fx.A[i][k]));
               }
+              // bond tensor: every listed bond equal in both directions, and nothing else set
+              const want = new Float32Array(N * N * FB);
+              for (const [i, k, v] of fx.bonds) {
+                v.forEach((x, f) => { want[(i * N + k) * FB + f] = x; want[(k * N + i) * FB + f] = x; });
+              }
+              for (let q = 0; q < want.length; q++) if (want[q] !== feats.E[q]) dE++;
               const probs = await OdorEngine.predict(session, feats, spec);
               for (let k = 0; k < fx.probs.length; k++) dP = Math.max(dP, Math.abs(probs[k] - fx.probs[k]));
-              ok = dX === 0 && dA <= tol.A && dP <= tol.probs;
+              ok = dX === 0 && dE <= tol.E && dP <= tol.probs;
             } else {
               err = "atom count " + n + " vs " + fx.num_atoms;
             }
@@ -78,7 +83,7 @@
           }
           if (ok) passed++;
           rows.push("<tr><td>" + (idx + 1) + "</td><td class=\"mono\">" + fx.smiles.replace(/</g, "&lt;") + "</td><td class=\"num\">" + n +
-            "</td><td class=\"num\">" + dX.toExponential(1) + "</td><td class=\"num\">" + dA.toExponential(1) +
+            "</td><td class=\"num\">" + dX.toExponential(1) + "</td><td class=\"num\">" + dE +
             "</td><td class=\"num\">" + dP.toExponential(1) + "</td><td class=\"" + (ok ? "pass\">PASS" : "fail\">FAIL " + err) + "</td></tr>");
         }
         document.getElementById("rows").innerHTML = rows.join("");

@@ -62,7 +62,7 @@
     check("mode B", c.preset + ": Tanimoto (6 decimals)", r.top.map(h => +h.tanimoto.toFixed(6)), c.tanimoto);
     check("mode B", c.preset + ": highlighted (odor >= threshold, Tanimoto < 0.3)", r.top.map(h => h.highlight), c.highlight);
   }
-  check("mode B", "threshold and rule from library.json", [lib.odor_threshold, lib.tanimoto_max_for_highlight, lib.highlight_top_n], [0.9464, 0.3, 20]);
+  check("mode B", "threshold and rule from library.json", [lib.odor_threshold, lib.tanimoto_max_for_highlight, lib.highlight_top_n], [0.9462, 0.3, 20]);
 
   // ---------- regulatory status (assets/regulatory.js, flavor-kb/data/regulatory.json) ----------
   await Reg.load();

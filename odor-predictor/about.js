@@ -46,11 +46,19 @@
     $("best-labels").innerHTML = robust.slice(0, 5).map(item).join("");
     $("worst-labels").innerHTML = robust.slice(-5).reverse().map(item).join("");
 
-    // Ablation of the PharmaGNN ideas (training/ablation.py); A is the deployed model
+    // Previous GCN vs the MPNN on this page vs the MPNN without bond features (training/mpnn_to_site.py)
+    const mc = metrics.model_comparison;
+    const ms = v => fmt(v[0]) + " ± " + v[1].toFixed(4);
+    $("compare-body").innerHTML = [["gcn", "gcn"], ["mpnn", "mpnn"], ["mpnn_no_bond_features", "nobond"]].map(([k, key]) =>
+      "<tr" + (k === "mpnn" ? ' class="highlight"' : "") + "><td>" + I18N.t("results.compare." + key) +
+      '</td><td class="num">' + ms(mc[k].test) + '</td><td class="num">' + ms(mc[k].test_cyclic) +
+      '</td><td class="num">' + ms(mc[k].test_acyclic) + "</td></tr>").join("");
+
+    // Ablation of the PharmaGNN ideas (training/ablation.py), run on the previous model (GCN, config A)
     const ab = metrics.ablation_pharmagnn;
     $("ablation-body").innerHTML = ["A", "B", "C", "D"].map(k => {
       const c = ab.configs[k];
-      return "<tr" + (k === "A" ? ' class="highlight"' : "") + "><td>" + I18N.t("ablation.cfg." + k) +
+      return "<tr><td>" + I18N.t("ablation.cfg." + k) +
         '</td><td class="num">' + fmt(c.test_mean) + " ± " + c.test_std.toFixed(4) +
         '</td><td class="num">' + fmt(c.test_rare_mean) + "</td></tr>";
     }).join("");

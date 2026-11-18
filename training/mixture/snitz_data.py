@@ -8,7 +8,7 @@ Inputs (downloaded from the article's Supporting Information, training/data/mixt
   snitz_s002   Table S1 (CSV, CR line ends): 1,433 Dragon descriptors for 1,358 odorants
   pyrfume_experiment{1,2}_cids.csv  mixture number -> CIDs (Pyrfume's parse of Table S2, checked against it)
 Structures: PubChem (CID -> SMILES, cached in pubchem.json). Odor vectors: the online odor-predictor
-model (odor_gnn.onnx) on the standardized structure, 138 predicted probabilities, as in ingredient-finder.
+model (site_model.py, the online odor model) on the standardized structure, 138 predicted probabilities, as in ingredient-finder.
 
 Output: training/data/mixture/snitz.json
   molecules {cid: {smiles, probs[138]}}, mixtures {"d1:5": [cids]}, pairs [{dataset, a, b, similarity}]
@@ -22,7 +22,6 @@ import urllib.request
 from pathlib import Path
 
 import numpy as np
-import onnxruntime as ort
 import pymupdf
 
 HERE = Path(__file__).resolve().parent
@@ -31,7 +30,7 @@ ROOT = TRAINING.parent
 DATA = TRAINING / "data" / "mixture"
 sys.path.insert(0, str(TRAINING))
 from clean_data import standardize  # noqa: E402
-from featurize import featurize_many  # noqa: E402
+from site_model import predict  # noqa: E402
 
 # Dataset 1, mixture 11: Table S2 prints only the last line of its list (12 CIDs without the opening
 # bracket, under mixture 10's 30-CID list); by the design (mixtures 9, 10, 11 = 20, 30, 40 components)
@@ -116,9 +115,7 @@ def main():
     smiles = {c: standardize(pc[str(c)]["smiles"]) for c in cids}
     bad = [c for c in cids if not smiles[c]]
     assert not bad, bad
-    sess = ort.InferenceSession(str(ROOT / "odor-predictor" / "model" / "odor_gnn.onnx"), providers=["CPUExecutionProvider"])
-    X, A, M = featurize_many([smiles[c] for c in cids])
-    probs = sess.run(None, {"X": X, "A": A, "mask": M})[0]
+    probs = predict([smiles[c] for c in cids])
 
     out = {"source": "Snitz et al. 2013, PLoS Comput Biol 9(9): e1003184, Table S2 (CC BY 4.0)",
            "molecules": {str(c): {"smiles": smiles[c], "name": pc[str(c)]["name"], "probs": [round(float(v), 5) for v in probs[i]]}
