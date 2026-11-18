@@ -80,7 +80,7 @@
   "rs.mf.enzymes": "Five enzymes",
   "rs.mf.contents": "Compound contents",
   "rs.mf.score": "Sensory score",
-  "rs.mf.time": "Hydrolysis time 0–8 h",
+  "rs.mf.time": "Hydrolysis time 0 to 8 h",
   "rs.mf.roast": "Strongest roast note",
   "rs.mf.poly": "Polynomial fit",
   "rs.mf.spline": "Spline interpolation",

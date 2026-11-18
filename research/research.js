@@ -225,9 +225,10 @@
     const groups = {}, ticks = {};
     function node(k, b, icon, desc) {
       const g = el("g", { class: "ov-g" }, ov);
-      el("rect", { x: b.x, y: b.y, width: b.w, height: b.h, rx: 4, fill: "#fbfaf7", stroke: C.line, "stroke-width": 1 }, g);
+      const gg = el("g", {}, g);   // box and icon: dimmed when the step is not the current one; the words are not
+      el("rect", { x: b.x, y: b.y, width: b.w, height: b.h, rx: 4, fill: "#fbfaf7", stroke: C.line, "stroke-width": 1 }, gg);
       const pad = narrow ? 9 : 14, mid = b.y + b.h / 2;
-      const iw = icon(g, b.x + pad, mid);
+      const iw = icon(gg, b.x + pad, mid);
       const tx = b.x + pad + iw + (narrow ? 7 : 12);
       const title = text(g, tx, narrow ? mid + 5 : mid - 4, k + " " + t("rs.s" + k + ".name"), { class: "t-strong" });
       if (!narrow) {   // on phones only the icon and the step name
@@ -238,7 +239,7 @@
       }
       g.addEventListener("click", () => S.userGo(k));
       ticks[k] = tickMark(S, g, k, b.x + b.w - 10, b.y + 10);
-      groups[k] = g;
+      groups[k] = gg;
     }
     node(1, n1, miniSensors, t("rs.ov.s1"));
     node(2, n2, miniPeaks, t("rs.ov.s2"));
@@ -246,13 +247,14 @@
     // 3: the bridge from 1 to 2, with three small model dots on the arrow
     const g3 = el("g", { class: "ov-g" }, ov);
     g3.addEventListener("click", () => S.userGo(3));
-    groups[3] = g3;
     const ay = y1 + bh / 2, ax0 = n1.x + bw + 6, ax1 = n2.x - 6, am = (ax0 + ax1) / 2;
     el("rect", { x: ax0, y: ay - 30, width: ax1 - ax0, height: 54, fill: "transparent" }, g3);   // click area
+    const gg3 = el("g", {}, g3);   // the arrow and its dots dim; the words do not
+    groups[3] = gg3;
     const lab3 = text(g3, am, ay - 10, "3 " + t("rs.s3.name"), { class: "t-strong", "text-anchor": "middle" });
-    const arrow3 = el("path", { d: `M${ax0},${ay} L${ax1 - 1},${ay}`, fill: "none", stroke: C.text, "stroke-width": 1.2 }, g3);
-    const head3 = arrowHead(g3, ax1, ay, 0, C.text);
-    [-9, 0, 9].forEach(dx => el("circle", { cx: am + dx, cy: ay, r: 2.6, fill: "#fbfaf7", stroke: C.text, "stroke-width": 1.1 }, g3));
+    const arrow3 = el("path", { d: `M${ax0},${ay} L${ax1 - 1},${ay}`, fill: "none", stroke: C.text, "stroke-width": 1.2 }, gg3);
+    const head3 = arrowHead(gg3, ax1, ay, 0, C.text);
+    [-9, 0, 9].forEach(dx => el("circle", { cx: am + dx, cy: ay, r: 2.6, fill: "#fbfaf7", stroke: C.text, "stroke-width": 1.1 }, gg3));
     if (!narrow) {
       const d3 = text(g3, am, ay + 20, t("rs.ov.s3"), { "text-anchor": "middle" });
       if (d3.getComputedTextLength() > ax1 - ax0) d3.style.fontSize = "12px";
@@ -1044,9 +1046,10 @@
     nb.forEach((b, i) => {
       const k = i + 1;
       const g = el("g", { class: "ov-g" }, ov);
-      el("rect", { x: b.x, y: b.y, width: b.w, height: b.h, rx: 4, fill: "#fbfaf7", stroke: C.line, "stroke-width": 1 }, g);
+      const gg = el("g", {}, g);   // box and icon dim when not current; the words keep their colour
+      el("rect", { x: b.x, y: b.y, width: b.w, height: b.h, rx: 4, fill: "#fbfaf7", stroke: C.line, "stroke-width": 1 }, gg);
       const pad = narrow ? 8 : 14, mid = b.y + b.h / 2;
-      const iw = icons[i](g, b.x + pad, mid);
+      const iw = icons[i](gg, b.x + pad, mid);
       const tx = b.x + pad + iw + (narrow ? 6 : 12);
       const title = text(g, tx, narrow ? mid + 5 : mid - 4, k + " " + t("rs.m" + k + ".name"), { class: "t-strong" });
       if (title.getComputedTextLength() > b.x + b.w - 4 - tx) title.style.fontSize = "12px";
@@ -1058,7 +1061,7 @@
       }
       g.addEventListener("click", () => S.userGo(k));
       ticks[k] = tickMark(S, g, k, b.x + b.w - 10, b.y + 10);
-      groups[k] = g;
+      groups[k] = gg;
     });
     const pad = 4;
     const targets = {};
@@ -1395,12 +1398,14 @@
 
   // ---------- player (one per stage) ----------
   // cfg: n steps, buildOverview(S), scenes, accent, hint (rgb of the accent), pos(n), name(n).
-  const H_DETAIL = 340;
+  // The detail picture keeps the size it had beside the old 280 px text column (840 - 280 - 24 = 536 px wide),
+  // centred, so the wider one-column layout does not make it larger or taller.
+  const H_DETAIL = 340, W_DETAIL_MAX = 536;
   function createStage(root, cfg) {
     const S = { cfg, clock: makeClock(), visited: new Set(), cur: 1, OV: null };
     S.ov = root.querySelector(".rs-ov");
     const detail = root.querySelector(".rs-detail");
-    const canvas = root.querySelector(".rs-canvas");
+    const textCol = root.querySelector(".rs-text");
     const prevBtn = root.querySelector(".rs-prev"), nextBtn = root.querySelector(".rs-next");
     const pos = root.querySelector(".rs-pos");
     const steps = [...root.querySelectorAll(".rs-step")];
@@ -1408,7 +1413,7 @@
     const pauseBtn = root.querySelector(".rs-pause");
     const nSay = n => (cfg.says && cfg.says[n]) || 0;
     root.classList.add("rs-live");
-    S.ov.hidden = false; detail.hidden = false;
+    S.ov.removeAttribute("hidden"); detail.removeAttribute("hidden");   // SVG elements have no .hidden property
     root.querySelector(".rs-ctrl").hidden = false;
     STAGES.push(S);
 
@@ -1416,9 +1421,14 @@
       const a = steps[n - 1];
       return { a, lede: a.querySelector(".rs-lede"), cap: a.querySelector(".rs-cap"), go: a.querySelector(".rs-go") };
     }
+    // One column, top to bottom: the step's lede, its explanation line, the picture (under reduced motion the
+    // list of lines follows the picture), then the conclusion and source. The shared line, picture and list move
+    // into the current step right after its lede; the conclusion keeps its place while hidden (opacity), so
+    // nothing below moves when it fades in.
     function showText(n, state) {   // state: "none" | "lede" | "all"
       steps.forEach((a, i) => { a.hidden = i !== n - 1; });
       const p = stepParts(n);
+      p.lede.after(sayEl, detail, sayList);
       p.lede.style.opacity = state === "none" ? 0 : 1;
       p.cap.style.opacity = state === "all" ? 1 : 0;
       if (p.go) p.go.style.opacity = state === "all" ? 1 : 0;
@@ -1477,7 +1487,7 @@
     function setPauseLabel() { pauseBtn.textContent = t(S.clock.held ? "rs.resume" : "rs.pause"); }
     // under reduced motion some steps (cfg.tallStatic) show two pictures, one above the other
     function detailSize(n) {
-      const W = Math.max(300, canvas.clientWidth);
+      const W = Math.max(300, Math.min(W_DETAIL_MAX, textCol.clientWidth));
       const H = reduced && n && cfg.tallStatic && cfg.tallStatic.includes(n) ? 2 * H_DETAIL : H_DETAIL;
       detail.setAttribute("viewBox", "0 0 " + W + " " + H);
       detail.setAttribute("width", W); detail.setAttribute("height", H);
@@ -1562,14 +1572,14 @@
         }
       }
     }, { threshold: [0, 0.5] });
-    io.observe(canvas);
+    io.observe(detail);
 
-    let lastW = canvas.clientWidth, rt = null;
+    let lastW = textCol.clientWidth, rt = null;
     window.addEventListener("resize", () => {
       clearTimeout(rt);
       rt = setTimeout(() => {
-        if (Math.abs(canvas.clientWidth - lastW) < 2) return;
-        lastW = canvas.clientWidth;
+        if (Math.abs(textCol.clientWidth - lastW) < 2) return;
+        lastW = textCol.clientWidth;
         rebuild();
       }, 150);
     });

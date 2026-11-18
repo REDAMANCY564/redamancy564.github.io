@@ -57,7 +57,10 @@
   // Instrument names with hyphens (GC-MS, GC-O-MS, GC×GC-MS ...) must not break at the end of a line.
   // Matches are wrapped in <span class="nobr"> (white-space: nowrap); the characters stay ordinary hyphens,
   // so copying and searching are unaffected. tools/prerender.py applies the same rule (NOBR_RE) to the static HTML.
-  const NOBR_TERMS = "GC×GC-(?:TOF)?MS|GC-O-MS|GC-IMS|GC-MS(?:\\/MS)?|GC-O|HS-SPME|LC-MS";
+  // Also kept whole wherever they occur: "24 h" / "24-h" (a number and its unit) and the threshold formula on the
+  // intensity curves page (gcms-interpreter/curves.html), so no line starts with its minus sign.
+  const NOBR_TERMS = "GC×GC-(?:TOF)?MS|GC-O-MS|GC-IMS|GC-MS(?:\\/MS)?|GC-O|HS-SPME|LC-MS|24[ -]h\\b" +
+                     "|X = C - D · ln\\(\\(Imax - 1\\.4\\) \\/ 1\\.4\\)";
   // Words kept whole when they end a text (only there: followed by nothing but punctuation), so a
   // paragraph's last line never holds just one or two characters ("纹”。", "似。") or one English word.
   // Regular-expression sources, one per entry; the text itself is unchanged. tools/prerender.py reads
