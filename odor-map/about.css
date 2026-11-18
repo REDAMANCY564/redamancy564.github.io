@@ -1,0 +1,22 @@
+/* odor-map/about.html: page styles (moved out of the page so its CSP can use style-src 'self') */
+#params-table th, #params-table td, #res-table th, #res-table td { white-space: normal; }
+@media (max-width: 599px) { #params-table th:not(.num), #params-table td:not(.num), #res-table th:not(.num), #res-table td:not(.num) { min-width: 8em; } }
+details.supp { margin-top: 14px; }
+details.supp summary { cursor: pointer; font-weight: 600; }
+.mt-6 { margin-top: 6px; }
+.mt-8 { margin-top: 8px; }
+.mt-10 { margin-top: 10px; }
+
+/* 5.2.2 training animation (training/odormap/make_training_video.py) */
+.train-video { margin: 12px 0 0; max-width: 560px; }
+.train-frame { position: relative; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: #fff; }
+.train-frame video { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; background: #fff; }
+.train-epoch {
+  position: absolute; top: 8px; right: 8px; padding: 2px 8px; border-radius: var(--radius);
+  background: rgba(255, 255, 255, .9); border: 1px solid var(--border);
+  font-size: .8125rem; font-variant-numeric: tabular-nums; color: var(--text); pointer-events: none;
+}
+.train-video figcaption { margin-top: 8px; }
+.train-legend { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .8125rem; color: var(--text); }
+.train-legend li { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.train-legend .sw { width: 10px; height: 10px; border-radius: 50%; flex: none; }

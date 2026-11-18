@@ -65,8 +65,63 @@
       esc(by[c].map(e => e.name || e.smiles).join(", ")) + "</li>").join("");
   }
 
+  // ---------- 5.2.2 training animation (odor-map/media, training/odormap/make_training_video.py) ----------
+  // The video loads only when played (preload="none"). It plays once by itself when it first scrolls
+  // into view, unless the system asks for reduced motion (then the poster stays until the visitor plays it).
+  // The epoch is page text (not burnt into the video), so it follows the language.
+  const video = $("train-video"), epochEl = $("train-epoch");
+  const frames = await get("data/training_frames.json");
+  const epochAt = t => {
+    let e = frames.keyframes[0].epoch;
+    for (const k of frames.keyframes) if (t >= k.t) e = k.epoch;
+    return e;
+  };
+  let shown = null;
+  function showEpoch() {
+    // before playing, the poster is the last frame (the model used on the site)
+    const e = video.currentTime > 0 || !video.paused ? epochAt(video.currentTime) : frames.best_epoch;
+    const key = e === frames.best_epoch ? "train.epoch_final" : "train.epoch";
+    const text = I18N.t(key, { n: e });
+    if (text !== shown) { epochEl.textContent = text; shown = text; }
+  }
+  let ticking = false;
+  function tick() {
+    showEpoch();
+    if (!video.paused && !video.ended) requestAnimationFrame(tick); else ticking = false;
+  }
+  video.addEventListener("play", () => { if (!ticking) { ticking = true; requestAnimationFrame(tick); } });
+  ["seeked", "pause", "ended", "loadedmetadata"].forEach(ev => video.addEventListener(ev, showEpoch));
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduce && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(en => en.isIntersecting)) {
+        io.disconnect();
+        video.play().catch(() => {});   // muted, so autoplay is allowed; if refused, the controls remain
+      }
+    }, { threshold: 0.6 });
+    io.observe(video);
+  }
+
+  // colour legend under the video: the 10 colours of map.json + other, same colours as the map page.
+  // Swatch colours are set through element.style (the page CSP does not allow style attributes).
+  function renderLegend() {
+    const ul = $("train-legend");
+    ul.textContent = "";
+    const items = meta.colours.map(id => [labelName(labelIndex[id]), meta.colour_hex[id]]).concat([[I18N.t("legend.other"), "#adb5bd"]]);
+    for (const [name, hex] of items) {
+      const li = document.createElement("li"), sw = document.createElement("span");
+      sw.className = "sw";
+      sw.style.background = hex;
+      li.append(sw, document.createTextNode(name));
+      ul.append(li);
+    }
+  }
+
   function renderAll() {
     renderText();
+    renderLegend();
+    shown = null;
+    showEpoch();
   }
   renderAll();
   I18N.onChange(renderAll);
