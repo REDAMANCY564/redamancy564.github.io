@@ -1,4 +1,4 @@
-"""Occlusion attribution for the dense-adjacency GNN (odor and taste models).
+"""Occlusion attribution for the dense-adjacency GNN (odor and taste models) and the MPNN.
 
 For a molecule with n atoms, atom i is "occluded" by removing it from the graph: its
 feature row and mask are zeroed, its bonds are dropped and the adjacency of the remaining
@@ -39,4 +39,31 @@ def occlusion_batch(X, A, M):
 def contributions(run, X, A, M):
     """run(X, A, M) -> probs [B, L]. Returns (probs [L], contrib [n, L])."""
     P = run(*occlusion_batch(X, A, M))
+    return P[0], P[0][None, :] - P[1:]
+
+
+def occlusion_batch_mpnn(X, E, M):
+    """Bond-aware MPNN (model_mpnn.py): X [64,F], E [64,64,FB], M [64] -> batched (n+1) inputs.
+
+    Atom i is removed by zeroing its feature row, its mask entry and row/column i of E
+    (its bonds). No renormalization is needed: messages are plain sums over bonds.
+    Row 0 is the full molecule.
+    """
+    n = int(M.sum())
+    Xs, Es, Ms = [X], [E], [M]
+    for i in range(n):
+        Xi, Ei, Mi = X.copy(), E.copy(), M.copy()
+        Xi[i] = 0.0
+        Ei[i, :, :] = 0.0
+        Ei[:, i, :] = 0.0
+        Mi[i] = 0.0
+        Xs.append(Xi)
+        Es.append(Ei)
+        Ms.append(Mi)
+    return np.stack(Xs), np.stack(Es), np.stack(Ms)
+
+
+def contributions_mpnn(run, X, E, M):
+    """run(X, E, M) -> probs [B, L]. Returns (probs [L], contrib [n, L])."""
+    P = run(*occlusion_batch_mpnn(X, E, M))
     return P[0], P[0][None, :] - P[1:]
