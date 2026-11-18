@@ -1,7 +1,11 @@
 """Stage 2 of odor-map (PLAN-odor-map.md): final maps and the one-time test evaluation.
 
 Library: training/data/ingredient/library.json after the exclusions of 2026-10-18 (5,072 molecules).
-Parameters (chosen on validation in stage 1, each map at its best, user decision 2026-10-18):
+Parameters (chosen on validation in stage 1, each map at its best by share with a common label,
+user decision 2026-10-18). Bond-feature odor model (2026-11-18): on validation the odor map at (15, 0.1)
+was slightly higher (0.755 vs 0.746 at (30, 0.3)), but it pulls the molecules into thin strands with
+little clustering; for readability the user kept (30, 0.3). This choice does not favour the odor map,
+so the comparison with the structure map is unaffected. The structure map follows the rule.
   odor map       138-d predicted probabilities (uint8 as on the site), cosine, n_neighbors=30, min_dist=0.3
   structure map  Morgan r = 2, 2048 bits, Jaccard, n_neighbors=15, min_dist=0.1
   random_state 42 for both.

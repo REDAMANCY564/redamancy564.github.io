@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from scipy.stats import mannwhitneyu
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -69,6 +70,15 @@ def main():
             print(f"  {m:15s} best {e['best_score']['mean']:.4f}±{e['best_score']['std']:.4f}  cos {e['best_cos']['mean']:.4f}"
                   f"  n_added {e['n_added']['mean']:.1f}  reach {e['evals_to_threshold']['reached']}/10"
                   f" median {e['evals_to_threshold']['median']}  at-upper-bound {e['at_max_bound_fraction']:.2f}")
+        # Mann-Whitney U (two-sided) of the 10 per-seed best scores: each BO variant vs random sparse search
+        # (the stronger random baseline). The page's "p < 0.05 in most cases" comes from here.
+        entry["mann_whitney_vs_random_sparse"] = {}
+        rnd = [r["best"]["score"] for r in runs if r["method"] == "random_sparse"]
+        for m in ("bo_sparse_init", "bo"):
+            sc = [r["best"]["score"] for r in runs if r["method"] == m]
+            pv = float(mannwhitneyu(sc, rnd, alternative="two-sided").pvalue)
+            entry["mann_whitney_vs_random_sparse"][m] = {"p": round(pv, 5), "bo_higher": bool(np.median(sc) > np.median(rnd))}
+            print(f"  Mann-Whitney {m} vs random_sparse: p = {pv:.3g}, BO median higher: {np.median(sc) > np.median(rnd)}")
         metrics["presets"][p["id"]] = entry
 
         bo0 = next(r for r in runs if r["method"] == TRACE_METHOD and r["seed"] == TRACE_SEED)
@@ -105,6 +115,14 @@ def main():
             for m, e in row.items():
                 print(f"     {m:15s} cos {e['cos']['mean']:.4f}  jaccard {e['jaccard']['mean']:.2f}  group {e['group_jaccard']['mean']:.2f}"
                       f"  exact {e['exact_recovery']}/{e['of']}  group-exact {e['group_recovery']}/{e['of']}  found {e['found_examples']}")
+
+    mw = [v for e in metrics["presets"].values() for v in e["mann_whitney_vs_random_sparse"].values()]
+    metrics["mann_whitney_summary"] = {
+        "test": "Mann-Whitney U, two-sided, per-seed best scores (10 vs 10), each BO variant vs random sparse search",
+        "alpha": 0.05, "n_comparisons": len(mw),
+        "bo_significantly_higher": sum(v["p"] < 0.05 and v["bo_higher"] for v in mw),
+        "bo_significantly_lower": sum(v["p"] < 0.05 and not v["bo_higher"] for v in mw)}
+    print("\nMann-Whitney summary:", metrics["mann_whitney_summary"])
 
     for tag, path in ARCHIVED.items():
         if path.exists():

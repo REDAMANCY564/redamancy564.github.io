@@ -2,7 +2,7 @@
 
 Same contract as the odor model: inputs X [B,64,F], A [B,64,64], mask [B,64] (float32,
 dynamic batch), output probs [B,4]. Verified against PyTorch on every molecule.
-Writes taste-predictor/model/taste_gnn.onnx and feature_spec.json (odor spec + taste
+Writes taste-predictor/model/taste_gnn.onnx and feature_spec.json (GCN feature spec + taste
 fields: standardization step and label order).
 """
 import json
@@ -12,7 +12,7 @@ import onnxruntime as ort
 import torch
 
 from common import LABELS, ROOT, TRAINING, load
-from featurize import SPEC_PATH as ODOR_SPEC, featurize_many
+from featurize import featurize_many, spec_dict
 from model import OdorGNN
 
 SITE = ROOT / "taste-predictor"
@@ -59,7 +59,7 @@ def main():
           f"{float(np.abs(single - ref[:1]).max()):.2e}")
     assert diff < 1e-4, "ONNX output does not match PyTorch"
 
-    spec = json.loads(ODOR_SPEC.read_text(encoding="utf-8"))
+    spec = spec_dict()  # GCN featurizer spec (the odor model is now an MPNN with its own spec)
     spec["standardization"] = ("before featurizing: keep the largest fragment, neutralize charges "
                                "(RDKit Uncharger), drop stereo; training data went through the same steps")
     spec.update(model_file=ONNX_PATH.name, onnx_opset=17, num_labels=len(LABELS),

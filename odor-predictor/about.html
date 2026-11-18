@@ -22,8 +22,8 @@
   <meta name="twitter:title" content="方法与来源 | 3 气味预测 | 崔京伟">
   <meta name="twitter:description" content="Method, results, limitations and data sources of Molecular Odor Descriptor Prediction with Graph Neural Networks.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/odor-predictor.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261118c">
-  <script src="../assets/i18n.js?v=20261118c" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261118d">
+  <script src="../assets/i18n.js?v=20261118d" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -81,14 +81,14 @@
       <ol class="steps">
         <li><span data-i18n="flow.1.title">分子</span><span class="sep"></span><span data-i18n="flow.1.sub">用 SMILES 文本表示</span></li>
         <li><span data-i18n="flow.2.title">图</span><span class="sep"></span><span data-i18n="flow.2.sub">原子是节点，化学键是边</span></li>
-        <li><span data-i18n="flow.3.title">图神经网络</span><span class="sep"></span><span data-i18n="flow.3.sub">原子向相邻原子传递信息，共 3 轮</span></li>
+        <li><span data-i18n="flow.3.title">图神经网络</span><span class="sep"></span><span data-i18n="flow.3.sub">原子沿化学键向相邻原子传递信息（区分键型），共 3 轮</span></li>
         <li><span data-i18n="flow.4.title">气味描述词</span><span class="sep"></span><span data-i18n="flow.4.sub">138 个词各给出一个概率</span></li>
       </ol>
       <div class="method-text">
         <p data-i18n-html="method.data"><b>数据。</b>4,886 个带有专家气味描述的分子，来自两个香精香料数据库（The Good Scents Company 和 Leffingwell），由 OpenPOM 项目合并清洗。每个分子平均有 138 个描述词中的约 5 个。</p>
-        <p data-i18n-html="method.model"><b>模型。</b>每个原子先用几项简单性质来描述：元素、相邻原子数和氢原子数、电荷、是否芳香、是否在环上。每一轮中，每个原子从与它成键的原子那里收集信息。最后把所有原子的信息汇总成整个分子的表示，再转换为 138 个概率。模型约有 14 万个参数，可以在<span class="nobr">浏览器里运行</span>。</p>
+        <p data-i18n-html="method.model"><b>模型。</b>每个原子先用几项简单性质来描述：元素、相邻原子数和氢原子数、电荷、是否芳香、是否在环上；每个化学键用键型（单键、双键、三键、芳香键）和是否在环上来描述。每一轮中，每个原子从与它成键的原子那里收集信息，收到的信息同时取决于相邻原子和连接它们的化学键，所以同一个相邻原子经单键还是双键相连，传来的信息不同。结构参考 Lee et al. 2023（<i>Science</i> 381, 999）的消息传递思路。最后把所有原子的信息汇总成整个分子的表示，再转换为 138 个概率。模型约有 94 万个参数，模型文件约 3.8 MB，可以在<span class="nobr"><span class="nobr">浏览器里运行</span></span>。</p>
         <p data-i18n-html="method.eval"><b>数据划分。</b>含环分子按环系骨架划分为训练集（80%）、验证集（10%）和测试集（10%），因此测试集中的环系骨架都是模型没见过的。这比随机划分更难。</p>
-        <p data-i18n-html="method.explain"><b>原子贡献。</b>工具页结构图上的着色用遮挡法计算：依次从分子中删去一个原子，重新运行模型，看该描述词的概率变化多少。删去后概率下降的原子（橙色）是模型判断的依据，删去后概率上升的原子（蓝色）在压低这一判断。这说明的是模型看重哪些结构，不等于这些结构在化学上确实决定了气味。</p>
+        <p data-i18n-html="method.explain"><b>原子贡献。</b>工具页结构图上的着色用遮挡法计算：依次从分子中删去一个原子（连同它的化学键），重新运行模型，看该描述词的概率变化多少。删去后概率下降的原子（橙色）是模型判断的依据，删去后概率上升的原子（蓝色）在压低这一判断。这说明的是模型看重哪些结构，不等于这些结构在化学上确实<span class="nobr">决定了气味</span>。</p>
       </div>
     </section>
 
@@ -109,7 +109,23 @@
         </table>
       </div>
       <p class="small muted" id="seed-note" style="margin-top:8px"></p>
-      <p data-i18n="results.takeaway">图神经网络比两种常规基线方法高约 0.02 AUROC。提升幅度不大，但在不同随机种子和大多数描述词上都稳定存在。对训练中没见过的环系骨架，预测明显更难（约 0.80）。</p>
+      <p data-i18n="results.takeaway">图神经网络比两种常规基线方法高约 0.03 AUROC。提升幅度不大，但在不同随机种子和大多数描述词上都稳定存在。对训练中没见过的环系骨架，预测明显更难（约 0.81）。</p>
+      <h3 data-i18n="results.compare.title">与上一版模型的比较</h3>
+      <p data-i18n-html="results.compare.intro">本页之前使用的是不区分键型的图卷积网络，只看原子和它们之间有没有化学键。三种模型使用同一数据划分和训练设置，各用 3 个随机种子训练；新模型的超参数（层数、维度、更新方式）只按验证集选择，测试集只在最后计算一次。下表为测试集上 138 个描述词的平均 AUROC（3 次训练的<span class="nobr">平均值 ± 标准差</span>）：</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="results.col.model">模型</th>
+              <th class="num" data-i18n="results.col.all">全部测试分子</th>
+              <th class="num" data-i18n="results.col.cyclic">含环分子</th>
+              <th class="num" data-i18n="results.col.acyclic">无环分子</th>
+            </tr>
+          </thead>
+          <tbody id="compare-body"></tbody>
+        </table>
+      </div>
+      <p style="margin-top:8px" data-i18n="results.compare.takeaway">测试集平均 AUROC 从 0.860 提高到 0.866（3 个种子均值）。对照实验中，去掉键特征后为 0.863，提升约一半来自键特征，在含环分子上更明显。</p>
       <div class="label-lists">
         <div class="card"><h3 data-i18n="results.best">最容易预测</h3><ol id="best-labels"></ol></div>
         <div class="card"><h3 data-i18n="results.worst">最难预测</h3><ol id="worst-labels"></ol></div>
@@ -135,13 +151,13 @@
         </table>
       </div>
       <p class="small muted" id="ablation-note" style="margin-top:8px"></p>
-      <p data-i18n="ablation.takeaway">四组之间的差别都在随机波动范围内，稀有描述词反而略有下降，因此网页继续使用原模型。可能的原因：原文采用随机划分，本站采用更难的骨架划分；药效团标记与已有的元素、氢原子数特征有较多重叠；原文的模型结构也与本站不同。此外，非对称损失会让输出的概率整体偏高约 4 倍，不适合<span class="nobr">直接展示</span>。</p>
+      <p data-i18n="ablation.takeaway">四组之间的差别都在随机波动范围内，稀有描述词反而略有下降，因此当时网页继续使用原模型。可能的原因：原文采用随机划分，本站采用更难的骨架划分；药效团标记与已有的元素、氢原子数特征有较多重叠；原文的模型结构也与本站不同。此外，非对称损失会让输出的概率整体偏高约 4 倍，不适合<span class="nobr">直接展示</span>。</p>
     </section>
 
     <section id="limits">
       <h2 data-sec="1" data-i18n="about.limits" data-no="3.5">局限</h2>
       <ul class="plain">
-        <li data-i18n-html="limits.4">对于和训练数据差异很大的环系骨架，预测效果明显变弱（AUROC 约 0.80）。</li>
+        <li data-i18n-html="limits.4">对于和训练数据差异很大的环系骨架，预测效果明显变弱（AUROC 约 0.81）。</li>
         <li data-i18n-html="limits.6"><b>不可用于安全性判断。</b>模型不涉及毒性、致敏性或法规状态；页面另外显示的欧盟、中国和美国法规状态来自官方名单，<span class="nobr">仅供参考</span>。</li>
       </ul>
     </section>
@@ -160,7 +176,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261118c" defer></script>
-  <script src="about.js?v=20261118c" defer></script>
+  <script src="../assets/projects.js?v=20261118d" defer></script>
+  <script src="about.js?v=20261118d" defer></script>
 </body>
 </html>

@@ -14,7 +14,8 @@ Order fixed in advance (user decision 2026-10-18):
              regression baseline (C = 0.1, chosen on validation in baseline.py); the 5 page presets too
              (ranked by the page's mode A score; since 2026-10-20 the weighted geometric mean).
 All similarities are computed from the quantized values the page uses.
-Output: training/data/ingredient/eval.json (+ printed report)
+Option --embedding NAME overrides the validation pick (only on an explicit user decision; recorded).
+Output: training/data/ingredient/eval.json (+ printed report); --out PATH writes elsewhere
 """
 import json
 import sys
@@ -32,6 +33,8 @@ from make_site_data import score as score_a   # the page's mode A score
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "training" / "data"
 OUT = DATA / "ingredient" / "eval.json"
+if "--out" in sys.argv:
+    OUT = Path(sys.argv[sys.argv.index("--out") + 1])
 K = 10
 RNG = np.random.default_rng(0)
 PRESETS = {"creamy+buttery+sweet": ["creamy", "buttery", "sweet"], "coconut+creamy": ["coconut", "creamy"],
@@ -119,6 +122,10 @@ def main():
     sel["random (reference)"] = float(random_jaccard(va, pool, Y, reps=5).mean())
     chosen = max(("probs", "readout", "hidden"), key=lambda k: sel[k])
     report["validation_selection"] = {k: round(v, 4) for k, v in sel.items()}
+    report["best_by_validation"] = chosen
+    if "--embedding" in sys.argv:   # user decision overriding the validation pick (recorded in eval.json)
+        chosen = sys.argv[sys.argv.index("--embedding") + 1]
+        report["embedding_override"] = chosen
     report["chosen_embedding"] = chosen
     print("validation, mean Jaccard of top-10 neighbours:", report["validation_selection"], "-> chosen:", chosen)
 

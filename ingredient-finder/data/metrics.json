@@ -1,9 +1,9 @@
 {
  "k": 10,
  "validation_selection": {
-  "probs": 0.2245,
-  "readout": 0.2139,
-  "hidden": 0.2202,
+  "probs": 0.2287,
+  "readout": 0.2243,
+  "hidden": 0.2288,
   "tanimoto (reference)": 0.1919,
   "random (reference)": 0.0594
  },
@@ -11,96 +11,96 @@
  "threshold": {
   "rule": "99.5th percentile of cosine similarity of 1,000,000 random library pairs",
   "percentiles": {
-   "50": 0.4139,
-   "90": 0.7419,
-   "95": 0.8165,
-   "99": 0.9197,
-   "99.5": 0.9464,
-   "99.9": 0.9824
+   "50": 0.4146,
+   "90": 0.7347,
+   "95": 0.8136,
+   "99": 0.92,
+   "99.5": 0.9462,
+   "99.9": 0.9834
   },
-  "value": 0.9464,
+  "value": 0.9462,
   "per_query_top20": {
-   "mean_above_threshold": 13.47,
-   "mean_highlighted": 5.53,
+   "mean_above_threshold": 13.69,
+   "mean_highlighted": 5.57,
    "median_highlighted": 4.0,
-   "share_with_at_least_one_highlighted": 0.7601
+   "share_with_at_least_one_highlighted": 0.7399
   },
   "random_pair_histogram": {
    "counts": [
-    6777,
-    15201,
-    20341,
-    23886,
-    26115,
-    28484,
-    30314,
-    31665,
-    33281,
-    34550,
-    36147,
-    37348,
-    38185,
-    38829,
-    38685,
-    38718,
-    38579,
-    38187,
-    37087,
-    36062,
-    34984,
-    33491,
-    32243,
-    30657,
-    29035,
-    26830,
-    25398,
-    23183,
-    21784,
-    19944,
-    17982,
-    16236,
-    14119,
-    12270,
-    10060,
-    8151,
-    6119,
-    4391,
-    2930,
-    1545
+    3327,
+    6055,
+    12077,
+    17593,
+    22533,
+    26600,
+    30972,
+    33965,
+    36154,
+    37514,
+    38786,
+    40683,
+    41924,
+    42448,
+    42646,
+    42092,
+    41792,
+    40866,
+    38958,
+    38004,
+    36055,
+    34221,
+    32395,
+    30627,
+    28918,
+    26760,
+    24765,
+    22877,
+    20777,
+    18625,
+    16666,
+    14912,
+    12977,
+    11462,
+    9773,
+    7965,
+    6124,
+    4490,
+    2756,
+    1659
    ],
    "edges": [
-    0.0001,
-    0.0251,
-    0.0501,
-    0.0751,
-    0.1001,
-    0.1251,
-    0.1501,
-    0.1751,
-    0.2001,
-    0.2251,
-    0.2501,
-    0.2751,
-    0.3001,
-    0.3251,
-    0.3501,
-    0.3751,
+    0.0002,
+    0.0252,
+    0.0502,
+    0.0752,
+    0.1002,
+    0.1252,
+    0.1502,
+    0.1752,
+    0.2002,
+    0.2252,
+    0.2502,
+    0.2752,
+    0.3002,
+    0.3252,
+    0.3502,
+    0.3752,
     0.4001,
     0.4251,
     0.4501,
     0.4751,
     0.5001,
-    0.525,
-    0.55,
-    0.575,
-    0.6,
-    0.625,
-    0.65,
-    0.675,
-    0.7,
-    0.725,
-    0.75,
-    0.775,
+    0.5251,
+    0.5501,
+    0.5751,
+    0.6001,
+    0.6251,
+    0.6501,
+    0.6751,
+    0.7001,
+    0.7251,
+    0.7501,
+    0.7751,
     0.8,
     0.825,
     0.85,
@@ -116,39 +116,39 @@
  "mode_b_test": {
   "all": {
    "n": 486,
-   "gnn": 0.2132,
+   "gnn": 0.2192,
    "tanimoto": 0.1835,
    "random": 0.0588,
    "gnn_minus_tanimoto_ci95": [
-    0.0214,
-    0.0383
+    0.0276,
+    0.0441
    ],
-   "gnn_better_share": 0.6132,
-   "tanimoto_better_share": 0.3765
+   "gnn_better_share": 0.6523,
+   "tanimoto_better_share": 0.3374
   },
   "cyclic": {
    "n": 271,
-   "gnn": 0.183,
+   "gnn": 0.1929,
    "tanimoto": 0.1652,
    "random": 0.0508,
    "gnn_minus_tanimoto_ci95": [
-    0.0078,
-    0.0284
+    0.0174,
+    0.0388
    ],
-   "gnn_better_share": 0.5683,
-   "tanimoto_better_share": 0.4133
+   "gnn_better_share": 0.6273,
+   "tanimoto_better_share": 0.3579
   },
   "acyclic": {
    "n": 215,
-   "gnn": 0.2513,
+   "gnn": 0.2524,
    "tanimoto": 0.2065,
    "random": 0.0689,
    "gnn_minus_tanimoto_ci95": [
-    0.0315,
-    0.0578
+    0.0337,
+    0.0585
    ],
-   "gnn_better_share": 0.6698,
-   "tanimoto_better_share": 0.3302
+   "gnn_better_share": 0.6837,
+   "tanimoto_better_share": 0.3116
   }
  },
  "mode_a_presets_test": {
@@ -161,7 +161,7 @@
   "coconut+creamy": {
    "top10_has_any": 0.2,
    "random_any": 0.0432,
-   "top10_has_all": 0.0,
+   "top10_has_all": 0.1,
    "random_all": 0.0021
   },
   "caramellic+nutty": {
@@ -173,13 +173,13 @@
   "milky+fatty": {
    "top10_has_any": 0.7,
    "random_any": 0.1502,
-   "top10_has_all": 0.1,
+   "top10_has_all": 0.0,
    "random_all": 0.0021
   },
   "fruity+green": {
-   "top10_has_any": 1.0,
+   "top10_has_any": 0.9,
    "random_any": 0.4897,
-   "top10_has_all": 0.9,
+   "top10_has_all": 0.8,
    "random_all": 0.1317
   }
  },
@@ -187,23 +187,23 @@
   "all_labels_with_positives": {
    "n_labels": 138,
    "random_expected": 0.0352,
-   "gnn@10": 0.2986,
+   "gnn@10": 0.3159,
    "lr@10": 0.3051,
-   "gnn@50": 0.162,
+   "gnn@50": 0.1662,
    "lr@50": 0.1572
   },
   "labels_with_ge10_positives": {
    "n_labels": 62,
    "random_expected": 0.0657,
-   "gnn@10": 0.471,
+   "gnn@10": 0.4903,
    "lr@10": 0.4774,
-   "gnn@50": 0.2823,
+   "gnn@50": 0.2884,
    "lr@50": 0.2768
   },
   "best5_gnn@10": [
    {
-    "label": "ethereal",
-    "n_pos": 31,
+    "label": "fruity",
+    "n_pos": 161,
     "gnn@10": 1.0
    },
    {
@@ -212,19 +212,19 @@
     "gnn@10": 1.0
    },
    {
+    "label": "sweet",
+    "n_pos": 129,
+    "gnn@10": 1.0
+   },
+   {
     "label": "woody",
     "n_pos": 113,
     "gnn@10": 1.0
    },
    {
-    "label": "fruity",
-    "n_pos": 161,
+    "label": "sulfurous",
+    "n_pos": 47,
     "gnn@10": 0.9
-   },
-   {
-    "label": "roasted",
-    "n_pos": 25,
-    "gnn@10": 0.8
    }
   ]
  }

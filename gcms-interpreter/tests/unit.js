@@ -339,7 +339,7 @@
   const dia = kbOf("431-03-8");
   check("flavor", "diacetyl threshold 0.001 mg/kg (Czerny et al. 2008)", [F.threshold(FLI, dia).mg_kg, F.threshold(FLI, dia).src], [0.001, "Czerny et al. (2008)"]);
   const pent = kbOf("600-14-6"), dairyI = FLI.labels.findIndex(l => l.id === "dairy");
-  check("flavor", "2,3-pentanedione dairy lift as in flavor-improver (5.476)", +F.lift(FLI, pent)[dairyI].toFixed(1), 5.5);
+  check("flavor", "2,3-pentanedione dairy lift as in flavor-improver (4.601)", +F.lift(FLI, pent)[dairyI].toFixed(1), 4.6);
   check("flavor", "descriptors: Dunkel first (2-methylbutanal: malty)", F.descriptors(FLI, kbOf("96-17-3")), { src: "dunkel", terms: ["malty"] });
   check("flavor", "descriptors: FlavorDB when no Dunkel entry", F.descriptors(FLI, pent).src, "flavordb");
   const gnnOnly = Object.keys(FLI.compounds).find(k => !FLI.compounds[k].d && !FLI.compounds[k].f && FLI.compounds[k].p);
@@ -355,7 +355,7 @@
     [dv.map(([i]) => FLI.labels[i].id), +dv.reduce((a, [, v]) => a + v, 0).toFixed(9), +dv[11][1].toFixed(6)], [F.DAIRY_DIMS, 1, +(12 / 78).toFixed(6)]);
   check("flavor", "all view: the 10 largest labels", [F.viewDims(FLI, pv, "all").length, FLI.labels[F.viewDims(FLI, pv, "all")[0][0]].id], [10, "cucumber"]);
   check("flavor", "weights: lift for dairy, probabilities for all",
-    [+F.weights(FLI, pent, "dairy")[dairyI].toFixed(1), F.weights(FLI, pent, "all")[dairyI]], [5.5, 0.138]);
+    [+F.weights(FLI, pent, "dairy")[dairyI].toFixed(1), F.weights(FLI, pent, "all")[dairyI]], [4.6, 0.116]);
   check("flavor", "radar: one axis per dimension", (F.radarSvg(F.topDims(pr.profile, 3).map(([i, v]) => ({ label: "L" + i, value: v }))).match(/<line /g) || []).length, 3);
 
   // examples: the whole pipeline with the example standard files and tolerances

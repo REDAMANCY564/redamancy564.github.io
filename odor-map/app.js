@@ -15,7 +15,6 @@
   const PAD = 18, SWITCH_MS = 900, HOVER_PX = 6;
   const QUICK_HEAT = ["milky", "creamy", "buttery", "cheesy", "caramellic", "coffee", "roasted"];
   // colour categories in map.json order (most frequent top-1 descriptors), then "other"
-  const PALETTE = ["#e8590c", "#d6336c", "#37b24d", "#6f4518", "#f59f00", "#7048e8", "#1c7ed6", "#b08968", "#15aabf", "#a61e4d"];
   const OTHER = "#adb5bd";
   const HEAT = ["#dee2e6", "#ffe8cc", "#ffa94d", "#e8590c", "#a61e1e", "#4a0b0b"];
   const HEAT_BINS = 24;
@@ -84,6 +83,8 @@
   const catOfLabel = new Map(meta.colours.map((id, c) => [labelIndex[id], c]));
   const cat = Int8Array.from(top1, j => catOfLabel.has(j) ? catOfLabel.get(j) : -1);
   const nCat = meta.colours.length;
+  // fixed colour per descriptor (map.json colour_hex, set in training/odormap/make_site_data.py)
+  const PALETTE = meta.colours.map(id => meta.colour_hex[id]);
   const catMembers = Array.from({ length: nCat + 1 }, () => []);  // last = other
   for (let i = 0; i < n; i++) catMembers[cat[i] < 0 ? nCat : cat[i]].push(i);
 

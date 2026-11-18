@@ -28,14 +28,13 @@ import sys
 from pathlib import Path
 
 import numpy as np
-import onnxruntime as ort
 
 HERE = Path(__file__).resolve().parent
 TRAINING = HERE.parent
 ROOT = TRAINING.parent
 sys.path.insert(0, str(TRAINING))
 sys.path.insert(0, str(HERE))
-from featurize import featurize  # noqa: E402
+from site_model import predict  # noqa: E402
 from thresholds import parse_entries, pick  # noqa: E402
 
 PROFILE_DIMS = ["dairy", "creamy", "sweet", "sour", "fatty", "oily",
@@ -122,7 +121,6 @@ def main():
     dim_idx = [labels.index(d) for d in PROFILE_DIMS]
     import pandas as pd
     prior = pd.read_csv(TRAINING / "data" / "clean.csv")[PROFILE_DIMS].mean().to_numpy()
-    sess = ort.InferenceSession(str(ROOT / "odor-predictor" / "model" / "odor_gnn.onnx"), providers=["CPUExecutionProvider"])
 
     hm, inf = src["human_milk"], src["infant_formula"]
     names = sorted(set(hm["compounds"]) | set(inf["compounds"]))
@@ -135,8 +133,7 @@ def main():
             excluded.append(n)
             print(f"{n:24s} {where:6s} {'-':>10s} EXCLUDED (no value by the rule)")
             continue
-        X, A, M = (a[None] for a in featurize(pub[n]["smiles"]))
-        probs = sess.run(None, {"X": X, "A": A, "mask": M})[0][0]
+        probs = predict([pub[n]["smiles"]])[0]
         comps[n] = {
             "name_en": n, "name_zh": ZH[n], "smiles": pub[n]["smiles"], "cid": pub[n]["cid"], "cas": t["cas_entry"],
             "threshold_mg_kg": t["value_mg_kg"], "threshold_source": t["source"], "threshold_range_mg_kg": t["range_mg_kg"],

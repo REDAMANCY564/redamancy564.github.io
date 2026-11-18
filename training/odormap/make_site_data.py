@@ -33,6 +33,15 @@ SITE = ROOT / "odor-map" / "data"
 FINDER = ROOT / "ingredient-finder" / "data"
 K_CLUSTERS, MIN_SIZE, P_ON, MIN_SHARE, MIN_LIFT, MERGE_DIST = 40, 30, 0.5, 0.5, 1.5, 0.12
 N_COLORS = 10   # most frequent top-1 descriptors with their own colour; the rest are "other"
+# Fixed descriptor -> colour (2026-11-18, user decision): colours no longer follow the rank, so a
+# descriptor keeps its colour when the model or the data change. The first nine and meaty are the
+# colours of the first published map (GCN model); phenolic (in the top 10 since the MPNN) got
+# charcoal, CIEDE2000 >= 24.6 from all others (the others are >= 18.9 apart). Grey #adb5bd = other.
+COLOUR_OF = {
+    "fruity": "#e8590c", "floral": "#d6336c", "green": "#37b24d", "woody": "#6f4518", "sweet": "#f59f00",
+    "sulfurous": "#7048e8", "fatty": "#1c7ed6", "nutty": "#b08968", "waxy": "#15aabf", "meaty": "#a61e4d",
+    "phenolic": "#343a40",
+}
 
 
 def scale(xy):
@@ -103,6 +112,8 @@ def main():
     reg = {k: regions(xy[k], on, labels) for k in xy}
     top1 = Counter(P.argmax(1).tolist())
     colours = [labels[j]["id"] for j, _ in top1.most_common() if labels[j]["id"] != "odorless"][:N_COLORS]
+    missing = [c for c in colours if c not in COLOUR_OF]
+    assert not missing, f"give these descriptors a fixed colour in COLOUR_OF: {missing}"
 
     # foods: knowledge-base foods with at least one library molecule
     kb_foods = json.loads((ROOT / "flavor-kb" / "data" / "foods.json").read_text(encoding="utf-8"))
@@ -131,6 +142,7 @@ def main():
         "region_rule": {"k_clusters": K_CLUSTERS, "min_size": MIN_SIZE, "p_on": P_ON, "min_share": MIN_SHARE,
                         "min_lift": MIN_LIFT, "merge_dist": MERGE_DIST},
         "colours": colours,
+        "colour_hex": {c: COLOUR_OF[c] for c in colours},
         "top1_counts": {labels[j]["id"]: c for j, c in top1.most_common()},
     }
     (SITE / "map.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")

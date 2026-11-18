@@ -6,7 +6,7 @@ Writes gcms-interpreter/data/flavor.json with, for the compounds of the flavor k
     line), matched to knowledge-base compounds by CAS number. No other values, no estimates.
   - odor descriptors from the knowledge base: Dunkel et al. 2014 odor quality (first tier) and
     FlavorDB flavor terms.
-  - odor label probabilities of the project-1 GNN (odor-predictor/model/odor_gnn.onnx), computed
+  - odor label probabilities of the online odor model (site_model.py, odor-predictor/model/), computed
     here once so the page needs no RDKit/ONNX at run time. Stored sparsely: labels with
     probability >= PROB_MIN only (the profile rule weights each label by probability / prevalence,
     so the dropped values change a profile by well under 1 %).
@@ -20,12 +20,11 @@ import sys
 from pathlib import Path
 
 import numpy as np
-import onnxruntime as ort
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "training"))
-from featurize import featurize  # noqa: E402
+from site_model import MODEL_FILE, predict  # noqa: E402
 
 KB = ROOT / "flavor-kb" / "data" / "compounds.json"
 NAMES = ROOT / "gcms-interpreter" / "data" / "names.json"
@@ -63,7 +62,6 @@ def main():
     missing = sorted(set(thr_by_cas) - seen)
     print(f"thresholds: {len(thresholds)} KB compounds; not in KB: {missing}")
 
-    sess = ort.InferenceSession(str(ROOT / "odor-predictor" / "model" / "odor_gnn.onnx"), providers=["CPUExecutionProvider"])
     compounds, no_gnn = {}, []
     for kb_id, c in kb.items():
         rec = {}
@@ -72,8 +70,7 @@ def main():
         if c.get("flavor"):
             rec["f"] = c["flavor"]
         try:
-            X, A, M = (a[None] for a in featurize(c["smiles"]))
-            probs = sess.run(None, {"X": X, "A": A, "mask": M})[0][0]
+            probs = predict([c["smiles"]])[0]
             rec["p"] = [[i, round(float(p), 3)] for i, p in enumerate(probs) if p >= PROB_MIN]
         except Exception:   # too many atoms, unsupported structure: no prediction, said so on the page
             no_gnn.append(c["name"])
@@ -88,7 +85,7 @@ def main():
                           "(2003/2004) detection. Same values as flavor-improver on this site.",
             "dunkel": "Dunkel A, et al. Angew. Chem. Int. Ed. 2014, 53, 7124-7143. doi:10.1002/anie.201309508",
             "flavordb": "Garg N, et al. FlavorDB. Nucleic Acids Res. 2018, 46, D1210-D1216. doi:10.1093/nar/gkx957 (CC BY-NC-SA 3.0)",
-            "gnn": "odor-predictor GNN of this site (odor_gnn.onnx), probabilities >= %.2f kept" % PROB_MIN,
+            "gnn": "odor-predictor model of this site (%s), probabilities >= %.2f kept" % (MODEL_FILE, PROB_MIN),
             "prevalence": "label frequency in the GNN training data (training/data/clean.csv)",
         },
         "medium": "water",

@@ -2,7 +2,7 @@
 
 Combines: compound structures (PubChem), water odor thresholds (thresholds.py output),
 base compositions (bases_source.json) and odor descriptor probabilities from the
-project-1 GNN (odor-predictor/model/odor_gnn.onnx). Prints review tables and writes
+online odor model (site_model.py: the file named in odor-predictor/model/feature_spec.json). Prints review tables and writes
 training/data/fi_draft.json; with --final also writes flavor-improver/data/
 palette.json, bases.json and presets.json (after user approval, 2026-10-16).
 
@@ -15,13 +15,12 @@ import sys
 from pathlib import Path
 
 import numpy as np
-import onnxruntime as ort
 
 HERE = Path(__file__).resolve().parent
 TRAINING = HERE.parent
 ROOT = TRAINING.parent
 sys.path.insert(0, str(TRAINING))
-from featurize import featurize  # noqa: E402
+from site_model import predict  # noqa: E402
 
 PROFILE_DIMS = ["dairy", "buttery", "creamy", "milky", "cheesy", "sweet", "sour",
                 "fruity", "nutty", "caramellic", "fatty", "waxy"]
@@ -72,11 +71,9 @@ def main():
     import pandas as pd
     prior = pd.read_csv(TRAINING / "data" / "clean.csv")[PROFILE_DIMS].mean().to_numpy()
 
-    sess = ort.InferenceSession(str(ROOT / "odor-predictor" / "model" / "odor_gnn.onnx"), providers=["CPUExecutionProvider"])
     compounds = {}
     for n in names["palette"] + names["base_only"]:
-        X, A, M = (a[None] for a in featurize(pub[n]["smiles"]))
-        probs = sess.run(None, {"X": X, "A": A, "mask": M})[0][0]
+        probs = predict([pub[n]["smiles"]])[0]
         t = thr[n]
         compounds[n] = {
             "role": "palette" if n in names["palette"] else "base_only",
