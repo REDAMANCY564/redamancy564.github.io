@@ -189,7 +189,11 @@ python ingredient/make_site_data.py  # ingredient-finder/data/（probs.bin 等�
 python odormap/umap_compare.py      # 第 1 阶段：3 组参数对比（效果图和验证集指标）
 python odormap/build_maps.py        # 定稿地图 + 评估（测试集只算一次）
 python odormap/make_site_data.py    # odor-map/data/：坐标、区域标签、食品列表
+python odormap/make_training_video.py frames   # 训练过程动画的关键帧（部署种子的检查点）+ 逐帧检查 (a)/(b)
+python odormap/make_training_video.py video    # odor-map/media/training.mp4、training-poster.webp、data/training_frames.json
 ```
+
+**训练过程动画（方法页 5.2.2，2026-11-18）**：用 `train_mpnn.py final` 保存的部署种子检查点（`training/checkpoints/mpnn_frames/seed2`，不上传），第 0–10 轮和第 12、14 至 26 轮共 19 个关键帧。降维输入与线上地图相同（概率取到 1/255，UMAP 30 / 0.3，余弦，种子 42）；最后一帧直接取线上坐标（脚本检查与 `coords.bin` 逐字节一致），之前各帧从后往前，以后一帧坐标为初始值计算。检查结果在 `training/data/odormap/training_check.json`：每一帧二维地图上 15 近邻同色比例都低于同一轮 138 维预测空间中的比例，逐帧独立计算再对齐的结果与此几乎相同，说明没有把最终的团状结构带进早期帧。视频 800×800、12.5 秒、H.264（CRF 30，1.89 MB），编码需要 `pip install imageio-ffmpeg`。页面上滚动到位才下载并播放一次，「减少动态效果」时只显示封面；轮数是网页文字，不在视频里。方法页有严格的 CSP（样式在 `odor-map/about.css`，不能用行内 style）。
 
 ## 如何更新网站（最常用）
 

@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>方法与来源 | 5 气味地图 | 崔京伟</title>
   <meta name="description" content="Odor Space vs Structure Space Map of Flavor Molecules: how the map was made, how well it groups similar-smelling molecules, its limitations and data sources.">
   <link rel="canonical" href="https://redamancy564.github.io/odor-map/about.html">
@@ -26,12 +27,7 @@
   <script src="../assets/i18n.js?v=20261118d" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <style>
-    #params-table th, #params-table td, #res-table th, #res-table td { white-space: normal; }
-    @media (max-width: 599px) { #params-table th:not(.num), #params-table td:not(.num), #res-table th:not(.num), #res-table td:not(.num) { min-width: 8em; } }
-    details.supp { margin-top: 14px; }
-    details.supp summary { cursor: pointer; font-weight: 600; }
-  </style>
+  <link rel="stylesheet" href="about.css?v=20261118d">
 </head>
 <body>
   <header class="site-header">
@@ -82,6 +78,15 @@
       <h3 data-sec="2" data-i18n="params.title" data-no="5.2.1">地图参数</h3>
       <p data-i18n="params.text">两张地图都用 UMAP 降到二维，随机种子固定。UMAP 的两个关键参数（邻居数, 最小距离）试了 3 组：(15, 0.1)、(30, 0.3)、(50, 0.5)，只用验证集选择，以「至少一个标签相同」的比例为准。结构地图取验证集上最好的一组，让作为对照的结构地图也发挥出最好水平。气味地图在验证集上 (15, 0.1) 略高（0.755 对 0.746），但这一组把分子拉成细条，成团不明显，为了便于阅读保留了 (30, 0.3)；这样选对气味地图并不占优，不影响与结构地图的比较。验证集结果见下表，指标含义见 5.3。</p>
       <div class="table-wrap"><table id="params-table" data-snap="params-table"><thead><tr><th></th><th>气味地图</th><th>结构地图</th></tr></thead><tbody><tr><th>输入</th><td>138 个描述词的预测概率</td><td>Morgan 指纹（半径 2，2048 位）</td></tr><tr><th>距离</th><td>余弦距离</td><td>Jaccard 距离</td></tr><tr><th>邻居数</th><td>30</td><td>15</td></tr><tr><th>最小距离</th><td>0.3</td><td>0.1</td></tr><tr><th>随机种子</th><td>42</td><td>42</td></tr><tr><th>验证集（至少一个标签相同 / 平均 Jaccard）</th><td>0.746 / 0.205</td><td>0.640 / 0.160</td></tr></tbody></table></div>
+      <h3 data-sec="2" data-i18n="train.title" data-no="5.2.2">训练过程中的气味地图</h3>
+      <p data-i18n="train.intro">下面的动画用训练过程中保存的模型，依次算出候选库 5,072 个分子的预测概率，再按与上方相同的方法降到二维。第 0 轮是随机初始化的模型，还没有学到气味；因为未训练的网络对结构相近的分子本来就会给出相近的输出，画面是十几个各色混杂的小团。最初两轮先变成几条混杂的长带，此后同一颜色的分子逐渐聚到一起，硫味分子最先分出来。最后一帧是网页上使用的模型（第 26 轮，验证集上最好），与工具页气味地图的位置完全相同。每个点的颜色固定为最终模型的主要预测描述词，便于看出同类分子怎样聚到一起。</p>
+      <figure class="train-video">
+        <div class="train-frame">
+          <video id="train-video" src="media/training.mp4?v=20261118d" poster="media/training-poster.webp?v=20261118d" width="800" height="800" muted playsinline controls preload="none" data-i18n-attr="aria-label:train.video_label" aria-label="气味地图在训练过程中逐渐成形的动画"></video>
+          <span class="train-epoch" id="train-epoch" aria-hidden="true"></span>
+        </div>
+        <figcaption class="small muted" data-i18n="train.note">点的移动表示模型预测的变化，分子本身没有移动。为了让前后两帧连贯，每一帧都以后一帧的坐标为起点计算，帧与帧之间做了平滑过渡，所以中间过程只是一种可视化；团与团之间的距离不能精确解读。</figcaption>
+      </figure>
     </section>
 
     <section id="results">
@@ -89,10 +94,10 @@
       <h3 data-sec="2" data-i18n="results.title" data-no="5.3.1">地图近邻的气味重合度</h3>
       <p id="res-intro" data-snap="res-intro">检验方法：取 气味预测的骨架划分测试集中的 486 个分子，对每个分子，在二维地图上找出离它最近的 15 个有真实气味标签的分子，计算其中与它至少有一个相同真实标签的比例，以及标签的平均 Jaccard 重合度。真实标签只用于计算，不在页面上展示。测试集只在两张地图的参数定稿后<span class="nobr">计算一次</span>。</p>
       <div class="table-wrap"><table id="res-table" data-snap="res-table"><thead><tr><th></th><th class="num">至少一个标签相同</th><th class="num">平均 Jaccard</th></tr></thead><tbody><tr class="highlight"><td>气味地图</td><td class="num">0.756</td><td class="num">0.196</td></tr><tr class=""><td>结构地图</td><td class="num">0.647</td><td class="num">0.156</td></tr><tr><td>差值：气味地图减结构地图 [95% 置信区间]</td><td class="num">0.109 [0.089, 0.129]</td><td class="num">0.041 [0.032, 0.049]</td></tr><tr class=""><td>参照：随机挑选的 15 个分子</td><td class="num">0.387</td><td class="num">0.059</td></tr><tr class=""><td>参照：降维前的预测概率空间</td><td class="num">0.782</td><td class="num">0.211</td></tr><tr class=""><td>参照：降维前的指纹空间</td><td class="num">0.708</td><td class="num">0.174</td></tr></tbody></table></div>
-      <p id="res-take" style="margin-top:10px" data-snap="res-take">两项指标上气味地图都高于结构地图，差值的 95% 置信区间（配对 bootstrap，5000 次）都不包含 0；两张地图都远高于随机挑选（0.387）。降到二维会损失一部分邻近关系，结构地图损失更多：结构从 0.708 降到 0.647，气味只从 0.782 降到 0.756。</p>
+      <p id="res-take" class="mt-10" data-snap="res-take">两项指标上气味地图都高于结构地图，差值的 95% 置信区间（配对 bootstrap，5000 次）都不包含 0；两张地图都远高于随机挑选（0.387）。降到二维会损失一部分邻近关系，结构地图损失更多：结构从 0.708 降到 0.647，气味只从 0.782 降到 0.756。</p>
       <details class="supp small">
         <summary data-i18n="supp.summary">补充指标：主要预测描述词一致比例（有循环论证成分）</summary>
-        <p id="supp-text" style="margin-top:8px" data-snap="supp-text">对全部 5072 个分子，计算地图上最近 15 个邻居中主要预测描述词（预测概率最高的描述词）与它相同的比例：气味地图 0.696，结构地图 0.438。这个指标天然偏向气味地图，因为气味地图本身就是用这些预测概率画出来的，所以只作为补充，不作为结论依据。</p>
+        <p id="supp-text" class="mt-8" data-snap="supp-text">对全部 5072 个分子，计算地图上最近 15 个邻居中主要预测描述词（预测概率最高的描述词）与它相同的比例：气味地图 0.696，结构地图 0.438。这个指标天然偏向气味地图，因为气味地图本身就是用这些预测概率画出来的，所以只作为补充，不作为结论依据。</p>
       </details>
     </section>
 
@@ -115,7 +120,7 @@
       <p id="excluded-note" data-snap="excluded-note">本地图与「原料与替代物检索」使用同一个候选库，共 5072 个有机分子。已移除 47 个非风味分子：不含碳的无机物（包括硫化氢、氨、二氧化硫等无机气味物质）、有机硅（如 D6 硅氧烷，<span class="nobr">GC-MS</span> 色谱柱流失的常见杂质）、非挥发性物质，以及原始数据中只以混合物形式出现的条目（其气味标签描述的是混合物，不能对应到单个分子）。</p>
       <details class="small">
         <summary data-i18n="excluded.summary">查看移除的分子及原因</summary>
-        <ul id="excluded-list" style="margin-top:6px" data-snap="excluded-list"><li><b>无机物（不含碳，另含碳酸）</b> (32): hydrochloric acid, Ammonia, Water, sterile filtered, Hydrogen carbonate;hydron, Metaphosphoric Acid, Dihydrogen phosphate;hydron, Hydron;phosphono phosphate, Hydrogen sulfate;hydron, Hydron;sulfite, sulfur dioxide, Potassium Nitrate, Metasilicic acid, Silica, Tetraborate(2-), hydrogen peroxide, Perborate(2-), Orthosilicic acid, hydrogen sulfide, Aluminum Cation, Helium, Potassium Cation, Nitrous Oxide, Calcium Iodate, Bismuth-oxygen, Calcium Oxide, CID 73689919, Copper oxide, Magnesium Oxide, Titanium dioxide, Vanadium oxide (V2O5), Desitin, Zinc</li><li><b>原始数据只以混合物形式出现</b> (11): CID 524257, 1-(2,6,6-Trimethyl-2-cyclohexen-1-yl)-3-pentanone, 1-(5-Cyanopyridin-2-yl)-3-[2-(6-fluoro-2-hydroxy-3-propanoylphenyl)cyclopropyl]urea, Glycerides, palm-oil mono- and di-, hydrogenated, 3-oxooctanoates, 3-Oxodecanoic acid, Glycerides, palm-oil mono- and di-, hydrogenated, 3-oxododecanoates, 3-Oxotetradecanoic acid, Methanediol, (2-methylphenyl)-, GlyTouCan:G09597LJ, 1,5-Dihydroxypentan-3-yl dihydrogen phosphate, Triethanolamine</li><li><b>非挥发性、与气味无关</b> (2): 1-Popc, Anthocyanins</li><li><b>有机硅</b> (2): Allyldimethylsilane, Dodecamethylcyclohexasiloxane</li></ul>
+        <ul id="excluded-list" class="mt-6" data-snap="excluded-list"><li><b>无机物（不含碳，另含碳酸）</b> (32): hydrochloric acid, Ammonia, Water, sterile filtered, Hydrogen carbonate;hydron, Metaphosphoric Acid, Dihydrogen phosphate;hydron, Hydron;phosphono phosphate, Hydrogen sulfate;hydron, Hydron;sulfite, sulfur dioxide, Potassium Nitrate, Metasilicic acid, Silica, Tetraborate(2-), hydrogen peroxide, Perborate(2-), Orthosilicic acid, hydrogen sulfide, Aluminum Cation, Helium, Potassium Cation, Nitrous Oxide, Calcium Iodate, Bismuth-oxygen, Calcium Oxide, CID 73689919, Copper oxide, Magnesium Oxide, Titanium dioxide, Vanadium oxide (V2O5), Desitin, Zinc</li><li><b>原始数据只以混合物形式出现</b> (11): CID 524257, 1-(2,6,6-Trimethyl-2-cyclohexen-1-yl)-3-pentanone, 1-(5-Cyanopyridin-2-yl)-3-[2-(6-fluoro-2-hydroxy-3-propanoylphenyl)cyclopropyl]urea, Glycerides, palm-oil mono- and di-, hydrogenated, 3-oxooctanoates, 3-Oxodecanoic acid, Glycerides, palm-oil mono- and di-, hydrogenated, 3-oxododecanoates, 3-Oxotetradecanoic acid, Methanediol, (2-methylphenyl)-, GlyTouCan:G09597LJ, 1,5-Dihydroxypentan-3-yl dihydrogen phosphate, Triethanolamine</li><li><b>非挥发性、与气味无关</b> (2): 1-Popc, Anthocyanins</li><li><b>有机硅</b> (2): Allyldimethylsilane, Dodecamethylcyclohexasiloxane</li></ul>
       </details>
     </section>
   </main>
