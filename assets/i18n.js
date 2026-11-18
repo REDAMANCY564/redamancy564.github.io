@@ -144,7 +144,8 @@
       const btn = document.getElementById("lang-toggle");
       if (btn) {
         btn.querySelectorAll("[data-lang]").forEach(s => s.classList.toggle("active", s.dataset.lang === I18N.lang));
-        btn.setAttribute("aria-label", "中/EN: " + (I18N.lang === "zh" ? "Switch to English" : "切换到中文"));
+        // Full meaning in both languages: on English phone pages under 360 px the button shows only "中"
+        btn.setAttribute("aria-label", "中/EN: " + (I18N.lang === "zh" ? "切换到英文 / Switch to English" : "Switch to Chinese / 切换到中文"));
       }
     },
     async setLang(lang) {
