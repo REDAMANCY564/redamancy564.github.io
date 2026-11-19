@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Layer parity test | Odor Predictor</title>
+  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="icon" href="../../favicon.ico" sizes="any">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <style>
+    .pass { color: #1a7f37; font-weight: 700; }
+    .fail { color: #c0392b; font-weight: 700; }
+    #summary { font-size: 1.25rem; margin: 16px 0; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1>Browser / Python layer parity test</h1>
+      <p class="muted">For the 50 test molecules of tests/parity.html: the tool page path (RDKit.js featurizer, then the
+        compact hand-over of handoff.js through a JSON round trip, rebuilt into X, E and mask) is run through
+        model/odor_mpnn.onnx with onnxruntime-web, and every output (h0 to h3, m1 to m3, both pools, probabilities)
+        is compared with the PyTorch reference written by training/process_site_data.py (parity_layers.bin).
+        Pass: rebuilt inputs equal the featurizer output exactly and every |difference| &le; 1e-4 &times; max(1, |reference|).</p>
+      <div id="summary" data-status="running">Running...</div>
+    </section>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>SMILES</th><th class="num">atoms</th><th>rebuild</th><th class="num">max rel. diff</th><th>worst output</th><th>result</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </main>
+  <script src="../../assets/vendor/rdkit/RDKit_minimal.js"></script>
+  <script src="../../assets/libs.js"></script>
+  <script src="../engine.js"></script>
+  <script src="../handoff.js"></script>
+  <script>
+    (async function () {
+      const summary = document.getElementById("summary");
+      try {
+        const [rdkit, spec, index, blob] = await Promise.all([
+          initRDKitModule({ locateFile: () => new URL("../../assets/vendor/rdkit/RDKit_minimal.wasm", location.href).href }),
+          fetch("../model/feature_spec.json").then(r => r.json()),
+          fetch("parity_layers.json").then(r => r.json()),
+          fetch("parity_layers.bin").then(r => r.arrayBuffer()),
+        ]);
+        const ref = new Float32Array(blob);
+        const session = await OdorEngine.loadModel("../model/" + spec.model_file);
+        const H = index.hidden, L = index.num_labels;
+        const eq = (a, b) => a.length === b.length && a.every((x, k) => x === b[k]);
+        const rows = [];
+        let passed = 0, off = 0;
+        for (const [idx, fx] of index.molecules.entries()) {
+          const n = fx.n;
+          const parts = [];
+          for (const k of ["h0", "h1", "h2", "h3", "m1", "m2", "m3"]) { parts.push([k, n * H]); }
+          parts.push(["pool_mean", H], ["pool_max", H], ["probs", L]);
+          let worst = 0, worstName = "", rebuilt = false, ok = false, err = "";
+          try {
+            const { mol } = OdorEngine.parseLargestFragment(rdkit, fx.smiles);
+            const feats = OdorEngine.featurizeMol(mol, spec);
+            const coords = ProcessHandoff.coordsOf(mol);
+            mol.delete();
+            if (feats.numAtoms !== n) throw new Error("atom count " + feats.numAtoms + " vs " + n);
+            const moved = ProcessHandoff.decode(JSON.parse(JSON.stringify(ProcessHandoff.encode(feats, spec, fx.smiles, coords))), spec);
+            rebuilt = eq(moved.X, feats.X) && eq(moved.E, feats.E) && eq(moved.mask, feats.mask) && moved.numAtoms === n;
+            const out = await ProcessHandoff.runAll(session, moved, spec);
+            let o = off;
+            for (const [k, len] of parts) {
+              const got = out[k];
+              for (let q = 0; q < len; q++) {
+                const r = ref[o + q], d = Math.abs(got[q] - r) / Math.max(1, Math.abs(r));
+                if (d > worst) { worst = d; worstName = k; }
+              }
+              // padding rows of the atom outputs are exactly 0
+              if (len === n * H) for (let q = n * H; q < got.length; q++) if (got[q] !== 0) { worst = Infinity; worstName = k + " padding"; }
+              o += len;
+            }
+            ok = rebuilt && worst <= 1e-4;
+          } catch (e) {
+            err = String(e.message || e);
+          }
+          off += parts.reduce((s, p) => s + p[1], 0);
+          if (ok) passed++;
+          rows.push("<tr><td>" + (idx + 1) + "</td><td class=\"mono\">" + fx.smiles.replace(/</g, "&lt;") + "</td><td class=\"num\">" + n +
+            "</td><td>" + (rebuilt ? "exact" : "DIFFERENT") + "</td><td class=\"num\">" + worst.toExponential(1) + "</td><td>" + worstName +
+            "</td><td class=\"" + (ok ? "pass\">PASS" : "fail\">FAIL " + err) + "</td></tr>");
+        }
+        if (off !== ref.length) throw new Error("reference length " + ref.length + " vs used " + off);
+        document.getElementById("rows").innerHTML = rows.join("");
+        const total = index.molecules.length;
+        summary.textContent = (passed === total ? "PASS " : "FAIL ") + passed + "/" + total;
+        summary.className = passed === total ? "pass" : "fail";
+        summary.dataset.status = passed === total ? "pass" : "fail";
+      } catch (e) {
+        summary.textContent = "ERROR " + e;
+        summary.className = "fail";
+        summary.dataset.status = "error";
+      }
+    })();
+  </script>
+</body>
+</html>

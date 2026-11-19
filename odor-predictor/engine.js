@@ -183,6 +183,10 @@
     return ort.InferenceSession.create(modelUrl, { executionProviders: ["wasm"] });
   }
 
+  /** Outputs to fetch: only the probabilities. The odor model file also has the intermediate
+   *  outputs used by process.html (feature_spec.json extra_outputs); the tool pages never copy them out. */
+  function outputNames(spec) { return [spec.model_output.name]; }
+
   /** Model inputs for a batch of B molecules (arrays already concatenated). */
   function inputs(spec, B, X, AorE, mask) {
     const N = spec.max_atoms, F = spec.num_features;
@@ -193,7 +197,7 @@
   }
 
   async function predict(session, feats, spec) {
-    const out = await session.run(inputs(spec, 1, feats.X, isMpnn(spec) ? feats.E : feats.A, feats.mask));
+    const out = await session.run(inputs(spec, 1, feats.X, isMpnn(spec) ? feats.E : feats.A, feats.mask), outputNames(spec));
     return out[spec.model_output.name].data;
   }
 
@@ -220,7 +224,7 @@
         E.fill(0, off + r * N * FB, off + (r + 1) * N * FB);                  // row r
         for (let i = 0; i < N; i++) E.fill(0, off + (i * N + r) * FB, off + (i * N + r + 1) * FB);   // column r
       }
-      const out = await session.run(inputs(spec, b, X, E, mask));
+      const out = await session.run(inputs(spec, b, X, E, mask), outputNames(spec));
       P.push(out[spec.model_output.name].data);
     }
     const L = P[0].length / Math.min(CHUNK, B);
@@ -273,7 +277,7 @@
       X: new ort.Tensor("float32", X, [B, N, F]),
       A: new ort.Tensor("float32", A, [B, N, N]),
       mask: new ort.Tensor("float32", mask, [B, N]),
-    });
+    }, outputNames(spec));
     const P = out[spec.model_output.name].data, L = P.length / B;
     const probs = P.slice(0, L);
     const contrib = [];
