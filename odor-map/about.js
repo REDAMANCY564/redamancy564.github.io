@@ -83,6 +83,7 @@
     const key = e === frames.best_epoch ? "train.epoch_final" : "train.epoch";
     const text = I18N.t(key, { n: e });
     if (text !== shown) { epochEl.textContent = text; shown = text; }
+    curveAt(e, false);
   }
   let ticking = false;
   function tick() {
@@ -117,9 +118,97 @@
     }
   }
 
+  // ---------- curves under the video (data/training_frames.json "curve", make_training_video.py curve) ----------
+  // Two panels on one epoch axis (no second y-axis): validation macro AUROC for every epoch, and the change
+  // in predictions per epoch between saved checkpoints. Epoch 1 (from the untrained model) is far above the
+  // others and is written as text instead of stretching the scale. A cursor follows the video's epoch;
+  // pointer / touch on the chart shows the values of the nearest epoch.
+  const C = frames.curve, NS = "http://www.w3.org/2000/svg", ACC = "#0f6e6e", MUT = "#6b6f76", GRID = "#e4e1da";
+  const aucOf = new Map(C.auroc), lastEpoch = C.stopped;
+  const changeOf = e => { for (const [b, v] of C.change) if (e <= b) return e === 0 ? null : v; return null; };
+  const svg = $("train-curve-svg"), readout = $("train-readout");
+  let geo = null, cursor = null, hovering = false, videoEpoch = frames.best_epoch;
+  const mk = (tag, attrs, parent) => {
+    const n = document.createElementNS(NS, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(n);
+    return n;
+  };
+  const txt = (parent, x, y, str, attrs) => { const n = mk("text", Object.assign({ x, y }, attrs || {}), parent); n.textContent = str; return n; };
+  const fmtA = v => v.toFixed(3), fmtC = v => v.toFixed(4);
+  function renderCurve() {
+    svg.textContent = "";
+    const W = Math.max(280, Math.min(560, svg.parentElement.clientWidth || 560));
+    // rows above the first panel: its title, then the epoch-marker labels (two rows on narrow screens)
+    const narrow = W < 420, L = 40, R = 10, top = narrow ? 66 : 48, ph = 96, gap = 62, H = top + 2 * ph + gap + 34;
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    svg.setAttribute("width", W);
+    svg.setAttribute("height", H);
+    const x = e => L + (W - L - R) * e / lastEpoch;
+    const panels = [
+      { y0: top, title: I18N.t("train.curve_auc"), lo: 0.45, hi: 0.9, ticks: [0.5, 0.6, 0.7, 0.8, 0.9], fmt: v => v.toFixed(1),
+        pts: C.auroc, from: 0 },
+      { y0: top + ph + gap, title: I18N.t("train.curve_change"), lo: 0, hi: 0.03, ticks: [0, 0.01, 0.02, 0.03], fmt: v => v === 0 ? "0" : v.toFixed(2),
+        pts: C.change.filter(([e]) => e >= 2), from: 2 },
+    ];
+    // epoch markers: best (26) and early stopping (46), labels on two rows above the first panel
+    [[C.best, I18N.t("train.curve_best", { n: C.best }), 0], [lastEpoch, I18N.t("train.curve_stop", { n: lastEpoch }), 1]].forEach(([e, label, row]) => {
+      const ly = narrow ? (row ? top - 8 : top - 26) : top - 8;
+      mk("line", { x1: x(e), x2: x(e), y1: ly - 10, y2: top + 2 * ph + gap, stroke: MUT, "stroke-width": 1, "stroke-dasharray": "3 3" }, svg);
+      txt(svg, x(e) - 4, ly, label, { "text-anchor": "end", class: "tc-mark" });
+    });
+    for (const P of panels) {
+      const y = v => P.y0 + ph * (1 - (Math.min(v, P.hi) - P.lo) / (P.hi - P.lo));
+      txt(svg, L, P === panels[0] ? 14 : P.y0 - 28, P.title, { class: "tc-title" });
+      for (const tv of P.ticks) {
+        mk("line", { x1: L, x2: W - R, y1: y(tv), y2: y(tv), stroke: GRID, "stroke-width": 1 }, svg);
+        txt(svg, L - 6, y(tv) + 4, P.fmt(tv), { "text-anchor": "end", class: "tc-tick" });
+      }
+      mk("polyline", { points: P.pts.map(([e, v]) => x(e).toFixed(1) + "," + y(v).toFixed(1)).join(" "), fill: "none", stroke: ACC,
+        "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+      if (P === panels[1]) {
+        P.pts.forEach(([e, v]) => mk("circle", { cx: x(e), cy: y(v), r: 2.5, fill: ACC }, svg));
+        txt(svg, L, P.y0 - 10, I18N.t("train.curve_first", { v: fmtC(C.change[0][1]).replace(/0+$/, "") }), { class: "tc-tick" });
+      }
+      P.y = y;
+    }
+    // shared epoch axis under the second panel
+    const yAxis = top + 2 * ph + gap;
+    [0, 10, 20, C.best, 30, 40, lastEpoch].forEach(e => txt(svg, x(e), yAxis + 16, String(e), { "text-anchor": "middle", class: "tc-tick" + (e === C.best ? " tc-best" : "") }));
+    txt(svg, W - R, yAxis + 32, I18N.t("train.curve_x"), { "text-anchor": "end", class: "tc-tick" });
+    cursor = mk("line", { y1: top, y2: yAxis, stroke: ACC, "stroke-width": 1, opacity: 0.6 }, svg);
+    const hitR = mk("rect", { x: L, y: top, width: W - L - R, height: yAxis - top, fill: "transparent" }, svg);
+    geo = { x, L, W, R, panels };
+    const pick = ev => {
+      const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * W / r.width;
+      return Math.max(0, Math.min(lastEpoch, Math.round((px - L) / (W - L - R) * lastEpoch)));
+    };
+    hitR.addEventListener("pointermove", ev => { hovering = true; curveAt(pick(ev), true); });
+    hitR.addEventListener("pointerdown", ev => { hovering = true; curveAt(pick(ev), true); });
+    hitR.addEventListener("pointerleave", () => { hovering = false; curveAt(videoEpoch, false); });
+    // the same numbers as a table for screen readers
+    const tb = $("train-curve-table");
+    tb.textContent = "";
+    const head = tb.insertRow();
+    [I18N.t("train.curve_epoch"), I18N.t("train.curve_auc"), I18N.t("train.curve_change")].forEach(h => { const th = document.createElement("th"); th.textContent = h; head.appendChild(th); });
+    C.auroc.forEach(([e, a]) => { const row = tb.insertRow(); const c = changeOf(e); [e, fmtA(a), c == null ? "" : fmtC(c)].forEach(v => { row.insertCell().textContent = v; }); });
+    curveAt(videoEpoch, false);
+  }
+  function curveAt(e, fromPointer) {
+    if (!fromPointer) { videoEpoch = e; if (hovering) return; }
+    if (!geo || !cursor) return;
+    cursor.setAttribute("x1", geo.x(e));
+    cursor.setAttribute("x2", geo.x(e));
+    const c = changeOf(e);
+    readout.textContent = I18N.t("train.curve_read", { n: e, a: fmtA(aucOf.get(e)), c: c == null ? "–" : fmtC(c) });
+  }
+  let cw = 0;
+  window.addEventListener("resize", () => { const w = svg.parentElement.clientWidth; if (w !== cw) { cw = w; renderCurve(); } });
+
   function renderAll() {
     renderText();
     renderLegend();
+    renderCurve();
     shown = null;
     showEpoch();
   }
