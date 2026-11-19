@@ -23,10 +23,21 @@ Variants (python make_training_video.py frames):
                information from later frames enters the layout itself)
 Output: training/data/odormap/training_frames.npz, training_check.json
 
+Curve under the video (python make_training_video.py curve): validation macro AUROC for every epoch
+(epochs 1-46 from mpnn_results.json histories of the deployed seed, epoch 0 computed from its
+checkpoint) and the change in predictions per epoch: mean absolute difference of the 5,072 library
+molecules' predicted probabilities between consecutive saved checkpoints (all of them, also after the
+best epoch up to early stopping), divided by the number of epochs between them. Written into
+odor-map/data/training_frames.json ("curve"); run after "video", which rewrites that file.
+
 Rendering (python make_training_video.py video [variant]):
   keyframes are scaled like make_site_data.scale(); the last frame is decoded from coords.bin itself
-  (checked: scale(maps.npz) quantized == coords.bin byte for byte). Between keyframes positions are
-  interpolated with ease-in-out, 0.5 s per step at 30 fps, 1 s still at the start and 2.5 s at the end.
+  (checked: scale(maps.npz) quantized == coords.bin byte for byte). Going backwards from the last frame,
+  every keyframe is rotated, uniformly scaled (to the same spread) and shifted as a whole onto the
+  (already aligned) next one (no reflection; the relative positions of the points are unchanged), which removes global turning and
+  drift between frames; the last frame is not touched. Between keyframes positions are interpolated with
+  ease-in-out, 0.5 s per training epoch (so a step of 2 epochs after epoch 10 takes 1 s) at 30 fps, 1 s
+  still at the start and 2.5 s at the end.
   Dots as on the page: radius 2.3 px at 900 px, other grey (alpha 0.55) first, then the 10 colours
   (alpha 0.82) in map.json order, white background, drawn at 2x and downsampled.
   Writes odor-map/media/training.mp4 (H.264, yuv420p, faststart), odor-map/media/training-poster.webp
@@ -99,6 +110,18 @@ def run_umap(P, init=None, n_epochs=None):
     kw = dict(PARAMS["odor"])
     return umap.UMAP(n_components=2, random_state=SEED, init=init if init is not None else "spectral",
                      n_epochs=n_epochs, **kw).fit_transform(P)
+
+
+def rigid_onto(A, B):
+    """Rotate (best least-squares rotation, no reflection), scale and shift A as a whole onto B.
+    The scale makes A's spread (root mean square distance from the centre) equal to B's; the least-squares
+    scale would shrink frames that match the next one poorly (the early epochs) towards their centre."""
+    a0, b0 = A - A.mean(0), B - B.mean(0)
+    U, S, Vt = np.linalg.svd(a0.T @ b0)
+    d = np.sign(np.linalg.det(U @ Vt))
+    R = U @ np.diag([1.0, d]) @ Vt
+    scale = np.sqrt((b0 ** 2).sum() / (a0 ** 2).sum())
+    return a0 @ R * scale + B.mean(0)
 
 
 def procrustes_onto(A, B):
@@ -199,6 +222,11 @@ def video(variant="chain"):
     # the page draws the (x, y) of coords.bin with y downwards, as here
     key = {e: scale(z[f"{variant}_{e}"]) for e in epochs}
     key[epochs[-1]] = coords.astype(np.float64) / 65535
+    for a, b in zip(reversed(epochs[:-1]), reversed(epochs[1:])):   # align backwards from the fixed last frame
+        key[a] = rigid_onto(key[a], key[b])
+    assert np.array_equal(np.round(key[epochs[-1]] * 65535).astype("<u2"), coords), "last frame changed"
+    lo = min(key[e].min() for e in epochs); hi = max(key[e].max() for e in epochs)
+    print(f"aligned coordinates range {lo:.3f} .. {hi:.3f} (drawn area 0..1 plus {MARGIN} margin)")
     kdir = OUT / "keyframes"
     kdir.mkdir(exist_ok=True)
     for e in epochs:
@@ -206,9 +234,11 @@ def video(variant="chain"):
 
     media = ROOT / "odor-map" / "media"
     media.mkdir(exist_ok=True)
-    per = int(round(STEP_S * FPS))
     plan = [(epochs[0], epochs[0], 0.0)] * int(HOLD_START_S * FPS)
+    starts = []   # time each step begins
     for a, b in zip(epochs[:-1], epochs[1:]):
+        per = int(round(STEP_S * (b - a) * FPS))   # 0.5 s per training epoch
+        starts.append((len(plan) / FPS, per / FPS))
         plan += [(a, b, (k + 1) / per) for k in range(per)]
     plan += [(epochs[-1], epochs[-1], 0.0)] * int(HOLD_END_S * FPS)
     w = imageio_ffmpeg.write_frames(str(media / "training.mp4"), (SIZE, SIZE), fps=FPS, codec="libx264",
@@ -222,7 +252,7 @@ def video(variant="chain"):
     w.close()
     render(key[epochs[-1]], col, hexes).save(media / "training-poster.webp", "WEBP", quality=82, method=6)
     # caption: the epoch shown from each time on (the step to keyframe b counts as b once it is half done)
-    times = [{"t": round(HOLD_START_S + (i - 0.5) * STEP_S, 3) if i else 0.0, "epoch": e} for i, e in enumerate(epochs)]
+    times = [{"t": round(starts[i - 1][0] + starts[i - 1][1] / 2, 3) if i else 0.0, "epoch": e} for i, e in enumerate(epochs)]
     info = {"fps": FPS, "duration_s": round(len(plan) / FPS, 3), "best_epoch": epochs[-1], "keyframes": times,
             "variant": variant, "source": "training/odormap/make_training_video.py"}
     (ROOT / "odor-map" / "data" / "training_frames.json").write_text(json.dumps(info), encoding="utf-8")
@@ -230,5 +260,47 @@ def video(variant="chain"):
           f"{len(plan) / FPS:.1f} s; poster {(media / 'training-poster.webp').stat().st_size / 1e3:.0f} kB")
 
 
+def curve():
+    sys.path.insert(0, str(ROOT / "training"))
+    from evaluate import load_split, macro_auroc
+    res = json.loads((ROOT / "training" / "mpnn_results.json").read_text(encoding="utf-8"))
+    seed = res["mpnn"]["seeds"][2]
+    assert seed["seed"] == 2
+    best, stopped = int(seed["best_epoch"]), int(seed["epochs_run"])
+    hist = res["histories"]["seed2"]
+    saved = sorted(int(p.stem[5:]) for p in FRAMES_DIR.glob("epoch*.pt"))
+    assert saved[-1] == stopped and best in saved
+    # epoch 0 (untrained) on the validation set, from its checkpoint
+    smiles, _, Y, split, _ = load_split()
+    va = split == "valid"
+    Xv, Ev, Mv = featurize_many(list(np.array(smiles)[va]))
+    ck = torch.load(CKPT, map_location="cpu")
+    model = OdorMPNN(ck["num_features"], NUM_BOND_FEATURES, len(ck["labels"]), **ck["config"]).eval()
+    model.load_state_dict(torch.load(FRAMES_DIR / "epoch000.pt", map_location="cpu"))
+    with torch.no_grad():
+        p0 = torch.sigmoid(model(*(torch.from_numpy(a) for a in (Xv, Ev, Mv)))).numpy()
+    auc = [[0, round(float(macro_auroc(Y[va], p0)), 4)]] + [[int(h[0]), round(float(h[2]), 4)] for h in hist]
+    # raw probabilities (not rounded) of the library molecules at every saved checkpoint
+    lib = json.loads((DATA / "ingredient" / "library.json").read_text(encoding="utf-8"))["molecules"]
+    X, E, M = featurize_many([r["smiles"] for r in lib])
+    dev = "cuda" if torch.cuda.is_available() else "cpu"
+    model.to(dev)
+    P = {}
+    for e in saved:
+        model.load_state_dict(torch.load(FRAMES_DIR / f"epoch{e:03d}.pt", map_location=dev))
+        with torch.no_grad():
+            P[e] = np.concatenate([torch.sigmoid(model(*(torch.from_numpy(a[i:i + 256]).to(dev) for a in (X, E, M))))
+                                   .cpu().numpy() for i in range(0, len(X), 256)]).astype(np.float64)
+    change = [[b, round(float(np.abs(P[b] - P[a]).mean()) / (b - a), 5)] for a, b in zip(saved[:-1], saved[1:])]
+    switch = [[b, round(float((P[a].argmax(1) != P[b].argmax(1)).mean()), 3)] for a, b in zip(saved[:-1], saved[1:])]
+    path = ROOT / "odor-map" / "data" / "training_frames.json"
+    info = json.loads(path.read_text(encoding="utf-8"))
+    info["curve"] = {"auroc": auc, "change": change, "top1_switch": switch, "best": best, "stopped": stopped,
+                     "patience": stopped - best, "n_molecules": len(lib),
+                     "change_definition": "mean |p_b - p_a| over molecules x 138 descriptors, divided by b - a"}
+    path.write_text(json.dumps(info), encoding="utf-8")
+    print("curve: auroc", auc[0], auc[best], auc[-1], "change", change[:3], change[-2:])
+
+
 if __name__ == "__main__":
-    {"frames": frames, "video": video}[sys.argv[1]](*sys.argv[2:])
+    {"frames": frames, "video": video, "curve": curve}[sys.argv[1]](*sys.argv[2:])
