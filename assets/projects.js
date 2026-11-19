@@ -94,9 +94,10 @@
     });
 
     // The full project names are long, so the tab shows the number and the short name (hero.short)
-    // sub-pages put their tab name first: method page, regulatory lookup (flavor knowledge base), intensity curves (GC-MS)
+    // sub-pages put their tab name first: method page, regulatory lookup (flavor knowledge base), intensity curves (GC-MS),
+    // how it predicts (odor predictor)
     const sub = /about\.html$/.test(location.pathname) ? "nav.about" : /regulatory\.html$/.test(location.pathname) ? "nav.reg"
-      : /curves\.html$/.test(location.pathname) ? "nav.curves" : null;
+      : /curves\.html$/.test(location.pathname) ? "nav.curves" : /process\.html$/.test(location.pathname) ? "nav.process" : null;
     function setTitle() {
       const t = I18N.t;
       document.title = (sub ? t(sub) + " | " : "") + n + " " + t("hero.short") + " | " + t("site.name");
@@ -204,7 +205,29 @@
     I18N.onChange(render);
   }
 
+  // Project tabs: on narrow screens the bar may scroll sideways (style.css); keep the current tab in view
+  // and fade the side where more tabs are hidden
+  function tabEdges(nav) {
+    const max = nav.scrollWidth - nav.clientWidth;
+    nav.classList.toggle("more-left", max > 1 && nav.scrollLeft > 1);
+    nav.classList.toggle("more-right", max > 1 && nav.scrollLeft < max - 1);
+  }
+  function tabsIntoView() {
+    document.querySelectorAll(".proj-tabs").forEach(nav => {
+      if (!nav.dataset.edges) { nav.dataset.edges = "1"; nav.addEventListener("scroll", () => tabEdges(nav), { passive: true }); }
+      const cur = nav.querySelector("a[aria-current]");
+      if (!cur || nav.scrollWidth <= nav.clientWidth) nav.scrollLeft = 0;
+      else {
+        const n = nav.getBoundingClientRect(), c = cur.getBoundingClientRect();
+        nav.scrollLeft += (c.left + c.width / 2) - (n.left + n.width / 2);
+      }
+      tabEdges(nav);
+    });
+  }
+
   window.SITE = { PROJECTS, esc, doiLink, renderDirectory, renderProjects };
   numberPage();
-  I18N.ready.then(() => { tableHints(); floatingToc(); });
+  I18N.ready.then(() => { tableHints(); floatingToc(); tabsIntoView(); });
+  I18N.onChange(tabsIntoView);
+  window.addEventListener("resize", tabsIntoView);
 })();

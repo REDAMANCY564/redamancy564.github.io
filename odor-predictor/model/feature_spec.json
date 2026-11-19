@@ -100,5 +100,19 @@
     "update": "res",
     "dropout": 0.2,
     "seed": 2
+  },
+  "extra_outputs": {
+    "names": [
+      "h0",
+      "h1",
+      "h2",
+      "h3",
+      "m1",
+      "m2",
+      "m3",
+      "pool_mean",
+      "pool_max"
+    ],
+    "note": "for the How it predicts page (process.html); the tool page fetches only probs. h0-h3 [B,64,H] atom states after embedding and layers 1-3, m1-m3 [B,64,H] message sums, pool_mean/pool_max [B,H]. Written by training/export_process_onnx.py"
   }
 }

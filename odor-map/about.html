@@ -23,11 +23,11 @@
   <meta name="twitter:title" content="方法与来源 | 5 气味地图 | 崔京伟">
   <meta name="twitter:description" content="Odor Space vs Structure Space Map of Flavor Molecules: how the map was made, how well it groups similar-smelling molecules, its limitations and data sources.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/odor-map.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261118d">
-  <script src="../assets/i18n.js?v=20261118d" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261119a">
+  <script src="../assets/i18n.js?v=20261119a" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="about.css?v=20261118d">
+  <link rel="stylesheet" href="about.css?v=20261119a">
 </head>
 <body>
   <header class="site-header">
@@ -82,7 +82,7 @@
       <p data-i18n="train.intro">下面的动画用训练过程中保存的模型，依次算出候选库 5,072 个分子的预测概率，再按与上方相同的方法降到二维。第 0 轮是随机初始化的模型，还没有学到气味；因为未训练的网络对结构相近的分子本来就会给出相近的输出，画面是十几个各色混杂的小团。最初两轮先变成几条混杂的长带，此后同一颜色的分子逐渐聚到一起，硫味分子最先分出来。最后一帧是网页上使用的模型（第 26 轮，验证集上最好），与工具页气味地图的位置完全相同。每个点的颜色固定为最终模型的主要预测描述词，便于看出同类分子怎样聚到一起。</p>
       <figure class="train-video">
         <div class="train-frame">
-          <video id="train-video" src="media/training.mp4?v=20261118d" poster="media/training-poster.webp?v=20261118d" width="800" height="800" muted playsinline controls preload="none" data-i18n-attr="aria-label:train.video_label" aria-label="气味地图在训练过程中逐渐成形的动画"></video>
+          <video id="train-video" src="media/training.mp4?v=20261119a" poster="media/training-poster.webp?v=20261119a" width="800" height="800" muted playsinline controls preload="none" data-i18n-attr="aria-label:train.video_label" aria-label="气味地图在训练过程中逐渐成形的动画"></video>
           <span class="train-epoch" id="train-epoch" aria-hidden="true"></span>
         </div>
         <ul class="train-legend" id="train-legend" data-i18n-attr="aria-label:train.legend_label" aria-label="颜色图例"></ul>
@@ -132,7 +132,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261118d" defer></script>
-  <script src="about.js?v=20261118d" defer></script>
+  <script src="../assets/projects.js?v=20261119a" defer></script>
+  <script src="about.js?v=20261119a" defer></script>
 </body>
 </html>

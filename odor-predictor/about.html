@@ -22,8 +22,8 @@
   <meta name="twitter:title" content="方法与来源 | 3 气味预测 | 崔京伟">
   <meta name="twitter:description" content="Method, results, limitations and data sources of Molecular Odor Descriptor Prediction with Graph Neural Networks.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/odor-predictor.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261118d">
-  <script src="../assets/i18n.js?v=20261118d" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261119a">
+  <script src="../assets/i18n.js?v=20261119a" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -57,16 +57,18 @@
       <p class="hero-full" data-i18n="hero.title">基于图神经网络的分子气味描述词预测</p>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool">工具</a>
+        <a href="process.html" data-i18n="nav.process">预测过程</a>
         <a href="about.html" data-i18n="nav.about" aria-current="page"><span class="nobr">方法与来源</span></a>
       </nav>
     </div>
     <nav class="toc">
       <a href="#overview" data-i18n="about.overview" data-no="3.1">概述</a>
       <a href="#method" data-i18n="about.method" data-no="3.2">方法</a>
-      <a href="#results" data-i18n="about.results" data-no="3.3">结果</a>
-      <a href="#tried" data-i18n="about.tried" data-no="3.4">试过但未采用</a>
-      <a href="#limits" data-i18n="about.limits" data-no="3.5">局限</a>
-      <a href="#data" data-i18n="about.data" data-no="3.6">数据、许可与引用</a>
+      <a href="#process" data-i18n="about.process" data-no="3.3">预测过程</a>
+      <a href="#results" data-i18n="about.results" data-no="3.4">结果</a>
+      <a href="#tried" data-i18n="about.tried" data-no="3.5">试过但未采用</a>
+      <a href="#limits" data-i18n="about.limits" data-no="3.6">局限</a>
+      <a href="#data" data-i18n="about.data" data-no="3.7">数据、许可与引用</a>
     </nav>
 
     <section id="overview">
@@ -92,8 +94,23 @@
       </div>
     </section>
 
+    <section id="process">
+      <h2 data-sec="1" data-i18n="about.process" data-no="3.3">预测过程</h2>
+      <div class="method-text">
+        <p data-i18n-html="pa.intro"><a href="process.html">预测过程</a>页用模型真实算出的数值，一步步展示它怎样从分子结构得到气味描述词。下面说明每一步对应模型的哪一部分，以及页面的显示方式。</p>
+        <p data-i18n-html="pa.s1"><b>输入。</b>每个原子用 6 项性质描述，编码成 26 个数：元素（C、N、O、S、F、Cl、Br、I、P 和其他，共 10 类）、连接的重原子数（0 到 5，更多按 5 计）、氢原子数（0 到 4）、电荷（−1、0、+1）、是否芳香、是否在环中。每个化学键用键型（单键、双键、三键、芳香键或其他）和是否在环中描述，编码成 6 个数。</p>
+        <p data-i18n-html="pa.s2"><b>输入嵌入。</b>同一个线性变换（再经 ReLU）把每个原子的 26 个数变成 256 个数。这时每个原子只反映自己的性质，性质相同的原子数值完全相同。</p>
+        <p data-i18n-html="pa.s3"><b>消息传递（3 层）。</b>在第 t 层，原子 j 经化学键传给相邻原子 i 的消息是 ReLU（U<sub>t</sub> h<sub>j</sub> + V<sub>t</sub> e<sub>ij</sub> + b<sub>t</sub>），h<sub>j</sub> 是 j 当前的 256 个数，e<sub>ij</sub> 是这条键的 6 个数。所以消息同时取决于邻居和键的类型：V<sub>t</sub> e<sub>ij</sub> + b<sub>t</sub> 一项只由键的类别决定，页面上“键型的作用”画的就是它。每个原子把收到的消息相加，再做残差更新：h<sub>i</sub> 加上 ReLU（W<sub>t</sub> [h<sub>i</sub>, 消息之和] + c<sub>t</sub>）。加上的部分不小于 0，所以每个数值逐层只增不减，同一列在各层表示同一个通道。三层各有自己的参数。</p>
+        <p data-i18n-html="pa.s4"><b>汇总。</b>对分子的所有原子取平均和最大值，各 256 个，合成整个分子的 512 个数。</p>
+        <p data-i18n-html="pa.s5"><b>输出。</b>两层全连接（512 到 512，经 ReLU，再到 138）加 sigmoid，得到 138 个描述词各自的概率。页面显示最高的 8 个，与工具页相同；全连接中间的 512 个数没有画出。</p>
+        <p data-i18n-html="pa.field"><b>视野范围。</b>第 t 层后，一个原子的结果只受 t 个键以内的原子，以及这些原子之间化学键的影响；3 层后最远到 3 个键外，更远的结构只在汇总时合到一起。这一点在模型上做实验核实过：把癸烷链端的碳换成氮，第 1、2、3 层分别只有距它 1、2、3 个键以内的原子数值改变，其余原子的差值正好为 0；只把链中间的一个单键改成双键、原子性质不变，第 1 层只改变这条键两端的 2 个原子，第 2 层扩大到两侧各 1 个键，第 3 层到两侧各 2 个键。生成页面数据时每次都重做这个检查。</p>
+        <p data-i18n-html="pa.display"><b>显示方式。</b>颜色只表示数值大小，按平方根映射。原子的四层结果共用一个刻度，以训练集（3,910 个分子、47,944 个原子）第 3 层全部数值的第 99 百分位 3.278 为最深色，因为残差更新只会让数值变大；消息之和、平均、最大各用自己的第 99 百分位（2.036、1.940、6.008）；键型的作用可正可负，用两种颜色。256 列的顺序按训练集原子第 3 层数值的相关距离（1 − r）做平均连接聚类并取最优叶序，相关的列挨在一起，四层用同一个顺序。这些只是显示方式，不改变任何数值；单个格子没有对应的化学含义。</p>
+        <p data-i18n-html="pa.values"><b>数值来源。</b>示例分子（工具页的 10 个预设分子和甲硫醇）事先用同一个模型文件算好，保留 4 位小数，打开页面不加载模型。其他分子从工具页结果下方的“看预测过程”进入：工具页只把模型输入（原子和化学键的编码、二维坐标、SMILES）存入浏览器的会话存储，预测过程页用与工具页同一个模型文件在浏览器里算出各层。模型文件同时输出各层的中间结果，工具页只取最后的概率，换用这个文件前后工具页的预测逐位相同。浏览器和 Python 的逐层结果在 50 个测试分子上一致（最大相对差 3e-6），预测过程页显示的 8 个描述词和概率与工具页相同。</p>
+      </div>
+    </section>
+
     <section id="results">
-      <h2 data-sec="1" data-i18n="about.results" data-no="3.3">结果</h2>
+      <h2 data-sec="1" data-i18n="about.results" data-no="3.4">结果</h2>
       <p data-i18n="results.intro">模型效果用 AUROC 衡量：随机取一个具有某描述词的分子和一个不具有的分子，AUROC 就是模型给前者打分更高的概率。0.5 相当于随机猜测，1.0 为完美。下表是 488 个测试分子上、138 个描述词的平均值。</p>
       <div class="table-wrap">
         <table>
@@ -135,7 +152,7 @@
     </section>
 
     <section id="tried">
-      <h2 data-sec="1" data-i18n="about.tried" data-no="3.4">试过但未采用</h2>
+      <h2 data-sec="1" data-i18n="about.tried" data-no="3.5">试过但未采用</h2>
 
       <p data-i18n-html="ablation.intro">参考 PharmaGNN（Liu et al., <i>J Sci Food Agric</i> 106, 8114-8120, 2026, <a href="https://doi.org/10.1002/jsfa.70826" target="_blank" rel="noopener">doi:10.1002/jsfa.70826</a>）的两个思路做了对照实验：一是改用非对称损失（ASL），让训练更关注稀有的描述词；二是给每个原子加上氢键供体、氢键受体、疏水基团三个药效团标记（采用 RDKit 的标准定义，浏览器中可以完全一致地算出）。原文中基于三维构象的电荷、logP 等描述符无法在浏览器中一致地计算，没有采用。四组设置使用同一骨架划分，各<span class="nobr">训练 3 次</span>：</p>
       <div class="table-wrap">
@@ -155,7 +172,7 @@
     </section>
 
     <section id="limits">
-      <h2 data-sec="1" data-i18n="about.limits" data-no="3.5">局限</h2>
+      <h2 data-sec="1" data-i18n="about.limits" data-no="3.6">局限</h2>
       <ul class="plain">
         <li data-i18n-html="limits.4">对于和训练数据差异很大的环系骨架，预测效果明显变弱（AUROC 约 0.81）。</li>
         <li data-i18n-html="limits.6"><b>不可用于安全性判断。</b>模型不涉及毒性、致敏性或法规状态；页面另外显示的欧盟、中国和美国法规状态来自官方名单，<span class="nobr">仅供参考</span>。</li>
@@ -163,7 +180,7 @@
     </section>
 
     <section id="data">
-      <h2 data-sec="1" data-i18n="about.data" data-no="3.6">数据、许可与引用</h2>
+      <h2 data-sec="1" data-i18n="about.data" data-no="3.7">数据、许可与引用</h2>
       <p data-i18n-html="footer.data"><b>数据与致谢：</b>模型用 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC 协议）的数据训练，由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅供非商业<span class="nobr">学术演示</span>。</b></p>
       <p data-i18n-html="footer.thr"><b>气味阈值：</b>L.J. van Gemert, Odour Thresholds: Compilations of Odour Threshold Values in Air, Water and Other Media, 2nd ed., Oliemans Punter &amp; Partners, 2011。代表值优先取自其中收录的 Czerny et al., <i>Eur. Food Res. Technol.</i> 228, 265-273 (2008)。</p>
       <p data-i18n-html="footer.ref"><b>相关文献：</b>Lee et al., A principal odor map unifies diverse tasks in olfactory perception, <i>Science</i> 381, 999-1006 (2023). <a href="https://doi.org/10.1126/science.ade4401" target="_blank" rel="noopener">doi:10.1126/science.ade4401</a>；Liu et al., PharmaGNN: a model for odor prediction based on graph neural networks, <i>J Sci Food Agric</i> 106, 8114-8120 (2026). <a href="https://doi.org/10.1002/jsfa.70826" target="_blank" rel="noopener">doi:10.1002/jsfa.70826</a></p>
@@ -176,7 +193,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261118d" defer></script>
-  <script src="about.js?v=20261118d" defer></script>
+  <script src="../assets/projects.js?v=20261119a" defer></script>
+  <script src="about.js?v=20261119a" defer></script>
 </body>
 </html>
