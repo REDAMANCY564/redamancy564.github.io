@@ -56,7 +56,7 @@
         <a href="process.html" data-i18n="nav.process" aria-current="page">预测过程</a>
         <a href="about.html" data-i18n="nav.about"><span class="nobr">方法与来源</span></a>
       </nav>
-      <p class="sub" data-i18n="proc.sub">一步步看图神经网络怎样从分子结构算出气味描述词。画面里的每个数值都是模型真实算出的结果。</p>
+      <p class="sub" data-i18n="proc.sub">一步步看图神经网络怎样从分子结构算出气味描述词。画面里的每个数值都是模型真实算出<span class="nobr">的结果</span>。</p>
     </section>
 
     <section class="section" id="pp-stage-wrap">
@@ -99,7 +99,7 @@
                 <defs><linearGradient id="pp-ramp" x1="0" x2="1"><stop offset="0" stop-color="#f1efe9"/><stop offset=".5" stop-color="#6fb3ab"/><stop offset="1" stop-color="#094545"/></linearGradient></defs>
                 <rect x="0" y="0" width="160" height="10" fill="url(#pp-ramp)" stroke="#e4e1da"/>
                 <text x="0" y="26">0</text><text x="160" y="26" text-anchor="end" data-i18n="proc.legend_high">较大</text>
-                <rect x="176" y="0" width="10" height="10" fill="#c2410c"/><text x="190" y="9" data-i18n="proc.legend_new">新增</text>
+                <rect x="176" y="0" width="10" height="10" fill="#c2410c"/><text x="190" y="9" data-i18n="proc.legend_new">本层新增</text>
               </svg>
             </div>
           </div>
@@ -138,7 +138,7 @@
       <p class="small" data-i18n-html="proc.note_colour">颜色只表示数值大小：越深越大，0 为最浅。原子的四层结果共用一个刻度（训练集第 3 层数值的第 99 百分位为最深色，按平方根映射），因为残差更新只会让数值变大；超过这个值的画成最深色。消息之和、平均、最大各有<span class="nobr">自己的刻度</span>。</p>
       <p class="small" data-i18n="proc.note_order">256 列的顺序按训练集里各列数值的相关性排列，相关的列挨在一起，四层用同一个顺序。这只是显示方式，单个格子没有对应的化学含义。</p>
       <p class="small" data-i18n="proc.note_real">所有数值都是模型真实计算的结果（保留 4 位小数）。示例分子事先算好，打开这一页不加载模型。</p>
-      <p class="small" data-i18n-html="proc.note_more">模型结构、视野范围的实验和训练方法见<a href="about.html#process"><span class="nobr">方法与来源</span></a>。</p>
+      <p class="small" data-i18n-html="proc.note_more">模型结构、视野范围的实验和训练方法见<a href="about.html#process"><span class="nobr"><span class="nobr">方法与来源</span></span></a>。</p>
     </section>
   </main>
   <footer class="site-footer">
@@ -146,7 +146,10 @@
       <p data-i18n-html="footer.site">© 2026 崔京伟 · <a href="https://github.com/REDAMANCY564/redamancy564.github.io" target="_blank" rel="noopener">代码</a>（GitHub）</p>
     </div>
   </footer>
-  <script src="../assets/projects.js?v=20261118d" defer></script>
+  <script src="../assets/projects.js?v=20261119a" defer></script>
+  <script src="../assets/libs.js?v=20261118d" defer></script>
+  <script src="engine.js?v=20261119a" defer></script>
+  <script src="handoff.js?v=20261119a" defer></script>
   <script src="process.js?v=20261119a" defer></script>
 </body>
 </html>

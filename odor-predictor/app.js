@@ -184,6 +184,8 @@
     link.hidden = !current.pubchem_cid;
     if (current.pubchem_cid) link.href = "https://pubchem.ncbi.nlm.nih.gov/compound/" + current.pubchem_cid;
     $("mol-taste").href = "../taste-predictor/?q=" + encodeURIComponent(current.smiles) + "#demo";
+    const toProcess = "process.html" + I18N.keepLang("q=" + encodeURIComponent(current.smiles));
+    document.querySelectorAll("a.to-process").forEach(a => { a.href = toProcess; });
     $("mol-finder").href = "../ingredient-finder/?mode=b&smiles=" + encodeURIComponent(current.smiles);
     renderThreshold();
 
@@ -385,9 +387,11 @@
       // Featurize the canonical SMILES that is also drawn, so atom indices of the
       // contributions match the drawing (predictions do not depend on atom order)
       const canon = rd.get_mol(smiles);
-      let feats;
+      let feats, handoff;
       try {
         feats = OdorEngine.featurizeMol(canon, spec);
+        // model inputs for the "How it predicts" page (handoff.js), stored only when the visitor goes there
+        handoff = ProcessHandoff.encode(feats, spec, smiles, ProcessHandoff.coordsOf(canon));
       } finally {
         canon.delete();
       }
@@ -395,13 +399,14 @@
       const order = Array.from(probs.keys()).sort((a, b) => probs[b] - probs[a]).slice(0, TOP_K);
 
       current = {
-        source: "search", query: q, smiles, title, pubchem_cid: cid,
+        source: "search", query: q, smiles, title, pubchem_cid: cid, handoff,
         top: order.map(j => ({ label: labels[j].id, prob: probs[j] })),
         contrib: Object.fromEntries(order.map(j => [labels[j].id, contrib.map(c => c[j])])),
       };
       selected = current.top[0].label;
       const keys = [asSmiles ? "search.done_smiles" : "search.done_name"];
       if (fragmentsRemoved) keys.push("search.fragments");
+      if (fromProcess) keys.push("search.to_process");
       setSearchStatus(keys, { title, cid });
       renderSelect();
       renderDemo();
@@ -450,9 +455,28 @@
   ["pointerdown", "focusin", "keydown"].forEach(ev =>
     $("mol-svg").closest("section").addEventListener(ev, () => { if (!rdkitFailed) rdkitReady().catch(() => {}); }, { once: true, passive: true }));
 
-  // Shareable links: ?q=<name|CAS|SMILES> runs a search on load
-  const q0 = new URLSearchParams(location.search).get("q");
-  if (q0) {
+  // "How it predicts": a searched molecule hands its model inputs over in sessionStorage (same tab);
+  // presets need nothing, the page has them precomputed. If storing fails the page says so.
+  document.querySelectorAll("a.to-process").forEach(a => a.addEventListener("click", ev => {
+    if (current.source !== "search" || !current.handoff) return;
+    if (!ProcessHandoff.save(current.handoff)) {
+      ev.preventDefault();
+      location.href = "process.html" + I18N.keepLang("q=" + encodeURIComponent(current.smiles) + "&handoff=failed");
+    }
+  }));
+
+  // Shareable links: ?q=<name|CAS|SMILES> runs a search on load; the SMILES of a preset selects the
+  // preset (precomputed, no model loaded). from=process: sent here by the process page.
+  const params0 = new URLSearchParams(location.search);
+  const q0 = params0.get("q");
+  const fromProcess = params0.get("from") === "process";
+  const preset0 = q0 && presets.find(p => p.smiles === q0);
+  if (preset0) {
+    current = preset0;
+    selected = current.top[0].label;
+    renderSelect();
+    renderDemo();
+  } else if (q0) {
     $("search-input").value = q0;
     runSearch(q0);
   }

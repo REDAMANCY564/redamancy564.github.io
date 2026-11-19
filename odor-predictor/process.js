@@ -103,6 +103,16 @@
     return cache[id];
   }
   const atomName = (mol, i) => mol.atoms[i].el + (i + 1);
+  /** Centre of the molecular graph: smallest largest distance to any other atom (ties: smallest
+   *  sum of distances, then lowest index), so the receptive field grows to both sides. */
+  function centreAtom(mol) {
+    let best = 0, key = [Infinity, Infinity];
+    mol.dist.forEach((d, i) => {
+      const k = [Math.max(...d), d.reduce((a, b) => a + b, 0)];
+      if (k[0] < key[0] || (k[0] === key[0] && k[1] < key[1])) { best = i; key = k; }
+    });
+    return best;
+  }
 
   // ---------- clock (as research/research.js) ----------
   const ease = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
@@ -152,6 +162,11 @@
     const bondLen = lens.length ? lens[lens.length >> 1] : 1;
     const pad = 22, avail = Math.max(240, (molSvg.parentElement.clientWidth || 340) - 4);
     const k = Math.min(55 / bondLen, (avail - 2 * pad) / Math.max(maxX - minX, 0.01));
+    // crowded drawing (short bonds): carbons as small dots, heteroatom letters at 12 px, smaller rings
+    const bpx = k * bondLen, compact = bpx < 36;
+    const isC = i => mol.atoms[i].el === "C";
+    const trim = i => (compact ? (isC(i) ? 2 : 7) : 11);
+    const ringR = compact ? Math.max(6, bpx * 0.42) : 13;
     const w = Math.max((maxX - minX) * k + 2 * pad, 120), h = Math.max((maxY - minY) * k + 2 * pad, 80);
     const ox = (w - (maxX - minX) * k) / 2 - minX * k, oy = (h - (maxY - minY) * k) / 2 - minY * k;
     molSvg.setAttribute("viewBox", "0 0 " + w.toFixed(1) + " " + h.toFixed(1));
@@ -168,8 +183,7 @@
       let nx = -uy, ny = ux;
       const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
       if ((centre[0] - mx) * nx + (centre[1] - my) * ny < 0) { nx = -nx; ny = -ny; }
-      const sh = 11;   // trim near labelled atoms
-      const a = [x1 + ux * sh, y1 + uy * sh], c = [x2 - ux * sh, y2 - uy * sh];
+      const a = [x1 + ux * trim(b.i), y1 + uy * trim(b.i)], c = [x2 - ux * trim(b.j), y2 - uy * trim(b.j)];   // trim near labels
       const col = BOND_COLOUR[b.type];
       if (b.ring) el("line", { x1: a[0], y1: a[1], x2: c[0], y2: c[1], class: "ring-halo" }, gHalo);
       const line = (o, dash) => el("line", Object.assign({ x1: a[0] + nx * o, y1: a[1] + ny * o, x2: c[0] + nx * o, y2: c[1] + ny * o,
@@ -185,12 +199,17 @@
     });
     const atoms = mol.atoms.map((a, i) => {
       const [x, y] = P[i];
-      const field = el("circle", { cx: x, cy: y, r: 13, class: "atom-field", opacity: 0 }, gAtom);
-      el("circle", { cx: x, cy: y, r: 10, class: "atom-bg" }, gAtom);
-      const tx = el("text", { x: x, y: y, class: "atom-t el-" + (["C", "O", "N", "S"].includes(a.el) ? a.el : "X") }, gAtom);
-      tx.textContent = a.el;
-      const sel = el("circle", { cx: x, cy: y, r: 13, class: "atom-sel", opacity: 0 }, gAtom);
-      const hit = el("circle", { cx: x, cy: y, r: 16, class: "atom-hit" }, gHit);
+      const field = el("circle", { cx: x, cy: y, r: ringR, class: "atom-field", opacity: 0 }, gAtom);
+      let tx;
+      if (compact && a.el === "C") {
+        tx = el("circle", { cx: x, cy: y, r: 2.5, class: "atom-dot" }, gAtom);
+      } else {
+        el("circle", { cx: x, cy: y, r: compact ? 7 : 10, class: "atom-bg" }, gAtom);
+        tx = el("text", { x: x, y: y, class: "atom-t el-" + (["C", "O", "N", "S"].includes(a.el) ? a.el : "X") + (compact ? " sm" : "") }, gAtom);
+        tx.textContent = a.el;
+      }
+      const sel = el("circle", { cx: x, cy: y, r: ringR, class: "atom-sel", opacity: 0 }, gAtom);
+      const hit = el("circle", { cx: x, cy: y, r: compact ? Math.max(8, bpx * 0.5) : 16, class: "atom-hit" }, gHit);
       hit.addEventListener("click", () => selectAtom(i));
       return { field, sel, tx, x, y };
     });
@@ -373,6 +392,15 @@
     body.textContent = "";
     stripBlock(body, t("proc.row_mean"), S.mol.poolMean, v => seqColour(v, SCALE.pool_mean));
     stripBlock(body, t("proc.row_max"), S.mol.poolMax, v => seqColour(v, SCALE.pool_max));
+    // the two strips have their own scales, so their patterns look alike; the size differs:
+    // sum of the 256 means as a share of the sum of the 256 maxima
+    let sm = 0, sx = 0;
+    for (let c = 0; c < H; c++) { sm += S.mol.poolMean[c]; sx += S.mol.poolMax[c]; }
+    const note = document.createElement("p");
+    note.className = "pp-hint";
+    const cmp = t(S.mol.id === "diacetyl" ? "proc.pool_cmp_van" : S.mol.id === "vanillin" ? "proc.pool_cmp_dia" : "proc.pool_cmp_both");
+    setEndNobr(note, t("proc.pool_note", { name: I18N.pick(S.mol.name), p: sx > 0 ? Math.round(100 * sm / sx) : 0, cmp }));
+    body.appendChild(note);
     if (e === 0 && !reduced) {   // fade in through a CSS transition (process.css .pp-enter)
       pool.classList.add("pp-enter");
       requestAnimationFrame(() => requestAnimationFrame(() => pool.classList.remove("pp-enter")));
@@ -592,17 +620,105 @@
       picker.appendChild(b);
     }
   }
-  async function show(id, chain) {
-    S.mol = await loadPreset(id);
-    S.sel = 0;
-    drawMolecule(S.mol);
+  const toolTab = document.querySelector('.proj-tabs a[data-i18n="nav.tool"]');
+  const toolUrl = smiles => "./" + I18N.keepLang("q=" + encodeURIComponent(smiles));
+  function showMol(mol, chain) {
+    S.mol = mol;
+    S.sel = centreAtom(mol);
+    drawMolecule(mol);
     renderPicker();
-    $("pp-name").textContent = I18N.pick(S.mol.name);
+    const name = $("pp-name");
+    name.textContent = I18N.pick(mol.name);
+    name.classList.toggle("mono", !!mol.handed);
+    toolTab.href = toolUrl(mol.smiles);   // back to the tool with the same molecule
+    $("pp-handed").hidden = !mol.handed;
+    if (mol.handed) $("pp-handed").textContent = t("proc.handed");
     go(chain ? 0 : S.step, chain);
   }
+  async function show(id, chain) {
+    showMol(await loadPreset(id), chain);
+  }
 
-  // ---------- start: play once when the stage first comes into view ----------
-  await show("diacetyl", false);
+  // ---------- molecule handed over from the tool page (handoff.js) ----------
+  // Only the model inputs come through sessionStorage; every value is computed here with the same
+  // model file (model/odor_mpnn.onnx, same URL as the tool page, so usually from the browser cache).
+  async function computeHanded(obj) {
+    const spec = await getJson("model/feature_spec.json");
+    const feats = ProcessHandoff.decode(obj, spec);   // throws on incomplete data
+    let o;
+    try {
+      const session = await OdorEngine.loadModel("model/" + spec.model_file);
+      o = await ProcessHandoff.runAll(session, feats, spec);
+    } catch (e) {
+      console.error(e);
+      throw Object.assign(new Error("engine"), { code: "engine" });
+    }
+    const n = obj.n, F = spec.num_features;
+    const X = [];
+    for (let i = 0; i < n; i++) X.push(obj.X.slice(i * F, (i + 1) * F));
+    const bonds = obj.bonds.map(([i, j, v]) => Object.assign({ i, j }, bondInfo(v)));
+    const cut = a => Float32Array.from(a.subarray(0, n * H));
+    const probs = o.probs;
+    // same ranking as the tool page (app.js)
+    const order = Array.from(probs.keys()).sort((a, b) => probs[b] - probs[a]).slice(0, 8);
+    return {
+      id: null, handed: true, smiles: obj.smiles, name: { en: obj.smiles, zh: obj.smiles }, n, X,
+      atoms: X.map(decodeAtom), bonds, coords: obj.coords,
+      h: ["h0", "h1", "h2", "h3"].map(k => cut(o[k])), m: [null, cut(o.m1), cut(o.m2), cut(o.m3)],
+      poolMean: Float32Array.from(o.pool_mean), poolMax: Float32Array.from(o.pool_max),
+      top: order.map(j => ({ label: labels[j].id, prob: probs[j] })), dist: distances(n, bonds),
+    };
+  }
+  let msg = null;   // {key, smiles}: shown above the picker, re-translated on language change
+  function renderMsg() {
+    const box = $("pp-msg");
+    box.hidden = !msg;
+    if (!msg) return;
+    box.textContent = t(msg.key) + " ";
+    const a = document.createElement("a");
+    a.href = toolUrl(msg.smiles) + "#demo";
+    a.textContent = t("proc.msg.back");
+    box.appendChild(a);
+  }
+  function storageOk() {
+    try { sessionStorage.setItem("odor-process-test", "1"); sessionStorage.removeItem("odor-process-test"); return true; }
+    catch (e) { return false; }
+  }
+
+  // ---------- start ----------
+  // ?q=<SMILES>: a precomputed molecule is shown at once; any other molecule needs the inputs the tool
+  // page stored. Without them (opened directly) the visitor goes to the tool page first.
+  const params = new URLSearchParams(location.search);
+  const q = params.get("q");
+  let handed = null, first = "diacetyl";
+  if (q) {
+    const pre = index.find(x => x.smiles === q);
+    if (pre) first = pre.id;
+    else if (params.get("handoff") === "failed") msg = { key: "proc.msg.failed", smiles: q };
+    else if (!storageOk()) msg = { key: "proc.msg.storage", smiles: q };
+    else {
+      handed = ProcessHandoff.load(q);
+      if (!handed) {
+        location.replace("./" + I18N.keepLang("q=" + encodeURIComponent(q) + "&from=process") + "#demo");
+        return;
+      }
+    }
+  }
+  renderMsg();
+  if (handed) {
+    $("pp-handed").hidden = false;
+    $("pp-handed").textContent = t("proc.loading");
+    try {
+      showMol(await computeHanded(handed), false);
+    } catch (e) {
+      msg = { key: e.code === "engine" ? "proc.msg.engine" : "proc.msg.bad", smiles: q };
+      renderMsg();
+      $("pp-handed").hidden = true;
+      await show(first, false);
+    }
+  } else {
+    await show(first, false);
+  }
   clock.held = false;
   let started = false;
   const io = new IntersectionObserver(entries => {
@@ -625,6 +741,7 @@
     redraw();
   });
   I18N.onChange(() => { renderPicker(); markStep(); setPauseLabel(); $("pp-name").textContent = I18N.pick(S.mol.name);
+    renderMsg(); if (S.mol.handed) $("pp-handed").textContent = t("proc.handed");
     showLines(stepLines(STEPS[S.step]), stepLines(STEPS[S.step]).length); redraw(); });
   window.__process = { S, go, show };   // for tests and screenshots
 })();

@@ -75,6 +75,7 @@
       <p class="hero-full" data-i18n="hero.title">基于图神经网络的分子气味描述词预测</p>
       <nav class="proj-tabs" aria-label="Project">
         <a href="./" data-i18n="nav.tool" aria-current="page">工具</a>
+        <a href="process.html" class="to-process" id="tab-process" data-i18n="nav.process">预测过程</a>
         <a href="about.html" data-i18n="nav.about"><span class="nobr">方法与来源</span></a>
       </nav>
       <p class="sub" data-i18n="hero.sub">输入分子，图神经网络预测它的气味描述词。</p>
@@ -172,6 +173,7 @@ Q 69.8 54.7, 74.1 54.7
           <h3 data-i18n="demo.chart_title">预测概率最高的 8 个气味描述词</h3>
           <div class="chart-box"><canvas id="pred-chart" aria-label="Predicted odor descriptors"></canvas></div>
           <p class="small muted" data-i18n="demo.prob_note" style="margin-top:8px">每个描述词单独计算概率，所以加起来不等于 100%。</p>
+          <p class="small"><a href="process.html" class="to-process" id="mol-process" data-i18n="demo.process_link">看预测过程</a></p>
         </div>
       </div>
       <div class="note" id="mol-status"></div>
@@ -196,13 +198,14 @@ Q 69.8 54.7, 74.1 54.7
 
   <script src="../assets/vendor/chartjs/chart.umd.min.js" defer></script>
   <script src="../assets/libs.js?v=20261118d" defer></script>
-  <script src="engine.js?v=20261118d" defer></script>
+  <script src="engine.js?v=20261119a" defer></script>
+  <script src="handoff.js?v=20261119a" defer></script>
   <script src="../assets/projects.js?v=20261118d" defer></script>
   <script src="../assets/intensity.js?v=20261118d" defer></script>
   <script src="../flavor-kb/kb.js?v=20261118d" defer></script>
   <script src="../flavor-kb/kb-ui.js?v=20261118d" defer></script>
   <script src="../assets/contrib.js?v=20261118d" defer></script>
   <script src="../assets/regulatory.js?v=20261118d" defer></script>
-  <script src="app.js?v=20261118d" defer></script>
+  <script src="app.js?v=20261119a" defer></script>
 </body>
 </html>

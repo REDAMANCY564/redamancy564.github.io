@@ -10,8 +10,10 @@
 .pp-steps { list-style: none; padding: 0; margin: 0 0 var(--sp-2); display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
 .pp-steps button { width: 100%; font: inherit; font-size: .875rem; padding: 6px 4px; min-height: 40px; border: 1px solid var(--border); border-radius: var(--radius);
   background: var(--surface); color: var(--muted); cursor: pointer; }
-.pp-steps button:hover { border-color: var(--accent); color: var(--accent); }
-.pp-steps button[aria-current="step"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+/* hover only darkens the edge and text; the current step is filled, bold and has a bar along the bottom */
+.pp-steps button:hover { border-color: var(--field-border); color: var(--text); }
+.pp-steps button[aria-current="step"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 700;
+  box-shadow: inset 0 -3px 0 var(--accent); }
 @media (max-width: 599px) { .pp-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } .pp-steps button { font-size: .75rem; padding: 6px 2px; overflow-wrap: normal; word-break: keep-all; } }
 .pp-pos { white-space: nowrap; }
 
@@ -82,3 +84,6 @@
 @media (max-width: 599px), (pointer: coarse) { .pp-picker .chip-btn { min-height: 44px; } .pp-steps button, .pp-nav, .pp-act { min-height: 44px; } }
 @media (prefers-reduced-motion: no-preference) { .pp-pool { transition: opacity .8s ease-in-out; } }
 .pp-pool.pp-enter { opacity: 0; }
+#pp-name.mono { font-size: 1.125rem; overflow-wrap: anywhere; }
+.pp-mol .atom-t.sm { font-size: 12px; }
+.pp-mol .atom-dot { fill: var(--muted); }
