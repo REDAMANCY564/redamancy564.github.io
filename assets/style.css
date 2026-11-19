@@ -120,6 +120,24 @@ img, svg { max-width: 100%; }
 .proj-tabs a { padding: 6px 0; margin-bottom: -1px; color: var(--muted); text-decoration: none; border-bottom: 2px solid transparent; }
 .proj-tabs a:hover { color: var(--text); }
 .proj-tabs a[aria-current] { color: var(--text); border-bottom-color: var(--text); }
+/* Narrow screens: a tab name never wraps and the tabs sit closer; if they still do not fit, the bar
+   scrolls sideways (no scrollbar shown) and assets/projects.js scrolls the current tab into view.
+   The bottom line is an inset shadow, so the scroll box does not clip the current tab's underline. */
+.proj-tabs a { white-space: nowrap; }
+@media (max-width: 599px) {
+  .proj-tabs { gap: var(--sp-3); overflow-x: auto; overflow-y: hidden; scrollbar-width: none;
+    border-bottom: 0; box-shadow: inset 0 -1px 0 var(--border); }
+  .proj-tabs::-webkit-scrollbar { display: none; }
+  .proj-tabs a { flex: 0 0 auto; margin-bottom: 0; }
+  /* a short fade on the side where more tabs are hidden (classes set by assets/projects.js) */
+  .proj-tabs.more-right { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+  .proj-tabs.more-left { -webkit-mask-image: linear-gradient(to right, transparent, #000 28px);
+    mask-image: linear-gradient(to right, transparent, #000 28px); }
+  .proj-tabs.more-left.more-right { -webkit-mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
+}
+@media (max-width: 374px) { .proj-tabs { gap: 14px; } }
 
 .lang-toggle {
   font: inherit; font-size: 14px;
@@ -443,7 +461,8 @@ button.linklike.on { color: var(--text); font-weight: 600; text-decoration: none
 
 /* Phones and touch screens: tap areas of at least 44 x 44 px for navigation and single buttons. The
    visible size stays; an invisible ::after, centred on the element, extends the tap area. The gaps
-   between neighbours (header 12-24 px, tabs 24 px) leave room, so the areas do not overlap. Dense
+   between neighbours (header 12-24 px, tabs 14-16 px on phones) leave room, so the areas do not overlap
+   sideways (tab names are wider than 44 px); in the sideways-scrolling tab bar the tap area is as tall as the bar. Dense
    chips get 36 px with 8 px gaps (the containers set the gap). */
 @media (max-width: 599px), (pointer: coarse) {
   .site-header .brand, .site-nav a, .lang-toggle, .proj-tabs a, .pub-item .links a, a.help, a.mail-link { position: relative; }
