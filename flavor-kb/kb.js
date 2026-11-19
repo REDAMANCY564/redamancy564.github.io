@@ -16,23 +16,51 @@
   const STEREO_LAYERS = ["b", "t", "m", "s"];
 
   class ApiError extends Error {
-    constructor(code) { super(code); this.code = code; }  // network | not_found | bad_response
+    constructor(code) { super(code); this.code = code; }  // network | timeout | not_found | bad_response
+  }
+
+  // Europe PMC can take more than 15 s on slow networks (measured 16 s), so wait up to 60 s.
+  const TIMEOUT_MS = 60000;
+
+  // Successful responses are cached per request URL for this visit (memory + sessionStorage),
+  // so switching the sort order back or repeating a query does not send the request again.
+  const memCache = new Map();
+  const CACHE_PREFIX = "kb-api:";
+  function cacheGet(url) {
+    if (memCache.has(url)) return memCache.get(url);
+    try {
+      const s = sessionStorage.getItem(CACHE_PREFIX + url);
+      if (s) { const v = JSON.parse(s); memCache.set(url, v); return v; }
+    } catch (e) { /* storage blocked or bad entry: ignore */ }
+    return undefined;
+  }
+  function cachePut(url, v) {
+    memCache.set(url, v);
+    try { sessionStorage.setItem(CACHE_PREFIX + url, JSON.stringify(v)); } catch (e) { /* quota or blocked */ }
   }
 
   async function fetchJson(url, timeoutMs) {
+    const hit = cacheGet(url);
+    if (hit !== undefined) return hit;
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), timeoutMs || 15000);
-    let res;
+    let timedOut = false;
+    const timer = setTimeout(() => { timedOut = true; ctrl.abort(); }, timeoutMs || TIMEOUT_MS);
     try {
-      res = await fetch(url, { signal: ctrl.signal });
-    } catch (e) {
-      throw new ApiError("network");
+      let res;
+      try {
+        res = await fetch(url, { signal: ctrl.signal });
+      } catch (e) {
+        throw new ApiError(timedOut ? "timeout" : "network");
+      }
+      if (res.status === 404) throw new ApiError("not_found");
+      if (!res.ok) throw new ApiError("network");
+      let d;
+      try { d = await res.json(); } catch (e) { throw new ApiError(timedOut ? "timeout" : "bad_response"); }
+      cachePut(url, d);
+      return d;
     } finally {
-      clearTimeout(timer);
+      clearTimeout(timer);   // the timeout also covers reading the body
     }
-    if (res.status === 404) throw new ApiError("not_found");
-    if (!res.ok) throw new ApiError("network");
-    try { return await res.json(); } catch (e) { throw new ApiError("bad_response"); }
   }
 
   // ---------- Tier 1 data ----------
@@ -110,29 +138,79 @@
   }
 
   // ---------- Tier 2: Europe PMC literature search ----------
-  function quote(term) {
-    return '"' + String(term).replace(/"/g, "").replace(/\s*\(.*?\)\s*/g, " ").trim() + '"';
+  /**
+   * Name for a literature query: removes only notes written after a space in brackets, as in
+   * "Diacetyl (2,3-butanedione)" or "wine (red and white)"; brackets that are part of a chemical name,
+   * as in "3-(methylthio)propionaldehyde", stay. Returns null when what is left is not a complete name
+   * (empty, unbalanced brackets, or a separator left dangling by the removal).
+   */
+  function searchName(term) {
+    const src = String(term || "").replace(/"/g, "").trim();
+    let out = "", i = 0;
+    while (i < src.length) {
+      const sp = src.slice(i).match(/^\s+\(/);
+      if (sp) {
+        // find the matching closing bracket of this note (notes may contain brackets themselves)
+        let j = i + sp[0].length, depth = 1;
+        for (; j < src.length && depth; j++) depth += src[j] === "(" ? 1 : src[j] === ")" ? -1 : 0;
+        // a note ends the name or is followed by a space or ,; ; "methyl (9E,12Z)-octadeca…" and
+        // "ethyl (Z)hex-3-enoate" are names, not notes
+        if (depth === 0 && (j === src.length || /[\s,;]/.test(src[j]))) { i = j; continue; }   // drop " (…)"
+      }
+      out += src[i++];
+    }
+    out = out.replace(/\s+/g, " ").trim();
+    if (!out) return null;
+    let depth = 0;
+    for (const ch of out) {
+      depth += "([{".includes(ch) ? 1 : ")]}".includes(ch) ? -1 : 0;
+      if (depth < 0) return null;
+    }
+    if (depth !== 0) return null;
+    if (out !== src && /[,;:/]$/.test(out)) return null;   // "Foo, (note)" leaves "Foo,"
+    return out;
   }
 
-  /**
-   * names: compound names (OR-ed), food: optional food name.
-   * Returns {hitCount, results: [{title, journal, year, url}], searchUrl}.
-   */
-  async function literature(names, food, opts) {
+  function quote(name) { return '"' + name + '"'; }
+
+  /** Up to `max` distinct complete names (case-insensitive) for the query. */
+  function searchNames(names, max) {
+    const seen = new Set(), out = [];
+    for (const n of names) {
+      const s = searchName(n);
+      if (!s || seen.has(s.toLowerCase())) continue;
+      seen.add(s.toLowerCase());
+      out.push(s);
+      if (out.length >= max) break;
+    }
+    return out;
+  }
+
+  /** API and website URLs for one literature query (the website link is shown when the API fails). */
+  function literatureRequest(names, food, opts) {
     opts = opts || {};
     // All terms are restricted to title + abstract: full-text matching returns many off-topic papers.
-    const nameQ = "TITLE_ABS:(" + names.filter(Boolean).slice(0, 3).map(quote).join(" OR ") + ")";
+    // Names left incomplete by removing a bracketed note are not used; if none is complete, the first
+    // name is used as written.
+    let terms = searchNames(names.filter(Boolean), 3);
+    if (!terms.length) terms = names.filter(Boolean).slice(0, 1).map(n => String(n).replace(/"/g, "").trim());
+    const nameQ = "TITLE_ABS:(" + terms.map(quote).join(" OR ") + ")";
     const parts = [nameQ];
-    if (food) parts.push("TITLE_ABS:" + quote(food));
+    if (food) parts.push("TITLE_ABS:" + quote(searchName(food) || String(food).replace(/"/g, "").trim()));
     parts.push("TITLE_ABS:(aroma OR odor OR odour OR odorant OR odorants OR flavor OR flavour)");
     const query = parts.join(" AND ");
     const sort = opts.sort === "cited" ? "&sort=" + encodeURIComponent("CITED desc") : "";
-    const url = EPMC + "?format=json&resultType=lite&pageSize=" + (opts.pageSize || 8) + sort + "&query=" + encodeURIComponent(query);
-    const d = await fetchJson(url);
+    return {
+      url: EPMC + "?format=json&resultType=lite&pageSize=" + (opts.pageSize || 8) + sort + "&query=" + encodeURIComponent(query),
+      searchUrl: "https://europepmc.org/search?query=" + encodeURIComponent(query),
+    };
+  }
+
+  function literatureResult(d, searchUrl) {
     if (!d.resultList) throw new ApiError("bad_response");
     return {
       hitCount: d.hitCount || 0,
-      searchUrl: "https://europepmc.org/search?query=" + encodeURIComponent(query),
+      searchUrl,
       results: d.resultList.result.map(r => ({
         title: stripTags(r.title || ""),
         journal: r.journalTitle || r.bookOrReportDetails && r.bookOrReportDetails.publisher || "",
@@ -140,6 +218,23 @@
         url: r.doi ? "https://doi.org/" + r.doi : "https://europepmc.org/article/" + r.source + "/" + r.id,
       })),
     };
+  }
+
+  /**
+   * names: compound names (OR-ed), food: optional food name.
+   * Returns {hitCount, results: [{title, journal, year, url}], searchUrl}.
+   */
+  async function literature(names, food, opts) {
+    const req = literatureRequest(names, food, opts);
+    return literatureResult(await fetchJson(req.url), req.searchUrl);
+  }
+
+  /** The same result if this query was already answered during this visit, otherwise null (no request). */
+  function literatureCached(names, food, opts) {
+    const req = literatureRequest(names, food, opts);
+    const d = cacheGet(req.url);
+    if (d === undefined) return null;
+    try { return literatureResult(d, req.searchUrl); } catch (e) { return null; }
   }
 
   // ---------- Tier 3: DOI -> title, journal, abstract ----------
@@ -161,10 +256,16 @@
     return t;
   }
 
-  async function paper(doiInput) {
+  /**
+   * onStep(source, why): called before each lookup — ("epmc"), then ("crossref", "not_found" | "failed")
+   * when Europe PMC has no record of the DOI or could not be reached. Each lookup has its own timeout.
+   */
+  async function paper(doiInput, onStep) {
     const doi = cleanDoi(doiInput);
     if (!doi) throw new ApiError("bad_doi");
+    const step = onStep || (() => {});
     let epmcErr = null;
+    step("epmc");
     try {
       const d = await fetchJson(EPMC + "?format=json&resultType=core&pageSize=1&query=" + encodeURIComponent("DOI:" + doi));
       const r = d.resultList && d.resultList.result[0];
@@ -181,6 +282,7 @@
       epmcErr = e;
     }
     // Fallback: Crossref (abstract only if the publisher deposited one)
+    step("crossref", epmcErr ? "failed" : "not_found");
     try {
       const m = (await fetchJson(CROSSREF + encodeURIComponent(doi))).message;
       const issued = m.issued && m.issued["date-parts"] && m.issued["date-parts"][0];
@@ -246,5 +348,5 @@
     return segs;
   }
 
-  window.FlavorKB = { load, search, findByMol, stripStereo, literature, paper, matchText, cleanDoi, ApiError, compoundNames };
+  window.FlavorKB = { TIMEOUT_S: TIMEOUT_MS / 1000, load, search, findByMol, stripStereo, literature, literatureCached, literatureRequest, searchName, searchNames, paper, matchText, cleanDoi, ApiError, compoundNames };
 })();

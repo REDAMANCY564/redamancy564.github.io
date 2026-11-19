@@ -23,11 +23,11 @@
   <meta name="twitter:title" content="方法与来源 | 5 气味地图 | 崔京伟">
   <meta name="twitter:description" content="Odor Space vs Structure Space Map of Flavor Molecules: how the map was made, how well it groups similar-smelling molecules, its limitations and data sources.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/odor-map.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261119a">
+  <link rel="stylesheet" href="../assets/style.css?v=20261119e">
   <script src="../assets/i18n.js?v=20261119b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="about.css?v=20261119b">
+  <link rel="stylesheet" href="about.css?v=20261119e">
 </head>
 <body>
   <header class="site-header">
@@ -78,7 +78,7 @@
       <h3 data-sec="2" data-i18n="params.title" data-no="5.2.1">地图参数</h3>
       <p data-i18n="params.text">两张地图都用 UMAP 降到二维，随机种子固定。UMAP 的两个关键参数（邻居数, 最小距离）试了 3 组：(15, 0.1)、(30, 0.3)、(50, 0.5)，只用验证集选择，以「至少一个标签相同」的比例为准。结构地图取验证集上最好的一组，让作为对照的结构地图也发挥出最好水平。气味地图在验证集上 (15, 0.1) 略高（0.755 对 0.746），但这一组把分子拉成细条，成团不明显，为了便于阅读保留了 (30, 0.3)；这样选对气味地图并不占优，不影响与结构地图的比较。验证集结果见下表，指标含义见 5.3。</p>
       <div class="table-wrap"><table id="params-table" data-snap="params-table"><thead><tr><th></th><th>气味地图</th><th>结构地图</th></tr></thead><tbody><tr><th>输入</th><td>138 个描述词的预测概率</td><td>Morgan 指纹（半径 2，2048 位）</td></tr><tr><th>距离</th><td>余弦距离</td><td>Jaccard 距离</td></tr><tr><th>邻居数</th><td>30</td><td>15</td></tr><tr><th>最小距离</th><td>0.3</td><td>0.1</td></tr><tr><th>随机种子</th><td>42</td><td>42</td></tr><tr><th>验证集（至少一个标签相同 / 平均 Jaccard）</th><td>0.746 / 0.205</td><td>0.640 / 0.160</td></tr></tbody></table></div>
-      <h3 data-sec="2" data-i18n="train.title" data-no="5.2.2">训练过程中的气味地图</h3>
+      <h3 id="training" data-sec="2" data-i18n="train.title" data-no="5.2.2">训练过程中的气味地图</h3>
       <p data-i18n="train.intro">下面的动画用训练过程中保存的模型，依次算出候选库 5,072 个分子的预测概率，再按与上方相同的方法降到二维。第 0 轮是随机初始化的模型，还没有学到气味；因为未训练的网络对结构相近的分子本来就会给出相近的输出，画面是十几个各色混杂的小团。最初两轮先变成几条混杂的长带，此后同一颜色的分子逐渐聚到一起，硫味分子最先分出来。最后一帧是网页上使用的模型（第 26 轮，验证集上最好），与工具页气味地图的位置完全相同。每个点的颜色固定为最终模型的主要预测描述词，便于看出同类分子怎样聚到一起。</p>
       <p data-i18n="train.later">第 10 轮以后，验证集分数增长变慢；第 26 轮最好，之后 20 轮没有再提高，训练在第 46 轮停止。但模型的预测每轮仍有小幅变化，而且不再继续减小（见视频下方的曲线）：训练中学习率固定，权重每轮仍在小步调整。许多分子有几个描述词的概率很接近，排第一的会来回换：第 10 轮以后，每两轮约有四分之一的分子换了排第一的描述词，所以画面后期仍在移动。第 10 轮以后每两轮保存一次模型，动画里这样的一段播 1 秒，是前面每段的两倍，画面的快慢与训练轮数对应。</p>
       <figure class="train-video">
@@ -140,7 +140,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261119a" defer></script>
+  <script src="../assets/projects.js?v=20261119e" defer></script>
   <script src="about.js?v=20261119b" defer></script>
 </body>
 </html>

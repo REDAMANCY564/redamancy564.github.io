@@ -101,11 +101,14 @@
     const d = $("detail");
     d.innerHTML = "";
     const card = el("div", { class: "card" });
-    card.append(el("h3", {}, [f.name, f.src === "dunkel" ? tag("t1k") : tag("t1d")]));
+    // The tier tag is shown once, at the section that lists the compounds; the heading carries it only
+    // when the food has neither section.
+    const hasKfo = !!(f.kfo && f.kfo.length), hasDet = !!(f.det && f.det.length);
+    card.append(el("h3", {}, [f.name, hasKfo || hasDet ? null : f.src === "dunkel" ? tag("t1k") : tag("t1d")]));
     if (f.src === "flavordb" && f.cat) card.append(el("p", { class: "small muted", text: I18N.t("food.category", { c: f.cat }) }));
 
-    if (f.kfo && f.kfo.length) {
-      card.append(el("div", { class: "kb-row-title small" }, [tag("t1k"), " ", I18N.t("food.kfo")]));
+    if (hasKfo) {
+      card.append(el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t("food.kfo_desc")]));
       for (const n of f.notes || []) {
         card.append(el("p", { class: "stmt muted" }, [
           n.text + " (Dunkel et al. 2014, " + I18N.t("food.page", { p: n.page }) + ")",
@@ -115,14 +118,14 @@
       card.append(chips(f.kfo.map(c => ({ label: kbd.compounds[c].name, href: "?compound=" + c, id: c, strong: true })),
         MAX_CHIPS, it => showCompound(it.id, true)));
     }
-    if (f.det && f.det.length) {
+    if (hasDet) {
       card.append(el("div", { class: "kb-row-title small" }, [tag("t1d"), " ", I18N.t("food.detected", { n: f.det.length })]));
       card.append(el("p", { class: "small muted", text: I18N.t("food.detected_note") }));
       const sorted = f.det.slice().sort((a, b) => (kbd.compounds[b].kfo ? 1 : 0) - (kbd.compounds[a].kfo ? 1 : 0));
       card.append(chips(sorted.map(c => ({ label: kbd.compounds[c].name, href: "?compound=" + c, id: c, strong: !!kbd.compounds[c].kfo })),
         MAX_CHIPS, it => showCompound(it.id, true)));
     }
-    card.append(literature([f.name.replace(/\s*\(.*?\)\s*/g, " ").trim()], null));
+    card.append(literature([f.name], null));   // the bracketed note ("wine (red and white)") is dropped in FlavorKB
     d.append(card);
     d.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -140,7 +143,7 @@
     const card = el("div", { class: "card" });
     // "intensity curve" link beside the name when this compound has an odor intensity curve (matched by CAS, assets/intensity.js)
     const curve = el("span", {});
-    card.append(el("h3", {}, [c.name, (c.kfo || c.dunkel) ? tag("t1k") : null, curve]));
+    card.append(el("h3", {}, [c.name, curve]));   // the key flavor compound tag is shown once, in the section below
     Intensity.load().then(() => { curve.innerHTML = Intensity.link(Intensity.byKb(id)); }, () => { /* no link without the data */ });
     if (c.alt || c.syn) {
       card.append(el("p", { class: "small muted", text: I18N.t("cmp.synonyms") + ": " + (c.alt || []).concat(c.syn || []).slice(0, 10).join("; ") }));
@@ -165,8 +168,8 @@
 
     const right = el("div", {});
     if (c.dunkel) right.append(el("p", { class: "small" }, [tag("t1k"), " ", I18N.t("cmp.generalist", { odor: c.dunkel.odor }) + " (" + I18N.t("food.page", { p: c.dunkel.page }) + ")"]));
-    right.append(el("div", { class: "kb-row-title small" }, [tag("t1k"), " ", I18N.t("cmp.kfo_foods")]));
     if (c.kfo && c.kfo.length) {
+      right.append(el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t("cmp.kfo_foods_desc")]));
       right.append(chips(c.kfo.map(f => ({ label: kbd.foods[f].name, href: "?food=" + f, id: f, strong: true })), MAX_CHIPS, it => showFood(it.id, true)));
     } else {
       right.append(el("p", { class: "small muted", text: I18N.t("cmp.no_kfo") }));
@@ -200,9 +203,16 @@
     if (!doi) { doiState = null; setStatus("doi-status", "doi.bad", null, true); return; }
     if (push) pushUrl({ doi });
     $("doi-btn").disabled = true;
-    setStatus("doi-status", "doi.loading");
+    setStatus("doi-status", null);
+    // timed progress per source: Europe PMC first, then Crossref if needed, each up to 60 s
+    const wait = FlavorKBUI.waitBar("doi.wait_epmc");
+    $("doi-result").append(wait.node);
     try {
-      const paper = await FlavorKB.paper(doi);
+      const paper = await FlavorKB.paper(doi, (src, why) => {
+        if (src === "crossref") wait.restart(why === "failed" ? "doi.wait_crossref_failed" : "doi.wait_crossref");
+      });
+      await wait.finish();
+      wait.node.remove();
       let segs = null;
       if (paper.abstract) {
         await ensureKb();
@@ -212,9 +222,11 @@
       setStatus("doi-status", null);
       renderDoi();
     } catch (e) {
+      wait.stop();
+      wait.node.remove();
       doiState = null;
-      const key = e.code === "bad_doi" ? "doi.bad" : e.code === "not_found" ? "doi.not_found" : "doi.failed";
-      setStatus("doi-status", key, null, true);
+      const key = e.code === "bad_doi" ? "doi.bad" : e.code === "not_found" ? "doi.not_found" : e.code === "timeout" ? "doi.timeout" : "doi.failed";
+      setStatus("doi-status", key, { s: FlavorKB.TIMEOUT_S }, true);
     } finally {
       $("doi-btn").disabled = false;
     }

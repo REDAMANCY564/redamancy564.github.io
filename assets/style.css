@@ -226,6 +226,7 @@ ul.plain li { margin-bottom: 6px; }
 .kb-chip.strong:hover { background: #185a33; color: #fff; }
 .kb-more { font: inherit; font-size: .875rem; border: 0; background: none; color: var(--accent); cursor: pointer; padding: 2px 4px; }
 .kb-row-title { font-weight: 600; }
+.kb-tag-line { margin: 10px 0 4px; }
 .kb-lit { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
 .kb-lit-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .kb-lit-head h4 { margin: 0; font-size: 1rem; }
@@ -240,6 +241,19 @@ ul.plain li { margin-bottom: 6px; }
 .kb-lit-list li { margin-bottom: 8px; }
 .kb-lit-note { margin-top: 8px; }
 .kb-error { color: var(--error); }
+.kb-lit-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 6px 0 8px; }
+.kb-lit-retry { min-height: 32px; }
+/* Timed wait for Europe PMC (kb-ui.js waitBar): the fill is waited time / 60 s, scaled with transform only */
+.kb-wait { margin: 6px 0 8px; }
+.kb-wait p { margin: 6px 0 0; }
+.kb-wait-bar { height: 3px; max-width: 460px; border-radius: 2px; background: var(--border); overflow: hidden; }
+.kb-wait-fill { display: block; height: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left center; }
+@media (prefers-reduced-motion: no-preference) {
+  .kb-wait-fill { transition: transform .25s linear; }
+  .kb-wait.done .kb-wait-fill { transition-duration: .2s; }
+  .kb-wait.done .kb-wait-bar { opacity: 0; transition: opacity .2s ease-out .2s; }
+}
+@media (prefers-reduced-motion: reduce) { .kb-wait-bar { display: none; } .kb-wait p { margin-top: 0; } }
 mark.kb-hit { background: #fdebd8; padding: 0 2px; border-radius: 3px; }
 mark.kb-hit a { color: #8a4500; font-weight: 600; }
 

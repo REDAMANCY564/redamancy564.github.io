@@ -31,3 +31,4 @@ details.supp summary { cursor: pointer; font-weight: 600; }
 #train-curve-svg .tc-mark { fill: var(--text); }
 #train-curve-svg .tc-best { fill: var(--text); font-weight: 600; }
 @media (max-width: 599px) { .train-readout { min-height: 3em; } }   /* the readout wraps on phones: keep the chart still on hover */
+#training { scroll-margin-top: 72px; }   /* tool-page card links here; keep the heading clear of the sticky header */
