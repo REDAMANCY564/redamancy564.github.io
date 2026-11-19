@@ -8,10 +8,13 @@ the graph only exposes values the forward pass already computes:
   pool_mean pool_max [B,256]          readout (mean over real atoms, max over real atoms)
 
   python export_process_onnx.py          -> training/data/mpnn/odor_mpnn_process.onnx (site untouched)
-  python export_process_onnx.py --site   -> replaces odor-predictor/model/odor_mpnn.onnx
+  python export_process_onnx.py --site   -> replaces odor-predictor/model/odor_mpnn.onnx (same checkpoint)
+After retraining use `python export_onnx_mpnn.py --site`: it calls main(site=True, same_model=False)
+here, so the site file always carries the intermediate outputs, and also rewrites feature_spec.json.
 
-Gate before the site file may be replaced (plan step 0): probs of the new file equal the
-current site file bit for bit on every molecule of tests/features_all.json and the test set.
+Gate (same_model=True, the default): probs of the new file must equal the current site file bit for
+bit on every molecule of tests/features_all.json and the test set before the site file is replaced.
+With same_model=False (new weights after retraining) the comparison is printed but not required.
 Checks: every output vs PyTorch on the 488 test molecules, batch-1 run, padding rows are 0,
 receptive field (one atom changed / one bond changed) on decane.
 """
@@ -89,7 +92,7 @@ def receptive_field(sess):
     return res
 
 
-def main(site=False):
+def main(site=False, same_model=True):
     model, ck = load_model()
     full = WithLayers(model.model).eval()
     smiles, _, _, split, _ = load_split()
@@ -105,7 +108,7 @@ def main(site=False):
     print(f"Wrote {OUT} ({size_new} bytes; site file {size_old} bytes, +{size_new - size_old})")
 
     sess = ort.InferenceSession(str(OUT), providers=["CPUExecutionProvider"])
-    old = ort.InferenceSession(str(SITE_ONNX), providers=["CPUExecutionProvider"])
+    old = ort.InferenceSession(str(SITE_ONNX), providers=["CPUExecutionProvider"]) if SITE_ONNX.exists() else None
     assert [o.name for o in sess.get_outputs()] == NAMES
 
     # 1. every output vs PyTorch, test set
@@ -138,6 +141,9 @@ def main(site=False):
             refused += 1
     Xa, Ea, Ma = featurize_many(ok)
     p_new = run(sess, Xa, Ea, Ma)[0]
+    if old is None:   # no site file yet: nothing to compare with
+        Xa = Xa[:0]
+        old = sess
     p_old = np.concatenate([old.run(None, {"X": Xa[i:i + 64], "E": Ea[i:i + 64], "mask": Ma[i:i + 64]})[0]
                             for i in range(0, len(Xa), 64)])
     p1_new = np.concatenate([sess.run(["probs"], {"X": Xa[i:i + 1], "E": Ea[i:i + 1], "mask": Ma[i:i + 1]})[0]
@@ -156,18 +162,27 @@ def main(site=False):
 
     if site:
         g = report["gate"]
-        assert g["batch64_identical"] and g["batch1_identical"], "gate failed: site file not replaced"
+        if same_model:
+            assert g["batch64_identical"] and g["batch1_identical"], "gate failed: site file not replaced"
+        else:
+            print("probs vs the previous site file: max difference "
+                  f"{max(g['batch64_max_abs'], g['batch1_max_abs']):.3g} (0 for the same checkpoint; differs after retraining)")
         shutil.copyfile(OUT, SITE_ONNX)
         print(f"Replaced {SITE_ONNX}")
         spec = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
-        spec["extra_outputs"] = {
-            "names": NAMES[1:],
-            "note": "for the How it predicts page (process.html); the tool page fetches only probs. "
-                    "h0-h3 [B,64,H] atom states after embedding and layers 1-3, m1-m3 [B,64,H] message sums, "
-                    "pool_mean/pool_max [B,H]. Written by training/export_process_onnx.py"}
+        add_extra_outputs(spec)
         SPEC_PATH.write_text(json.dumps(spec, indent=2), encoding="utf-8")
         print(f"Updated {SPEC_PATH}")
     return report
+
+
+def add_extra_outputs(spec):
+    """Record the intermediate outputs in feature_spec.json (used by odor-predictor/process.html)."""
+    spec["extra_outputs"] = {
+        "names": NAMES[1:],
+        "note": "for the How it predicts page (process.html); the tool page fetches only probs. "
+                "h0-h3 [B,64,H] atom states after embedding and layers 1-3, m1-m3 [B,64,H] message sums, "
+                "pool_mean/pool_max [B,H]. Written by training/export_process_onnx.py"}
 
 
 if __name__ == "__main__":

@@ -5,6 +5,10 @@ the website: this measures the file size and checks ONNX against PyTorch.
   python export_onnx_mpnn.py            -> training/data/mpnn/odor_mpnn.onnx
 Stage 2 (adopted 2026-11-18):
   python export_onnx_mpnn.py --site     -> odor-predictor/model/odor_mpnn.onnx + feature_spec.json
+Since 2026-11-19 the site file also carries the intermediate outputs read by the How it predicts page
+(odor-predictor/process.html): --site exports through export_process_onnx.main (same graph plus h0-h3,
+m1-m3 and the pools; probs output unchanged), never the probs-only graph. After it run
+process_site_data.py and open tests/parity.html and tests/parity-layers.html.
 
 Inputs: X [B,64,26], E [B,64,64,6], mask [B,64] (float32, dynamic batch). Output: probs [B,138].
 Checks: test set |ONNX - PyTorch| < 1e-4; batch-1 run; extra padding atoms do not change output;
@@ -85,7 +89,11 @@ def main(onnx_path=ONNX_PATH):
 
 
 def site():
-    main(SITE_ONNX)
+    # the site file must keep the intermediate outputs of the How it predicts page: export through
+    # export_process_onnx (all its checks against PyTorch; the bit-for-bit gate against the previous
+    # site file is reported only, since retrained weights differ)
+    from export_process_onnx import add_extra_outputs, main as export_with_layers
+    export_with_layers(site=True, same_model=False)
     _, ck = load_model()
     write_spec()
     spec = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
@@ -93,6 +101,7 @@ def site():
                 model_output={"name": "probs", "shape": "[B, num_labels]", "sigmoid_applied": True,
                               "label_order": "same as labels.json"},
                 model_config={**ck["config"], "seed": ck["seed"]})
+    add_extra_outputs(spec)
     SPEC_PATH.write_text(json.dumps(spec, indent=2), encoding="utf-8")
     print(f"Updated {SPEC_PATH}")
 

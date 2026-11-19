@@ -142,6 +142,17 @@ python flavor_improver/make_parity_fixtures.py  # 生成一致性测试数据
 - **尝试过的改进（未采用，2026-10-17）**：参考 PharmaGNN（Liu et al., J Sci Food Agric 106, 8114-8120, 2026, doi:10.1002/jsfa.70826），在同一骨架划分上、对上一版模型（GCN）做消融：非对称损失、原子药效团标记（供体 / 受体 / 疏水，RDKit BaseFeatures 定义，冻结在 `training/pharmacophore_smarts.json`）及两者组合。测试集 macro AUROC：原模型 0.860 ± 0.0003，ASL 0.8615 ± 0.0029，药效团 0.8606 ± 0.0017，两者 0.8595 ± 0.0013；稀有标签未改善，未达到事先约定的替换条件（提升 ≥ 0.005、3 个种子都更好、稀有标签不下降），当时线上模型不变。详见 `training/ablation_results.json`（网页注明这些实验在上一版模型上进行）。
 - **气味阈值**：仅 10 个预设分子显示水中阈值文献值（van Gemert 2011 汇编；数据在 `training/odor_thresholds.json`）。该书有版权，PDF 已加入 `.gitignore`，不会上传。
 
+### 预测过程（odor-predictor/process.html，2026-11-19）
+
+气味预测的第二个标签页（标签顺序：工具 / 预测过程 / 方法与来源），用模型真实算出的数值一步步展示预测：输入 → 输入嵌入 → 第 1、2、3 层消息传递（消息沿化学键流动，按键型着色）→ 汇总（平均 + 最大）→ 输出前 8 个描述词。方法页 3.3 有对应说明（每一步对应模型哪部分、视野范围实验、颜色刻度与列排序）。
+
+- **页面定位**：不是新工具，不改项目编号，主页、在线工具页和目录页都没有条目，「7 个工具」的表述不变；浏览器标签为「预测过程 | 3 气味预测 | 崔京伟」，已登记在 `tools/prerender.py`（PAGES、子页标题）、`assets/projects.js`（子页标题）和 sitemap。
+- **数据**：工具页的 10 个预设分子和甲硫醇事先算好，每个分子一个文件 `odor-predictor/data/process/<id>.json`（4 位小数），打开页面不加载模型；显示参数（颜色刻度、列顺序、各类键的键项）在 `data/process_display.json`。两者都由 `training/process_site_data.py` 生成，脚本同时断言视野范围（改一个原子、只改一个键）并核对预设分子的前 8 个描述词与 `presets.json` 逐项相同。
+- **工具页交接**：其他分子从工具页结果下方的「看预测过程」或「预测过程」标签进入（同一个标签页打开，链接带 `?q=` 规范 SMILES）。工具页只把模型输入（原子特征的真实行、键列表、二维坐标、SMILES）用 `odor-predictor/handoff.js` 存进 sessionStorage（键 `odor-process-input`，最大的分子约 5 kB），预测过程页还原 X、E、mask 后，用与工具页同一个地址的 `model/odor_mpnn.onnx`（浏览器缓存）在 ONNX Runtime 里算出各层。直接用 `?q=` 打开没有预算数据的分子时先跳回工具页（`?from=process`，工具页提示再点「看预测过程」）；sessionStorage 不可用、存储失败或数据不完整时显示提示和回工具页的链接，下面仍显示示例分子。工具页收到预设分子的 SMILES 时直接选中预设，不加载模型。
+- **模型文件**：`odor_mpnn.onnx` 除 `probs` 外还输出 h0–h3、m1–m3（各层后的原子状态与收到的消息之和）和两个汇总（`feature_spec.json` 的 `extra_outputs`）；工具页、原料检索、乳品风味改良通过 `engine.js` 只取 `probs`，预测结果与只输出概率的版本逐位相同。导出见 `training/export_process_onnx.py`（`export_onnx_mpnn.py --site` 也走这条路径）。
+- **严格 CSP**：只有这一页有 `script-src 'self' 'wasm-unsafe-eval'; style-src 'self'`（无行内脚本和样式，样式在 `process.css`，结构图按坐标自绘 SVG，色条用 canvas）。ONNX Runtime 在这条策略下能运行；RDKit.js（Emscripten 构建）需要 `'unsafe-eval'`，在这一页被拦下，所以本页不加载 RDKit，SMILES 解析、特征计算和二维坐标都在工具页完成后交接过来。不要为此放宽这一页的 CSP。
+- **一致性测试**：https://redamancy564.github.io/odor-predictor/tests/parity-layers.html ，对 `tests/parity.html` 同样的 50 个测试分子，按工具页的路径（RDKit.js 特征 → handoff.js 压缩与还原 → onnxruntime-web）逐层比对 h0–h3、m1–m3、两个汇总和概率与 PyTorch 参考值（`tests/parity_layers.bin` + `parity_layers.json`，由 `process_site_data.py` 生成，只在模型变化时重新生成），标准为相对差 ≤ 1e-4。
+
 ## 6 基于图神经网络的小分子味觉预测（taste-predictor/）
 
 沿用气味预测上一版的 GCN 结构（`training/model.py`，不区分键型）、原子特征和 ONNX 流程，预测小分子的甜、苦、鲜、无味四类（多标签，各一个概率）。酸、咸样本太少，不建模；数据中记载为酸或咸的预设分子在页面上单独提示。
@@ -286,11 +297,12 @@ assets/                 全站共用：样式、中英切换、个人信息、�
   fonts/                标题字体子集（由 tools/make_font.py 生成）
 odor-predictor/         3 气味预测
   index.html, app.js    页面与交互逻辑
+  process.html/.js/.css 预测过程页（严格 CSP）；handoff.js：工具页到预测过程页的模型输入交接
   i18n/                 页面中英文案
-  model/                odor_mpnn.onnx、labels.json、feature_spec.json（model_type: mpnn）
-  data/                 presets.json（预设分子预测）、metrics.json（评估结果）
+  model/                odor_mpnn.onnx（含各层输出）、labels.json、feature_spec.json（model_type: mpnn）
+  data/                 presets.json（预设分子预测）、metrics.json（评估结果）、process/ 与 process_display.json（预测过程页）
   engine.js             浏览器端特征提取 + ONNX 推理（按 spec.model_type：mpnn 须与 training/featurize_mpnn.py 一致，GCN 路径供味觉预测）
-  tests/                一致性测试页 parity.html、features-all.html 及测试数据
+  tests/                一致性测试页 parity.html、features-all.html、parity-layers.html 及测试数据
 flavor-improver/        4 乳品风味改良
   index.html, app.js    页面与交互逻辑
   mixture.js, bo.js     浏览器端评价函数（须与 training/flavor_improver/mixture.py 一致）与贝叶斯优化
@@ -319,10 +331,14 @@ python baseline.py          # Morgan 指纹 + 逻辑回归 / 随机森林
 python train_mpnn.py pilot  # 计时试跑（只看验证集）
 python train_mpnn.py grid   # 12 组超参数 × 3 个种子，只看验证集（约 1 小时，GPU）
 python train_mpnn.py final  # 选定组合重训 3 个种子（存训练过程检查点）+ 去掉键特征的对照 + 测试集只算一次
-python export_onnx_mpnn.py --site   # 导出 odor_mpnn.onnx 和 feature_spec.json 并验证与 PyTorch 一致
+python export_onnx_mpnn.py --site   # 导出 odor_mpnn.onnx（含预测过程页用的各层输出）和 feature_spec.json，并逐项验证与 PyTorch 一致
 python mpnn_to_site.py      # 把结果写入 odor-predictor/data/metrics.json（只运行一次）
 python make_site_assets.py  # 生成 labels.json、presets.json（含原子贡献）、一致性测试数据
 python make_feature_parity.py   # 全部分子的特征参考数据（tests/features-all.html）
+python process_site_data.py # 预测过程页：显示参数、11 个预算分子、parity_layers 参考数据（需要上一步的 presets.json）
+# 然后在本地预览中打开 odor-predictor/tests/parity.html 和 tests/parity-layers.html，确认全部 PASS 再上线
+# （export_onnx_mpnn.py --site 不会再导出只含概率的模型；只重新导出同一个检查点时也可以用
+#   export_process_onnx.py --site，它要求新文件的概率与线上文件逐位相同）
 # 之后按顺序重新生成下游：原料检索与气味地图（见第 5 节）、gcms/build_flavor.py、
 # 乳品风味改良（prepare_data.py --final、prepare_reference.py、mixture.py、run_experiments.py、analyze.py、
 # make_parity_fixtures.py）、混合物实验（mixture/snitz_data.py、evaluate.py）。下游脚本都通过
