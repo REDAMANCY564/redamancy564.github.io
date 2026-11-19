@@ -17,11 +17,15 @@
 @media (max-width: 599px) { .pp-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } .pp-steps button { font-size: .75rem; padding: 6px 2px; overflow-wrap: normal; word-break: keep-all; } }
 .pp-pos { white-space: nowrap; }
 
-.pp-say { min-height: 3em; margin: var(--sp-2) 0; max-width: 760px; }
-.pp-say p { margin: 0 0 4px; }
+/* captions: all seven steps stacked in one grid cell (height = longest caption at this width); only the
+   current step is visible, its lines not yet reached are transparent but keep their space */
+.pp-say { display: grid; margin: var(--sp-2) 0; max-width: 760px; }
+.pp-say > .pp-cap { grid-area: 1 / 1; margin: 0; visibility: hidden; opacity: 0; }
+.pp-say > .pp-cap.on { visibility: visible; opacity: 1; }
+.pp-say p { margin: 0 0 4px; opacity: 0; }
+.pp-say p.shown { opacity: 1; }
 .pp-say p.old { color: var(--muted); }
-.pp-saylist { margin: var(--sp-2) 0; padding-left: 1.25em; max-width: 760px; }
-.pp-saylist[hidden], .pp-say[hidden] { display: none; }
+.pp-say ol.pp-cap { padding-left: 1.25em; }
 
 /* stage: structure left, atom strips right; stacked on phones */
 .pp-stage { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: var(--sp-4); align-items: start; margin: var(--sp-3) 0; }
@@ -72,6 +76,9 @@
 .pp-nav:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
 .pp-nav:disabled { opacity: .4; cursor: default; }
 .pp-acts { display: flex; align-items: center; gap: 4px; }
+.pp-nav, .pp-act { white-space: nowrap; }
+/* phones: Previous / Next on the first row, the play controls centred on a row below */
+@media (max-width: 599px) { .pp-ctrl { flex-wrap: wrap; row-gap: 4px; } .pp-acts { order: 3; flex: 1 0 100%; justify-content: center; } }
 .pp-act { font: inherit; font-size: .875rem; border: 0; background: none; padding: 6px 8px; min-height: 40px; color: var(--muted); cursor: pointer; }
 .pp-act:hover:not(:disabled) { color: var(--accent); }
 .pp-act:disabled { opacity: .4; cursor: default; }
@@ -82,8 +89,18 @@
 .pp-legend text { font-size: 12px; fill: var(--muted); }
 .pp-notes p { max-width: 760px; }
 @media (max-width: 599px), (pointer: coarse) { .pp-picker .chip-btn { min-height: 44px; } .pp-steps button, .pp-nav, .pp-act { min-height: 44px; } }
-@media (prefers-reduced-motion: no-preference) { .pp-pool { transition: opacity .8s ease-in-out; } }
-.pp-pool.pp-enter { opacity: 0; }
+/* step changes: opacity and transform only, 200-400 ms; nothing moves with reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  /* old caption fades out first, then the new one fades in, so the two never overlap */
+  .pp-say > .pp-cap { transition: opacity .2s ease, visibility 0s linear .2s; }
+  .pp-say > .pp-cap.on { transition: opacity .25s ease .2s, visibility 0s linear .2s; }
+  .pp-say p { transform: translateY(4px); transition: opacity .35s ease, transform .35s ease, color .3s ease; }
+  .pp-say p.shown { transform: none; }
+  .pp-in { animation: pp-in .3s ease both; }
+  .pp-mol .atom-field, .pp-mol .atom-sel, .pp-mol .atom-t, .pp-mol .atom-dot, .pp-mol .bsel { transition: opacity .25s ease; }
+}
+@keyframes pp-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.pp-act[aria-pressed="true"] { color: var(--accent); font-weight: 600; }
 #pp-name.mono { font-size: 1.125rem; overflow-wrap: anywhere; }
 .pp-mol .atom-t.sm { font-size: 12px; }
 .pp-mol .atom-dot { fill: var(--muted); }

@@ -10,7 +10,9 @@
  *   training set; one scale for h0-h3 since the residual update never lowers a value) and the column
  *   order of the 256 channels; colour depth = sqrt(min(v / scale, 1)).
  * - Animations run on one requestAnimationFrame clock (as research/research.js): paused while the stage
- *   is out of view, Pause holds it, prefers-reduced-motion draws every step in its final state.
+ *   is out of view, Pause holds it, prefers-reduced-motion draws every step in its final state (Play all
+ *   then shows the steps one after another, 2.5 s apart, without animation).
+ * - Captions of all steps sit in one grid cell, so lines appearing never move the drawing below.
  * - No inline styles (strict CSP): SVG attributes and canvas drawing only.
  */
 (async function () {
@@ -401,10 +403,6 @@
     const cmp = t(S.mol.id === "diacetyl" ? "proc.pool_cmp_van" : S.mol.id === "vanillin" ? "proc.pool_cmp_dia" : "proc.pool_cmp_both");
     setEndNobr(note, t("proc.pool_note", { name: I18N.pick(S.mol.name), p: sx > 0 ? Math.round(100 * sm / sx) : 0, cmp }));
     body.appendChild(note);
-    if (e === 0 && !reduced) {   // fade in through a CSS transition (process.css .pp-enter)
-      pool.classList.add("pp-enter");
-      requestAnimationFrame(() => requestAnimationFrame(() => pool.classList.remove("pp-enter")));
-    }
   }
   function renderOut(e) {
     out.hidden = e == null;
@@ -428,7 +426,14 @@
   }
 
   // ---------- captions ----------
-  const say = $("pp-say"), sayList = $("pp-saylist");
+  const say = $("pp-say"), sayLive = $("pp-say-live");
+  /** Restart the short fade-in (process.css .pp-in: opacity + transform, 300 ms). */
+  function enter(node) {
+    if (reduced || !node || node.hidden) return;
+    node.classList.remove("pp-in");
+    void node.offsetWidth;
+    node.classList.add("pp-in");
+  }
   function stepLines(step) {
     if (step.startsWith("layer")) {
       const L = step.slice(5);
@@ -444,19 +449,41 @@
     node.textContent = m ? m[1] : text;
     if (m) { const sp = document.createElement("span"); sp.className = "nobr"; sp.textContent = m[2]; node.appendChild(sp); }
   }
-  function showLines(lines, upto) {
-    if (reduced) {
-      sayList.textContent = "";
-      lines.forEach(s => { const li = document.createElement("li"); setEndNobr(li, s); sayList.appendChild(li); });
-      return;
-    }
+  /** All seven captions, stacked in one grid cell (process.css), rebuilt on language change. With reduced
+   *  motion each caption is a numbered list shown whole. */
+  let caps = [];
+  function buildCaptions() {
     say.textContent = "";
-    lines.slice(0, upto).forEach((s, k) => {
-      const p = document.createElement("p");
-      setEndNobr(p, s);
-      if (k < upto - 1) p.className = "old";
-      say.appendChild(p);
+    caps = STEPS.map(name => {
+      const box = document.createElement(reduced ? "ol" : "div");
+      box.className = "pp-cap";
+      box.setAttribute("aria-hidden", "true");
+      stepLines(name).forEach(line => {
+        const p = document.createElement(reduced ? "li" : "p");
+        setEndNobr(p, line);
+        box.appendChild(p);
+      });
+      say.appendChild(box);
+      return box;
     });
+  }
+  /** Current step's caption with its first `upto` lines visible (all when omitted); the newest line is
+   *  read out by the live region. */
+  let saidStep = -1, saidUpto = 0;
+  function showLines(lines, upto) {
+    const n = reduced || upto == null ? lines.length : upto;
+    caps.forEach((box, k) => {
+      const on = k === S.step;
+      box.classList.toggle("on", on);
+      box.setAttribute("aria-hidden", on ? "false" : "true");
+      if (!on) return;
+      Array.from(box.children).forEach((p, j) => {
+        p.classList.toggle("shown", j < n);
+        p.classList.toggle("old", !reduced && j < n - 1);
+      });
+    });
+    if (S.step !== saidStep) { saidStep = S.step; saidUpto = 0; }
+    if (n > saidUpto) { sayLive.textContent = lines.slice(saidUpto, n).join(" "); saidUpto = n; }
   }
 
   // ---------- steps ----------
@@ -546,8 +573,9 @@
 
   // ---------- controls ----------
   const stepBtns = Array.from(document.querySelectorAll(".pp-steps button"));
-  const prevBtn = $("pp-prev"), nextBtn = $("pp-next"), pauseBtn = $("pp-pause"), replayBtn = $("pp-replay");
+  const prevBtn = $("pp-prev"), nextBtn = $("pp-next"), pauseBtn = $("pp-pause"), replayBtn = $("pp-replay"), playAllBtn = $("pp-playall");
   let autoplay = false;
+  function syncPlayAll() { playAllBtn.setAttribute("aria-pressed", autoplay ? "true" : "false"); }
   function markStep() {
     stepBtns.forEach((b, k) => { if (k === S.step) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
     prevBtn.disabled = S.step === 0;
@@ -562,17 +590,25 @@
     autoplay = !!chain;
     markStep();
     renderBondTerms();
+    syncPlayAll();
     const T = tweener(reduced, my);
-    pauseBtn.disabled = reduced;
+    pauseBtn.disabled = reduced && !chain;
+    // panels that appear with this step, and the detail / bond-term panels whose content changes, fade in
+    const panels = [$("pp-strips"), pool, out, detail, bondTerms];
+    const wasHidden = panels.map(x => x.hidden);
     try {
-      await play(step, T);
+      const run = play(step, T);   // runs synchronously up to its first wait, so visibility is set here
+      panels.forEach((x, k) => { if (wasHidden[k] || x === detail || x === bondTerms) enter(x); });
+      await run;
       if (reduced) showLines(stepLines(STEPS[step]));
       redraw();
       if (chain && step < STEPS.length - 1) {
-        await T(1.5);
+        // short stop before the next step; with reduced motion a real pause too, so the steps are shown
+        // one after another in their final state
+        await tweener(false, my)(reduced ? 2.5 : 1.5);
         return go(step + 1, true);
       }
-      if (my === gen) { pauseBtn.disabled = true; autoplay = false; }
+      if (my === gen) { pauseBtn.disabled = true; autoplay = false; syncPlayAll(); }
     } catch (e) {
       if (!(e instanceof Cancelled)) throw e;
     }
@@ -583,7 +619,16 @@
   nextBtn.addEventListener("click", () => { clock.held = false; setPauseLabel(); go(Math.min(STEPS.length - 1, S.step + 1)); });
   pauseBtn.addEventListener("click", () => { clock.held = !clock.held; setPauseLabel(); });
   replayBtn.addEventListener("click", () => { clock.held = false; setPauseLabel(); go(S.step, autoplay); });
-  if (reduced) { pauseBtn.hidden = true; replayBtn.hidden = true; }
+  // Play all: from the current step through to the output (from the start when already at the output);
+  // while it runs, Pause holds it and any step button, Previous or Next stops it
+  playAllBtn.addEventListener("click", () => {
+    if (autoplay && clock.held) { clock.held = false; setPauseLabel(); return; }
+    if (autoplay) return;
+    clock.held = false;
+    setPauseLabel();
+    go(S.step === STEPS.length - 1 ? 0 : S.step, true);
+  });
+  if (reduced) replayBtn.hidden = true;
 
   function selectAtom(i) {
     S.sel = i;
@@ -626,6 +671,7 @@
     S.mol = mol;
     S.sel = centreAtom(mol);
     drawMolecule(mol);
+    enter(molSvg);
     renderPicker();
     const name = $("pp-name");
     name.textContent = I18N.pick(mol.name);
@@ -705,6 +751,7 @@
     }
   }
   renderMsg();
+  buildCaptions();
   if (handed) {
     $("pp-handed").hidden = false;
     $("pp-handed").textContent = t("proc.loading");
@@ -724,7 +771,8 @@
   const io = new IntersectionObserver(entries => {
     for (const en of entries) {
       clock.paused = !en.isIntersecting;
-      if (en.isIntersecting && !started) { started = true; go(0, true); }
+      // first view: plays through once; with reduced motion only the first step, Play all steps on
+      if (en.isIntersecting && !started) { started = true; go(0, !reduced); }
     }
   }, { threshold: 0.2 });
   io.observe($("pp-stage-wrap"));
@@ -740,7 +788,7 @@
     else setField(null, name === "pool" || name === "out");
     redraw();
   });
-  I18N.onChange(() => { renderPicker(); markStep(); setPauseLabel(); $("pp-name").textContent = I18N.pick(S.mol.name);
+  I18N.onChange(() => { buildCaptions(); renderPicker(); markStep(); setPauseLabel(); $("pp-name").textContent = I18N.pick(S.mol.name);
     renderMsg(); if (S.mol.handed) $("pp-handed").textContent = t("proc.handed");
     showLines(stepLines(STEPS[S.step]), stepLines(STEPS[S.step]).length); redraw(); });
   window.__process = { S, go, show };   // for tests and screenshots

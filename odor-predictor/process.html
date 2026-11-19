@@ -26,7 +26,7 @@
   <meta name="twitter:description" content="How the odor graph neural network predicts: input features, input embedding, three message passing layers along the bonds, pooling and the top 8 odor descriptors, with the real values of the model.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/odor-predictor.jpg">
   <link rel="stylesheet" href="../assets/style.css?v=20261119a">
-  <link rel="stylesheet" href="process.css?v=20261119a">
+  <link rel="stylesheet" href="process.css?v=20261119b">
   <script src="../assets/i18n.js?v=20261119a" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -73,8 +73,10 @@
         <li><button type="button" data-i18n="proc.step.pool">汇总</button></li>
         <li><button type="button" data-i18n="proc.step.out">输出</button></li>
       </ol>
-      <div class="pp-say" id="pp-say" aria-live="polite"></div>
-      <ol class="pp-saylist" id="pp-saylist"></ol>
+      <!-- every step's caption is in the page at once, stacked in one grid cell, so the box is as tall as the
+           longest caption at the current width and lines fading in never move the drawing below -->
+      <div class="pp-say" id="pp-say"></div>
+      <p class="sr-only" id="pp-say-live" aria-live="polite"></p>
 
       <div class="pp-stage">
         <div class="pp-left">
@@ -127,6 +129,7 @@
       <div class="pp-ctrl" id="pp-ctrl" hidden>
         <button type="button" class="pp-nav" id="pp-prev" data-i18n="proc.prev">上一步</button>
         <div class="pp-acts"><span class="pp-pos small muted" id="pp-pos" aria-live="polite"></span>
+          <button type="button" class="pp-act" id="pp-playall" data-i18n="proc.play_all">播放全部</button>
           <button type="button" class="pp-act" id="pp-replay" data-i18n="proc.replay">重播</button>
           <button type="button" class="pp-act" id="pp-pause" data-i18n="proc.pause">暂停</button></div>
         <button type="button" class="pp-nav" id="pp-next" data-i18n="proc.next">下一步</button>
@@ -150,6 +153,6 @@
   <script src="../assets/libs.js?v=20261119a" defer></script>
   <script src="engine.js?v=20261119a" defer></script>
   <script src="handoff.js?v=20261119a" defer></script>
-  <script src="process.js?v=20261119a" defer></script>
+  <script src="process.js?v=20261119b" defer></script>
 </body>
 </html>
