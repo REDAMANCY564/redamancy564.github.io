@@ -17,7 +17,7 @@
   "search.foods": "Foods ({n})",
   "search.compounds": "Compounds ({n})",
   "search.load_failed": "The knowledge base could not be loaded. Please reload the page.",
-  "food.kfo": "Key flavor compounds",
+  "food.kfo_desc": "Confirmed by GC-O, quantitation and recombination experiments to contribute to this food's aroma",
   "food.kfo_complete": "According to the review, the aroma of this food is created by these compounds alone.",
   "food.detected": "Detected compounds ({n})",
   "food.detected_note": "Compounds FlavorDB lists as detected in this food; most of them do not affect the aroma.",

@@ -84,33 +84,106 @@
 
     let seq = 0;
     let lastKey = null;
-    async function run() {
+    let wait = null;   // progress display of the request in flight
+
+    function render(r) {
+      body.innerHTML = "";
+      if (!r.results.length) { body.textContent = I18N.t("lit.none"); return; }
+      body.append(el("p", { class: "muted", text: I18N.t("lit.count", { n: r.hitCount, k: r.results.length }) }));
+      body.append(el("ol", { class: "kb-lit-list" }, r.results.map(p => el("li", {}, [
+        el("a", { href: p.url, target: "_blank", rel: "noopener", text: p.title || p.url }),
+        el("div", { class: "muted", text: [p.journal, p.year].filter(Boolean).join(", ") }),
+      ]))));
+      body.append(el("a", { href: r.searchUrl, target: "_blank", rel: "noopener", text: I18N.t("lit.more") }));
+    }
+
+    function renderError(e, searchUrl) {
+      body.innerHTML = "";
+      const msg = el("p", { class: "kb-error", text: I18N.t(e && e.code === "timeout" ? "lit.timeout" : "lit.failed",
+        { s: FlavorKB.TIMEOUT_S }) });
+      I18N.nobr(msg);
+      body.append(msg, el("p", { class: "kb-lit-actions" }, [
+        el("button", { type: "button", class: "kb-lit-apply kb-lit-retry", text: I18N.t("lit.retry"),
+          onclick: () => run(true) }),
+        el("a", { href: searchUrl, target: "_blank", rel: "noopener", text: I18N.t("lit.search_site") }),
+      ]));
+    }
+
+    async function run(force) {
       const food = foodInput && foodInput.value.trim() ? foodInput.value.trim() : null;
       const key = (food || "") + "|" + sortSel.value;
-      if (key === lastKey) return;  // "change" and button can both fire for the same input
+      if (key === lastKey && force !== true) return;  // "change" and button can both fire for the same input
       lastKey = key;
       const my = ++seq;
-      body.textContent = I18N.t("lit.loading");
+      if (wait) { wait.stop(); wait = null; }
+      const opts = { sort: sortSel.value };
+      // answered before during this visit: show it at once, no request and no progress bar
+      const cached = FlavorKB.literatureCached(names, food, opts);
+      if (cached) { render(cached); return; }
+      const req = FlavorKB.literatureRequest(names, food, opts);
+      body.innerHTML = "";
+      const w = wait = waitBar();
+      body.append(w.node);
       try {
-        const r = await FlavorKB.literature(names, food, { sort: sortSel.value });
+        const r = await FlavorKB.literature(names, food, opts);
         if (my !== seq) return;
-        body.innerHTML = "";
-        if (!r.results.length) { body.textContent = I18N.t("lit.none"); return; }
-        body.append(el("p", { class: "muted", text: I18N.t("lit.count", { n: r.hitCount, k: r.results.length }) }));
-        body.append(el("ol", { class: "kb-lit-list" }, r.results.map(p => el("li", {}, [
-          el("a", { href: p.url, target: "_blank", rel: "noopener", text: p.title || p.url }),
-          el("div", { class: "muted", text: [p.journal, p.year].filter(Boolean).join(", ") }),
-        ]))));
-        body.append(el("a", { href: r.searchUrl, target: "_blank", rel: "noopener", text: I18N.t("lit.more") }));
+        wait = null;
+        await w.finish();
+        if (my !== seq) return;
+        render(r);
       } catch (e) {
         if (my !== seq) return;
-        body.innerHTML = "";
-        body.append(el("p", { class: "kb-error", text: I18N.t("lit.failed") }));
+        wait = null;
+        w.stop();
+        renderError(e, req.searchUrl);
       }
     }
     sortSel.addEventListener("change", run);
     run();
     return wrap;
+  }
+
+  /**
+   * Timed progress for the Europe PMC request: the bar shows waited time / maximum wait (a real
+   * clock, not an estimate of progress), with "waited n s (up to 60 s)" beside it and, after 8 s,
+   * a line saying the network is slow. Only transform and opacity animate; with reduced motion
+   * the bar is hidden and only the text is shown (CSS).
+   */
+  const SLOW_AFTER_MS = 8000;
+  function waitBar() {
+    const maxMs = FlavorKB.TIMEOUT_S * 1000;
+    const fill = el("span", { class: "kb-wait-fill" });
+    const bar = el("div", { class: "kb-wait-bar", "aria-hidden": "true" }, [fill]);
+    const text = el("span", { class: "kb-wait-text" });
+    const slow = el("span", { class: "kb-wait-slow", "aria-live": "polite" });
+    const node = el("div", { class: "kb-wait", role: "status" }, [bar, el("p", { class: "muted" }, [text, slow])]);
+    const t0 = performance.now();
+    let shownS = -1;
+    function tick() {
+      const ms = performance.now() - t0;
+      fill.style.transform = "scaleX(" + Math.min(ms / maxMs, 1).toFixed(4) + ")";
+      const s = Math.min(Math.floor(ms / 1000), FlavorKB.TIMEOUT_S);
+      if (s !== shownS) {
+        shownS = s;
+        text.textContent = I18N.t("lit.waiting", { n: s, max: FlavorKB.TIMEOUT_S });
+      }
+      if (ms >= SLOW_AFTER_MS && !slow.textContent) slow.textContent = " " + I18N.t("lit.slow");
+    }
+    tick();
+    const timer = setInterval(tick, 250);
+    const stop = () => clearInterval(timer);
+    const reduced = () => window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    return {
+      node, stop,
+      // result arrived: fill the bar, fade it out, then the caller shows the result
+      finish() {
+        stop();
+        if (reduced()) return Promise.resolve();
+        node.classList.add("done");
+        fill.style.transform = "scaleX(1)";
+        return new Promise(res => setTimeout(res, 400));
+      },
+    };
   }
 
   /** "Typical flavor sources" summary for one compound (used on the odor predictor page). */
@@ -120,7 +193,7 @@
     if (c.dunkel) wrap.append(el("p", { class: "small" }, [tag("t1k"), " ", I18N.t("cmp.generalist", { odor: c.dunkel.odor })]));
     const kfo = (c.kfo || []).map(f => ({ label: kb.foods[f].name, href: link("food", f), strong: true }));
     if (kfo.length) wrap.append(el("div", { class: "kb-row" }, [
-      el("div", { class: "small kb-row-title" }, [tag("t1k"), " ", I18N.t("cmp.kfo_foods")]), chips(kfo, 12)]));
+      el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t("cmp.kfo_foods_desc")]), chips(kfo, 12)]));
     const det = (c.det || []).map(f => ({ label: kb.foods[f].name, href: link("food", f) }));
     if (det.length) wrap.append(el("div", { class: "kb-row" }, [
       el("div", { class: "small kb-row-title" }, [tag("t1d"), " ", I18N.t("cmp.det_foods", { n: det.length })]), chips(det, 12)]));

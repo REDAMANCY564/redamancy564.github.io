@@ -17,7 +17,7 @@
   "search.foods": "食品（{n}）",
   "search.compounds": "物质（{n}）",
   "search.load_failed": "知识库数据加载失败，请刷新页面重试。",
-  "food.kfo": "关键风味物质",
+  "food.kfo_desc": "经 GC-O、定量和重组实验确认对该食品的气味有贡献",
   "food.kfo_complete": "原文指出该食品的气味完全由这些物质构成。",
   "food.detected": "检出的物质（{n}）",
   "food.detected_note": "FlavorDB 记录在该食品中检出过的物质，多数并不影响气味。",

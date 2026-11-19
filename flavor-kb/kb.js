@@ -16,23 +16,51 @@
   const STEREO_LAYERS = ["b", "t", "m", "s"];
 
   class ApiError extends Error {
-    constructor(code) { super(code); this.code = code; }  // network | not_found | bad_response
+    constructor(code) { super(code); this.code = code; }  // network | timeout | not_found | bad_response
+  }
+
+  // Europe PMC can take more than 15 s on slow networks (measured 16 s), so wait up to 60 s.
+  const TIMEOUT_MS = 60000;
+
+  // Successful responses are cached per request URL for this visit (memory + sessionStorage),
+  // so switching the sort order back or repeating a query does not send the request again.
+  const memCache = new Map();
+  const CACHE_PREFIX = "kb-api:";
+  function cacheGet(url) {
+    if (memCache.has(url)) return memCache.get(url);
+    try {
+      const s = sessionStorage.getItem(CACHE_PREFIX + url);
+      if (s) { const v = JSON.parse(s); memCache.set(url, v); return v; }
+    } catch (e) { /* storage blocked or bad entry: ignore */ }
+    return undefined;
+  }
+  function cachePut(url, v) {
+    memCache.set(url, v);
+    try { sessionStorage.setItem(CACHE_PREFIX + url, JSON.stringify(v)); } catch (e) { /* quota or blocked */ }
   }
 
   async function fetchJson(url, timeoutMs) {
+    const hit = cacheGet(url);
+    if (hit !== undefined) return hit;
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), timeoutMs || 15000);
-    let res;
+    let timedOut = false;
+    const timer = setTimeout(() => { timedOut = true; ctrl.abort(); }, timeoutMs || TIMEOUT_MS);
     try {
-      res = await fetch(url, { signal: ctrl.signal });
-    } catch (e) {
-      throw new ApiError("network");
+      let res;
+      try {
+        res = await fetch(url, { signal: ctrl.signal });
+      } catch (e) {
+        throw new ApiError(timedOut ? "timeout" : "network");
+      }
+      if (res.status === 404) throw new ApiError("not_found");
+      if (!res.ok) throw new ApiError("network");
+      let d;
+      try { d = await res.json(); } catch (e) { throw new ApiError(timedOut ? "timeout" : "bad_response"); }
+      cachePut(url, d);
+      return d;
     } finally {
-      clearTimeout(timer);
+      clearTimeout(timer);   // the timeout also covers reading the body
     }
-    if (res.status === 404) throw new ApiError("not_found");
-    if (!res.ok) throw new ApiError("network");
-    try { return await res.json(); } catch (e) { throw new ApiError("bad_response"); }
   }
 
   // ---------- Tier 1 data ----------
@@ -114,11 +142,8 @@
     return '"' + String(term).replace(/"/g, "").replace(/\s*\(.*?\)\s*/g, " ").trim() + '"';
   }
 
-  /**
-   * names: compound names (OR-ed), food: optional food name.
-   * Returns {hitCount, results: [{title, journal, year, url}], searchUrl}.
-   */
-  async function literature(names, food, opts) {
+  /** API and website URLs for one literature query (the website link is shown when the API fails). */
+  function literatureRequest(names, food, opts) {
     opts = opts || {};
     // All terms are restricted to title + abstract: full-text matching returns many off-topic papers.
     const nameQ = "TITLE_ABS:(" + names.filter(Boolean).slice(0, 3).map(quote).join(" OR ") + ")";
@@ -127,12 +152,17 @@
     parts.push("TITLE_ABS:(aroma OR odor OR odour OR odorant OR odorants OR flavor OR flavour)");
     const query = parts.join(" AND ");
     const sort = opts.sort === "cited" ? "&sort=" + encodeURIComponent("CITED desc") : "";
-    const url = EPMC + "?format=json&resultType=lite&pageSize=" + (opts.pageSize || 8) + sort + "&query=" + encodeURIComponent(query);
-    const d = await fetchJson(url);
+    return {
+      url: EPMC + "?format=json&resultType=lite&pageSize=" + (opts.pageSize || 8) + sort + "&query=" + encodeURIComponent(query),
+      searchUrl: "https://europepmc.org/search?query=" + encodeURIComponent(query),
+    };
+  }
+
+  function literatureResult(d, searchUrl) {
     if (!d.resultList) throw new ApiError("bad_response");
     return {
       hitCount: d.hitCount || 0,
-      searchUrl: "https://europepmc.org/search?query=" + encodeURIComponent(query),
+      searchUrl,
       results: d.resultList.result.map(r => ({
         title: stripTags(r.title || ""),
         journal: r.journalTitle || r.bookOrReportDetails && r.bookOrReportDetails.publisher || "",
@@ -140,6 +170,23 @@
         url: r.doi ? "https://doi.org/" + r.doi : "https://europepmc.org/article/" + r.source + "/" + r.id,
       })),
     };
+  }
+
+  /**
+   * names: compound names (OR-ed), food: optional food name.
+   * Returns {hitCount, results: [{title, journal, year, url}], searchUrl}.
+   */
+  async function literature(names, food, opts) {
+    const req = literatureRequest(names, food, opts);
+    return literatureResult(await fetchJson(req.url), req.searchUrl);
+  }
+
+  /** The same result if this query was already answered during this visit, otherwise null (no request). */
+  function literatureCached(names, food, opts) {
+    const req = literatureRequest(names, food, opts);
+    const d = cacheGet(req.url);
+    if (d === undefined) return null;
+    try { return literatureResult(d, req.searchUrl); } catch (e) { return null; }
   }
 
   // ---------- Tier 3: DOI -> title, journal, abstract ----------
@@ -246,5 +293,5 @@
     return segs;
   }
 
-  window.FlavorKB = { load, search, findByMol, stripStereo, literature, paper, matchText, cleanDoi, ApiError, compoundNames };
+  window.FlavorKB = { TIMEOUT_S: TIMEOUT_MS / 1000, load, search, findByMol, stripStereo, literature, literatureCached, literatureRequest, paper, matchText, cleanDoi, ApiError, compoundNames };
 })();
