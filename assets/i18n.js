@@ -66,7 +66,7 @@
   // Regular-expression sources, one per entry; the text itself is unchanged. tools/prerender.py reads
   // this list from here. Found with tools/check_orphans.py (text-wrap: pretty in assets/style.css does the rest).
   const NOBR_END = [
-    "表中各行", "气味指纹", "页面加载", "方法与来源", "相互作用", "协同作用", "统计方法", "关联更强", "仅供参考",
+    "表中各行", "个描述词", "气味指纹", "页面加载", "方法与来源", "相互作用", "协同作用", "统计方法", "关联更强", "仅供参考",
     "整体信号", "接近母乳", "数据请求", "一种物质", "风味物质", "也不支持", "风味和成本", "替代物", "有意义的目标",
     "方向型目标", "文件为准", "复核为准", "提供换算", "分成三簇", "浏览器里", "问题写的", "几个特征", "才会高",
     "直接展示", "拟合曲线", "差距分析", "自动分析", "风味轮廓", "提供思路", "只是近似", "加权组合", "浏览器里运行",

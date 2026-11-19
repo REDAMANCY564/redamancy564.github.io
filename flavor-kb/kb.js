@@ -138,17 +138,65 @@
   }
 
   // ---------- Tier 2: Europe PMC literature search ----------
-  function quote(term) {
-    return '"' + String(term).replace(/"/g, "").replace(/\s*\(.*?\)\s*/g, " ").trim() + '"';
+  /**
+   * Name for a literature query: removes only notes written after a space in brackets, as in
+   * "Diacetyl (2,3-butanedione)" or "wine (red and white)"; brackets that are part of a chemical name,
+   * as in "3-(methylthio)propionaldehyde", stay. Returns null when what is left is not a complete name
+   * (empty, unbalanced brackets, or a separator left dangling by the removal).
+   */
+  function searchName(term) {
+    const src = String(term || "").replace(/"/g, "").trim();
+    let out = "", i = 0;
+    while (i < src.length) {
+      const sp = src.slice(i).match(/^\s+\(/);
+      if (sp) {
+        // find the matching closing bracket of this note (notes may contain brackets themselves)
+        let j = i + sp[0].length, depth = 1;
+        for (; j < src.length && depth; j++) depth += src[j] === "(" ? 1 : src[j] === ")" ? -1 : 0;
+        // a note ends the name or is followed by a space or ,; ; "methyl (9E,12Z)-octadeca…" and
+        // "ethyl (Z)hex-3-enoate" are names, not notes
+        if (depth === 0 && (j === src.length || /[\s,;]/.test(src[j]))) { i = j; continue; }   // drop " (…)"
+      }
+      out += src[i++];
+    }
+    out = out.replace(/\s+/g, " ").trim();
+    if (!out) return null;
+    let depth = 0;
+    for (const ch of out) {
+      depth += "([{".includes(ch) ? 1 : ")]}".includes(ch) ? -1 : 0;
+      if (depth < 0) return null;
+    }
+    if (depth !== 0) return null;
+    if (out !== src && /[,;:/]$/.test(out)) return null;   // "Foo, (note)" leaves "Foo,"
+    return out;
+  }
+
+  function quote(name) { return '"' + name + '"'; }
+
+  /** Up to `max` distinct complete names (case-insensitive) for the query. */
+  function searchNames(names, max) {
+    const seen = new Set(), out = [];
+    for (const n of names) {
+      const s = searchName(n);
+      if (!s || seen.has(s.toLowerCase())) continue;
+      seen.add(s.toLowerCase());
+      out.push(s);
+      if (out.length >= max) break;
+    }
+    return out;
   }
 
   /** API and website URLs for one literature query (the website link is shown when the API fails). */
   function literatureRequest(names, food, opts) {
     opts = opts || {};
     // All terms are restricted to title + abstract: full-text matching returns many off-topic papers.
-    const nameQ = "TITLE_ABS:(" + names.filter(Boolean).slice(0, 3).map(quote).join(" OR ") + ")";
+    // Names left incomplete by removing a bracketed note are not used; if none is complete, the first
+    // name is used as written.
+    let terms = searchNames(names.filter(Boolean), 3);
+    if (!terms.length) terms = names.filter(Boolean).slice(0, 1).map(n => String(n).replace(/"/g, "").trim());
+    const nameQ = "TITLE_ABS:(" + terms.map(quote).join(" OR ") + ")";
     const parts = [nameQ];
-    if (food) parts.push("TITLE_ABS:" + quote(food));
+    if (food) parts.push("TITLE_ABS:" + quote(searchName(food) || String(food).replace(/"/g, "").trim()));
     parts.push("TITLE_ABS:(aroma OR odor OR odour OR odorant OR odorants OR flavor OR flavour)");
     const query = parts.join(" AND ");
     const sort = opts.sort === "cited" ? "&sort=" + encodeURIComponent("CITED desc") : "";
@@ -208,10 +256,16 @@
     return t;
   }
 
-  async function paper(doiInput) {
+  /**
+   * onStep(source, why): called before each lookup — ("epmc"), then ("crossref", "not_found" | "failed")
+   * when Europe PMC has no record of the DOI or could not be reached. Each lookup has its own timeout.
+   */
+  async function paper(doiInput, onStep) {
     const doi = cleanDoi(doiInput);
     if (!doi) throw new ApiError("bad_doi");
+    const step = onStep || (() => {});
     let epmcErr = null;
+    step("epmc");
     try {
       const d = await fetchJson(EPMC + "?format=json&resultType=core&pageSize=1&query=" + encodeURIComponent("DOI:" + doi));
       const r = d.resultList && d.resultList.result[0];
@@ -228,6 +282,7 @@
       epmcErr = e;
     }
     // Fallback: Crossref (abstract only if the publisher deposited one)
+    step("crossref", epmcErr ? "failed" : "not_found");
     try {
       const m = (await fetchJson(CROSSREF + encodeURIComponent(doi))).message;
       const issued = m.issued && m.issued["date-parts"] && m.issued["date-parts"][0];
@@ -293,5 +348,5 @@
     return segs;
   }
 
-  window.FlavorKB = { TIMEOUT_S: TIMEOUT_MS / 1000, load, search, findByMol, stripStereo, literature, literatureCached, literatureRequest, paper, matchText, cleanDoi, ApiError, compoundNames };
+  window.FlavorKB = { TIMEOUT_S: TIMEOUT_MS / 1000, load, search, findByMol, stripStereo, literature, literatureCached, literatureRequest, searchName, searchNames, paper, matchText, cleanDoi, ApiError, compoundNames };
 })();

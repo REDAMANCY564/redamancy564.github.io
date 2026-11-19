@@ -167,6 +167,20 @@
     box.append(title, value, range);
   }
 
+  // Molecule name on the "How it predicts" button: the preset's name, or a searched name that is not
+  // a long SMILES; spaces around Latin names in the Chinese sentence.
+  function processName() {
+    let n = current.source === "search"
+      ? (current.title && current.title !== current.smiles && current.title.length <= 40 ? current.title : null)
+      : (I18N.lang === "zh" ? current.name_zh : current.name_en);
+    if (!n) return I18N.t("demo.process_this");
+    if (I18N.lang === "zh") {
+      if (/^[A-Za-z0-9(]/.test(n)) n = " " + n;
+      if (/[A-Za-z0-9)]$/.test(n)) n = n + " ";
+    }
+    return n;
+  }
+
   function renderInfo() {
     let name;
     if (current.source === "search") {
@@ -186,6 +200,7 @@
     $("mol-taste").href = "../taste-predictor/?q=" + encodeURIComponent(current.smiles) + "#demo";
     const toProcess = "process.html" + I18N.keepLang("q=" + encodeURIComponent(current.smiles));
     document.querySelectorAll("a.to-process").forEach(a => { a.href = toProcess; });
+    $("mol-process").textContent = I18N.t("demo.process_btn", { name: processName() });
     $("mol-finder").href = "../ingredient-finder/?mode=b&smiles=" + encodeURIComponent(current.smiles);
     renderThreshold();
 

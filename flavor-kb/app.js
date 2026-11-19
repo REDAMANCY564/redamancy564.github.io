@@ -125,7 +125,7 @@
       card.append(chips(sorted.map(c => ({ label: kbd.compounds[c].name, href: "?compound=" + c, id: c, strong: !!kbd.compounds[c].kfo })),
         MAX_CHIPS, it => showCompound(it.id, true)));
     }
-    card.append(literature([f.name.replace(/\s*\(.*?\)\s*/g, " ").trim()], null));
+    card.append(literature([f.name], null));   // the bracketed note ("wine (red and white)") is dropped in FlavorKB
     d.append(card);
     d.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -203,9 +203,16 @@
     if (!doi) { doiState = null; setStatus("doi-status", "doi.bad", null, true); return; }
     if (push) pushUrl({ doi });
     $("doi-btn").disabled = true;
-    setStatus("doi-status", "doi.loading");
+    setStatus("doi-status", null);
+    // timed progress per source: Europe PMC first, then Crossref if needed, each up to 60 s
+    const wait = FlavorKBUI.waitBar("doi.wait_epmc");
+    $("doi-result").append(wait.node);
     try {
-      const paper = await FlavorKB.paper(doi);
+      const paper = await FlavorKB.paper(doi, (src, why) => {
+        if (src === "crossref") wait.restart(why === "failed" ? "doi.wait_crossref_failed" : "doi.wait_crossref");
+      });
+      await wait.finish();
+      wait.node.remove();
       let segs = null;
       if (paper.abstract) {
         await ensureKb();
@@ -215,9 +222,11 @@
       setStatus("doi-status", null);
       renderDoi();
     } catch (e) {
+      wait.stop();
+      wait.node.remove();
       doiState = null;
-      const key = e.code === "bad_doi" ? "doi.bad" : e.code === "not_found" ? "doi.not_found" : "doi.failed";
-      setStatus("doi-status", key, null, true);
+      const key = e.code === "bad_doi" ? "doi.bad" : e.code === "not_found" ? "doi.not_found" : e.code === "timeout" ? "doi.timeout" : "doi.failed";
+      setStatus("doi-status", key, { s: FlavorKB.TIMEOUT_S }, true);
     } finally {
       $("doi-btn").disabled = false;
     }

@@ -24,7 +24,7 @@
   "legend.t2": "实时文献",
   "legend.t3": "摘要文字匹配",
   "cmp.det_foods": "检出该物质的食品（{n}）",
-  "cmp.generalist": "Dunkel 2014 中的「通用型」关键风味物质（在超过 25% 的食品样品中是关键风味物质），气味：{odor}",
+  "cmp.generalist": "Dunkel 2014 归为「通用型」：在超过 25% 的食品样品中属于此类。气味：{odor}",
   "cmp.show_all": "显示全部 {n} 个",
   "kb.sources_title": "常见于哪些食品",
   "kb.not_in_kb": "知识库中还没有这个物质的食品来源数据。",

@@ -150,14 +150,17 @@
    * the bar is hidden and only the text is shown (CSS).
    */
   const SLOW_AFTER_MS = 8000;
-  function waitBar() {
+  // textKey: i18n key with {n} (seconds waited) and {max}; restart(key) starts a new timed step
+  // (DOI analysis: Europe PMC, then Crossref, each with its own 60 s).
+  function waitBar(textKey) {
+    textKey = textKey || "lit.waiting";
     const maxMs = FlavorKB.TIMEOUT_S * 1000;
     const fill = el("span", { class: "kb-wait-fill" });
     const bar = el("div", { class: "kb-wait-bar", "aria-hidden": "true" }, [fill]);
     const text = el("span", { class: "kb-wait-text" });
     const slow = el("span", { class: "kb-wait-slow", "aria-live": "polite" });
     const node = el("div", { class: "kb-wait", role: "status" }, [bar, el("p", { class: "muted" }, [text, slow])]);
-    const t0 = performance.now();
+    let t0 = performance.now();
     let shownS = -1;
     function tick() {
       const ms = performance.now() - t0;
@@ -165,7 +168,7 @@
       const s = Math.min(Math.floor(ms / 1000), FlavorKB.TIMEOUT_S);
       if (s !== shownS) {
         shownS = s;
-        text.textContent = I18N.t("lit.waiting", { n: s, max: FlavorKB.TIMEOUT_S });
+        text.textContent = I18N.t(textKey, { n: s, max: FlavorKB.TIMEOUT_S });
       }
       if (ms >= SLOW_AFTER_MS && !slow.textContent) slow.textContent = " " + I18N.t("lit.slow");
     }
@@ -175,6 +178,10 @@
     const reduced = () => window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
     return {
       node, stop,
+      restart(key) {
+        textKey = key; t0 = performance.now(); shownS = -1; slow.textContent = "";
+        tick();
+      },
       // result arrived: fill the bar, fade it out, then the caller shows the result
       finish() {
         stop();
@@ -222,5 +229,5 @@
     return out;
   }
 
-  window.FlavorKBUI = { el, tag, link, chips, literature, sourcesSummary, litFoods };
+  window.FlavorKBUI = { el, tag, link, chips, literature, waitBar, sourcesSummary, litFoods };
 })();

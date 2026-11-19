@@ -24,7 +24,7 @@
   "legend.t2": "Live literature",
   "legend.t3": "Abstract text match",
   "cmp.det_foods": "Detected in ({n})",
-  "cmp.generalist": "A \"generalist\" key food odorant in Dunkel 2014 (key food odorant in more than 25% of food samples), odor: {odor}",
+  "cmp.generalist": "\"Generalist\" in Dunkel 2014: one in more than 25% of food samples. Odor: {odor}",
   "cmp.show_all": "Show all {n}",
   "kb.sources_title": "Found in foods",
   "kb.not_in_kb": "The knowledge base has no food source data for this compound.",
