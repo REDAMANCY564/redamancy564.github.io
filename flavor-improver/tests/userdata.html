@@ -43,6 +43,16 @@
         [a.rec.compounds[1].thr_mg_kg, a.rec.compounds[2].thr_mg_kg, a.rec.compounds[0].kbId, a.rec.compounds[1].kbId], [2.7e-5, null, "c6184", null]);
       const r = C.recordFromCsv('"Rank","Compound","CAS","Relative content (%)","Odor threshold in water (mg/kg)","Threshold source","ROAV"\n"1","hexanal","66-25-1","12.5","0.0024","","100"\n', "s2");
       check("ranking CSV: ROAV mode from the relative content column", [r.rec.mode, r.rec.basis, r.rec.compounds[0].value], ["roav", "rel", 12.5]);
+      // ranking CSV exported from the Chinese gcms-interpreter page (headers follow the page language)
+      const zhRank = C.recordFromCsv('"排名","化合物","CAS","含量 (μg/kg)","气味阈值 (水中，mg/kg)","阈值来源","OAV","气味描述","描述来源","KB id"\r\n' +
+        '"1","己醛","66-25-1","100.4","0.0024","标准文件","41.84","green","知识库 Dunkel 2014","c6184"\r\n' +
+        '"","辛醛","124-13-0","未检出","","","未检出","","","c1"\r\n', "zh-rank");
+      check("ranking CSV (Chinese page): OAV mode, ug/kg amount, mg/kg threshold, source, KB id, not detected",
+        [zhRank.rec.mode, zhRank.rec.compounds[0].value, zhRank.rec.compounds[0].thr_mg_kg, zhRank.rec.compounds[0].thrSource,
+         zhRank.rec.compounds[0].kbId, zhRank.rec.notFound.map(x => x.label)],
+        ["oav", 100.4, 0.0024, "标准文件", "c6184", ["辛醛"]]);
+      const zhRel = C.recordFromCsv('"排名","化合物","CAS","相对含量 (%)","气味阈值 (水中，mg/kg)","阈值来源","ROAV"\n"1","己醛","66-25-1","12.5","0.0024","","100"\n', "zh-rel");
+      check("ranking CSV (Chinese page): ROAV mode from the relative content column", [zhRel.rec.mode, zhRel.rec.basis, zhRel.rec.compounds[0].value], ["roav", "rel", 12.5]);
       check("other CSV: no name column -> header error", C.recordFromCsv("Peak,Area\n1,1\n").error, "header");
       check("other CSV: no value column -> header error", C.recordFromCsv("化合物,CAS\nx,66-25-1\n").error, "header");
       const zh = C.recordFromCsv("化合物,CAS号,浓度 (mg/kg),阈值 (µg/kg)\n己醛,66-25-1,0.028,2.4\n辛醛,124-13-0,未检出,\n", "zh");

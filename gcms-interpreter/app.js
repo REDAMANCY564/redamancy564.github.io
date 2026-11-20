@@ -187,21 +187,49 @@
 
   /**
    * The sample processed: the first one in the sample column (the user may pick another),
-   * else a "Sample name" entry in the lines above the header, else the file name.
+   * else a sample name in the lines above the header, else the file name. The name shown and
+   * used for exports can be edited (S.sampleName, sampleName()).
    */
   function pickSample() {
+    S.sampleName = null;
     const list = samples();
     if (list.length) {
       if (!list.includes(S.sample)) S.sample = list[0];
       return;
     }
-    S.sample = null;
-    for (const r of rows().slice(0, S.headerIndex)) {
-      const k = r.findIndex(c => GcmsMapping.guessField(c) === "sample");
-      if (k >= 0 && r[k + 1]) { S.sample = r[k + 1]; return; }
-    }
-    S.sample = S.file.fileName.replace(/\.[^.]+$/, "");
+    S.sample = headerSampleName(rows().slice(0, S.headerIndex)) || S.file.fileName.replace(/\.[^.]+$/, "");
   }
+
+  /**
+   * Sample name from instrument report lines above the header. Agilent MassHunter writes
+   * "label:value" in one cell ("样品名称:HM0031", "Sample Name:HM0031", "数据文件名称:D:\...\HM0031.D");
+   * other software puts the value in the next cell. A sample-name label wins over a data-file
+   * label (whose value is a path: its last part without extension is used). Empty cells and
+   * pandas placeholders ("Unnamed: 1") are not names.
+   */
+  function headerSampleName(lines) {
+    const isName = v => v && !/^Unnamed: ?\d+$/i.test(v);
+    const isFileLabel = label => /file|文件/i.test(label);
+    const fromPath = v => (v.split(/[\\/]/).filter(Boolean).pop() || "").replace(/\.[A-Za-z0-9]{1,4}$/, "");
+    let best = null;
+    const offer = (label, value) => {
+      value = String(value || "").trim();
+      if (GcmsMapping.guessField(label) !== "sample" || !isName(value)) return;
+      const file = isFileLabel(label);
+      const v = file ? fromPath(value) : value;
+      if (!isName(v)) return;
+      if (!best || (best.file && !file)) best = { v, file };
+    };
+    for (const r of lines) {
+      r.forEach((c, k) => {
+        const m = /^([^:：]{1,40})[:：](.*)$/.exec(c);
+        if (m) offer(m[1], m[2]);
+        else offer(c, r[k + 1]);
+      });
+    }
+    return best ? best.v : null;
+  }
+  const sampleName = () => String(S.sampleName || S.sample || "sample");
 
   dropZone("drop", "file-input", f => load(f));
   // Examples (top of the page): one click loads the peak table and its standard file, confirms them,
@@ -318,7 +346,9 @@
     invalidate();
     renderAll();
   });
-  $("sample-select").addEventListener("change", e => { S.sample = e.target.value; invalidate(); renderAll(); });
+  $("sample-select").addEventListener("change", e => { S.sample = e.target.value; S.sampleName = null; invalidate(); renderAll(); });
+  // Editable sample name (shown in summaries, file names of exports and data sent to other tools)
+  $("sample-name").addEventListener("change", e => { S.sampleName = e.target.value.trim() || null; renderAll(); });
   $("decimal-comma").addEventListener("change", e => { if (!S.file) return; S.decimalComma = e.target.checked; invalidate(); renderAll(); });
 
   function peakWarnings() {
@@ -336,6 +366,7 @@
     (S.mapping.includes("area") || S.mapping.includes("rel"));
 
   function renderSamplePicker() {
+    if (document.activeElement !== $("sample-name")) $("sample-name").value = sampleName();
     const list = samples();
     const multi = list.length > 1;
     $("sample-wrap").classList.toggle("hidden", !multi);
@@ -633,7 +664,7 @@
     box.classList.toggle("hidden", !RUN.ready);
     if (!RUN.ready) return;
     $("read-summary").textContent = I18N.t("read.summary", {
-      sample: S.sample, peaks: S.records.length, n: STD.targets.length,
+      sample: sampleName(), peaks: S.records.length, n: STD.targets.length,
       rt: STD.targets.filter(t => t.rt != null).length,
       bad: STD.targets.filter(t => ["suspicious", "date", "invalid"].includes(t.ident.casStatus)).length,
     });
@@ -729,11 +760,29 @@
     const q = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
     download("\ufeff" + rows.map(r => r.map(q).join(",")).join("\r\n") + "\r\n", base + ".csv", "text/csv");
   }
-  const sampleBase = () => String(S.sample || "sample").replace(/[\\/:*?"<>|]+/g, "_");
+  const sampleBase = () => sampleName().replace(/[\\/:*?"<>|]+/g, "_");
+
+  // Exported tables follow the page language. English headers and values are unchanged from
+  // earlier versions; both header sets are read back by flavor-improver/userdata-core.js.
+  const XH = {
+    en: { no: "No.", compound: "Compound", cas: "CAS", ref_rt: "Reference RT (min)", rt: "Measured RT (min)",
+          rel_column: "Relative content (%, from the peak table)", rel_total: "Relative content (% of all peak area)",
+          rel_targets: "Relative content (% of found targets, sum 100)", rank: "Rank", amount: "Amount (ug/kg)",
+          rel: "Relative content (%)", thr: "Odor threshold in water (mg/kg)", thr_src: "Threshold source",
+          desc: "Odor descriptors", desc_src: "Descriptor source", kb: "KB id", nd_value: "not detected",
+          user: "user", std_file: "standard file", not_detected: "not_detected", no_threshold: "no_threshold", no_value: "no_value" },
+    zh: { no: "序号", compound: "化合物", cas: "CAS", ref_rt: "参考保留时间 (min)", rt: "实测保留时间 (min)",
+          rel_column: "相对含量 (%，取自峰表)", rel_total: "相对含量 (%，占全部峰面积)",
+          rel_targets: "相对含量 (%，占找到的目标物质，合计 100)", rank: "排名", amount: "含量 (μg/kg)",
+          rel: "相对含量 (%)", thr: "气味阈值 (水中，mg/kg)", thr_src: "阈值来源",
+          desc: "气味描述", desc_src: "描述来源", kb: "KB id", nd_value: "未检出",
+          user: "用户输入", std_file: "标准文件", not_detected: "未检出", no_threshold: "无阈值", no_value: "无数值" },
+  };
+  const xh = () => XH[I18N.lang === "zh" ? "zh" : "en"];
 
   function resultRows() {
-    const relHead = { column: "Relative content (%, from the peak table)", total: "Relative content (% of all peak area)", targets: "Relative content (% of found targets, sum 100)" }[RUN.result.relBasis];
-    const rows = [["No.", "Compound", "CAS", "Reference RT (min)", "Measured RT (min)", relHead]];
+    const H = xh();
+    const rows = [[H.no, H.compound, H.cas, H.ref_rt, H.rt, H["rel_" + RUN.result.relBasis]]];
     RUN.result.rows.forEach((r, i) => {
       const t = STD.targets[i];
       rows.push([String(i + 1), t.label, t.ident.casNorm || t.cas || "", fmtRt(t.rt), r.found ? fmtRt(r.peak.rt) : "-", r.found ? fmtRel(r.rel) : "-"]);
@@ -796,7 +845,7 @@
     if (b.ref === "cui2026") return I18N.t("thr.src_author_cui", { t: b.orig || "", doi: b.doi });
     return I18N.t("thr.src_author_doi", { doi: b.doi });
   }
-  /** The same in English, for the exported files. */
+  /** The same in English, for files exported from the English page. */
   const builtTextEn = b => (!b.author ? b.src + " (van Gemert 2011, built-in)"
     : b.ref === "vg2011" ? "author group value; van Gemert (2011) p. " + b.page + (b.orig ? ", " + b.orig : "")
     : b.ref === "cui2026" ? "author group value; Cui et al. (2026) Food Bioscience, " + (b.orig || "") + ", doi:" + b.doi : "author group value; doi:" + b.doi);
@@ -926,22 +975,23 @@
 
   function rankRows() {
     const { F, calc, order } = FLV.last;
+    const H = xh(), zh = I18N.lang === "zh";
     const score = F.mode === "oav" ? "OAV" : "ROAV";
-    const lines = [["Rank", "Compound", "CAS", F.mode === "oav" ? "Amount (ug/kg)" : "Relative content (%)", "Odor threshold in water (mg/kg)",
-      "Threshold source", score, "Odor descriptors", "Descriptor source", "KB id"]];
+    const lines = [[H.rank, H.compound, H.cas, F.mode === "oav" ? H.amount : H.rel, H.thr, H.thr_src, score, H.desc, H.desc_src, H.kb]];
     let rank = 0;
     order.forEach(k => {
       const x = F.items[k], c = calc.rows[k], dt = descText(x.t.ident.kbId);
-      const src = x.edited ? "user" : x.fromFile ? "standard file" : x.built ? builtTextEn(x.built) : "";
+      const src = x.edited ? H.user : x.fromFile ? H.std_file : x.built ? (zh ? builtText(x.built).replace(/^，/, "") : builtTextEn(x.built)) : "";
+      const dsrc = dt.d.src ? (zh ? I18N.t("rank.src_" + dt.d.src) : dt.d.src) : "";
       lines.push([c.status === "ok" ? String(++rank) : "", x.t.label, x.t.ident.casNorm || x.t.cas || "",
         sig(F.mode === "oav" ? x.value : x.r.rel, 4), x.thr > 0 ? x.thr : "", src,
-        c.status === "ok" ? sig(c.score, 4) : c.status, dt.text, dt.d.src || "", x.t.ident.kbId || ""].map(v => (typeof v === "number" ? String(v) : v)));
+        c.status === "ok" ? sig(c.score, 4) : H[c.status] || c.status, dt.text, dsrc, x.t.ident.kbId || ""].map(v => (typeof v === "number" ? String(v) : v)));
     });
     // targets of the standard file that were not found in this sample (flavor-improver reads them as not detected)
     RUN.result.rows.forEach((r, i) => {
       if (r.found) return;
       const tg = STD.targets[i];
-      lines.push(["", tg.label, tg.ident.casNorm || tg.cas || "", "not detected", "", "", "not_detected", "", "", tg.ident.kbId || ""]);
+      lines.push(["", tg.label, tg.ident.casNorm || tg.cas || "", H.nd_value, "", "", H.not_detected, "", "", tg.ident.kbId || ""]);
     });
     return { lines, score };
   }
@@ -958,7 +1008,7 @@
     }));
     const notFound = RUN.result.rows.map((r, i) => [r, STD.targets[i]]).filter(([r]) => !r.found)
       .map(([, t]) => ({ label: t.label, cas: t.ident.casNorm || t.cas || "", kbId: t.ident.kbId || null }));
-    return { name: String(S.sample || "sample"), savedAt: new Date().toISOString(), source: "gcms",
+    return { name: sampleName(), savedAt: new Date().toISOString(), source: "gcms",
              mode: F.mode, basis: F.basis, compounds, notFound };
   }
   ["sample", "target"].forEach(slot => $("handoff-" + slot).addEventListener("click", () => {
