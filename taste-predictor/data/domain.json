@@ -1,13 +1,14 @@
 {
- "fingerprint": "Morgan radius 2, 2048 bits",
+ "fingerprint": "Morgan count fingerprint, radius 2, 2048 bits; count Tanimoto (sum min / sum max)",
  "percentile": 5,
- "threshold": 0.3087,
+ "threshold": 0.3187,
  "n_test": 394,
+ "test_flagged": 20,
  "test_nn_quantiles": {
-  "1": 0.2313,
-  "5": 0.3087,
-  "10": 0.3554,
-  "25": 0.4615,
+  "1": 0.2274,
+  "5": 0.3187,
+  "10": 0.3754,
+  "25": 0.4699,
   "50": 0.5814
  }
 }

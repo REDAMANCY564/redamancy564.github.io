@@ -58,8 +58,21 @@
     });
   }
 
+  // Judgement thresholds (metrics.json gnn.thresholds, Youden J on the validation split)
+  function renderThreshold() {
+    const t = metrics.gnn.thresholds;
+    if (!t) return;
+    const pct = v => (v < 0.1 ? (v * 100).toFixed(1) : String(Math.round(v * 100))) + "%";
+    const vars = Object.fromEntries(ids.map(id => [id, pct(t[id].threshold)]));
+    vars.u_fp = Math.round((1 - t.umami.valid_specificity) * 100) + "%";
+    vars.t_fp = Math.round((1 - t.tasteless.valid_specificity) * 100) + "%";
+    $("method-threshold").innerHTML = I18N.t("method.threshold", vars);
+    I18N.nobr($("method-threshold"));
+  }
+
   function renderAll() {
     renderResults();
+    renderThreshold();
   }
   renderAll();
   I18N.onChange(renderAll);

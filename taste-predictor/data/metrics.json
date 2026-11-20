@@ -72,85 +72,128 @@
       "hidden": 128,
       "num_layers": 3,
       "dropout": 0.2,
+      "pools": [
+        "mean",
+        "max",
+        "sum"
+      ],
+      "desc": true,
+      "class_weight": false,
       "lr": 0.001,
       "batch": 64,
       "patience": 20,
-      "n_parameters": 103300
+      "global_descriptors": [
+        "heavy_atoms",
+        "carbons",
+        "longest_chain",
+        "rings",
+        "double_bonds",
+        "logp",
+        "tpsa",
+        "mol_weight"
+      ],
+      "n_parameters": 138116
     },
+    "config_name": "desc_sum",
     "seeds": [
       {
         "seed": 0,
-        "best_epoch": 65,
-        "valid_macro_auroc": 0.8716,
-        "test_macro_auroc": 0.9025,
+        "best_epoch": 85,
+        "valid_macro_auroc": 0.9119,
+        "test_macro_auroc": 0.9016,
         "test_per_label": {
-          "sweet": 0.8568,
-          "bitter": 0.8673,
+          "sweet": 0.8606,
+          "bitter": 0.8631,
           "umami": 1.0,
-          "tasteless": 0.8857
+          "tasteless": 0.8828
         }
       },
       {
         "seed": 1,
-        "best_epoch": 58,
-        "valid_macro_auroc": 0.8555,
-        "test_macro_auroc": 0.896,
+        "best_epoch": 50,
+        "valid_macro_auroc": 0.9172,
+        "test_macro_auroc": 0.9004,
         "test_per_label": {
-          "sweet": 0.8359,
-          "bitter": 0.8541,
+          "sweet": 0.8739,
+          "bitter": 0.8599,
           "umami": 0.9999,
-          "tasteless": 0.8941
+          "tasteless": 0.8679
         }
       },
       {
         "seed": 2,
-        "best_epoch": 119,
-        "valid_macro_auroc": 0.8988,
-        "test_macro_auroc": 0.9057,
+        "best_epoch": 97,
+        "valid_macro_auroc": 0.9208,
+        "test_macro_auroc": 0.9022,
         "test_per_label": {
-          "sweet": 0.868,
-          "bitter": 0.8668,
+          "sweet": 0.8666,
+          "bitter": 0.8568,
           "umami": 1.0,
-          "tasteless": 0.8879
+          "tasteless": 0.8853
         }
       }
     ],
+    "valid_macro_auroc_mean": 0.9166,
+    "valid_macro_auroc_std": 0.0036,
     "test_macro_auroc_mean": 0.9014,
-    "test_macro_auroc_std": 0.004,
+    "test_macro_auroc_std": 0.0007,
     "test_per_label_mean": {
-      "sweet": 0.8536,
-      "bitter": 0.8627,
+      "sweet": 0.867,
+      "bitter": 0.8599,
       "umami": 1.0,
-      "tasteless": 0.8892
+      "tasteless": 0.8787
     },
     "test_per_label_std": {
-      "sweet": 0.0133,
-      "bitter": 0.0061,
+      "sweet": 0.0054,
+      "bitter": 0.0026,
       "umami": 0.0,
-      "tasteless": 0.0036
+      "tasteless": 0.0077
     },
     "evaluated_seed": 2,
-    "valid_macro_auroc": 0.8988,
-    "deployed_model": {
-      "trained_on": "all molecules (train+valid+test)",
-      "epochs": 65,
-      "note": "test metrics come from the evaluated model trained on the train split only"
-    },
-    "macro_auroc": 0.9057,
-    "per_label": {
+    "valid_macro_auroc": 0.9208,
+    "thresholds": {
       "sweet": {
-        "auroc": 0.868,
-        "test_pos": 180,
-        "test_neg": 214,
-        "auroc_cyclic": 0.8485,
-        "auroc_acyclic": 0.8494
+        "threshold": 0.5758,
+        "valid_sensitivity": 0.7966,
+        "valid_specificity": 0.8704
       },
       "bitter": {
-        "auroc": 0.8668,
+        "threshold": 0.4218,
+        "valid_sensitivity": 0.7791,
+        "valid_specificity": 0.8619
+      },
+      "umami": {
+        "threshold": 0.0073,
+        "valid_sensitivity": 1.0,
+        "valid_specificity": 0.9508
+      },
+      "tasteless": {
+        "threshold": 0.0221,
+        "valid_sensitivity": 1.0,
+        "valid_specificity": 0.7081
+      }
+    },
+    "thresholds_rule": "per label, Youden J optimum (max sensitivity + specificity - 1) of the evaluated model on the validation split",
+    "deployed_model": {
+      "trained_on": "all molecules (train+valid+test)",
+      "epochs": 85,
+      "note": "test metrics come from the models trained on the train split only"
+    },
+    "macro_auroc": 0.9022,
+    "per_label": {
+      "sweet": {
+        "auroc": 0.8666,
+        "test_pos": 180,
+        "test_neg": 214,
+        "auroc_cyclic": 0.8427,
+        "auroc_acyclic": 0.8977
+      },
+      "bitter": {
+        "auroc": 0.8568,
         "test_pos": 128,
         "test_neg": 261,
-        "auroc_cyclic": 0.8726,
-        "auroc_acyclic": 0.8393
+        "auroc_cyclic": 0.86,
+        "auroc_acyclic": 0.8475
       },
       "umami": {
         "auroc": 1.0,
@@ -160,23 +203,23 @@
         "auroc_acyclic": 1.0
       },
       "tasteless": {
-        "auroc": 0.8879,
+        "auroc": 0.8853,
         "test_pos": 21,
         "test_neg": 338,
-        "auroc_cyclic": 0.8903,
-        "auroc_acyclic": 0.6842
+        "auroc_cyclic": 0.8677,
+        "auroc_acyclic": 0.9868
       }
     },
     "bitter_by_drug": {
       "drug": {
-        "auroc": 0.7357,
+        "auroc": 0.75,
         "pos_neg": [
           28,
           10
         ]
       },
       "non_drug": {
-        "auroc": 0.8753,
+        "auroc": 0.8602,
         "pos_neg": [
           100,
           251
@@ -201,7 +244,7 @@
     "subset": "validation molecules without phosphorus",
     "pos": 14,
     "neg": 366,
-    "gnn": 0.9426,
+    "gnn": 0.9865,
     "morgan_logreg": 0.9504,
     "note": "validation set was used for early stopping and for choosing C: optimistic"
   }

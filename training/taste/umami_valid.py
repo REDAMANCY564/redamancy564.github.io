@@ -6,13 +6,11 @@ validation AUROC on molecules without phosphorus (the validation set was used fo
 stopping / choosing C, so this is optimistic). Writes metrics.json key "umami_valid_reference".
 """
 import numpy as np
-import torch
 
-from common import LABELS, TRAINING, auroc, counts, load, update_metrics  # also puts training/ on sys.path
+from common import LABELS, auroc, counts, load, update_metrics  # also puts training/ on sys.path
 from baseline import morgan  # noqa: E402
 from baseline_fp import fit_predict  # noqa: E402
-from featurize import NUM_FEATURES, featurize_many
-from model import OdorGNN
+from export_taste_onnx import load_model, predict_smiles
 
 
 def main():
@@ -22,13 +20,8 @@ def main():
     Y = d["Y"][va]
     no_p = np.array(["P" not in s for s in np.array(d["smiles"])[va]])
 
-    X, A, M = (torch.from_numpy(a) for a in featurize_many(np.array(d["smiles"])[va].tolist()))
-    ck = torch.load(TRAINING / "checkpoints" / "taste_gnn_eval.pt")
-    gnn = OdorGNN(NUM_FEATURES, len(LABELS), **ck["config"])
-    gnn.load_state_dict(ck["state_dict"])
-    gnn.eval()
-    with torch.no_grad():
-        pg = torch.sigmoid(gnn(X, A, M)).numpy()[:, u]
+    gnn, ck = load_model("taste_gnn_eval.pt")
+    pg = predict_smiles(gnn, ck, np.array(d["smiles"])[va].tolist())[:, u]
     F = morgan(d["smiles"])
     pl = fit_predict(F, d["Y"], tr, 0.1)(F[va])[:, u]
 

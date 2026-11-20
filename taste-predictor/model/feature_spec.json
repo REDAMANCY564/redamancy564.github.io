@@ -66,8 +66,60 @@
     "A": "[B, 64, 64] float32",
     "mask": "[B, 64] float32"
   },
+  "standardization": "before featurizing: keep the largest fragment, neutralize charges (RDKit Uncharger), drop stereo; training data went through the same steps",
+  "readout": {
+    "pools": [
+      "mean",
+      "max",
+      "sum"
+    ],
+    "hidden": 128,
+    "num_layers": 3
+  },
+  "global_descriptors": {
+    "input": "D",
+    "names": [
+      "heavy_atoms",
+      "carbons",
+      "longest_chain",
+      "rings",
+      "double_bonds",
+      "logp",
+      "tpsa",
+      "mol_weight"
+    ],
+    "mean": [
+      19.155873,
+      13.524127,
+      3.100317,
+      1.59873,
+      2.007302,
+      1.503828,
+      82.950368,
+      279.66569
+    ],
+    "std": [
+      9.244552,
+      7.127315,
+      2.59256,
+      1.492925,
+      1.365195,
+      1.942803,
+      53.755057,
+      132.463578
+    ],
+    "rule": "computed on the standardized structure (training/taste/descriptors.py), then (value - mean) / std with the train-split mean and std"
+  },
+  "thresholds": {
+    "sweet": 0.5758,
+    "bitter": 0.4218,
+    "umami": 0.0073,
+    "tasteless": 0.0221
+  },
+  "thresholds_rule": "per label, Youden J optimum (max sensitivity + specificity - 1) of the evaluated model on the validation split",
   "model_file": "taste_gnn.onnx",
   "onnx_opset": 17,
+  "num_labels": 4,
   "model_output": {
     "name": "probs",
     "shape": "[B, num_labels]",
@@ -80,7 +132,5 @@
     ],
     "multi_label": "each class is an independent probability"
   },
-  "num_labels": 4,
-  "standardization": "before featurizing: keep the largest fragment, neutralize charges (RDKit Uncharger), drop stereo; training data went through the same steps",
   "trained_on": "all molecules"
 }

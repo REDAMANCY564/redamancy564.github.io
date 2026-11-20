@@ -138,10 +138,33 @@
                       backgroundColor: HELDOUT, borderRadius: 4, maxBarThickness: 26 });
     }
     const names = ids.map(labelName);
+    // Judgement thresholds (feature_spec.json thresholds: Youden J on the validation split) as a
+    // short vertical line across each taste's bars
+    const thr = spec.thresholds || null;
+    const thresholdLines = {
+      id: "thresholdLines",
+      afterDatasetsDraw(c) {
+        if (!thr) return;
+        const { ctx, scales: { x, y } } = c;
+        const band = y.height / ids.length;
+        ctx.save();
+        ctx.strokeStyle = "#1f2328";
+        ctx.lineWidth = 2;
+        ids.forEach((id, j) => {
+          const px = x.getPixelForValue(thr[id] * 100), py = y.getPixelForValue(j);
+          ctx.beginPath();
+          ctx.moveTo(px, py - band * 0.38);
+          ctx.lineTo(px, py + band * 0.38);
+          ctx.stroke();
+        });
+        ctx.restore();
+      },
+    };
     if (chart) chart.destroy();
     chart = new Chart($("pred-chart"), {
       type: "bar",
       data: { labels: names, datasets },
+      plugins: [thresholdLines],
       options: {
         indexAxis: "y",
         maintainAspectRatio: false,
@@ -159,6 +182,27 @@
       },
     });
     $("chart-note").textContent = I18N.t("demo.prob_note") + (heldOut() ? " " + I18N.t("demo.heldout_note") : "");
+    renderThresholds(thr);
+  }
+
+  // One line per taste: probability of the page's model and whether it passes the judgement threshold
+  function renderThresholds(thr) {
+    const list = $("thr-list"), note = $("thr-note");
+    list.innerHTML = "";
+    list.hidden = note.hidden = !thr;
+    if (!thr) return;
+    const pctText = v => (v < 0.0005 ? "<0.1" : v < 0.1 ? (v * 100).toFixed(1) : String(Math.round(v * 100))) + "%";
+    ids.forEach(id => {
+      const p = current.probs[id], over = p >= thr[id];
+      const li = document.createElement("li");
+      const b = document.createElement("b");
+      b.textContent = labelName(id) + " " + pctText(p);
+      li.append(b, I18N.t(over ? "thr.over" : "thr.under", { t: pctText(thr[id]) }));
+      if (over) li.className = "over";
+      list.appendChild(li);
+    });
+    note.innerHTML = I18N.t("thr.note");
+    I18N.nobr(note);
   }
 
   function renderSourNote() {
@@ -354,7 +398,9 @@
 
       setSearchStatus("search.predicting");
       const std = TasteEngine.standardizedFeatures(rd, smiles, spec);
-      const { probs: out, contrib } = await TasteEngine.occlusion(session, std.feats, spec);
+      // whole-molecule descriptors (model input D) of the same standardized structure
+      const D = TasteEngine.descriptorInput(rd, std.smiles, spec);
+      const { probs: out, contrib } = await TasteEngine.occlusion(TasteEngine.withDescriptors(session, D), std.feats, spec);
       // Training records and nearest neighbour; the prediction is still shown if this fails
       let match = null, nn = null;
       try {

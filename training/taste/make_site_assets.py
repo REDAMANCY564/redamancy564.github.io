@@ -5,13 +5,16 @@ Outputs:
   data/presets.json            13 dairy-related presets: deployed-model probabilities,
                                train-split-only model probabilities, dataset labels
   tests/parity_fixtures.json   for tests/parity.html:
-                               - "featurize": standardized SMILES -> Python X, A, probs
+                               - "featurize": standardized SMILES -> Python X, A, raw
+                                 whole-molecule descriptors (descriptors.py), probs
                                - "standardize": raw input (salts, charges, stereo) ->
                                  Python standardized SMILES and probs
                                - "occlusion": per-atom contributions (training/occlusion.py)
 Presets carry per-atom occlusion contributions for all 4 tastes, in the atom order of
 std_smiles (the structure the page draws).
-Predictions come from onnxruntime with the same model file the browser loads.
+Predictions come from onnxruntime with the same model file the browser loads. When the model
+has the descriptor input D (case-fix-3), occlusion keeps D at the whole molecule's values for
+every input (the browser does the same).
 """
 import json
 
@@ -23,7 +26,8 @@ from rdkit import Chem
 
 from common import DATA_DIR, LABELS, ROOT, load
 from clean_data import standardize
-from export_taste_onnx import ONNX_PATH, load_model
+from descriptors import describe_many
+from export_taste_onnx import ONNX_PATH, inputs, load_model
 from featurize import featurize, featurize_many
 from occlusion import contributions
 from presets_taste import PRESETS
@@ -58,8 +62,20 @@ def main():
     d = load()
     clean = pd.read_csv(DATA_DIR / "clean.csv")
     sess = ort.InferenceSession(str(ONNX_PATH), providers=["CPUExecutionProvider"])
-    run = lambda X, A, M: sess.run(None, {"X": X, "A": A, "mask": M})[0]  # noqa: E731
-    eval_model, _ = load_model("taste_gnn_eval.pt")
+    eval_model, eval_ckpt = load_model("taste_gnn_eval.pt")
+    _, ckpt = load_model("taste_gnn.pt")
+    use_d = "D" in [i.name for i in sess.get_inputs()]
+
+    def runner(smiles):
+        """run(X, A, M) for one molecule's (occluded) batch, D fixed to the molecule's values."""
+        D = inputs([smiles], ckpt)[3]
+
+        def run(X, A, M):
+            feeds = {"X": X, "A": A, "mask": M}
+            if use_d:
+                feeds["D"] = np.repeat(D, len(X), axis=0)
+            return sess.run(None, feeds)[0]
+        return run
 
     write_json(SITE / "model" / "labels.json",
                [{"id": l, "en": l, "zh": LABEL_NAMES[l]} for l in LABELS], indent=1)
@@ -70,9 +86,9 @@ def main():
     for pid, en, zh, smi, cid in PRESETS:
         std = standardize(smi)
         X, A, M = (a[None] for a in featurize(std))
-        p, contrib = contributions(run, X[0], A[0], M[0])
+        p, contrib = contributions(runner(std), X[0], A[0], M[0])
         with torch.no_grad():
-            pe = eval_model(*(torch.from_numpy(a) for a in (X, A, M))).numpy()[0]
+            pe = eval_model(*(torch.from_numpy(a) for a in inputs([std], eval_ckpt))).numpy()[0]
         i = index.get(std)
         presets.append({
             "id": pid, "name_en": en, "name_zh": zh, "smiles": smi, "std_smiles": std, "pubchem_cid": cid,
@@ -98,13 +114,14 @@ def main():
     pick = np.random.default_rng(SEED).choice(test_idx, size=N_PARITY, replace=False)
     feat_smiles = [d["smiles"][i] for i in pick] + EDGE_CASES
     X, A, M = featurize_many(feat_smiles)
-    probs = run(X, A, M)
+    raw_d = describe_many(feat_smiles)
+    probs = np.concatenate([runner(s)(X[k:k + 1], A[k:k + 1], M[k:k + 1]) for k, s in enumerate(feat_smiles)])
     featurize_fx = []
     for k, s in enumerate(feat_smiles):
         n = int(M[k].sum())
         assert n == Chem.MolFromSmiles(s).GetNumAtoms()
         featurize_fx.append({"smiles": s, "num_atoms": n, "X": X[k, :n].astype(int).tolist(),
-                             "A": A[k, :n, :n].tolist(), "probs": probs[k].tolist()})
+                             "A": A[k, :n, :n].tolist(), "D": raw_d[k].tolist(), "probs": probs[k].tolist()})
 
     std_inputs = [p[3] for p in PRESETS] + STANDARDIZE_CASES
     std_fx = []
@@ -112,12 +129,12 @@ def main():
         std = standardize(s)
         X1, A1, M1 = (a[None] for a in featurize(std))
         std_fx.append({"input": s, "std_smiles": std, "num_atoms": int(M1.sum()),
-                       "probs": run(X1, A1, M1)[0].tolist()})
+                       "probs": runner(std)(X1, A1, M1)[0].tolist()})
     print(f"  standardize cases: " + "; ".join(f"{f['input']} -> {f['std_smiles']}" for f in std_fx[-len(STANDARDIZE_CASES):]))
     occ_smiles = [d["smiles"][i] for i in pick[:10]] + [standardize(p[3]) for p in PRESETS]
-    occlusion = [{"smiles": s, "contrib": contributions(run, *featurize(s))[1].tolist()} for s in occ_smiles]
+    occlusion = [{"smiles": s, "contrib": contributions(runner(s), *featurize(s))[1].tolist()} for s in occ_smiles]
     write_json(SITE / "tests" / "parity_fixtures.json",
-               {"tolerance": {"A": 1e-6, "probs": 1e-5, "contrib": 1e-5}, "featurize": featurize_fx,
+               {"tolerance": {"A": 1e-6, "D": 1e-5, "probs": 1e-5, "contrib": 1e-5}, "featurize": featurize_fx,
                 "standardize": std_fx, "occlusion": occlusion})
 
 

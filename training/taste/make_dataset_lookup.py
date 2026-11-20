@@ -11,11 +11,13 @@ Outputs (taste-predictor/data/):
                  stereo (training/clean_data.py). The page matches a searched molecule by full
                  InChIKey, else by the first 14 characters (connectivity only: "stereo not
                  distinguished").
-  fps.bin        Morgan fingerprints (radius 2, 2048 bits) of the same molecules as on-bit lists:
-                 uint32 offsets [n + 1] then uint16 bit indices (same format as
-                 ingredient-finder/data/fps.bin)
-  domain.json    applicability-domain threshold: 5th percentile of the nearest-neighbour Tanimoto
-                 between each test-split molecule and the train split
+  fps.bin        Morgan count fingerprints (radius 2, 2048 bits, case-fix-3) of the same molecules:
+                 uint32 offsets [n + 1], then uint16 bit indices [offsets[n]], then uint8 counts
+                 [offsets[n]] (same order). Counts let the similarity see chain length: with on/off
+                 bits stearic acid and heptanoic acid have Tanimoto 1.
+                 Similarity = count Tanimoto: sum of min(count) / sum of max(count) over bits.
+  domain.json    applicability-domain threshold: 5th percentile of the nearest-neighbour count
+                 Tanimoto between each test-split molecule and the train split
 Also adds Morgan / InChIKey cases to tests/parity_fixtures.json ("domain" key).
 
 Licences (checked 2026-11-20): ChemTastesDB v2.1 is CC BY 4.0 (Rojas et al. 2022), the
@@ -26,7 +28,7 @@ import json
 
 import numpy as np
 import pandas as pd
-from rdkit import Chem, DataStructs
+from rdkit import Chem
 from rdkit.Chem import rdFingerprintGenerator
 
 from common import DATA_DIR, ROOT, load
@@ -50,6 +52,9 @@ PARITY_CASES = [
     "NC(CCC(=O)O)C(=O)O", "OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O", "CC(C)=CCCC(C)=CC=O",
     "O=C1NS(=O)(=O)c2ccccc21", "CCCCCCCCCCCCCCCC(=O)OCC(COC(=O)CCCCCCCCCCCCCCC)OC(=O)CCCCCCCCCCCCCCC",
     "CC/C=C\\C/C=C\\C/C=C\\C/C=C\\C/C=C\\C/C=C\\CCC(=O)O", "c1ccc2c(c1)ccc1ccccc12",
+    # count fingerprint edge cases: chain length, tiny molecules (equal environments), charges, rings
+    "CCCCCCCCCCCCCCCCCCCC(=O)O", "CCCCCCC(=O)O", "CC", "C=O", "CO", "C#N", "c1cc[nH]c1",
+    "C[N+](C)(C)CC(=O)[O-]", "CC1=CCC(CC1)C(C)=C", "C1CC2CCC1C2", "NC(=O)c1ccccc1Cl",
 ]
 
 
@@ -60,7 +65,12 @@ def main():
     mols = [Chem.MolFromSmiles(s) for s in d["smiles"]]
     keys = [Chem.MolToInchiKey(m) for m in mols]
     assert all(keys), "InChIKey failed"
-    fps = [gen.GetFingerprint(m) for m in mols]
+    F = np.array([gen.GetCountFingerprintAsNumPy(m) for m in mols], dtype=np.int32)
+    assert F.max() < 256, "counts must fit uint8"
+
+    def sims(q, rows=F):
+        """Count Tanimoto of one count vector against many."""
+        return np.minimum(rows, q).sum(1) / np.maximum(np.maximum(rows, q).sum(1), 1)
 
     def lab(row):
         return "".join("-" if pd.isna(row[c]) else str(int(row[c])) for c in COLS)
@@ -78,20 +88,22 @@ def main():
     print(f"  full InChIKeys unique: {len(set(keys))}; first-14 shared by >1 molecule: "
           f"{int((k14.value_counts() > 1).sum())} groups")
 
-    on = [np.array(list(fp.GetOnBits()), dtype=np.uint16) for fp in fps]
+    on = [np.flatnonzero(row).astype(np.uint16) for row in F]
+    cnt = [row[row > 0].astype(np.uint8) for row in F]
     offsets = np.zeros(len(on) + 1, dtype=np.uint32)
     offsets[1:] = np.cumsum([len(b) for b in on])
     fp_path = SITE / "data" / "fps.bin"
-    fp_path.write_bytes(offsets.tobytes() + np.concatenate(on).tobytes())
+    fp_path.write_bytes(offsets.tobytes() + np.concatenate(on).tobytes() + np.concatenate(cnt).tobytes())
     print(f"Wrote {fp_path.relative_to(ROOT)} ({fp_path.stat().st_size / 1e3:.1f} kB)")
 
     # Threshold: nearest training neighbour of each test molecule (train split only)
-    train = [fps[i] for i in np.flatnonzero(d["split"] == "train")]
-    nn_test = np.array([max(DataStructs.BulkTanimotoSimilarity(fps[i], train))
-                        for i in np.flatnonzero(d["split"] == "test")])
+    train = F[d["split"] == "train"]
+    test_idx = np.flatnonzero(d["split"] == "test")
+    nn_test = np.array([sims(F[i], train).max() for i in test_idx])
     thr = float(np.percentile(nn_test, PERCENTILE))
-    dom = {"fingerprint": "Morgan radius 2, 2048 bits", "percentile": PERCENTILE,
-           "threshold": round(thr, 4), "n_test": int(len(nn_test)),
+    dom = {"fingerprint": "Morgan count fingerprint, radius 2, 2048 bits; count Tanimoto (sum min / sum max)",
+           "percentile": PERCENTILE, "threshold": round(thr, 4), "n_test": int(len(nn_test)),
+           "test_flagged": int((nn_test < round(thr, 4)).sum()),
            "test_nn_quantiles": {str(q): round(float(np.percentile(nn_test, q)), 4) for q in (1, 5, 10, 25, 50)}}
     (SITE / "data" / "domain.json").write_text(json.dumps(dom, indent=1), encoding="utf-8")
     print("domain:", dom)
@@ -101,8 +113,8 @@ def main():
     pre_path = SITE / "data" / "presets.json"
     presets = json.loads(pre_path.read_text(encoding="utf-8"))
     for p in presets:
-        fp = gen.GetFingerprint(Chem.MolFromSmiles(p["std_smiles"]))
-        p["nn_tanimoto"] = round(float(max(DataStructs.BulkTanimotoSimilarity(fp, fps))), 4)
+        q = gen.GetCountFingerprintAsNumPy(Chem.MolFromSmiles(p["std_smiles"])).astype(np.int32)
+        p["nn_tanimoto"] = round(float(sims(q).max()), 4)
     pre_path.write_text(json.dumps(presets, ensure_ascii=False, indent=1), encoding="utf-8")
     print("presets nn:", [(p["name_en"], p["nn_tanimoto"]) for p in presets])
 
@@ -111,13 +123,21 @@ def main():
     for s in PARITY_CASES:
         m = Chem.MolFromSmiles(s)
         std = standardize(s)
-        fp = gen.GetFingerprint(Chem.MolFromSmiles(std))
-        sims = DataStructs.BulkTanimotoSimilarity(fp, fps)
-        j = int(np.argmax(sims))
+        q = gen.GetCountFingerprintAsNumPy(Chem.MolFromSmiles(std)).astype(np.int32)
+        sv = sims(q)
+        j = int(np.argmax(sv))
         fx.append({"input": s, "inchikey": Chem.MolToInchiKey(m), "std_smiles": std,
-                   "on_bits": sorted(int(b) for b in fp.GetOnBits()),
-                   "nn_index": j, "nn_tanimoto": float(sims[j])})
-        print(f"  {s[:40]:40s} key {fx[-1]['inchikey']} nn {sims[j]:.3f} ({records[j][1]})")
+                   "on_bits": [int(b) for b in np.flatnonzero(q)], "counts": [int(c) for c in q[q > 0]],
+                   "nn_index": j, "nn_tanimoto": float(sv[j])})
+        print(f"  {s[:40]:40s} key {fx[-1]['inchikey']} nn {sv[j]:.3f} ({records[j][1]})")
+    # All training molecules for the JS check of counts and descriptors (tests/parity.html part 5)
+    from descriptors import describe_many
+    D = describe_many(d["smiles"])
+    all_path = SITE / "tests" / "train_all.json"
+    all_path.write_text(json.dumps({"smiles": d["smiles"], "D": [[round(float(v), 6) for v in row] for row in D]},
+                                   separators=(",", ":")), encoding="utf-8")
+    print(f"Wrote {all_path.relative_to(ROOT)} ({all_path.stat().st_size / 1e3:.1f} kB)")
+
     fx_path = SITE / "tests" / "parity_fixtures.json"
     allfx = json.loads(fx_path.read_text(encoding="utf-8"))
     allfx["domain"] = fx
