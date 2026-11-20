@@ -125,15 +125,23 @@ def main():
     for i, m in enumerate(site_lib["molecules"]):
         if m[3]:
             by_kb.setdefault(m[3], []).append(i)
+    # molecules of a food: key flavor compounds, then the detected ones, each group by name (locants,
+    # stereo descriptors and n-/alpha- prefixes ignored, as flavor-kb/kb-ui.js sortDetected) (2026-11-20)
+    import re
+    prefix = re.compile(r"^(?:\([^)]*\)-|[0-9][0-9,']*-|(?:(?:cis|trans)(?:,(?:cis|trans))*|alpha|beta|gamma|delta|n|dl|d|l|[a-z])-(?=[a-z0-9(]))+")
+    def by_name(ix):
+        nm = lambda i: (site_lib["molecules"][i][1] or site_lib["molecules"][i][0])
+        return sorted(ix, key=lambda i: (prefix.sub("", nm(i).lower()), nm(i).lower(), i))
     foods = []
     for fid, f in kb_foods.items():
-        key = sorted({i for c in f.get("kfo", []) for i in by_kb.get(c, [])})
-        det = sorted({i for c in f.get("det", []) for i in by_kb.get(c, [])} - set(key))
+        key = by_name({i for c in f.get("kfo", []) for i in by_kb.get(c, [])})
+        det = by_name({i for c in f.get("det", []) for i in by_kb.get(c, [])} - set(key))
         n_kb = len(f.get("kfo", [])) if f["src"] == "dunkel" else len(f.get("det", []))
         if key or det:
             rec = {"id": fid, "name": f["name"], "src": f["src"], "key": key, "det": det, "n_kb": n_kb}
             if f.get("zh"): rec["zh"] = f["zh"]
             if f.get("srcs"): rec["srcs"] = f["srcs"]
+            if f.get("kfo_src"): rec["kfo_src"] = f["kfo_src"]
             foods.append(rec)
     foods.sort(key=lambda f: (f["src"] != "dunkel", f["name"].lower()))
 

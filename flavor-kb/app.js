@@ -73,11 +73,12 @@
     const foodList = el("ul", {}, r.foods.map(id => {
       const f = kbd.foods[id];
       return el("li", {}, [
-        el("a", { href: "?food=" + id, text: f.name, onclick: e => { e.preventDefault(); showFood(id, true); } }), " ",
-        f.src === "dunkel" ? tag("t1k") : tag("t1d"),
+        el("a", { href: "?food=" + id, text: foodName(f) + (I18N.lang === "zh" && f.zh ? " (" + f.name + ")" : ""), onclick: e => { e.preventDefault(); showFood(id, true); } }), " ",
+        f.src === "dunkel" || f.kfo_src ? tag("t1k") : tag("t1d"),
         el("div", { class: "meta", text: f.src === "dunkel"
           ? I18N.t("search.meta_kfo", { n: (f.kfo || []).length })
-          : I18N.t("search.meta_det", { c: f.cat || "", n: (f.det || []).length }) }),
+          : I18N.t("search.meta_det", { c: f.cat || "", n: (f.det || []).length }) +
+            (f.kfo_src === "author" ? I18N.t("search.meta_kfo_author", { n: f.kfo.length }) : "") }),
       ]);
     }));
     const cmpList = el("ul", {}, r.compounds.map(id => {
@@ -113,7 +114,13 @@
     if (f.src !== "dunkel") card.append(el("p", { class: "small muted", text: I18N.t("food.sources", { s: foodSourceLine(f) }) }));
 
     if (hasKfo) {
-      card.append(el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t("food.kfo_desc")]));
+      // key flavor compounds: Dunkel 2014 statements, or the author's published data (human milk, Table 1)
+      const author = f.kfo_src === "author";
+      card.append(el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t(author ? "food.kfo_desc_author" : "food.kfo_desc")]));
+      if (author) {
+        card.append(el("p", { class: "stmt muted" }, [I18N.t("food.kfo_author_src") + " ",
+          el("a", { href: "https://doi.org/10.1016/j.fbio.2026.110162", target: "_blank", rel: "noopener", text: "doi:10.1016/j.fbio.2026.110162" })]));
+      }
       for (const n of f.notes || []) {
         card.append(el("p", { class: "stmt muted" }, [
           n.text + " (Dunkel et al. 2014, " + I18N.t("food.page", { p: n.page }) + ")",
@@ -126,7 +133,7 @@
     if (hasDet) {
       card.append(el("div", { class: "kb-row-title small" }, [tag("t1d"), " ", I18N.t("food.detected", { n: f.det.length })]));
       card.append(el("p", { class: "small muted", text: I18N.t("food.detected_note") }));
-      const sorted = f.det.slice().sort((a, b) => (kbd.compounds[b].kfo ? 1 : 0) - (kbd.compounds[a].kfo ? 1 : 0));
+      const sorted = FlavorKBUI.sortDetected(kbd, id, f.det);
       card.append(chips(sorted.map(c => {
         const s = linkSources(kbd, c, id);
         return { label: kbd.compounds[c].name, href: "?compound=" + c, id: c, strong: !!kbd.compounds[c].kfo, mark: s.mark,
@@ -140,19 +147,28 @@
   }
 
   // ---------- Compound detail ----------
-  async function showCompound(id, push) {
+  // Names of CAS numbers that belong to another stereoisomer than the merged compound's name
+  // (data/cas-names.json, training/gcms/build_cas_names.py); loaded only for cards opened with ?cas=
+  let casNamesPromise = null;
+  const casNames = () => (casNamesPromise = casNamesPromise ||
+    fetch("data/cas-names.json").then(r => (r.ok ? r.json() : { names: {} })).then(j => j.names, () => ({})));
+
+  async function showCompound(id, push, cas) {
     const kbd = await ensureKb();
     const c = kbd.compounds[id];
     if (!c) { setStatus("search-status", "search.none", { q: id }); return; }
-    view = { type: "compound", id };
-    if (push) pushUrl({ compound: id });
+    view = { type: "compound", id, cas };
+    if (push) pushUrl({ compound: id, cas });
+    const casName = cas ? (await casNames())[cas] || null : null;
     $("results").innerHTML = "";
     const d = $("detail");
     d.innerHTML = "";
     const card = el("div", { class: "card" });
     // "intensity curve" link beside the name when this compound has an odor intensity curve (matched by CAS, assets/intensity.js)
     const curve = el("span", {});
-    card.append(el("h3", {}, [c.name, curve]));   // the key flavor compound tag is shown once, in the section below
+    card.append(el("h3", {}, [casName || c.name, curve]));   // the key flavor compound tag is shown once, in the section below
+    // opened from a CAS number of another stereoisomer: say whose data the card shows
+    if (casName) card.append(el("p", { class: "small muted", text: I18N.t("cmp.cas_isomer", { cas, name: c.name }) }));
     Intensity.load().then(() => { curve.innerHTML = Intensity.link(Intensity.byKb(id)); }, () => { /* no link without the data */ });
     if (c.alt || c.syn) {
       card.append(el("p", { class: "small muted", text: I18N.t("cmp.synonyms") + ": " + (c.alt || []).concat(c.syn || []).slice(0, 10).join("; ") }));
@@ -178,8 +194,10 @@
     const right = el("div", {});
     if (c.dunkel) right.append(el("p", { class: "small" }, [tag("t1k"), " ", I18N.t("cmp.generalist", { odor: c.dunkel.odor }) + " (" + I18N.t("food.page", { p: c.dunkel.page }) + ")"]));
     if (c.kfo && c.kfo.length) {
-      right.append(el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t("cmp.kfo_foods_desc")]));
-      right.append(chips(c.kfo.map(f => ({ label: foodName(kbd.foods[f]), href: "?food=" + f, id: f, strong: true })), MAX_CHIPS, it => showFood(it.id, true)));
+      FlavorKBUI.kfoGroups(kbd, c).forEach(g => {
+        right.append(el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t(g.desc)]));
+        right.append(chips(g.foods.map(f => ({ label: foodName(kbd.foods[f]), href: "?food=" + f, id: f, strong: true })), MAX_CHIPS, it => showFood(it.id, true)));
+      });
     } else {
       right.append(el("p", { class: "small muted", text: I18N.t("cmp.no_kfo") }));
     }
@@ -296,7 +314,7 @@
   function route() {
     const p = new URLSearchParams(location.search);
     const run = p.get("food") ? showFood(p.get("food"), false)
-      : p.get("compound") ? showCompound(p.get("compound"), false)
+      : p.get("compound") ? showCompound(p.get("compound"), false, p.get("cas"))
       : p.get("q") ? doSearch(p.get("q"), false) : null;
     if (run) run.catch(() => {});
     if (p.get("doi")) analyzeDoi(p.get("doi"), false);
@@ -305,7 +323,7 @@
   I18N.onChange(() => {
     if (view.type === "search") doSearch(view.q, false).catch(() => {});
     else if (view.type === "food") showFood(view.id, false).catch(() => {});
-    else if (view.type === "compound") showCompound(view.id, false).catch(() => {});
+    else if (view.type === "compound") showCompound(view.id, false, view.cas).catch(() => {});
     renderDoi();
   });
   route();

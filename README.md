@@ -19,7 +19,7 @@
 
 | 级别 | 来源 | 说明 |
 |---|---|---|
-| 第一级·关键风味物质（深绿） | Dunkel et al., Angew. Chem. Int. Ed. 2014, 53, 7124（doi:10.1002/anie.201309508） | 只摘录正文中明确写出的食品与关键风味物质，附页码，见 `training/knowledge/dunkel2014_main_text.json`。完整对照在补充材料中，未收录 |
+| 第一级·关键风味物质（深绿） | Dunkel et al., Angew. Chem. Int. Ed. 2014, 53, 7124（doi:10.1002/anie.201309508） | 只摘录正文中明确写出的食品与关键风味物质，附页码，见 `training/knowledge/dunkel2014_main_text.json`。完整对照在补充材料中，未收录。母乳的关键风味物质（同一层级）来自作者已发表数据：Cui et al., Food Bioscience 2026 Table 1 的 10 个物质（ROAV ≥ 1 且在 GC-O 中闻到），见 `training/knowledge/author_milk.json` 的 `T1`，`foods.json` 中 `kfo_src: "author"` |
 | 第一级·检出（浅绿） | FlavorDB2（Garg et al., NAR 2018），CC BY-NC-SA 3.0 | 「检出」不等于对气味有贡献；衍生数据按同一协议共享，见 `flavor-kb/data/LICENSE.md` |
 | 第二级·实时文献（蓝） | Europe PMC（免费、无需密钥） | 标题和摘要中检索「物质名 + 食品 + aroma 等词」，只列文献 |
 | 第三级·摘要文字匹配（橙） | Europe PMC，查不到时用 Crossref | 按 DOI 获取摘要，高亮其中的物质名，仅为文字匹配 |
@@ -35,11 +35,17 @@ python foodb/extract_foodb.py --extra knowledge/extra_compounds.json   # FooDB �
 python knowledge/build_kb.py         # 生成 flavor-kb/data/*.json（FlavorDB2、FooDB、作者已发表数据；隐藏 FlavorDB2 批量关联）
 python knowledge/update_about_text.py   # 把 meta.json 的数字写进说明页 7.5「数据来源与更新记录」
 python gcms/build_names.py           # GC-MS 名称表（PubChem 同义词 + gcms/aliases.json；已有物质沿用已发布的缓存）
+python gcms/build_cas_names.py       # 按 CAS 显示的异构体名称 flavor-kb/data/cas-names.json（PubChem，有缓存；约 6,000 次请求）
+python gcms/build_names.py           # 再跑一次，把 CAS 名称写进 names.json；之后重跑 regulatory/build_regulatory.py
 python gcms/build_flavor.py          # GC-MS 气味数据（53 个内置阈值不变）
 python gcms/build_author_thresholds.py   # 作者课题组取值（gcms/author_thresholds.csv，逐条注明 van Gemert 页码）
 ```
 之后按「原料与替代物检索」一节重建候选库和下游数据（新分子追加在候选库末尾，已有分子的序号不变）。2026-11-20 起的数据来源：FooDB（www.foodb.ca，2020-04-07 导出版，CC BY-NC 4.0，只用有出处的条目）和作者已发表数据（Cui et al., Food Bioscience 2026，表 S1、S2，母乳）；规则和数字见风味知识库说明页 7.5。
 原文 PDF（Dunkel 2014、van Gemert 2011）有版权，已加入 `.gitignore`，不会上传。
+
+**按 CAS 显示名称（2026-11-20）**：知识库按去掉立体的结构合并物质，一个物质的名称来自第一个来源，CAS 列表却包含各立体异构体（如 c5283349「(2E,4E)-deca-2,4-dienal」也收了 (E,Z) 体的 25152-83-4）。`training/gcms/build_cas_names.py` 用 PubChem 把每个 CAS 解析成 CID：与该物质名称所属的 CID 不同、骨架相同（InChIKey 前 14 位相同）而立体不同时，这个 CAS 用自己的名称（优先 `gcms/aliases.json` 中该 CID 的写法，其次 PubChem 同义词，最后 PubChem 标题），写入 `flavor-kb/data/cas-names.json`。用到的地方：GC-MS 标准文件只给 CAS 时的物质名（结果表、排序表、阈值表、导出文件，经 `names.json` 第 5 项）、法规查询中整条记录的 CAS 都属于另一异构体时的标题、从法规查询按 CAS 打开的知识库卡片（`?compound=…&cas=…`，卡片注明数据合并了各立体异构体）。
+
+**乳制品中文名**：`build_kb.py` 的 `DAIRY_ZH`（60 种，2026-11-20；母乳另设）。知识库、气味地图食品选择框和寻香原料的食品名使用；知识库搜索也匹配中文名。
 
 ### 法规查询（flavor-kb/regulatory.html）
 
@@ -168,7 +174,9 @@ python flavor_improver/make_parity_fixtures.py  # 生成一致性测试数据
 - **部署模型**：评估用只训练集的模型；评估后按相同设置用全部数据重新训练作为网页模型（因为核苷酸类鲜味分子整组落在测试集，用户 2026-10-17 选择此方案）。
 - **浏览器端标准化**：RDKit.js 没有 neutralize，`taste-predictor/engine.js` 按 RDKit Uncharger 规则重写了中和步骤，其余复用 `odor-predictor/engine.js`。
 - **原子贡献高亮**：同气味页面，在标准化后的结构上计算和绘图（预设分子显示原始形式备注）。
-- **一致性测试**：https://redamancy564.github.io/taste-predictor/tests/parity.html （64 个特征用例 + 23 个标准化用例，含盐和两性离子，+ 23 个原子贡献用例）。**修改特征、标准化或重新训练后，必须确认全部 PASS。**
+- **数据集记录与适用范围**（`training/taste/make_dataset_lookup.py`）：`data/dataset.json` 是 3,937 个训练分子的 InChIKey、整理后的标签、来源、划分和原始味觉描述（文件内附两个数据源的许可声明），`data/fps.bin` 是它们的 Morgan 指纹（r = 2，2,048 位）。搜索的分子按 InChIKey 匹配，匹配不到再按前 14 位（去掉立体）匹配并注明“未区分立体”。与最相近训练分子的 Tanimoto 低于 `data/domain.json` 的阈值（测试集分子与训练集最近邻相似度的 5% 分位数，0.3087）时提示“预测仅供参考”。注意：半径 2 的 Morgan 指纹看不出链长，C7 以上的直链饱和脂肪酸彼此指纹完全相同（硬脂酸与庚酸 Tanimoto = 1），三棕榈酸甘油酯与三硬脂酸甘油酯也是 1，所以这个提示抓不到长链脂肪酸和甘油三酯的问题。
+- **训练集自检**：`training/taste/audit_training.py` 用网页模型预测全部训练分子，按 0.5 阈值统计与标签不符的分子（按化合物类别），报告写到 `_inputs/TASTE-AUDIT.md`（不提交）。
+- **一致性测试**：https://redamancy564.github.io/taste-predictor/tests/parity.html （64 个特征用例 + 23 个标准化用例，含盐和两性离子，+ 23 个原子贡献用例 + 13 个训练数据匹配用例：InChIKey、指纹和最近邻 Tanimoto）。**修改特征、标准化或重新训练后，必须确认全部 PASS。**
 
 **重新训练：**
 ```powershell
@@ -183,6 +191,7 @@ python taste/train_gnn.py          # GNN 3 个种子 + 全数据部署模型
 python taste/umami_valid.py        # 鲜味的验证集参考值
 python taste/export_taste_onnx.py  # 导出 ONNX 并验证
 python taste/make_site_assets.py   # labels、presets、一致性测试数据
+python taste/make_dataset_lookup.py   # dataset.json、fps.bin、domain.json，预设的最近邻相似度（须在 make_site_assets 之后运行）
 ```
 
 **当前结果（测试集 AUROC，GNN 为 3 个种子均值）：** 甜 0.854 / 基线 0.866；苦 0.863 / 0.867；无味 0.889 / 0.826；鲜两者均为 1.000，但测试集鲜味以核苷酸为主且无含磷阴性样本，不可信（验证集无磷鲜味参考 0.943 / 0.950）。苦味中药物分子 AUROC 0.736，非药物 0.875。

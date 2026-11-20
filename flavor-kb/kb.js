@@ -123,7 +123,7 @@
     const foods = [], compounds = [];
     const wordRe = new RegExp("(^|[^a-z0-9])" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
     for (const [id, f] of Object.entries(kb.foods)) {
-      const s = rank([f.name].concat(f.syn || []), q, wordRe);
+      const s = rank([f.name].concat(f.zh ? [f.zh] : [], f.syn || []), q, wordRe);
       if (s) foods.push({ id, s, n: (f.kfo || []).length * 1000 + (f.det || []).length });
     }
     for (const [id, c] of Object.entries(kb.compounds)) {

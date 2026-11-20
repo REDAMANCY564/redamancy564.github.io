@@ -29,12 +29,16 @@
     [lib.molecules.filter(m => m[4].length).length, true]);
   check("filters", "not used in training: valid + test + knowledge base only (1213)", [uns.length, uns.every(h => lib.molecules[h.index][2] !== 0)], [1213, true]);
   check("filters", "no filter: every molecule", all.length, 5094);
-  // food sources (2026-11-20): one digit per food, 1 FlavorDB2 + 2 FooDB + 4 author's data
-  check("foods", "every food link has a source digit 1 to 7", lib.molecules.every(m => (m[5] || "").length === m[4].length && /^[1-7]*$/.test(m[5] || "")), true);
+  // food sources (2026-11-20): one hex digit per food, 1 FlavorDB2 + 2 FooDB + 4 author's data + 8 key flavor compound
+  check("foods", "every food link has a source digit (hex, at least one source bit)", lib.molecules.every(m => (m[5] || "").length === m[4].length && /^[1-79a-f]*$/.test(m[5] || "")), true);
   const hm = lib.foods.indexOf("Human milk");
   const hept = lib.molecules.findIndex(m => m[1] === "1-Hepten-3-one");
   check("foods", "1-hepten-3-one occurs in human milk (author's published data); the food has a Chinese name",
     [hept >= 0 && F.molecule(D, hept).foods.includes("Human milk"), (F.molecule(D, hept).foodSrc[F.molecule(D, hept).foods.indexOf("Human milk")] & 4) > 0, lib.foods_zh[hm]], [true, true, "母乳"]);
+  const keyIn = name => { const i = lib.molecules.findIndex(m => m[1] === name), mm = F.molecule(D, i); return (mm.foodSrc[mm.foods.indexOf("Human milk")] & 8) > 0; };
+  check("foods", "human milk key flavor compounds (author's Table 1) carry the key bit; a detected-only compound does not",
+    [keyIn("1-Hepten-3-one"), keyIn("Hexanal"), keyIn("acetic acid")], [true, true, false]);
+  check("foods", "dairy foods have Chinese names", [lib.foods_zh[lib.foods.indexOf("Milk")], lib.foods_zh[lib.foods.indexOf("Butter")]], ["牛乳", "黄油"]);
   check("weights", "high / mid / low = 1 / 0.5 / 0.25", F.WEIGHTS, { high: 1, mid: 0.5, low: 0.25 });
   const j = D.labelIndex.creamy, i0 = all[0].index;
   const scoreOf = (want, avoid, i) => F.scoreA(D, want, avoid, null).find(h => h.index === i).score;

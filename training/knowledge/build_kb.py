@@ -20,7 +20,9 @@ Food links (2026-11-20, user decisions):
     FooDB entry (compound or nutrient) confirms the same food (FlavorDB and FooDB foods matched by exact name).
   - FooDB links with a reference are added (PREDICTED and unreferenced entries are not used).
   - Human milk: Table S1 volatiles (except the 4 migrants named in its footnote) and the defined fatty acids
-    of Table S2 of Cui et al. 2026, source "author's published data".
+    of Table S2 of Cui et al. 2026, source "author's published data". The 10 compounds of its Table 1 (ROAV >= 1
+    and perceived in GC-O) are the key flavor compounds of human milk (foods.json "kfo", "kfo_src": "author"),
+    the same tier as the Dunkel 2014 key food odorants.
   compounds.json "det" lists every shown food; "ds" {food id: [codes]} gives the sources of a link when it is
   not FlavorDB alone: "F" FlavorDB2, a number = refs.json index (FooDB), "S1"/"S2" = author's Table S1/S2.
   "fdbm": "sk14" when FooDB matched only the skeleton (first 14 InChIKey characters: stereo not distinguished),
@@ -135,6 +137,28 @@ FOODB = ROOT / "training" / "data" / "foodb" / "foodb_subset.json"
 AUTHOR = Path(__file__).parent / "author_milk.json"
 EXTRA = Path(__file__).parent / "extra_compounds.json"
 HIDDEN_OUT = ROOT / "training" / "data" / "foodb" / "hidden_flavordb_links.json"
+# Chinese names of dairy foods (user list 2026-11-20, rest proposed; review list _inputs/ZH-NAMES-REVIEW-2.md).
+# 乳 for milk itself and its fractions (牛乳, 羊乳, 乳脂, 乳清), customary 奶 words kept (奶粉, 酸奶, 炼乳).
+DAIRY_ZH = {
+    "Milk": "牛乳", "Goat Milk": "山羊乳", "Sheep Milk": "绵羊乳", "Milk Fat": "乳脂", "Milk Powder": "奶粉",
+    "Skimmed Milk": "脱脂乳", "Butter": "黄油", "Cream": "稀奶油", "Sour cream": "酸奶油", "Yogurt": "酸奶",
+    "Whey": "乳清", "Buttermilk": "酪乳", "Condensed milk": "炼乳", "Evaporated milk": "淡炼乳", "Ice cream": "冰淇淋",
+    "Processed cheese": "再制干酪", "Cheese": "干酪", "Cheddar Cheese": "切达干酪",
+    # proposed
+    "Blue Cheese": "蓝纹干酪", "Camembert Cheese": "卡门贝尔干酪", "Comte Cheese": "孔泰干酪", "Cottage Cheese": "农家干酪",
+    "Cream Cheese": "奶油干酪", "Domiati Cheese": "多米亚蒂干酪", "Emmental Cheese": "埃门塔尔干酪", "Feta Cheese": "菲达干酪",
+    "Goat Cheese": "山羊乳干酪", "Gruyere Cheese": "格吕耶尔干酪", "Limburger Cheese": "林堡干酪", "Mozzarella Cheese": "马苏里拉干酪",
+    "Munster Cheese": "芒斯特干酪", "Other Cheeses": "其他干酪", "Parmesan Cheese": "帕玛森干酪", "Provolone Cheese": "波罗伏洛干酪",
+    "Romano Cheese": "罗马诺干酪", "Roquefort Cheese": "洛克福干酪", "Russian Cheese": "俄罗斯干酪", "Sheep Cheese": "绵羊乳干酪",
+    "Swiss Cheese": "瑞士干酪", "Tilsit Cheese": "提尔西特干酪", "Ricotta Cheese": "里科塔干酪", "Paneer": "帕尼尔干酪",
+    "Dairy Products": "乳制品", "Ghee": "印度酥油", "Ymer": "伊默发酵乳", "Kefir": "开菲尔", "Other fermented milk": "其他发酵乳",
+    "Dulce de leche": "牛奶焦糖酱", "Sweet custard": "甜蛋奶冻", "Junket": "凝乳甜点", "Milk and milk products": "乳及乳制品",
+    "Milk (Other mammals)": "其他哺乳动物乳", "Salted butter": "含盐黄油", "Frozen yogurt": "冻酸奶", "Milkshake": "奶昔",
+    "Casein": "酪蛋白", "cultured butter": "发酵黄油",
+    "Cow milk, pasteurized, vitamin A + D added, 1% fat": "巴氏杀菌牛乳（添加维生素 A、D，脂肪 1%）",
+    "Cow milk, pasteurized, vitamin A + D added, 2% fat": "巴氏杀菌牛乳（添加维生素 A、D，脂肪 2%）",
+    "Cow milk, pasteurized, vitamin D added, 3.25% fat": "巴氏杀菌牛乳（添加维生素 D，脂肪 3.25%）",
+}
 
 
 # FlavorDB and FooDB names of the same food that do not match exactly (user decision 2026-11-20, dairy only):
@@ -242,6 +266,14 @@ def add_foodb_and_author(compounds, foods, upsert, pc):
     mf = foods[milk]
     mf["name"], mf["zh"] = "Human milk", "母乳"
     mf["synonyms"] = list(dict.fromkeys(["Milk Human", "Milk (Human)", "Breast milk"] + mf["synonyms"]))
+    # Table 1: key flavor compounds of human milk (ROAV >= 1 and perceived in GC-O), same tier as Dunkel's
+    mf["kfo"] = []
+    for r in am["T1"]:
+        key = inchi_key_nostereo(r["smiles"])
+        assert key in compounds, r
+        if key not in mf["kfo"]:
+            mf["kfo"].append(key)
+    mf["kfo_src"] = "author"
     n_author = {"S1": 0, "S2": 0}
     for table in ("S1", "S2"):
         for r in am[table]:
@@ -289,7 +321,7 @@ def add_foodb_and_author(compounds, foods, upsert, pc):
                       foods=sum(1 for f in foods.values() if f.get("foodb")), new_compounds=n_new_foodb,
                       molecules_sk14=sum(1 for c in compounds.values() if c.get("fdbm") == "sk14")),
         "author": dict(zip(("molecules", "links"), count(lambda c: c in ("S1", "S2"))), s1=n_author["S1"], s2=n_author["S2"],
-                       new_compounds=n_new_author),
+                       new_compounds=n_new_author, kfo=len(mf["kfo"])),
     }
     HIDDEN_OUT.parent.mkdir(parents=True, exist_ok=True)
     HIDDEN_OUT.write_text(json.dumps(hidden, ensure_ascii=False, indent=0), encoding="utf-8")
@@ -425,7 +457,9 @@ def main():
     for fid, f in foods.items():
         rec = {"name": f["name"], "cat": f["category"], "src": f["source"]}
         if f.get("sources"): rec["srcs"] = f["sources"]
-        if f.get("zh"): rec["zh"] = f["zh"]
+        zh = f.get("zh") or DAIRY_ZH.get(f["name"])
+        if zh: rec["zh"] = zh
+        if f.get("kfo_src"): rec["kfo_src"] = f["kfo_src"]
         if f.get("foodb"): rec["fo"] = f["foodb"]
         if f["synonyms"]: rec["syn"] = f["synonyms"]
         if f.get("kfo"): rec["kfo"] = [ids[k] for k in f["kfo"]]
@@ -455,7 +489,7 @@ def main():
             "foodb": {"citation": "FooDB, version 1.0 (data export 2020-04-07). www.foodb.ca",
                       "url": "https://foodb.ca/", "license": "CC BY-NC 4.0", "version": "2020-04-07 CSV export",
                       "scope": "Compound entries with a reference (database, article, textbook) and nutrient entries of one defined structure; predicted (HMDB, PathBank) and unreferenced entries are not used."},
-            "author": {"citation": am_src["citation"], "doi": am_src["doi"], "tables": {"S1": am_src["S1"], "S2": am_src["S2"]},
+            "author": {"citation": am_src["citation"], "doi": am_src["doi"], "tables": {"S1": am_src["S1"], "S2": am_src["S2"], "T1": am_src["T1"]},
                        "note": am_src["migrants_note"]},
         },
         "updates": [
@@ -464,6 +498,8 @@ def main():
              "compounds_added_foodb": hist["foodb"]["new_compounds"], "compounds_added_author": hist["author"]["new_compounds"],
              "flavordb_links_hidden": hist["flavordb"]["hidden"], "flavordb_molecules_hidden": hist["flavordb"]["hidden_molecules"],
              "foodb_links": hist["foodb"]["links"], "author_links": hist["author"]["links"]},
+            {"date": "2026-11-20", "what": "author_kfo", "sources": ["author"], "food": "fdb796",
+             "kfo": hist["author"]["kfo"], "dairy_zh": sum(1 for f in out_f.values() if f.get("zh")) - 1},
         ],
     }
     (OUT / "meta.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False), encoding="utf-8")
@@ -479,7 +515,8 @@ def main():
         "(www.foodb.ca, data export of 2020-04-07), licensed under Creative Commons Attribution-NonCommercial 4.0 "
         "(https://creativecommons.org/licenses/by-nc/4.0/).\n\n"
         "Human milk links with the source S1 or S2 are the author's published data: Cui J, et al., Food Bioscience 2026 "
-        "(doi:10.1016/j.fbio.2026.110162), Tables S1 and S2.\n\n"
+        "(doi:10.1016/j.fbio.2026.110162), Tables S1 and S2. The key flavor compounds of human milk (foods.json field "
+        "kfo with kfo_src author) are the compounds of Table 1 of the same article (ROAV >= 1 and perceived in GC-O).\n\n"
         "Compound names, structures and synonyms were retrieved from PubChem (https://pubchem.ncbi.nlm.nih.gov/).\n",
         encoding="utf-8")
     for f in ("compounds.json", "foods.json"):

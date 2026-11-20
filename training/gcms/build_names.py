@@ -16,7 +16,10 @@ in front of the PubChem synonyms. Every alias CAS must pass the check digit and 
 
 Raw responses are cached in training/data/gcms/ (not committed).
 Output: gcms-interpreter/data/names.json
-  {"source": ..., "compounds": [[kb_id, display_name, [cas...], [synonyms...]], ...]}
+  {"source": ..., "compounds": [[kb_id, display_name, [cas...], [synonyms...], {cas: name}?], ...]}
+  The optional fifth element names the CAS numbers that belong to another stereoisomer than the
+  display name (flavor-kb/data/cas-names.json, built by build_cas_names.py: run that first, then
+  this script again when CAS numbers changed).
 """
 import json
 import re
@@ -37,6 +40,8 @@ OUT = ROOT / "gcms-interpreter" / "data" / "names.json"
 PUG = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{}/JSON"
 BATCH = 100
 MAX_SYNONYMS = 40
+_CN = ROOT / "flavor-kb" / "data" / "cas-names.json"
+CAS_NAMES = json.loads(_CN.read_text(encoding="utf-8"))["names"] if _CN.exists() else {}
 
 CAS_RE = re.compile(r"^(\d{2,7})-(\d{2})-(\d)$")
 # Database identifiers and codes, not names
@@ -153,7 +158,11 @@ def main():
             if k and k not in seen:
                 seen.add(k)
                 keep.append(x.strip())
-        rows.append([kid, c["name"], cas, keep[:MAX_SYNONYMS + len(extra.get(kid, {}).get("names", []))]])   # aliases do not push PubChem names out
+        row = [kid, c["name"], cas, keep[:MAX_SYNONYMS + len(extra.get(kid, {}).get("names", []))]]
+        own = {x: CAS_NAMES[x] for x in cas if x in CAS_NAMES}
+        if own:
+            row.append(own)
+        rows.append(row)   # aliases do not push PubChem names out
         n_cas += bool(cas)
         n_multi += len(cas) > 1
 

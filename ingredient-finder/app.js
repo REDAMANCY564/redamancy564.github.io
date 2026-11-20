@@ -225,16 +225,20 @@
     el.innerHTML = svg || esc(I18N.t("r.no_draw"));
   }
 
-  /** "Occurs in: a, b, c and n more", each food with its source mark (F FlavorDB2, Fo FooDB, A author's data). */
+  /**
+   * "Occurs in: a, b, c and n more", each food with its source mark (F FlavorDB2, Fo FooDB, A author's data,
+   * K key flavor compound of that food); foods where it is a key flavor compound come first.
+   */
   function foodLine(m) {
     if (!m.foods.length) return '<span class="muted">' + esc(I18N.t("r.no_foods")) + "</span>";
-    const mark = code => [[1, "F", "src.flavordb"], [2, "Fo", "src.foodb"], [4, "A", "src.author"]].filter(([b]) => code & b);
+    const mark = code => [[1, "F", "src.flavordb"], [2, "Fo", "src.foodb"], [4, "A", "src.author"], [8, "K", "src.key"]].filter(([b]) => code & b);
     const one = (name, zh, code) => {
       const ms = mark(code);
       return esc(I18N.lang === "zh" && zh ? zh : name) + '<sup class="fsrc" title="' + esc(I18N.t("r.food_src") + ms.map(x => I18N.t(x[2])).join("; ")) + '">' +
         ms.map(x => x[1]).join("·") + "</sup>";
     };
-    return esc(I18N.t("r.foods")) + ": " + m.foods.slice(0, FOODS_SHOWN).map((n, j) => one(n, m.foodsZh[j], m.foodSrc[j])).join(", ") +
+    const order = m.foods.map((n, j) => j).sort((a, b) => (m.foodSrc[b] & 8) - (m.foodSrc[a] & 8) || a - b);
+    return esc(I18N.t("r.foods")) + ": " + order.slice(0, FOODS_SHOWN).map(j => one(m.foods[j], m.foodsZh[j], m.foodSrc[j])).join(", ") +
       (m.foods.length > FOODS_SHOWN ? " " + esc(I18N.t("r.foods_more", { n: m.foods.length })) : "") +
       (m.kb ? ' <a class="small" href="../flavor-kb/?compound=' + encodeURIComponent(m.kb) + '" target="_blank" rel="noopener">' + esc(I18N.t("r.food_all")) + "</a>" : "");
   }

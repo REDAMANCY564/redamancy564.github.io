@@ -25,8 +25,8 @@
   <meta name="twitter:title" content="方法与来源 | 1 GC-MS 风味解读 | 崔京伟">
   <meta name="twitter:description" content="Method, rules, limitations and data sources of the Automated GC-MS Data Analysis Across Instrument Formats.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/gcms-interpreter.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261120a">
-  <script src="../assets/i18n.js?v=20261120a" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261120b">
+  <script src="../assets/i18n.js?v=20261120b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 </head>
@@ -79,7 +79,7 @@
       <p id="rel-content" data-i18n-html="about.rel"><b>相对含量的两种算法</b>（峰表没有相对含量列时，在工具页「相对含量计算基准」中选择）：① 占全部峰面积（默认）：相对含量 = 该物质峰面积 ÷ 峰表中全部峰面积之和 × 100，找到的目标物质合计通常小于 100%，其余为非目标峰；② 按目标物质归一化：相对含量 = 该物质峰面积 ÷ 找到的目标物质峰面积之和 × 100，目标物质合计为 100%。按规则 1 相加的峰按相加后的面积计算。峰表自带相对含量列时直接用原值，选项不起作用。结果表下方显示目标物质相对含量合计。ROAV 按峰面积计算（见下文），两种算法只相差一个共同的比例，ROAV 和排序不受影响。</p>
       <h3 data-sec="2" id="standard-file" data-i18n="std.title" data-no="1.2.2">标准文件（目标物质清单）</h3>
       <p data-i18n="std.intro">网页在每个物质的参考保留时间附近查找鉴定结果一致的峰，判断是否检出。</p>
-      <p data-i18n="std.required">标准文件请包含三列：① 物质名称或 CAS 号；② 参考保留时间；③ 气味阈值（请在列名中写明单位，如「阈值 (µg/kg)」）。阈值用于计算 OAV/ROAV 和风味轮廓；网站只内置了少量阈值，标准文件中没有阈值、也没有内置值的物质不参与风味计算。</p>
+      <p data-i18n="std.required">标准文件请包含三列：① 物质名称或 CAS 号；② 参考保留时间；③ 气味阈值（请在列名中写明单位，如「阈值 (µg/kg)」）。阈值用于计算 OAV/ROAV 和风味轮廓；网站只内置了部分物质的阈值（本站内置 53 个；作者课题组取值 90 个，可在 1.4「风味解读」一步切换），标准文件中没有阈值、也没有内置值的物质不参与风味计算。</p>
       <h3 data-sec="2" id="tolerances" data-i18n="about.tol_title" data-no="1.2.3">保留时间范围</h3>
       <p><b data-i18n="tol.window">保留时间范围（± min）</b>: <span data-i18n="tol.window_help">规则 1：以每个目标物质的参考保留时间为中心，在 ± 该值内查找被鉴定为该物质的峰，中间没有夹着其他物质的峰全部相加。范围越大，越不容易漏检，但越容易把误鉴定的峰也<span class="nobr">加进来</span>。</span></p>
       <h3 data-sec="2" id="oav-roav" data-i18n="about.oav_title" data-no="1.2.4">OAV 与 ROAV</h3>
@@ -115,7 +115,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261120a" defer></script>
-  <script src="about.js?v=20261120a" defer></script>
+  <script src="../assets/projects.js?v=20261120b" defer></script>
+  <script src="about.js?v=20261120b" defer></script>
 </body>
 </html>

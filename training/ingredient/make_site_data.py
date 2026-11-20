@@ -99,8 +99,9 @@ def main():
             if fid not in seen and fid in kb_foods:
                 seen[fid] = len(food_ids)
                 food_ids.append(fid)
-    # food sources per link (2026-11-20): digit string aligned with the food list, sum of
-    # 1 = FlavorDB2, 2 = FooDB, 4 = author's published data (compounds.json "ds"; absent = FlavorDB2 only)
+    # food sources per link (2026-11-20): one hexadecimal digit per food, aligned with the food list, sum of
+    # 1 = FlavorDB2, 2 = FooDB, 4 = author's published data (compounds.json "ds"; absent = FlavorDB2 only),
+    # 8 = key flavor compound of that food (foods.json "kfo", e.g. human milk, Table 1 of the author's data)
     kb_comp = json.loads((ROOT / "flavor-kb" / "data" / "compounds.json").read_text(encoding="utf-8"))
 
     def src_digit(codes):
@@ -109,7 +110,8 @@ def main():
 
     def food_src(r):
         ds = kb_comp.get(r["kb"], {}).get("ds", {}) if r["kb"] else {}
-        return "".join(src_digit(ds.get(x, ["F"])) for x in r.get("foods", []) if x in seen)
+        key = lambda x: 8 if r["kb"] and r["kb"] in kb_foods[x].get("kfo", []) else 0
+        return "".join("%x" % (int(src_digit(ds.get(x, ["F"]))) + key(x)) for x in r.get("foods", []) if x in seen)
     mols = [[r["smiles"], r["name"] or "", GROUP[r["split"]], r["kb"] or "",
              [seen[x] for x in r.get("foods", []) if x in seen], food_src(r)] for r in lib]
 

@@ -114,5 +114,83 @@
     return { feats, smiles: fragSmiles, fragmentsRemoved, neutralized };
   }
 
-  window.TasteEngine = Object.assign({}, E, { neutralizeJson, standardizedFeatures });
+  // ---------- Training-data records and applicability domain ----------
+  const SOURCES = { C: "ChemTastesDB", V: "VirtuousMultiTaste" };
+  const LABEL_COLS = ["sweet", "bitter", "umami", "tasteless", "sour", "salty"];
+
+  /**
+   * Parse data/dataset.json ({records: [[InChIKey, name, labels, sources, split, raw]]}) and
+   * data/fps.bin (uint32 offsets [n + 1], then uint16 Morgan on-bits) built by
+   * training/taste/make_dataset_lookup.py.
+   */
+  function parseDataset(json, fpsBuf) {
+    const recs = json.records, n = recs.length;
+    const byKey = new Map(), by14 = new Map();
+    const push = (m, k, i) => { if (!m.has(k)) m.set(k, []); m.get(k).push(i); };
+    recs.forEach((r, i) => { push(byKey, r[0], i); push(by14, r[0].slice(0, 14), i); });
+    const offsets = new Uint32Array(fpsBuf, 0, n + 1);
+    const bits = new Uint16Array(fpsBuf, (n + 1) * 4, offsets[n]);
+    return { recs, n, byKey, by14, offsets, bits };
+  }
+
+  /** Training record i as {name, labels {sweet..salty: 1 | 0 | null}, sources, split, raw}. */
+  function record(ds, i) {
+    const r = ds.recs[i];
+    const labels = {};
+    LABEL_COLS.forEach((c, k) => { labels[c] = r[2][k] === "-" ? null : +r[2][k]; });
+    return { name: r[1], labels, sources: r[3].split("").map(c => SOURCES[c]), split: r[4], raw: r[5] };
+  }
+
+  /** Sorted on-bit list from an RDKit.js bit string ("0101..."). */
+  function bitsFromString(s) {
+    const out = [];
+    for (let i = 0; i < s.length; i++) if (s.charCodeAt(i) === 49) out.push(i);
+    return out;
+  }
+
+  /** Tanimoto of two sorted on-bit lists. */
+  function tanimoto(a, b) {
+    let i = 0, j = 0, inter = 0;
+    while (i < a.length && j < b.length) {
+      if (a[i] === b[j]) { inter++; i++; j++; } else if (a[i] < b[j]) i++; else j++;
+    }
+    const union = a.length + b.length - inter;
+    return union ? inter / union : 0;
+  }
+
+  /**
+   * Look up a (standardized) molecule in the training data.
+   * matches: by full InChIKey (exact: true); if none, by its first 14 characters, i.e. the
+   * connectivity without stereo (exact: false). The training structures carry no stereo, so a
+   * searched stereoisomer matches here. nn: the most similar training molecule by Tanimoto of
+   * Morgan fingerprints (radius 2, 2048 bits, same as Python).
+   */
+  function datasetMatch(rdkit, smiles, ds) {
+    const mol = rdkit.get_mol(smiles);
+    if (!mol) return null;
+    let key = null, q;
+    try {
+      const inchi = mol.get_inchi();
+      if (inchi) key = rdkit.get_inchikey_for_inchi(inchi) || null;
+      q = bitsFromString(mol.get_morgan_fp(JSON.stringify({ radius: 2, nBits: 2048 })));
+    } finally {
+      mol.delete();
+    }
+    let matches = [];
+    if (key) {
+      const ex = ds.byKey.get(key);
+      matches = ex ? ex.map(index => ({ index, exact: true }))
+        : (ds.by14.get(key.slice(0, 14)) || []).map(index => ({ index, exact: false }));
+    }
+    let best = -1, bestT = -1;
+    for (let i = 0; i < ds.n; i++) {
+      const t = tanimoto(q, ds.bits.subarray(ds.offsets[i], ds.offsets[i + 1]));
+      if (t > bestT) { bestT = t; best = i; }
+    }
+    return { key, bits: q, matches, nn: { index: best, tanimoto: bestT } };
+  }
+
+  window.TasteEngine = Object.assign({}, E, {
+    neutralizeJson, standardizedFeatures, parseDataset, record, datasetMatch, tanimoto,
+  });
 })();

@@ -60,16 +60,18 @@
     return esc(I18N.lang === "zh" ? zh : zh + "（" + it.cn.map(c => c.code).join("、") + "）");
   }
 
-  const linkRow = l => [
+  // a knowledge-base card opened from one CAS number shows that CAS's name (flavor-kb/app.js, ?cas=)
+  const linkRow = (l, cas) => [
     '<a href="../ingredient-finder/?mode=b&amp;smiles=' + encodeURIComponent(l.smiles) + '">' + esc(I18N.t("rq.to_finder")) + "</a>",
     '<a href="../odor-predictor/?q=' + encodeURIComponent(l.smiles) + '#demo">' + esc(I18N.t("rq.to_odor")) + "</a>",
-    l.kb ? '<a href="./?compound=' + encodeURIComponent(l.kb) + '">' + esc(I18N.t("rq.to_kb")) + "</a>" : "",
+    l.kb ? '<a href="./?compound=' + encodeURIComponent(l.kb) + (cas ? "&amp;cas=" + encodeURIComponent(cas) : "") + '">' + esc(I18N.t("rq.to_kb")) + "</a>" : "",
   ].join("");
 
   function card(it) {
     // links only for substances in the site's molecule library; one row per molecule when several match
-    const links = it.links.length === 1 ? '<p class="rq-links">' + linkRow(it.links[0]) + "</p>"
-      : it.links.map(l => '<p class="rq-links"><span class="muted">' + esc(l.name) + "</span>" + linkRow(l) + "</p>").join("");
+    const cas = it.cas.length === 1 ? it.cas[0] : null;
+    const links = it.links.length === 1 ? '<p class="rq-links">' + linkRow(it.links[0], cas) + "</p>"
+      : it.links.map(l => '<p class="rq-links"><span class="muted">' + esc(l.name) + "</span>" + linkRow(l, cas) + "</p>").join("");
     // "intensity curve" link beside the name: first of the entry's CAS numbers with an odor intensity curve (assets/intensity.js)
     const curve = Intensity.ready ? it.cas.map(c => Intensity.byCas(c)).find(Boolean) : null;
     return '<div class="card rq-item"><h3>' + title(it) + (curve ? "<span>" + Intensity.link(curve) + "</span>" : "") + "</h3>" +

@@ -14,9 +14,12 @@ def main():
     foods = json.loads((DATA / "foods.json").read_text(encoding="utf-8"))
     comps = json.loads((DATA / "compounds.json").read_text(encoding="utf-8"))
     L = m["counts"]["links"]
-    kfo_links = sum(len(f.get("kfo", [])) for f in foods.values())
-    kfo_mols = sum(1 for c in comps.values() if c.get("kfo"))
+    dk = {fid for fid, f in foods.items() if f.get("kfo") and f.get("kfo_src") != "author"}
+    kfo_links = sum(len(foods[f]["kfo"]) for f in dk)
+    kfo_mols = sum(1 for c in comps.values() if dk & set(c.get("kfo", [])))
+    t1 = sum(len(f["kfo"]) for f in foods.values() if f.get("kfo_src") == "author")
     up = m["updates"][1]
+    up3 = m["updates"][2]
     n = lambda x: f"{x:,}"
     th = {"zh": ["来源", "许可", "版本或日期", "分子数", "关联数"], "en": ["Source", "License", "Version or date", "Molecules", "Links"]}
     rows = {
@@ -26,6 +29,7 @@ def main():
              f'{n(L["flavordb"]["links"])}（另有 {n(L["flavordb"]["hidden"])} 条已隐藏，见下）'],
             ["FooDB（检出，有出处的条目）", "CC BY-NC 4.0", "2020-04-07 导出版", n(L["foodb"]["molecules"]), n(L["foodb"]["links"])],
             ["作者已发表数据（母乳，表 S1、S2）", "引用（Cui 等，<i>Food Bioscience</i> 2026）", "2026", n(L["author"]["molecules"]), n(L["author"]["links"])],
+            ["作者已发表数据（母乳关键风味物质，Table 1）", "引用（Cui 等，<i>Food Bioscience</i> 2026）", "2026", n(t1), n(t1)],
         ],
         "en": [
             ["Dunkel et al. (2014), main text (key food odorants)", "quotation (short, with page numbers)", "2014", n(kfo_mols), n(kfo_links)],
@@ -33,6 +37,7 @@ def main():
              f'{n(L["flavordb"]["links"])} (another {n(L["flavordb"]["hidden"])} hidden, see below)'],
             ["FooDB (detected, entries with a reference)", "CC BY-NC 4.0", "2020-04-07 export", n(L["foodb"]["molecules"]), n(L["foodb"]["links"])],
             ["Author's published data (human milk, Tables S1, S2)", "citation (Cui et al., <i>Food Bioscience</i> 2026)", "2026", n(L["author"]["molecules"]), n(L["author"]["links"])],
+            ["Author's published data (key flavor compounds of human milk, Table 1)", "citation (Cui et al., <i>Food Bioscience</i> 2026)", "2026", n(t1), n(t1)],
         ],
     }
     total = {"zh": f'合计 {n(m["counts"]["compounds"])} 个物质、{n(m["counts"]["foods"])} 种食品；{n(m["counts"]["compounds_with_foods"])} 个物质有检出记录。一个分子-食品关联可以同时来自几个来源。',
@@ -53,6 +58,8 @@ def main():
               '<a href="https://doi.org/10.1016/j.fbio.2026.110162" target="_blank" rel="noopener">doi:10.1016/j.fbio.2026.110162</a>：'
               f'表 S1 中 50 份母乳检出的挥发物（表注所述采样容器和实验耗材带入的 4 个迁移物不计；顺反异构体在本站算同一分子），以及表 S2 中结构明确的 {L["author"]["s2"]} 个脂肪酸；'
               f'新增 {n(up["compounds_added_author"])} 个物质。更新后共 {n(m["counts"]["compounds"])} 个物质、{n(m["counts"]["foods"])} 种食品。</li>'
+              f'<li><b>{up3["date"]}</b>：母乳增加“关键风味物质”一层：同文 Table 1 的 {up3["kfo"]} 个物质（ROAV ≥ 1 且在 GC-O 中闻到），与 Dunkel 等 (2014) 的关键风味物质同一层级；'
+              f'{up3["dairy_zh"]} 种乳制品加了中文名。</li>'
               "</ul>",
         "en": "<ul>"
               "<li><b>2026-10-16</b>: knowledge base built from FlavorDB2 detection data and the key food odorants in the main text of Dunkel et al. (2014): 1,648 compounds, 952 foods.</li>"
@@ -66,6 +73,8 @@ def main():
               "the volatiles detected in 50 human milk samples in Table S1 (without the 4 migrants from sampling containers and laboratory consumables named in its footnote; "
               f'cis/trans isomers count as one molecule on this site) and the {L["author"]["s2"]} fatty acids of defined structure in Table S2; '
               f'{n(up["compounds_added_author"])} new compounds. After the update: {n(m["counts"]["compounds"])} compounds, {n(m["counts"]["foods"])} foods.</li>'
+              f'<li><b>{up3["date"]}</b>: human milk gets a key flavor compound layer: the {up3["kfo"]} compounds of Table 1 of the same article (ROAV ≥ 1 and perceived in GC-O), '
+              f'the same tier as the key food odorants of Dunkel et al. (2014); {up3["dairy_zh"]} dairy foods got a Chinese name.</li>'
               "</ul>",
     }
     for lang in ("zh", "en"):

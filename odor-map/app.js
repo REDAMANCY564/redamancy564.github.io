@@ -550,8 +550,8 @@
       if (!foods) { el.innerHTML = none + '<option value="" disabled>' + esc(I18N.t("find.food_loading")) + "</option>"; return; }
       const fname = f => (I18N.lang === "zh" && f.zh ? f.zh + " " + f.name : f.name);
       const opt = f => '<option value="' + esc(f.id) + '">' + esc(fname(f)) + " (" + (f.key.length + f.det.length) + ")</option>";
-      el.innerHTML = none + '<optgroup label="' + esc(I18N.t("find.group_key")) + '">' + foods.filter(f => f.src === "dunkel").map(opt).join("") + "</optgroup>" +
-        '<optgroup label="' + esc(I18N.t("find.group_det")) + '">' + foods.filter(f => f.src !== "dunkel").map(opt).join("") + "</optgroup>";
+      el.innerHTML = none + '<optgroup label="' + esc(I18N.t("find.group_key")) + '">' + foods.filter(f => f.src === "dunkel" || f.kfo_src).map(opt).join("") + "</optgroup>" +
+        '<optgroup label="' + esc(I18N.t("find.group_det")) + '">' + foods.filter(f => f.src !== "dunkel" && !f.kfo_src).map(opt).join("") + "</optgroup>";
       el.value = cur;
       $("food-" + slot + "-dot").style.background = S.foods[k] ? FOOD_COLOURS[k] : "transparent";
     });
@@ -580,6 +580,7 @@
       const ids = f.key.concat(f.det);
       const fn = I18N.lang === "zh" && f.zh ? f.zh : f.name;
       const head = dunkel ? I18N.t("food.key_note", { food: fn, n: f.key.length, m: f.n_kb })
+        : f.kfo_src ? I18N.t("food.author_key_note", { food: fn, k: f.key.length, n: f.det.length, m: f.n_kb })
         : I18N.t("food.det_note", { food: fn, n: f.det.length, m: f.n_kb });
       return '<div style="margin-top:8px"><b style="color:' + FOOD_COLOURS[k] + '">● </b>' + esc(head) +
         ' <a href="../flavor-kb/?food=' + encodeURIComponent(f.id) + '">' + esc(I18N.t("food.to_kb")) + "</a>" +

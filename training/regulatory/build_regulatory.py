@@ -30,6 +30,7 @@ def clean(v):
 
 # ---- library (training order == ingredient-finder/data/library.json order, checked here)
 lib = json.load(open(D / "out" / "lib_cas.json"))
+CAS_NAMES = json.loads((REPO / "flavor-kb" / "data" / "cas-names.json").read_text(encoding="utf-8"))["names"]
 site = json.load(open(REPO / "ingredient-finder" / "data" / "library.json", encoding="utf-8"))["molecules"]
 train = json.load(open(REPO / "training" / "data" / "ingredient" / "library.json", encoding="utf-8"))["molecules"]
 assert len(lib) == len(site) == len(train)
@@ -572,6 +573,11 @@ for g in sorted(groups.values(), key=lambda g: min(g)):
     links = [[i, site[i][1], site[i][0], site[i][3]] for i in sorted(li)]
     eu_names = [n["name"] for kind, n in rows_ if kind in ("eu", "a3")]
     name = links[0][1] if links else (eu_names[0] if eu_names else (us_names[0] if us_names else ""))
+    # the library merges stereoisomers: when every CAS of the entry belongs to one other stereoisomer than
+    # the library name, the entry is titled with that CAS's name (flavor-kb/data/cas-names.json, 2026-11-20)
+    own = {CAS_NAMES.get(c) for c in cas if not fda_no(c)}
+    if links and len(own) == 1 and None not in own:
+        name = own.pop()
     keys += [skey(x[1] or "") for x in links]
     shown = {skey(name)} | {skey(x) for x in zh}
     subs.append([name, "|".join(dict.fromkeys(zh)), " ".join(c for c in cas if not fda_no(c)), sorted(eu_e), sorted(cn_e, key=lambda e: e.split(";")[1]),

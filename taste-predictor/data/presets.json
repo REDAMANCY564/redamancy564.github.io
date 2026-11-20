@@ -140,7 +140,8 @@
    "Chem:Sweet(6); Non-bitter",
    "Chem:Sweet(8); Non-bitter",
    "Virt:Sweet"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  },
  {
   "id": "galactose",
@@ -239,7 +240,8 @@
    "Chem:Sweet",
    "Chem:Sweet/Bitter; Bitter",
    "Virt:Sweet"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  },
  {
   "id": "glucose",
@@ -338,7 +340,8 @@
    "Chem:Sweet",
    "Chem:Sweet/Bitter; Bitter",
    "Virt:Sweet"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  },
  {
   "id": "sucrose",
@@ -481,7 +484,8 @@
    "Chem:Tasteless(2); Sweet",
    "Chem:Tasteless; Sweet(3)",
    "Virt:Sweet"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  },
  {
   "id": "msg",
@@ -574,7 +578,8 @@
    "Chem:Umami(7); Salty/Umami",
    "Virt:Sweet",
    "Virt:Umami"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  },
  {
   "id": "imp",
@@ -715,7 +720,8 @@
   "dataset_raw_labels": [
    "Chem:Umami",
    "Virt:Umami"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  },
  {
   "id": "lactic-acid",
@@ -791,7 +797,8 @@
    "Chem:Very bitter",
    "Virt:Bitter",
    "Virt:Sweet"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  },
  {
   "id": "citric-acid",
@@ -894,7 +901,8 @@
    "Chem:Sour(4); Sour/Sweet",
    "Virt:Bitter",
    "Virt:Other"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  },
  {
   "id": "leucine",
@@ -981,7 +989,8 @@
    "Chem:Sweet",
    "Virt:Bitter",
    "Virt:Sweet"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  },
  {
   "id": "phenylalanine",
@@ -1080,7 +1089,8 @@
    "Chem:Tasteless; Bitter(4); Slightly bitter; Non-sweet",
    "Virt:Bitter",
    "Virt:Sweet"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  },
  {
   "id": "caffeine",
@@ -1185,7 +1195,8 @@
   "dataset_raw_labels": [
    "Chem:Bitter",
    "Virt:Bitter"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  },
  {
   "id": "vanillin",
@@ -1276,7 +1287,8 @@
   },
   "dataset_raw_labels": [
    "Virt:Sweet"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  },
  {
   "id": "butyric-acid",
@@ -1347,6 +1359,7 @@
   },
   "dataset_raw_labels": [
    "Virt:Sweet"
-  ]
+  ],
+  "nn_tanimoto": 1.0
  }
 ]
