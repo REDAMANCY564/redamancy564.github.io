@@ -62,6 +62,42 @@
     return sessionPromise;
   }
 
+  // ---------- Training data membership (lazy: loaded on first search) ----------
+  // data/dataset_keys.json (training/make_odor_dataset_keys.py): InChIKeys of the training
+  // structures per split, no labels (the dataset's labels may not be republished)
+  let keysPromise = null;
+  function getDatasetKeys() {
+    if (!keysPromise) {
+      keysPromise = getJson("data/dataset_keys.json").then(d => {
+        const byKey = new Map(), by14 = new Map();
+        const add = (m, k, s) => { if (!m.has(k)) m.set(k, new Set()); m.get(k).add(s); };
+        ["train", "valid", "test"].forEach(s => d[s].forEach(k => { add(byKey, k, s); add(by14, k.slice(0, 14), s); }));
+        return { byKey, by14 };
+      });
+      keysPromise.catch(() => { keysPromise = null; });
+    }
+    return keysPromise;
+  }
+
+  /** {splits: ["train" | "valid" | "test", ...] (empty: not in the data), exact} or null if unknown. */
+  function datasetMembership(rd, smiles, ds) {
+    const mol = rd.get_mol(smiles);
+    if (!mol) return null;
+    let key = null;
+    try {
+      const inchi = mol.get_inchi();
+      if (inchi) key = rd.get_inchikey_for_inchi(inchi) || null;
+    } finally {
+      mol.delete();
+    }
+    if (!key) return null;
+    const order = ["train", "valid", "test"];
+    const sorted = set => order.filter(s => set.has(s));
+    if (ds.byKey.has(key)) return { splits: sorted(ds.byKey.get(key)), exact: true };
+    if (ds.by14.has(key.slice(0, 14))) return { splits: sorted(ds.by14.get(key.slice(0, 14))), exact: false };
+    return { splits: [], exact: true };
+  }
+
   // ---------- Demo rendering ----------
   function renderSelect() {
     const sel = $("preset");
@@ -208,9 +244,22 @@
     status.innerHTML = "";
     const msg = document.createElement("div");
     if (current.source === "search") {
-      msg.textContent = I18N.t("status.search");
-      status.classList.remove("warn");
+      // Membership looked up by InChIKey (datasetMembership); null if the lookup failed
+      const m = current.membership;
+      const sp = I18N.lang === "zh" ? "" : " ";  // space between sentences (none in Chinese)
+      let text = I18N.t("status.live") + sp;
+      if (!m) text += I18N.t("status.search");
+      else if (!m.splits.length) text += I18N.t("status.none");
+      else text += m.splits.map(s => I18N.t("status." + s)).join(sp);
+      msg.textContent = text;
+      status.classList.toggle("warn", !!m && m.splits.includes("train"));
       status.appendChild(msg);
+      if (m && m.splits.length && !m.exact) {
+        const note = document.createElement("div");
+        note.className = "small";
+        note.textContent = I18N.t("status.no_stereo");
+        status.appendChild(note);
+      }
       return;
     }
     const split = current.dataset_split;
@@ -411,10 +460,15 @@
         canon.delete();
       }
       const { probs, contrib } = await OdorEngine.occlusion(session, feats, spec);
+      // Is it in the training data? The prediction is still shown if this lookup fails
+      let membership = null;
+      try {
+        membership = datasetMembership(rd, smiles, await getDatasetKeys());
+      } catch (err) { console.error(err); }
       const order = Array.from(probs.keys()).sort((a, b) => probs[b] - probs[a]).slice(0, TOP_K);
 
       current = {
-        source: "search", query: q, smiles, title, pubchem_cid: cid, handoff,
+        source: "search", query: q, smiles, title, pubchem_cid: cid, handoff, membership,
         top: order.map(j => ({ label: labels[j].id, prob: probs[j] })),
         contrib: Object.fromEntries(order.map(j => [labels[j].id, contrib.map(c => c[j])])),
       };

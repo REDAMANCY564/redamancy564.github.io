@@ -250,7 +250,7 @@
     const badge = trainNote(m.group === 0);
     return '<div class="card res"><div class="svg" data-smiles="' + esc(m.smiles) + '"></div><div>' +
       '<p class="small muted" style="margin:0">' + esc(I18N.t("r.rank", { n: rank })) + " · " + esc(I18N.t("r.score")) + " <b>" + (100 * hit.score).toFixed(1) + "</b> " + badge + "</p>" +
-      '<p class="name">' + esc(m.name || m.smiles) + curveLink(hit.index) + "</p>" +
+      '<p class="name">' + esc(molName(hit.index)) + curveLink(hit.index) + "</p>" +
       (m.name ? '<p class="smi mono">' + esc(m.smiles) + "</p>" : "") +
       '<div class="meta"><span class="muted">' + esc(I18N.t("r.top")) + '</span><div class="preds">' +
       predText(top, j => wantIds.has(D.lib.labels[j].id)) +
@@ -300,7 +300,15 @@
   // ---------- Mode B: substitutes ----------
   const HI_COLOR = "#c2410c";   // = --hi in style.css
   const B = { query: null, result: null, open: new Set(), preset: null, suggest: [], active: -1 };
-  const nameIndex = D.lib.molecules.map((m, i) => ({ i, name: (m[1] || "").toLowerCase(), smiles: m[0] }));
+  // Molecule name: merged stereoisomers have a generic name and a Chinese name (library.json
+  // names_zh, training/knowledge/apply_stereo_names.py), shown first on the Chinese page
+  const molName = i => {
+    const m = D.lib.molecules[i], zh = (D.lib.names_zh || {})[i];
+    return I18N.lang === "zh" && zh ? zh + " (" + m[1] + ")" : m[1] || m[0];
+  };
+  // also found by the Chinese name and the former isomer name of merged stereoisomers
+  const nameIndex = D.lib.molecules.map((m, i) => ({ i, name: (m[1] || "").toLowerCase(), smiles: m[0],
+    alt: [(D.lib.names_zh || {})[i], (D.lib.names_old || {})[i]].filter(Boolean).join(" | ").toLowerCase() }));
   let engine = null;   // {spec, session} for SMILES input, loaded on first use
 
   function renderPresetsB() {
@@ -329,7 +337,7 @@
   // name suggestions from the library
   function suggest() {
     const q = $("b-input").value.trim().toLowerCase();
-    B.suggest = q.length < 2 ? [] : nameIndex.filter(x => x.name.includes(q) || x.smiles === $("b-input").value.trim())
+    B.suggest = q.length < 2 ? [] : nameIndex.filter(x => x.name.includes(q) || x.alt.includes(q) || x.smiles === $("b-input").value.trim())
       .sort((a, b) => (b.name.startsWith(q) - a.name.startsWith(q)) || a.name.length - b.name.length).slice(0, 8);
     B.active = -1;
     renderSuggest();
@@ -339,7 +347,7 @@
     box.classList.toggle("hidden", !B.suggest.length);
     $("b-input").setAttribute("aria-expanded", String(!!B.suggest.length));
     box.innerHTML = B.suggest.map((x, k) => '<button type="button" role="option" data-pick="' + x.i + '" class="' + (k === B.active ? "active" : "") + '">' +
-      esc(D.lib.molecules[x.i][1] || x.smiles) + '<span class="smi mono">' + esc(x.smiles) + "</span></button>").join("");
+      esc(molName(x.i)) + '<span class="smi mono">' + esc(x.smiles) + "</span></button>").join("");
   }
   $("b-input").addEventListener("input", suggest);
   $("b-input").addEventListener("keydown", e => {
@@ -533,11 +541,11 @@
         '<p class="small muted" style="margin:0">' + esc(I18N.t("r.rank", { n: k + 1 })) + " · " + esc(I18N.t("b.odor")) + " <b>" + h.odor.toFixed(3) + "</b> · " +
         esc(I18N.t("b.struct")) + " <b>" + h.tanimoto.toFixed(2) + "</b></p>" +
         (h.highlight ? '<span class="hi-text">' + esc(I18N.t("b.hi_badge")) + "</span> " : "") + badge +
-        '<p class="name">' + esc(m.name || m.smiles) + curveLink(h.index) + "</p>" + (m.name ? '<p class="smi mono">' + esc(m.smiles) + "</p>" : "") +
+        '<p class="name">' + esc(molName(h.index)) + curveLink(h.index) + "</p>" + (m.name ? '<p class="smi mono">' + esc(m.smiles) + "</p>" : "") +
         '<div class="meta"><div class="preds">' + predText(preds) + "</div>" + foods +
         '<div><button type="button" class="linklike small" data-cmp="' + h.index + '" style="margin-top:6px">' + esc(I18N.t(open ? "b.compare_hide" : "b.compare")) + "</button></div>" +
         "</div></div>" + regBlock(h.index) +
-        (open ? '<div class="radar">' + radarSvg(q.vec, F.vector(D, h.index), qName, m.name || m.smiles) + "</div>" : "") + "</div>";
+        (open ? '<div class="radar">' + radarSvg(q.vec, F.vector(D, h.index), qName, molName(h.index)) + "</div>" : "") + "</div>";
     }).join("");
     $("b-results").querySelectorAll(".svg").forEach(el => drawInto(el, el.dataset.smiles));
   }

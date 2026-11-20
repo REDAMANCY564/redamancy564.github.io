@@ -22,13 +22,15 @@
         in Python (training/taste/make_site_assets.py). Part 1: features and outputs for 50 random test-set molecules and
         14 edge cases. Part 2: standardization (largest fragment, neutralization) of the 13 presets and 10 salts, ions and
         zwitterions, checked through the model output. Part 3: occlusion attribution (per-atom contributions to all 4 tastes)
-        for 10 test-set molecules and the 13 standardized presets. Live input on the main page is enabled only if all pass.</p>
+        for 10 test-set molecules and the 13 standardized presets. Parts 1 to 3 run the model with its whole-molecule
+        descriptor input D (computed in JS). Part 4: training-data lookup. Part 5: Morgan count fingerprints (against
+        data/fps.bin) and the 8 raw descriptors of all 3,937 training molecules.</p>
       <div id="summary" data-status="running">Running...</div>
     </section>
     <h2>Part 1: featurizer</h2>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>#</th><th>SMILES</th><th class="num">atoms</th><th class="num">max |ΔX|</th><th class="num">max |ΔA|</th><th class="num">max |Δprob|</th><th>result</th></tr></thead>
+        <thead><tr><th>#</th><th>SMILES</th><th class="num">atoms</th><th class="num">max |ΔX|</th><th class="num">max |ΔA|</th><th class="num">max |ΔD|</th><th class="num">max |Δprob|</th><th>result</th></tr></thead>
         <tbody id="rows-feat"></tbody>
       </table>
     </div>
@@ -47,13 +49,22 @@
       </table>
     </div>
     <h2>Part 4: training-data lookup</h2>
-    <p class="muted small">InChIKey of the standardized input (stereo kept), Morgan fingerprint (radius 2, 2048 bits) and
-      the Tanimoto to the nearest of the 3,937 training molecules (data/dataset.json, data/fps.bin), against
+    <p class="muted small">InChIKey of the standardized input (stereo kept), Morgan count fingerprint (radius 2, 2048 bits)
+      and the count Tanimoto to the nearest of the 3,937 training molecules (data/dataset.json, data/fps.bin), against
       training/taste/make_dataset_lookup.py.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>#</th><th>input</th><th>InChIKey</th><th>match</th><th class="num">nearest Tanimoto</th><th>result</th></tr></thead>
         <tbody id="rows-dom"></tbody>
+      </table>
+    </div>
+    <h2>Part 5: all training molecules</h2>
+    <p class="muted small">Morgan count fingerprint of each training SMILES (tests/train_all.json) against data/fps.bin, and
+      the raw descriptors against Python (training/taste/descriptors.py).</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>check</th><th class="num">molecules</th><th class="num">differ</th><th>first differing</th><th>result</th></tr></thead>
+        <tbody id="rows-all"></tbody>
       </table>
     </div>
   </main>
@@ -76,21 +87,25 @@
         const session = await TasteEngine.loadModel("../model/" + spec.model_file);
         const N = spec.max_atoms, F = spec.num_features, tol = fixtures.tolerance;
         const maxDiff = (a, b) => b.reduce((m, v, k) => Math.max(m, Math.abs(a[k] - v)), 0);
+        // the session with the model's descriptor input D for this standardized structure
+        const sessionFor = smiles => TasteEngine.withDescriptors(session, TasteEngine.descriptorInput(rdkit, smiles, spec));
+        const rawD = smiles => { const v = TasteEngine.globalDescriptors(rdkit, smiles); return spec.global_descriptors.names.map(k => v[k]); };
         let passed = 0, total = 0;
 
         const rowsF = [];
         for (const [idx, fx] of fixtures.featurize.entries()) {
-          let dX = 0, dA = 0, dP = 0, n = -1, ok = false, err = "";
+          let dX = 0, dA = 0, dD = 0, dP = 0, n = -1, ok = false, err = "";
           try {
-            const { feats } = TasteEngine.standardizedFeatures(rdkit, fx.smiles, spec);
+            const { feats, smiles } = TasteEngine.standardizedFeatures(rdkit, fx.smiles, spec);
+            if (fx.D) dD = maxDiff(rawD(smiles), fx.D);
             n = feats.numAtoms;
             if (n === fx.num_atoms) {
               for (let i = 0; i < n; i++) {
                 for (let k = 0; k < F; k++) dX = Math.max(dX, Math.abs(feats.X[i * F + k] - fx.X[i][k]));
                 for (let k = 0; k < n; k++) dA = Math.max(dA, Math.abs(feats.A[i * N + k] - fx.A[i][k]));
               }
-              dP = maxDiff(await TasteEngine.predict(session, feats, spec), fx.probs);
-              ok = dX === 0 && dA <= tol.A && dP <= tol.probs;
+              dP = maxDiff(await TasteEngine.predict(sessionFor(smiles), feats, spec), fx.probs);
+              ok = dX === 0 && dA <= tol.A && dD <= (tol.D || 0) && dP <= tol.probs;
             } else {
               err = "atom count " + n + " vs " + fx.num_atoms;
             }
@@ -100,7 +115,7 @@
           total++; if (ok) passed++;
           rowsF.push("<tr><td>" + (idx + 1) + "</td><td class=\"mono\">" + esc(fx.smiles) + "</td><td class=\"num\">" + n +
             "</td><td class=\"num\">" + dX.toExponential(1) + "</td><td class=\"num\">" + dA.toExponential(1) +
-            "</td><td class=\"num\">" + dP.toExponential(1) + "</td>" + cell(ok, err) + "</tr>");
+            "</td><td class=\"num\">" + dD.toExponential(1) + "</td><td class=\"num\">" + dP.toExponential(1) + "</td>" + cell(ok, err) + "</tr>");
         }
         document.getElementById("rows-feat").innerHTML = rowsF.join("");
 
@@ -108,10 +123,10 @@
         for (const [idx, fx] of fixtures.standardize.entries()) {
           let dP = 0, n = -1, ok = false, err = "";
           try {
-            const { feats } = TasteEngine.standardizedFeatures(rdkit, fx.input, spec);
+            const { feats, smiles } = TasteEngine.standardizedFeatures(rdkit, fx.input, spec);
             n = feats.numAtoms;
             if (n === fx.num_atoms) {
-              dP = maxDiff(await TasteEngine.predict(session, feats, spec), fx.probs);
+              dP = maxDiff(await TasteEngine.predict(sessionFor(smiles), feats, spec), fx.probs);
               ok = dP <= tol.probs;
               if (!ok) err = "output differs";
             } else {
@@ -131,10 +146,10 @@
         for (const [idx, fx] of fixtures.occlusion.entries()) {
           let dC = 0, n = -1, ok = false, err = "";
           try {
-            const { feats } = TasteEngine.standardizedFeatures(rdkit, fx.smiles, spec);
+            const { feats, smiles } = TasteEngine.standardizedFeatures(rdkit, fx.smiles, spec);
             n = feats.numAtoms;
             if (n === fx.contrib.length) {
-              const { contrib } = await TasteEngine.occlusion(session, feats, spec);
+              const { contrib } = await TasteEngine.occlusion(sessionFor(smiles), feats, spec);
               for (let i = 0; i < n; i++) dC = Math.max(dC, maxDiff(contrib[i], fx.contrib[i]));
               ok = dC <= tol.contrib;
               if (!ok) err = "contributions differ";
@@ -161,7 +176,8 @@
           try {
             const std = TasteEngine.standardizedFeatures(rdkit, fx.input, spec);
             m = TasteEngine.datasetMatch(rdkit, std.smiles, ds);
-            const sameBits = m.bits.length === fx.on_bits.length && m.bits.every((b, k) => b === fx.on_bits[k]);
+            const sameBits = m.bits.length === fx.on_bits.length && m.bits.every((b, k) => b === fx.on_bits[k]) &&
+              m.counts.every((c, k) => c === fx.counts[k]);
             ok = m.key === fx.inchikey && sameBits && Math.abs(m.nn.tanimoto - fx.nn_tanimoto) < 1e-9;
             if (!ok) err = m.key !== fx.inchikey ? "InChIKey " + m.key : !sameBits ? "fingerprint differs" : "Tanimoto differs";
           } catch (e) {
@@ -175,6 +191,25 @@
             cell(ok, err) + "</tr>");
         }
         document.getElementById("rows-dom").innerHTML = rowsD.join("");
+
+        // Part 5: every training molecule
+        const all = await fetch("train_all.json").then(r => r.json());
+        let badFp = 0, firstFp = "", badD = 0, firstD = "";
+        all.smiles.forEach((s, i) => {
+          const mol = rdkit.get_mol(s);
+          let q;
+          try { q = TasteEngine.morganCounts(JSON.parse(mol.get_json())); } finally { mol.delete(); }
+          const a = ds.offsets[i], z = ds.offsets[i + 1];
+          const same = q.bits.length === z - a && q.bits.every((b, k) => b === ds.bits[a + k] && q.counts[k] === ds.counts[a + k]);
+          if (!same) { badFp++; if (!firstFp) firstFp = s; }
+          if (maxDiff(rawD(s), all.D[i]) > (tol.D || 0)) { badD++; if (!firstD) firstD = s; }
+        });
+        const rowsA = [["Morgan counts", badFp, firstFp], ["descriptors", badD, firstD]].map(([name, bad, first]) => {
+          total++; if (!bad) passed++;
+          return "<tr><td>" + name + "</td><td class=\"num\">" + all.smiles.length + "</td><td class=\"num\">" + bad +
+            "</td><td class=\"mono\">" + esc(first) + "</td>" + cell(!bad, bad + " differ") + "</tr>";
+        });
+        document.getElementById("rows-all").innerHTML = rowsA.join("");
 
         summary.textContent = (passed === total ? "PASS " : "FAIL ") + passed + "/" + total;
         summary.className = passed === total ? "pass" : "fail";

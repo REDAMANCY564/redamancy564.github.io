@@ -22,8 +22,8 @@
   <meta name="twitter:title" content="方法与来源 | 6 味觉预测 | 崔京伟">
   <meta name="twitter:description" content="Method, results, limitations and data sources of Taste Prediction for Small Molecules with Graph Neural Networks.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/taste-predictor.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261120b">
-  <script src="../assets/i18n.js?v=20261120b" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261121a">
+  <script src="../assets/i18n.js?v=20261121a" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -81,7 +81,8 @@
       </ol>
       <div class="method-text">
         <p data-i18n-html="method.data"><b>数据。</b>合并了两个公开数据集：ChemTastesDB（主要来源）和 VirtuousMultiTaste 项目公开的数据。统一标签后共 3,937 个有机小分子，其中甜 1,799 个、苦 1,569 个、鲜 127 个、无味 201 个。同一分子在不同来源中说法不一时，取阳性结果（例如一处记为苦、另一处记为不苦，按苦计）。多肽（3 个及以上氨基酸残基）、无机盐和超过 64 个重原子的分子未纳入。</p>
-        <p data-i18n-html="method.model"><b>模型。</b>图卷积网络，原子特征与本站<a href="../odor-predictor/">气味预测</a>相同：每个原子用元素、相邻原子数、氢原子数、电荷、是否芳香、是否在环上来描述，经过 3 轮信息传递后汇总成整个分子的表示，再转换为 4 个概率。与气味预测现用的模型不同，这里的信息传递不区分化学键的类型。模型约有 10 万个参数，可以直接在<span class="nobr">浏览器中运行</span>。</p>
+        <p data-i18n-html="method.model"><b>模型。</b>图卷积网络，原子特征与本站<a href="../odor-predictor/">气味预测</a>相同：每个原子用元素、相邻原子数、氢原子数、电荷、是否芳香、是否在环上来描述。经过 3 轮信息传递后，用平均、最大和求和三种方式汇总成整个分子的表示，再拼接 8 个整体描述符（重原子数、碳原子数、最长碳链长度、环数、双键数、logP、极性表面积、分子量，标准化后使用），转换为 4 个概率。加入求和与整体描述符，是因为只用平均和最大汇总时模型分不清碳链长短，会把长链脂肪酸当成中链脂肪酸。改进后的模型在测试集上的表现与原模型持平，修正了碳链长度的识别。与气味预测现用的模型不同，这里的信息传递不区分化学键的类型。模型约有 14 万个参数，可以直接在<span class="nobr">浏览器中运行</span>。</p>
+        <p id="method-threshold"></p>
         <p data-i18n-html="method.eval"><b>数据划分。</b>含环分子按环系骨架划分为训练集（80%）、验证集（10%）和测试集（10%），测试集中的环系骨架都是模型没见过的。无环分子（约 20%）随机划分。</p>
         <p data-i18n-html="method.explain"><b>原子贡献。</b>结构图上的着色用遮挡法计算：依次从（去掉反离子、中和电荷后的）分子中删去一个原子，重新运行模型，看该味觉的概率变化多少。删去后概率下降的原子（橙色）是模型判断的依据，删去后概率上升的原子（蓝色）在压低这一判断。这说明的是模型看重哪些结构，不等于这些结构在化学上确实<span class="nobr">决定了味觉</span>。</p>
       </div>
@@ -105,7 +106,7 @@
       </div>
       <p class="small muted" id="results-note" style="margin-top:8px"></p>
       <div class="results-text">
-        <p data-i18n="results.takeaway">图神经网络与简单的指纹基线水平相当：甜味和苦味上基线略好，无味上图神经网络更好（但测试集中无味分子只有 21 个，误差较大）。在这个规模的数据上，复杂模型没有带来明显优势。</p>
+        <p data-i18n="results.takeaway">图神经网络与简单的指纹基线水平相当：甜味上两者几乎相同，苦味上基线略好，无味上图神经网络更好（但测试集中无味分子只有 21 个，误差较大）。在这个规模的数据上，复杂模型没有明显优势。</p>
         <p id="results-umami"></p>
         <p id="results-drug"></p>
         <p data-i18n="results.deployed">以上指标来自只用训练集训练的模型。评估完成后，网页上使用的模型按相同设置用全部数据重新训练，以便覆盖更多结构类型（例如核苷酸）；它没有独立的测试集，所以不单独报告指标。</p>
@@ -137,7 +138,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261120b" defer></script>
-  <script src="about.js?v=20261120b" defer></script>
+  <script src="../assets/projects.js?v=20261121a" defer></script>
+  <script src="about.js?v=20261121a" defer></script>
 </body>
 </html>

@@ -147,6 +147,7 @@ python flavor_improver/make_parity_fixtures.py  # 生成一致性测试数据
 用图神经网络（GNN）从分子结构预测风味分子的气味描述词。模型导出为 ONNX，网页为纯 HTML/CSS/JS，托管在 GitHub Pages，不需要服务器。
 
 - **模型（2026-11-18 起）**：带键特征的消息传递网络（`training/model_mpnn.py`，结构参考 Lee et al. 2023 的消息传递思路，不是复现）。原子特征 26 维（与原 GCN 相同），键特征 6 维（单 / 双 / 三 / 芳香 / 其他键型 + 是否在环中，`training/featurize_mpnn.py`）；3 层、256 维、残差更新，约 94 万个参数，ONNX 3.75 MB。层数、维度、更新方式在验证集上从 12 组中选出（`training/train_mpnn.py`，结果 `training/mpnn_results.json`）。测试集 macro AUROC 3 个种子均值 0.866 ± 0.002（原 GCN 0.860 ± 0.0003；去掉键特征的对照 0.863）。原 GCN（`training/model.py`、`featurize.py`）仍用于味觉预测，不要修改。
+- **训练数据核对**（2026-11-20）：`training/make_odor_dataset_keys.py` 生成 `odor-predictor/data/dataset_keys.json`（4,886 个训练分子的 InChIKey，按训练集 / 验证集 / 测试集分列，147 kB，不含气味标签：数据集标签不允许转载）。搜索的分子按 InChIKey 匹配，匹配不到再按前 14 位并注明未区分立体，页面写明属于哪个划分或“不在训练数据中”。重新划分或清洗数据后要重新生成。
 
 - **搜索任意分子**：输入英文名称、CAS 号或 SMILES。名称和 CAS 号通过 PubChem 转为结构，然后在访客的浏览器中实时计算特征并运行模型。网址可带参数直接分享，例如 `odor-predictor/?q=linalool`。
 - **原子贡献高亮（遮挡法）**：依次删去每个原子重新预测，概率变化即该原子的贡献，橙色为提高、蓝色为降低（`training/occlusion.py`；浏览器端 `OdorEngine.occlusion`；绘图与图例在共用的 `assets/contrib.js`）。预设分子在 Python 中预计算，搜索的分子在浏览器中现场计算。页面注明高亮只反映模型的判断依据，不代表构效因果。
@@ -167,16 +168,18 @@ python flavor_improver/make_parity_fixtures.py  # 生成一致性测试数据
 
 ## 6 基于图神经网络的小分子味觉预测（taste-predictor/）
 
-沿用气味预测上一版的 GCN 结构（`training/model.py`，不区分键型）、原子特征和 ONNX 流程，预测小分子的甜、苦、鲜、无味四类（多标签，各一个概率）。酸、咸样本太少，不建模；数据中记载为酸或咸的预设分子在页面上单独提示。
+沿用气味预测上一版的 GCN 结构（不区分键型）、原子特征和 ONNX 流程，预测小分子的甜、苦、鲜、无味四类（多标签，各一个概率）。2026-11-20 起读出层改为平均 + 最大 + 求和池化，再拼接 8 个全局描述符（`training/taste/model_taste.py`、`descriptors.py`，见下）。酸、咸样本太少，不建模；数据中记载为酸或咸的预设分子在页面上单独提示。
 
 - **数据**：ChemTastesDB v2.1（Zenodo 15051366，CC BY 4.0）为主，VirtuousMultiTaste（GitHub，MIT，固定 commit）为辅。BitterDB 为 CC BY-NC-ND（禁止演绎），未直接使用；SuperSweet 已下线。清洗后 3,937 个分子：甜 1,799、苦 1,569、鲜 127、无味 201。剔除多肽（3 个及以上残基，二肽如阿斯巴甜保留）、无机物和超过 64 个重原子的分子。
 - **标签规则**（`training/taste/clean.py`）：同一分子在不同记录中冲突时取阳性；「非甜」等只给该类记阴性，其余为未知；未知标签不计入损失和 AUROC。
 - **部署模型**：评估用只训练集的模型；评估后按相同设置用全部数据重新训练作为网页模型（因为核苷酸类鲜味分子整组落在测试集，用户 2026-10-17 选择此方案）。
+- **模型（2026-11-20 重训，case-fix-3）**：3 层 × 128 维 GCN，读出 = 平均 + 最大 + 求和池化，拼接 8 个全局描述符（重原子数、碳原子数、最长非环碳链、环数（环路数 = 键数 − 原子数 + 连通分量数）、非芳香双键数、Crippen logP、TPSA、分子量；用训练集均值和标准差标准化，ONNX 额外输入 D）；约 13.8 万个参数。`training/taste/train_gnn.py select` 在验证集上比较 21 组（描述符、求和池化、4~5 层 256 维、dropout、类别权重），描述符 + 求和池化最好（验证集宏平均 0.917，原结构 0.875；类别权重反而变差）；`train_gnn.py final base desc_sum` 只在最后看一次测试集：新 0.9014 ± 0.0007，原结构重跑 0.9014 ± 0.0040（与第一版报告的 0.901 ± 0.004 一致）。训练集自检（0.5 口径）至少一个标签不符从 27.6% 降到 17.3%，长链脂肪酸 7/8 → 0/8。第一版检查点留在 `training/checkpoints/taste_gnn_v1*.pt`（不上传）。
+- **判断阈值**（`train_gnn.py` 的 `judgement_thresholds`，只用训练集的模型、验证集）：甜、苦取 Youden J 最大处（57.6%、42.2%）；鲜、无味取 F1 最高处（用户 2026-11-21 决定：Youden J 给出的 0.7%、2.2% 太低，会误导）。鲜 17.6%，验证集精确率 0.80、召回率 0.75；无味 12.7%，精确率只有 0.30（召回率 0.60），低于 0.5，所以 `show: false`，页面对无味只显示概率、不给“超过/未超过判断阈值”，说明页写明原因。结果写进 `metrics.json`（`gnn.thresholds`）和 `feature_spec.json`（`thresholds`、`thresholds_show`）。不重训只重算阈值：`python taste/train_gnn.py thresholds`，再跑 `export_taste_onnx.py`。
 - **浏览器端标准化**：RDKit.js 没有 neutralize，`taste-predictor/engine.js` 按 RDKit Uncharger 规则重写了中和步骤，其余复用 `odor-predictor/engine.js`。
 - **原子贡献高亮**：同气味页面，在标准化后的结构上计算和绘图（预设分子显示原始形式备注）。
-- **数据集记录与适用范围**（`training/taste/make_dataset_lookup.py`）：`data/dataset.json` 是 3,937 个训练分子的 InChIKey、整理后的标签、来源、划分和原始味觉描述（文件内附两个数据源的许可声明），`data/fps.bin` 是它们的 Morgan 指纹（r = 2，2,048 位）。搜索的分子按 InChIKey 匹配，匹配不到再按前 14 位（去掉立体）匹配并注明“未区分立体”。与最相近训练分子的 Tanimoto 低于 `data/domain.json` 的阈值（测试集分子与训练集最近邻相似度的 5% 分位数，0.3087）时提示“预测仅供参考”。注意：半径 2 的 Morgan 指纹看不出链长，C7 以上的直链饱和脂肪酸彼此指纹完全相同（硬脂酸与庚酸 Tanimoto = 1），三棕榈酸甘油酯与三硬脂酸甘油酯也是 1，所以这个提示抓不到长链脂肪酸和甘油三酯的问题。
-- **训练集自检**：`training/taste/audit_training.py` 用网页模型预测全部训练分子，按 0.5 阈值统计与标签不符的分子（按化合物类别），报告写到 `_inputs/TASTE-AUDIT.md`（不提交）。
-- **一致性测试**：https://redamancy564.github.io/taste-predictor/tests/parity.html （64 个特征用例 + 23 个标准化用例，含盐和两性离子，+ 23 个原子贡献用例 + 13 个训练数据匹配用例：InChIKey、指纹和最近邻 Tanimoto）。**修改特征、标准化或重新训练后，必须确认全部 PASS。**
+- **数据集记录与适用范围**（`training/taste/make_dataset_lookup.py`）：`data/dataset.json` 是 3,937 个训练分子的 InChIKey、整理后的标签、来源、划分和原始味觉描述（文件内附两个数据源的许可声明），`data/fps.bin` 是它们的 Morgan 计数指纹（r = 2，2,048 位，记录每位出现次数；格式：uint32 偏移、uint16 位号、uint8 次数）。RDKit.js 只有二值指纹，`engine.js` 的 `morganCounts` 按 RDKit 的 Morgan 算法自己计算计数（Python 对照 `training/taste/morgan_counts.py`，与 RDKit 在全部 3,937 个分子上一致），并在每次查询时核对位号与 RDKit.js 的二值指纹相同。搜索的分子按 InChIKey 匹配，匹配不到再按前 14 位（去掉立体）匹配并注明“未区分立体”。与最相近训练分子的计数 Tanimoto（Σmin / Σmax）低于 `data/domain.json` 的阈值（测试集分子与训练集最近邻相似度的 5% 分位数，0.3187；测试集 394 个中 20 个低于）时提示“预测仅供参考”。二值指纹时硬脂酸与庚酸 Tanimoto = 1，计数后为 0.42；但二十碳酸与硬脂酸仍有 0.905、三棕榈酸甘油酯与三硬脂酸甘油酯 0.902，都远高于阈值，所以长链同系物仍不会触发提示（它们确实和训练分子相近）。
+- **训练集自检**：`training/taste/audit_training.py` 用第一版（`taste_gnn_v1.pt`）和现网页模型预测全部训练分子，按 0.5 和判断阈值两种口径统计与标签不符的分子（按化合物类别），报告写到 `_inputs/TASTE-AUDIT.md`（不提交）。
+- **一致性测试**：https://redamancy564.github.io/taste-predictor/tests/parity.html （64 个特征用例（含 8 个全局描述符）+ 23 个标准化用例，含盐和两性离子，+ 23 个原子贡献用例 + 24 个训练数据匹配用例：InChIKey、计数指纹和最近邻 Tanimoto；另有全部 3,937 个训练分子的计数指纹和描述符对照，`tests/train_all.json`）。**修改特征、标准化或重新训练后，必须确认全部 PASS。**
 
 **重新训练：**
 ```powershell
@@ -187,11 +190,13 @@ python taste/clean.py              # 解析标签、标准化、过滤、合并�
 python taste/drug_flags.py         # 用 ChEMBL 标记药物分子（评估苦味偏差）
 python taste/split.py              # 混合骨架划分（80/10/10）
 python taste/baseline_fp.py        # Morgan 指纹 + 逻辑回归
-python taste/train_gnn.py          # GNN 3 个种子 + 全数据部署模型
+python taste/train_gnn.py select   # 各结构在验证集上比较（不看测试集）
+python taste/train_gnn.py final desc_sum --site   # 选定结构：3 个种子测试集、判断阈值、全数据部署模型，写 metrics.json
 python taste/umami_valid.py        # 鲜味的验证集参考值
 python taste/export_taste_onnx.py  # 导出 ONNX 并验证
 python taste/make_site_assets.py   # labels、presets、一致性测试数据
-python taste/make_dataset_lookup.py   # dataset.json、fps.bin、domain.json，预设的最近邻相似度（须在 make_site_assets 之后运行）
+python taste/make_dataset_lookup.py   # dataset.json、fps.bin、domain.json、tests/train_all.json，预设的最近邻相似度（须在 make_site_assets 之后运行）
+python taste/audit_training.py     # 训练集自检（新旧对比）
 ```
 
 **当前结果（测试集 AUROC，GNN 为 3 个种子均值）：** 甜 0.854 / 基线 0.866；苦 0.863 / 0.867；无味 0.889 / 0.826；鲜两者均为 1.000，但测试集鲜味以核苷酸为主且无含磷阴性样本，不可信（验证集无磷鲜味参考 0.943 / 0.950）。苦味中药物分子 AUROC 0.736，非药物 0.875。
@@ -326,7 +331,7 @@ flavor-improver/        4 乳品风味改良
   data/                 palette、bases、presets、mixture_spec、bo_traces、bo_metrics、reference（配方奶粉对比母乳）、precursors（前体对照表）
   tests/                parity.html（一致性）、bo_check.html（浏览器版算法表现）
 flavor-kb/              7 风味知识库与法规查询（regulatory.html 为法规查询页）
-taste-predictor/        6 味觉预测（GCN，结构同上一版 odor-predictor；engine.js 在气味引擎上加中和步骤）
+taste-predictor/        6 味觉预测（GCN + 求和池化 + 全局描述符；engine.js 在气味引擎上加中和步骤、描述符和 Morgan 计数指纹）
 odor-map/               5 气味地图（data/：coords.bin、map.json、foods.json；分子数据读 ingredient-finder/data/）
 research/               研究概览（博士课题四步 + 硕士课题三步动画，不是在线工具，不参与编号）：research.js 用固定种子生成示意数据并播放动画（不读论文或样本数据），文字在 i18n/；严格 CSP，不发外部请求
 training/               训练代码（原始数据不上传）

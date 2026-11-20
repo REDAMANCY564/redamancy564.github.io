@@ -22,8 +22,8 @@
   <meta name="twitter:title" content="6 味觉预测 | 崔京伟">
   <meta name="twitter:description" content="Predicts whether a small molecule is sweet, bitter, umami or tasteless.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/taste-predictor.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261120b">
-  <script src="../assets/i18n.js?v=20261120b" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261121a">
+  <script src="../assets/i18n.js?v=20261121a" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -35,6 +35,9 @@
     .mol-svg { aspect-ratio: 4 / 3; display: grid; place-items: center; color: var(--muted); font-size: .875rem; text-align: center; }
     .mol-svg svg { width: 100%; height: auto; }
     .chart-box { position: relative; height: 240px; }
+    .thr-list { list-style: none; padding: 0; margin: 10px 0 0; }
+    .thr-list li { margin: 2px 0; }
+    .thr-list li.over b { color: var(--accent); }
     .raw-labels { margin-top: 8px; }
     .raw-labels summary { cursor: pointer; color: var(--accent); }
     .raw-labels ul { margin: 6px 0 0; padding-left: 1.2em; word-break: break-word; }
@@ -102,40 +105,40 @@
           <div class="mol-svg" id="mol-svg" data-snap="mol-svg"><!--?xml version='1.0' encoding='iso-8859-1'?-->
 <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:rdkit="http://www.rdkit.org/xml" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="360px" height="270px" viewBox="0 0 360 270">
 <!-- END OF HEADER -->
-<ellipse cx="215.2" cy="230.6" rx="15.6" ry="11.4" class="atom-0" style="fill:#F7CAB2;fill-rule:evenodd;stroke:#F7CAB2;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="254.4" cy="207.1" rx="11.4" ry="11.4" class="atom-1" style="fill:#E9621A;fill-rule:evenodd;stroke:#E9621A;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="213.8" cy="149.2" rx="11.4" ry="11.4" class="atom-3" style="fill:#C3DDF4;fill-rule:evenodd;stroke:#C3DDF4;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="210.2" cy="108.4" rx="11.4" ry="11.4" class="atom-4" style="fill:#F8CDB6;fill-rule:evenodd;stroke:#F8CDB6;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="173.2" cy="91.2" rx="11.4" ry="11.4" class="atom-5" style="fill:#F8D2BD;fill-rule:evenodd;stroke:#F8D2BD;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="139.7" cy="114.6" rx="11.4" ry="11.4" class="atom-6" style="fill:#F8CCB5;fill-rule:evenodd;stroke:#F8CCB5;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="102.7" cy="97.3" rx="11.4" ry="11.4" class="atom-7" style="fill:#C3DDF4;fill-rule:evenodd;stroke:#C3DDF4;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="99.1" cy="56.6" rx="11.4" ry="11.4" class="atom-8" style="fill:#E96018;fill-rule:evenodd;stroke:#E96018;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="56.4" cy="39.4" rx="15.6" ry="11.4" class="atom-9" style="fill:#F7C8AE;fill-rule:evenodd;stroke:#F7C8AE;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="72.8" cy="161.5" rx="11.4" ry="11.4" class="atom-11" style="fill:#E9621A;fill-rule:evenodd;stroke:#E9621A;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="33.6" cy="185.0" rx="15.6" ry="11.4" class="atom-12" style="fill:#F8D0BB;fill-rule:evenodd;stroke:#F8D0BB;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="109.8" cy="178.7" rx="11.4" ry="11.4" class="atom-13" style="fill:#EA6721;fill-rule:evenodd;stroke:#EA6721;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="118.8" cy="219.5" rx="15.2" ry="11.4" class="atom-14" style="fill:#F7CCB4;fill-rule:evenodd;stroke:#F7CCB4;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="215.2" cy="230.6" rx="15.6" ry="11.4" class="atom-0" style="fill:#F8D0BB;fill-rule:evenodd;stroke:#F8D0BB;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="254.4" cy="207.1" rx="11.4" ry="11.4" class="atom-1" style="fill:#EB7434;fill-rule:evenodd;stroke:#EB7434;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="210.2" cy="108.4" rx="11.4" ry="11.4" class="atom-4" style="fill:#F8D0BA;fill-rule:evenodd;stroke:#F8D0BA;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="173.2" cy="91.2" rx="11.4" ry="11.4" class="atom-5" style="fill:#C4DDF4;fill-rule:evenodd;stroke:#C4DDF4;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="139.7" cy="114.6" rx="11.4" ry="11.4" class="atom-6" style="fill:#F8CEB7;fill-rule:evenodd;stroke:#F8CEB7;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="102.7" cy="97.3" rx="11.4" ry="11.4" class="atom-7" style="fill:#C4DDF4;fill-rule:evenodd;stroke:#C4DDF4;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="99.1" cy="56.6" rx="11.4" ry="11.4" class="atom-8" style="fill:#EB7434;fill-rule:evenodd;stroke:#EB7434;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="56.4" cy="39.4" rx="15.6" ry="11.4" class="atom-9" style="fill:#F8D0BA;fill-rule:evenodd;stroke:#F8D0BA;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="69.2" cy="120.8" rx="11.4" ry="11.4" class="atom-10" style="fill:#F9D3BF;fill-rule:evenodd;stroke:#F9D3BF;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="72.8" cy="161.5" rx="11.4" ry="11.4" class="atom-11" style="fill:#E96219;fill-rule:evenodd;stroke:#E96219;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="33.6" cy="185.0" rx="15.6" ry="11.4" class="atom-12" style="fill:#F8D1BD;fill-rule:evenodd;stroke:#F8D1BD;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="109.8" cy="178.7" rx="11.4" ry="11.4" class="atom-13" style="fill:#E9651F;fill-rule:evenodd;stroke:#E9651F;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="118.8" cy="219.5" rx="15.2" ry="11.4" class="atom-14" style="fill:#F8D3BF;fill-rule:evenodd;stroke:#F8D3BF;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
 <ellipse cx="143.3" cy="155.3" rx="11.4" ry="11.4" class="atom-15" style="fill:#E8590C;fill-rule:evenodd;stroke:#E8590C;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="185.8" cy="172.6" rx="15.2" ry="11.4" class="atom-16" style="fill:#F7C8AE;fill-rule:evenodd;stroke:#F7C8AE;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="243.7" cy="84.9" rx="11.4" ry="11.4" class="atom-17" style="fill:#E85F15;fill-rule:evenodd;stroke:#E85F15;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="245.6" cy="44.3" rx="15.2" ry="11.4" class="atom-18" style="fill:#F7CBB3;fill-rule:evenodd;stroke:#F7CBB3;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="280.8" cy="102.2" rx="11.4" ry="11.4" class="atom-19" style="fill:#E9641D;fill-rule:evenodd;stroke:#E9641D;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="319.7" cy="78.8" rx="15.2" ry="11.4" class="atom-20" style="fill:#F7CBB4;fill-rule:evenodd;stroke:#F7CBB4;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="284.3" cy="142.9" rx="11.4" ry="11.4" class="atom-21" style="fill:#E9631C;fill-rule:evenodd;stroke:#E9631C;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
-<ellipse cx="326.8" cy="160.2" rx="15.2" ry="11.4" class="atom-22" style="fill:#F7CAB2;fill-rule:evenodd;stroke:#F7CAB2;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="185.8" cy="172.6" rx="15.2" ry="11.4" class="atom-16" style="fill:#F8D2BE;fill-rule:evenodd;stroke:#F8D2BE;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="243.7" cy="84.9" rx="11.4" ry="11.4" class="atom-17" style="fill:#E9621A;fill-rule:evenodd;stroke:#E9621A;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="245.6" cy="44.3" rx="15.2" ry="11.4" class="atom-18" style="fill:#F8D2BE;fill-rule:evenodd;stroke:#F8D2BE;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="280.8" cy="102.2" rx="11.4" ry="11.4" class="atom-19" style="fill:#EA6924;fill-rule:evenodd;stroke:#EA6924;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="319.7" cy="78.8" rx="15.2" ry="11.4" class="atom-20" style="fill:#F8D3BF;fill-rule:evenodd;stroke:#F8D3BF;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="284.3" cy="142.9" rx="11.4" ry="11.4" class="atom-21" style="fill:#E85C10;fill-rule:evenodd;stroke:#E85C10;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
+<ellipse cx="326.8" cy="160.2" rx="15.2" ry="11.4" class="atom-22" style="fill:#F8D2BD;fill-rule:evenodd;stroke:#F8D2BD;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></ellipse>
 <path class="bond-0 atom-0 atom-1" d="M 227.6,225.8 L 254.4,207.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
 <path class="bond-1 atom-1 atom-2" d="M 254.4,207.1 L 250.9,166.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
-<path class="bond-2 atom-2 atom-3" d="M 250.9,166.3 L 220.5,152.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
-<path class="bond-3 atom-3 atom-4" d="M 213.2,141.9 L 210.2,108.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-2 atom-3" d="M 250.9,166.3 L 235.7,159.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-2 atom-3" d="M 235.7,159.3 L 220.5,152.2" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-3 atom-4" d="M 213.2,141.9 L 211.7,125.1" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-3 atom-4" d="M 211.7,125.1 L 210.2,108.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
 <path class="bond-4 atom-4 atom-5" d="M 210.2,108.4 L 179.9,94.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
 <path class="bond-5 atom-5 atom-6" d="M 166.5,95.8 L 139.7,114.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
 <path class="bond-6 atom-6 atom-7" d="M 139.7,114.6 L 102.7,97.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
 <path class="bond-7 atom-7 atom-8" d="M 102.7,97.3 L 99.1,56.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
 <path class="bond-8 atom-8 atom-9" d="M 99.1,56.6 L 68.7,42.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
-<path class="bond-9 atom-7 atom-10" d="M 102.7,97.3 L 89.3,106.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
-<path class="bond-9 atom-7 atom-10" d="M 89.3,106.7 L 75.9,116.1" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
-<path class="bond-10 atom-10 atom-11" d="M 69.9,128.1 L 71.3,144.8" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
-<path class="bond-10 atom-10 atom-11" d="M 71.3,144.8 L 72.8,161.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-7 atom-10" d="M 102.7,97.3 L 75.9,116.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-10 atom-10 atom-11" d="M 69.9,128.1 L 72.8,161.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
 <path class="bond-11 atom-11 atom-12" d="M 72.8,161.5 L 46.0,180.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
 <path class="bond-12 atom-11 atom-13" d="M 72.8,161.5 L 109.8,178.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
 <path class="bond-13 atom-13 atom-14" d="M 109.8,178.7 L 112.8,212.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.6px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
@@ -202,7 +205,7 @@ Q 212.1 144.5, 211.1 145.7
 Q 210.1 146.8, 210.1 149.1
 Q 210.1 151.4, 211.1 152.6
 Q 212.1 153.8, 213.8 153.8
-" fill="#000000"></path>
+" fill="#FF0000"></path>
 <path class="atom-5" d="M 167.9 91.1
 Q 167.9 88.4, 169.3 86.8
 Q 170.6 85.3, 173.2 85.3
@@ -273,7 +276,7 @@ Q 67.4 116.2, 66.5 117.3
 Q 65.5 118.5, 65.5 120.8
 Q 65.5 123.1, 66.5 124.3
 Q 67.4 125.5, 69.2 125.5
-" fill="#FF0000"></path>
+" fill="#000000"></path>
 <path class="atom-12" d="M 22.6 179.2
 L 24.1 179.2
 L 24.1 184.1
@@ -484,6 +487,8 @@ L 328.5 154.4
         <div class="card">
           <h3 data-i18n="demo.chart_title">预测的味觉</h3>
           <div class="chart-box"><canvas id="pred-chart" aria-label="Predicted taste probabilities"></canvas></div>
+          <ul class="thr-list small" id="thr-list" hidden></ul>
+          <p class="small muted" id="thr-note" hidden></p>
           <p class="small muted" id="chart-note" style="margin-top:8px"></p>
           <p class="small muted" id="sour-note" hidden></p>
         </div>
@@ -500,11 +505,11 @@ L 328.5 154.4
   </footer>
 
   <script src="../assets/vendor/chartjs/chart.umd.min.js" defer></script>
-  <script src="../assets/libs.js?v=20261120b" defer></script>
-  <script src="../odor-predictor/engine.js?v=20261120b" defer></script>
-  <script src="engine.js?v=20261120b" defer></script>
-  <script src="../assets/projects.js?v=20261120b" defer></script>
-  <script src="../assets/contrib.js?v=20261120b" defer></script>
-  <script src="app.js?v=20261120b" defer></script>
+  <script src="../assets/libs.js?v=20261121a" defer></script>
+  <script src="../odor-predictor/engine.js?v=20261121a" defer></script>
+  <script src="engine.js?v=20261121a" defer></script>
+  <script src="../assets/projects.js?v=20261121a" defer></script>
+  <script src="../assets/contrib.js?v=20261121a" defer></script>
+  <script src="app.js?v=20261121a" defer></script>
 </body>
 </html>

@@ -1,0 +1,911 @@
+{
+ "source": "curated by hand 2026-11-20 from training/knowledge/stereo_candidates.py; see apply_stereo_names.py",
+ "names": {
+  "COLNVLDHVKWLRT": {
+   "en": "Phenylalanine",
+   "zh": "苯丙氨酸",
+   "cas": [
+    "136019-12-0",
+    "150-30-1",
+    "30394-07-1",
+    "3617-44-5",
+    "67675-33-6"
+   ]
+  },
+  "NOOLISFMXDJSKH": {
+   "en": "Menthol",
+   "zh": "薄荷醇",
+   "cas": [
+    "114376-98-6",
+    "1490-04-6",
+    "15356-70-4",
+    "2216-51-5",
+    "491-01-0",
+    "89-78-1",
+    "98167-53-4"
+   ]
+  },
+  "BSAIUMLZVGUGKX": {
+   "en": "2-Nonenal",
+   "zh": "2-壬烯醛",
+   "cas": [
+    "18829-56-6",
+    "2463-53-8",
+    "30551-15-6",
+    "60784-31-8"
+   ]
+  },
+  "PFTAWBLQPZVEMU": {
+   "en": "Catechin",
+   "zh": "儿茶素",
+   "cas": [
+    "100786-01-4",
+    "13392-26-2",
+    "154-23-4",
+    "17334-50-8",
+    "321-01-7",
+    "7295-85-4"
+   ]
+  },
+  "ZHHYXNZJDGDGPJ": {
+   "en": "2,4-Nonadienal",
+   "zh": "2,4-壬二烯醛",
+   "cas": [
+    "30551-17-8",
+    "5910-87-2",
+    "6750-03-4"
+   ]
+  },
+  "JZQKTMZYLHNFPL": {
+   "en": "2,4-Decadienal",
+   "zh": "2,4-癸二烯醛",
+   "cas": [
+    "2363-88-4",
+    "25152-83-4",
+    "25152-84-5",
+    "30551-18-9"
+   ]
+  },
+  "AWNIQMQADACLCJ": {
+   "en": "Ethyl 4-decenoate",
+   "zh": "4-癸烯酸乙酯",
+   "cas": [
+    "26825-88-7",
+    "6142-44-5",
+    "76649-16-6"
+   ]
+  },
+  "XXHDAWYDNSXJQM": {
+   "en": "3-Hexenoic acid",
+   "zh": "3-己烯酸",
+   "cas": [
+    "1577-18-0",
+    "4219-24-3"
+   ]
+  },
+  "GBKGJMYPQZODMI": {
+   "en": "Furfurylideneacetone",
+   "zh": "糠叉丙酮",
+   "cas": [
+    "108811-61-6",
+    "25398-39-4",
+    "41438-24-8",
+    "623-15-4"
+   ]
+  },
+  "FEWJPZIEWOKRBE": {
+   "en": "Tartaric acid",
+   "zh": "酒石酸",
+   "cas": [
+    "1007601-97-9",
+    "106449-07-4",
+    "133-37-9",
+    "138508-61-9",
+    "526-83-0"
+   ]
+  },
+  "XMGQYMWWDOXHJM": {
+   "en": "Limonene",
+   "zh": "柠檬烯",
+   "cas": [
+    "138-86-3",
+    "5989-27-5",
+    "7705-14-8"
+   ]
+  },
+  "WTJKGGKOPKCXLL": {
+   "en": "1-Palmitoyl-2-oleoyl-glycero-3-phosphocholine (POPC)",
+   "zh": "1-棕榈酰-2-油酰甘油-3-磷酸胆碱（POPC）",
+   "cas": [
+    "26662-91-9",
+    "26853-31-6",
+    "6753-55-5"
+   ]
+  },
+  "VVGOCOMZRGWHPI": {
+   "en": "4-Heptenal",
+   "zh": "4-庚烯醛",
+   "cas": [
+    "62238-34-0",
+    "6728-31-0"
+   ]
+  },
+  "YTHRBOFHFYZBRJ": {
+   "en": "Carvyl acetate",
+   "zh": "乙酸香芹酯",
+   "cas": [
+    "1205-42-1",
+    "7111-29-7",
+    "97-42-7"
+   ]
+  },
+  "IMKHDCBNRDRUEB": {
+   "en": "Dihydroactinidiolide",
+   "zh": "二氢猕猴桃内酯",
+   "cas": [
+    "15356-74-8",
+    "17092-92-1"
+   ]
+  },
+  "NOPLRNXKHZRXHT": {
+   "en": "beta-Sinensal",
+   "zh": "β-甜橙醛",
+   "cas": [
+    "308064-82-6",
+    "3779-62-2",
+    "60066-88-8",
+    "8028-48-6"
+   ]
+  },
+  "CIWBSHSKHKDKBQ": {
+   "en": "Ascorbic acid",
+   "zh": "抗坏血酸",
+   "cas": [
+    "1129294-89-8",
+    "2252244-20-3",
+    "50-81-7",
+    "53262-66-1",
+    "62624-30-0",
+    "6730-29-6",
+    "89924-69-6"
+   ]
+  },
+  "BRHDDEIRQPDPMG": {
+   "en": "Linalool oxide (furanoid)",
+   "zh": "芳樟醇氧化物（呋喃型）",
+   "cas": [
+    "11063-78-8",
+    "1365-19-1",
+    "34995-77-2",
+    "60047-17-8",
+    "68780-91-6"
+   ]
+  },
+  "GKGOLPMYJJXRGD": {
+   "en": "2-Methyl-4-propyl-1,3-oxathiane",
+   "zh": "2-甲基-4-丙基-1,3-氧硫杂环己烷",
+   "cas": [
+    "59323-76-1",
+    "67715-80-4"
+   ]
+  },
+  "QOKMHYUWJKXWOV": {
+   "en": "1-(Methylthio)-1-butene",
+   "zh": "1-甲硫基-1-丁烯",
+   "cas": [
+    "17414-27-6",
+    "32951-19-2"
+   ]
+  },
+  "MLUCVPSAIODCQM": {
+   "en": "2-Butenal",
+   "zh": "2-丁烯醛（巴豆醛）",
+   "cas": [
+    "123-73-9",
+    "15798-64-8",
+    "4170-30-3"
+   ]
+  },
+  "AYFVYJQAPQTCCC": {
+   "en": "Threonine",
+   "zh": "苏氨酸",
+   "cas": [
+    "144-98-9",
+    "2303597-29-5",
+    "2676-21-3",
+    "7004-04-8",
+    "80-68-2"
+   ]
+  },
+  "AGPKZVBTJJNPAG": {
+   "en": "Isoleucine",
+   "zh": "异亮氨酸",
+   "cas": [
+    "2095501-92-9",
+    "3107-04-8",
+    "443-79-8"
+   ]
+  },
+  "PMMYEEVYMWASQN": {
+   "en": "4-Hydroxyproline",
+   "zh": "4-羟基脯氨酸",
+   "cas": [
+    "147028-80-6",
+    "25249-07-4",
+    "30724-02-8",
+    "49761-17-3",
+    "6912-67-0"
+   ]
+  },
+  "AZOCECCLWFDTAP": {
+   "en": "Dihydrocarvone",
+   "zh": "二氢香芹酮",
+   "cas": [
+    "5948-04-9",
+    "6909-25-7",
+    "7764-50-3"
+   ]
+  },
+  "GAIBLDCXCZKKJE": {
+   "en": "Germacrene D",
+   "zh": "大根香叶烯 D",
+   "cas": [
+    "23986-74-5",
+    "37839-63-7"
+   ]
+  },
+  "JSNRRGGBADWTMC": {
+   "en": "beta-Farnesene",
+   "zh": "β-法尼烯",
+   "cas": [
+    "28973-97-9",
+    "77129-48-7"
+   ]
+  },
+  "VWYBQOFZVSNDAW": {
+   "en": "1,5-Octadien-3-one",
+   "zh": "1,5-辛二烯-3-酮",
+   "cas": [
+    "134380-41-9",
+    "65213-86-7",
+    "65767-22-8"
+   ]
+  },
+  "OPFTUNCRGUEPRZ": {
+   "en": "beta-Elemene",
+   "zh": "β-榄香烯",
+   "cas": [
+    "33880-83-0",
+    "515-13-9"
+   ]
+  },
+  "XHXUANMFYXWVNG": {
+   "en": "Menthyl acetate",
+   "zh": "乙酸薄荷酯",
+   "cas": [
+    "16409-45-3",
+    "2230-87-7",
+    "2623-23-6",
+    "29066-34-0",
+    "89-48-5"
+   ]
+  },
+  "AMXPURQVAMENCC": {
+   "en": "Menthone-8-thioacetate",
+   "zh": "薄荷酮-8-硫代乙酸酯",
+   "cas": [
+    "166022-16-8",
+    "57129-12-1",
+    "63299-27-4",
+    "94293-57-9"
+   ]
+  },
+  "XBGUIVFBMBVUEG": {
+   "en": "gamma-Bisabolene",
+   "zh": "γ-红没药烯",
+   "cas": [
+    "11003-31-9",
+    "495-62-5",
+    "53585-13-0"
+   ]
+  },
+  "IZXYHAXVIZHGJV": {
+   "en": "p-Menth-2-en-1-ol",
+   "zh": "对薄荷-2-烯-1-醇",
+   "cas": [
+    "29803-82-5",
+    "619-62-5"
+   ]
+  },
+  "VUVQBYIJRDUVHT": {
+   "en": "Mintlactone",
+   "zh": "薄荷内酯",
+   "cas": [
+    "13341-72-5",
+    "16434-36-9",
+    "38049-04-6"
+   ]
+  },
+  "RKQDKXOBRXTSFS": {
+   "en": "1,5,9,9-Tetramethyl-12-oxabicyclo[9.1.0]dodeca-4,7-diene",
+   "zh": "1,5,9,9-四甲基-12-氧杂双环[9.1.0]十二碳-4,7-二烯",
+   "cas": [
+    "19888-33-6",
+    "74282-07-8"
+   ]
+  },
+  "USMNOWBWPHYOEA": {
+   "en": "Thujone",
+   "zh": "侧柏酮",
+   "cas": [
+    "1125-12-8",
+    "546-80-5",
+    "58501-78-3",
+    "59573-80-7"
+   ]
+  },
+  "MQPHVIPKLRXGDJ": {
+   "en": "3-Pinanone (pinocamphone)",
+   "zh": "3-蒎烷酮（松樟酮）",
+   "cas": [
+    "15358-88-0",
+    "22339-21-5",
+    "547-60-4"
+   ]
+  },
+  "DZVXRFMREAADPP": {
+   "en": "Thujan-3-ol",
+   "zh": "侧柏醇",
+   "cas": [
+    "21653-20-3",
+    "513-23-5"
+   ]
+  },
+  "UCFQYMKLDPWFHZ": {
+   "en": "Citronellyl 2-methyl-2-butenoate",
+   "zh": "2-甲基-2-丁烯酸香茅酯",
+   "cas": [
+    "255714-11-5",
+    "84254-89-7"
+   ]
+  },
+  "WSWCOQWTEOXDQX": {
+   "en": "Sorbic acid",
+   "zh": "山梨酸",
+   "cas": [
+    "22500-92-1",
+    "5309-56-8"
+   ]
+  },
+  "PFVYLGTZGQUUOT": {
+   "en": "Geranyl 2-ethylbutyrate",
+   "zh": "2-乙基丁酸香叶酯",
+   "cas": [
+    "73019-14-4",
+    "85136-39-6",
+    "99999-26-5"
+   ]
+  },
+  "SATICYYAWWYRAM": {
+   "en": "2,4-Heptadienal",
+   "zh": "2,4-庚二烯醛",
+   "cas": [
+    "4313-03-5",
+    "5910-85-0",
+    "85870-31-1"
+   ]
+  },
+  "DTCCTIQRPGSLPT": {
+   "en": "2-Pentenal",
+   "zh": "2-戊烯醛",
+   "cas": [
+    "1576-87-0",
+    "31424-04-1",
+    "764-39-6"
+   ]
+  },
+  "XEAIHUDTEINXFG": {
+   "en": "Methyl 3-hexenoate",
+   "zh": "3-己烯酸甲酯",
+   "cas": [
+    "13894-62-7",
+    "2396-78-3"
+   ]
+  },
+  "XMLSXPIVAXONDL": {
+   "en": "Jasmone",
+   "zh": "茉莉酮",
+   "cas": [
+    "488-10-8",
+    "68043-00-5"
+   ]
+  },
+  "GITGIBUELGTBSG": {
+   "en": "Ethyl 4-heptenoate",
+   "zh": "4-庚烯酸乙酯",
+   "cas": [
+    "138234-60-3",
+    "39924-27-1"
+   ]
+  },
+  "HZYHMHHBBBSGHB": {
+   "en": "2,6-Nonadienal",
+   "zh": "2,6-壬二烯醛",
+   "cas": [
+    "26370-28-5",
+    "557-48-2"
+   ]
+  },
+  "RTNPCOBSXBGDMO": {
+   "en": "6-Nonenal",
+   "zh": "6-壬烯醛",
+   "cas": [
+    "2277-19-2",
+    "6728-35-4"
+   ]
+  },
+  "VDHRTASWKDTLER": {
+   "en": "5-Octen-1-ol",
+   "zh": "5-辛烯-1-醇",
+   "cas": [
+    "64275-73-6",
+    "90200-83-2"
+   ]
+  },
+  "OSMAJVWUIUORGC": {
+   "en": "3-Hexenyl isobutyrate",
+   "zh": "异丁酸-3-己烯酯",
+   "cas": [
+    "41519-23-7",
+    "57859-47-9"
+   ]
+  },
+  "RGACQXBDYBCJCY": {
+   "en": "3-Hexenyl hexanoate",
+   "zh": "己酸-3-己烯酯",
+   "cas": [
+    "31501-11-8",
+    "84434-19-5"
+   ]
+  },
+  "BCOXBEHFBZOJJZ": {
+   "en": "3-Hexenyl benzoate",
+   "zh": "苯甲酸-3-己烯酯",
+   "cas": [
+    "25152-85-6",
+    "72200-74-9"
+   ]
+  },
+  "PAEBAEDUARAOSG": {
+   "en": "Acetaldehyde ethyl 3-hexenyl acetal",
+   "zh": "乙醛乙基 3-己烯基缩醛",
+   "cas": [
+    "28069-74-1",
+    "88683-94-7"
+   ]
+  },
+  "XJHQVZQZUGLZLS": {
+   "en": "3-Hexenyl formate",
+   "zh": "甲酸-3-己烯酯",
+   "cas": [
+    "2315-09-5",
+    "33467-73-1"
+   ]
+  },
+  "NIONDZDPPYHYKY": {
+   "en": "2-Hexenoic acid",
+   "zh": "2-己烯酸",
+   "cas": [
+    "1191-04-4",
+    "1289-40-3",
+    "13419-69-7"
+   ]
+  },
+  "NGQTTWDHJIMWOI": {
+   "en": "Hexyl 2-hexenoate",
+   "zh": "2-己烯酸己酯",
+   "cas": [
+    "16930-97-5",
+    "33855-57-1"
+   ]
+  },
+  "MBDOYVRWFFCFHM": {
+   "en": "2-Hexenal",
+   "zh": "2-己烯醛",
+   "cas": [
+    "1335-39-3",
+    "505-57-7",
+    "6728-26-3",
+    "85761-70-2"
+   ]
+  },
+  "SSPBQLGVUAXSMH": {
+   "en": "Methyl 4-octenoate",
+   "zh": "4-辛烯酸甲酯",
+   "cas": [
+    "1732-00-9",
+    "21063-71-8"
+   ]
+  },
+  "HRHOWZHRCRZVCU": {
+   "en": "2-Hexenyl acetate",
+   "zh": "乙酸-2-己烯酯",
+   "cas": [
+    "10094-40-3",
+    "2497-18-9"
+   ]
+  },
+  "YDXQPTHHAPCTPP": {
+   "en": "3-Octen-1-ol",
+   "zh": "3-辛烯-1-醇",
+   "cas": [
+    "18185-81-4",
+    "20125-84-2"
+   ]
+  },
+  "IFTBJDZSLBRRMC": {
+   "en": "3-Nonen-1-ol",
+   "zh": "3-壬烯-1-醇",
+   "cas": [
+    "10340-23-5",
+    "51494-28-1"
+   ]
+  },
+  "NSSALFVIQPAIQK": {
+   "en": "2-Nonen-1-ol",
+   "zh": "2-壬烯-1-醇",
+   "cas": [
+    "22104-79-6",
+    "31502-14-4"
+   ]
+  },
+  "GNJARWZWODMTDR": {
+   "en": "Ethyl 2-decenoate",
+   "zh": "2-癸烯酸乙酯",
+   "cas": [
+    "37486-72-9",
+    "7367-88-6"
+   ]
+  },
+  "QKTZBZWNADPFOL": {
+   "en": "2,4-Dodecadienal",
+   "zh": "2,4-十二碳二烯醛",
+   "cas": [
+    "13162-47-5",
+    "21662-16-8"
+   ]
+  },
+  "YSAVZVORKRDODB": {
+   "en": "Diethyl tartrate",
+   "zh": "酒石酸二乙酯",
+   "cas": [
+    "408332-88-7",
+    "57968-71-5",
+    "87-91-2"
+   ]
+  },
+  "CKLJMWTZIZZHCS": {
+   "en": "Aspartic acid",
+   "zh": "天冬氨酸",
+   "cas": [
+    "56-84-8",
+    "617-45-8",
+    "6899-03-2"
+   ]
+  },
+  "WHUUTDBJXJRKMK": {
+   "en": "Glutamic acid",
+   "zh": "谷氨酸",
+   "cas": [
+    "138-16-9",
+    "49717-32-0",
+    "53931-70-7",
+    "56-86-0",
+    "617-65-2",
+    "6899-05-4"
+   ]
+  },
+  "ODKSFYDXXFIFQN": {
+   "en": "Arginine",
+   "zh": "精氨酸",
+   "cas": [
+    "4455-52-1",
+    "7004-12-8",
+    "7200-25-1",
+    "74-79-3"
+   ]
+  },
+  "KDXKERNSBIXSRK": {
+   "en": "Lysine",
+   "zh": "赖氨酸",
+   "cas": [
+    "12798-06-0",
+    "20166-34-1",
+    "56-87-1",
+    "70-54-2"
+   ]
+  },
+  "NGHOLYJTSCBCGC": {
+   "en": "Benzyl cinnamate",
+   "zh": "肉桂酸苄酯",
+   "cas": [
+    "28541-02-8",
+    "8014-16-2"
+   ]
+  },
+  "BJEPYKJPYRNKOW": {
+   "en": "Malic acid",
+   "zh": "苹果酸",
+   "cas": [
+    "26999-59-7",
+    "617-48-1",
+    "6915-15-7",
+    "97-67-6"
+   ]
+  },
+  "FBPFZTCFMRRESA": {
+   "en": "Mannitol / sorbitol",
+   "zh": "甘露醇 / 山梨醇",
+   "cas": [
+    "133-43-7",
+    "45007-61-2",
+    "69-65-8",
+    "85085-15-0",
+    "87-78-5",
+    "98201-93-5"
+   ]
+  },
+  "UNXHWFMMPAWVPI": {
+   "en": "Erythritol / threitol",
+   "zh": "赤藓糖醇 / 苏糖醇",
+   "cas": [
+    "10030-58-7",
+    "149-32-6",
+    "188346-77-2",
+    "6968-16-7",
+    "7493-90-5",
+    "7541-59-5"
+   ]
+  },
+  "DUYRYUZIBGFLDD": {
+   "en": "gamma-Gurjunene",
+   "zh": "γ-古芸烯",
+   "cas": [
+    "22567-17-5",
+    "915104-82-4"
+   ]
+  },
+  "CCEFMUBVSUDRLG": {
+   "en": "Limonene oxide",
+   "zh": "氧化柠檬烯",
+   "cas": [
+    "1195-92-2",
+    "4959-35-7",
+    "6909-30-4"
+   ]
+  },
+  "BCTBAGTXFYWYMW": {
+   "en": "Linalool oxide (pyranoid)",
+   "zh": "芳樟醇氧化物（吡喃型）",
+   "cas": [
+    "14049-11-7",
+    "39028-58-5",
+    "41720-62-1"
+   ]
+  },
+  "LPTITAGPBXDDGR": {
+   "en": "Hexopyranose pentaacetate",
+   "zh": "五乙酰己吡喃糖",
+   "cas": [
+    "1192012-92-2",
+    "16299-15-3",
+    "19186-39-1"
+   ]
+  },
+  "QLTCHMYAEJEXBT": {
+   "en": "Linamarin",
+   "zh": "亚麻苦苷",
+   "cas": [
+    "14605-42-6",
+    "554-35-8"
+   ]
+  },
+  "NZGWDASTMWDZIW": {
+   "en": "Pulegone",
+   "zh": "胡薄荷酮",
+   "cas": [
+    "15932-80-6",
+    "89-82-7"
+   ]
+  },
+  "DTGKSKDOIYIVQL": {
+   "en": "Borneol / isoborneol",
+   "zh": "龙脑 / 异龙脑",
+   "cas": [
+    "10334-13-1",
+    "10385-78-1",
+    "124-76-5",
+    "507-70-0",
+    "6627-72-1"
+   ]
+  },
+  "LHXDLQBQYFFVNW": {
+   "en": "Fenchone",
+   "zh": "葑酮",
+   "cas": [
+    "1195-79-5",
+    "126-21-6",
+    "4695-62-9"
+   ]
+  },
+  "DSSYKIVIOFKYAU": {
+   "en": "Camphor",
+   "zh": "樟脑",
+   "cas": [
+    "21368-68-3",
+    "464-49-3",
+    "76-22-2"
+   ]
+  },
+  "YSTPAHQEHQSRJD": {
+   "en": "Piperitone",
+   "zh": "胡椒酮",
+   "cas": [
+    "6091-50-5",
+    "89-81-6"
+   ]
+  },
+  "FUCYIEXQVQJBKY": {
+   "en": "delta-Cadinene",
+   "zh": "δ-杜松烯",
+   "cas": [
+    "16729-01-4",
+    "483-76-1"
+   ]
+  },
+  "RKBAYVATPNYHLW": {
+   "en": "Bisabolol oxide B",
+   "zh": "红没药醇氧化物 B",
+   "cas": [
+    "26184-88-3",
+    "55399-12-7"
+   ]
+  },
+  "SHZGCJCMOBCMKK": {
+   "en": "6-Deoxyhexose (rhamnose, fucose)",
+   "zh": "6-脱氧己糖（鼠李糖、岩藻糖）",
+   "cas": [
+    "10485-94-6",
+    "162427-44-3",
+    "3615-41-6",
+    "3713-31-3",
+    "4164-09-4",
+    "73-34-7",
+    "7724-73-4",
+    "87-96-7",
+    "97466-79-0"
+   ]
+  },
+  "RKFAZBXYICVSKP": {
+   "en": "Asarone",
+   "zh": "细辛脑",
+   "cas": [
+    "2883-98-9",
+    "494-40-6"
+   ]
+  },
+  "UMFCIIBZHQXRCJ": {
+   "en": "4-(1-Propenyl)phenol",
+   "zh": "4-(1-丙烯基)苯酚",
+   "cas": [
+    "539-12-8",
+    "85960-81-2"
+   ]
+  },
+  "UFLHIIWVXFIJGU": {
+   "en": "3-Hexen-1-ol",
+   "zh": "3-己烯-1-醇",
+   "cas": [
+    "544-12-7",
+    "928-97-2"
+   ]
+  },
+  "AIQLNKITFBJPFO": {
+   "en": "3-Hexenyl isovalerate",
+   "zh": "异戊酸-3-己烯酯",
+   "cas": [
+    "10032-11-8",
+    "35154-45-1"
+   ]
+  },
+  "NPFVOOAXDOBMCE": {
+   "en": "3-Hexenyl acetate",
+   "zh": "乙酸-3-己烯酯",
+   "cas": [
+    "1708-82-3",
+    "3681-71-8"
+   ]
+  },
+  "WRUZCQAJIHSQPL": {
+   "en": "Ethyl 4-octenoate",
+   "zh": "4-辛烯酸乙酯",
+   "cas": [
+    "138234-61-4",
+    "34495-71-1"
+   ]
+  },
+  "GKJZMAHZJGSBKD": {
+   "en": "10,12-Octadecadienoic acid",
+   "zh": "10,12-十八碳二烯酸",
+   "cas": [
+    "22880-03-1",
+    "2420-56-6"
+   ]
+  },
+  "XUJNEKJLAYXESH": {
+   "en": "Cysteine",
+   "zh": "半胱氨酸",
+   "cas": [
+    "150146-94-4",
+    "3374-22-9",
+    "4371-52-2",
+    "52-90-4",
+    "7242-49-1",
+    "84012-74-8"
+   ]
+  },
+  "HNDVDQJCIGZPNO": {
+   "en": "Histidine",
+   "zh": "组氨酸",
+   "cas": [
+    "184709-11-3",
+    "26062-48-6",
+    "4998-57-6",
+    "7006-35-1",
+    "71-00-1"
+   ]
+  },
+  "WMBWREPUVVBILR": {
+   "en": "Epigallocatechin gallate",
+   "zh": "表没食子儿茶素没食子酸酯",
+   "cas": [
+    "107965-88-8",
+    "2041570-28-7",
+    "84650-60-2",
+    "989-51-5"
+   ]
+  },
+  "PYMYPHUHKUWMLA": {
+   "en": "Pentose (arabinose, ribose, xylose)",
+   "zh": "戊醛糖（阿拉伯糖、核糖、木糖）",
+   "cas": [
+    "147-81-9",
+    "20235-19-2",
+    "25990-60-7",
+    "34466-20-1",
+    "41247-05-6"
+   ]
+  },
+  "LKDRXBCSQODPBY": {
+   "en": "Hexulose (fructose, sorbose)",
+   "zh": "己酮糖（果糖、山梨糖）",
+   "cas": [
+    "249928-59-4",
+    "470-15-5",
+    "6347-01-9",
+    "686298-95-3"
+   ]
+  },
+  "GUBGYTABKSRVRQ": {
+   "en": "Disaccharide (maltose and stereoisomers)",
+   "zh": "二糖（麦芽糖及其立体异构体）",
+   "cas": [
+    "13360-52-6",
+    "35438-40-5",
+    "4482-75-1",
+    "80446-85-1",
+    "9005-84-9"
+   ]
+  }
+ }
+}

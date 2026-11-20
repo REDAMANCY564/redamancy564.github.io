@@ -127,7 +127,7 @@
       if (s) foods.push({ id, s, n: (f.kfo || []).length * 1000 + (f.det || []).length });
     }
     for (const [id, c] of Object.entries(kb.compounds)) {
-      const s = rank(compoundNames(c), q, wordRe);
+      const s = rank(compoundNames(c).concat(c.zh ? [c.zh] : []), q, wordRe);   // Chinese name of merged stereoisomers too
       if (s) compounds.push({ id, s, n: (c.kfo || []).length * 1000 + (c.det || []).length });
     }
     const cmp = (a, b) => b.s - a.s || b.n - a.n;
