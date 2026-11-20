@@ -5,7 +5,7 @@ Writes ingredient-finder/data/:
                  1 = validation, 2 = test, 3 = knowledge base only; food names; odor labels;
                  the odor-similarity threshold; sources
   probs.bin      uint8 [n, 138]: predicted probability x 255 (odor model of odor-predictor, the online
-                 odor_gnn.onnx); the odor embedding of mode B is this vector (chosen on validation)
+                 odor_mpnn.onnx); the odor embedding of mode B is this vector (chosen on validation)
   fps.bin        Morgan fingerprints (radius 2, 2048 bits) as on-bit lists:
                  uint32 offsets [n + 1] then uint16 bit indices
   presets.json   mode A presets (user-approved descriptors and weights); mode B presets (library index)
@@ -121,7 +121,7 @@ def main():
                          "and the flavor knowledge base of this site",
             "names": "flavor knowledge base, else PubChem title (by InChIKey)",
             "foods": "FlavorDB2 via the flavor knowledge base (CC BY-NC-SA 3.0)",
-            "predictions": "odor-predictor GNN (odor_gnn.onnx), training split only",
+            "predictions": "odor-predictor MPNN (odor_mpnn.onnx), training split only",
         },
     }
     (SITE / "data" / "library.json").write_text(json.dumps(library, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")

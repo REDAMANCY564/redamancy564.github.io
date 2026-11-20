@@ -165,10 +165,14 @@
       .sort((a, b) => Math.abs(a.rt - t.rt) - Math.abs(b.rt - t.rt));
   }
 
-  /** Relative content (%) of a peak: the file's column if present, else area / total area x 100. */
-  function relativeContent(peak, allPeaks) {
+  /**
+   * Relative content (%) of a peak. A relative-content column in the file is used as it is.
+   * Otherwise basis "total" (default): area / total area of all peaks x 100;
+   * basis "targets": area / summed area of the found targets x 100 (targetArea), so the found targets add up to 100.
+   */
+  function relativeContent(peak, allPeaks, basis, targetArea) {
     if (peak.rel != null) return peak.rel;
-    const total = allPeaks.reduce((s, p) => s + (p.area || 0), 0);
+    const total = basis === "targets" ? targetArea : allPeaks.reduce((s, p) => s + (p.area || 0), 0);
     return peak.area != null && total > 0 ? (100 * peak.area) / total : null;
   }
 
@@ -177,9 +181,11 @@
    * manual: Map target index -> peak key, peaks the user assigned by hand to targets that were not
    * found. An assignment counts only if the target is still not found, the peak is in its range and
    * no other target has that peak.
-   * Returns {rows, log, peaks, relSource, taken (peak keys in use)}.
+   * opts.relBasis: "total" (default) or "targets" (see relativeContent); ignored when the file has a
+   * relative-content column.
+   * Returns {rows, log, peaks, relSource, relBasis, relSum (sum over found targets), taken (peak keys in use)}.
    */
-  function run(records, ident, targets, tol, manual) {
+  function run(records, ident, targets, tol, manual, opts) {
     const range = tol.range != null ? tol.range : tol.window;
     const peaks = groupPeaks(records, ident);
     const m = sumInRange(peaks, targets, range);
@@ -194,15 +200,20 @@
       status[ti] = { status: "manual", peak: Object.assign({}, p, { merged: [p.key] }), delta: p.rt - t.rt, hit: p.hits[0] };
     });
     const hasRelColumn = records.some(r => r.rel != null);
+    const isFound = r => ["detected", "no_rt", "manual"].includes(r.status);
+    const relBasis = hasRelColumn ? "column" : (opts && opts.relBasis === "targets" ? "targets" : "total");
+    const targetArea = status.reduce((s, r) => s + (isFound(r) ? r.peak.area || 0 : 0), 0);
     const rows = targets.map((t, i) => {
       const r = status[i];
-      const found = ["detected", "no_rt", "manual"].includes(r.status);
+      const found = isFound(r);
       return Object.assign({}, r, {
-        found, rel: found ? relativeContent(r.peak, peaks) : null,
+        found, rel: found ? relativeContent(r.peak, peaks, relBasis, targetArea) : null,
         area: found ? r.peak.area : null, conc: found ? r.peak.conc : null,
       });
     });
-    return { rows, log: m.log, peaks, relSource: hasRelColumn ? "column" : "area", taken };
+    const rels = rows.filter(r => r.found && r.rel != null);
+    const relSum = rels.length ? rels.reduce((s, r) => s + r.rel, 0) : null;
+    return { rows, log: m.log, peaks, relSource: hasRelColumn ? "column" : "area", relBasis, relSum, taken };
   }
 
   window.GcmsRules = { idKeys, agree, groupPeaks, separates, sumInRange, windowPeaks, relativeContent, run };

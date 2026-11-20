@@ -316,6 +316,38 @@
   check("run", "relative content column used and added for peaks added by rule 1",
     [R.run(withRel, s1.ident, T1, { range: 0.15 }, new Map()).rows[3].rel, R.run(withRel, s1.ident, T1, { range: 0.15 }, new Map()).relSource], [10, "column"]);
 
+  // relative content basis (2026-11-20): % of all peak area (default) or normalized to the found targets
+  const relOf = res => res.rows.filter(r => r.found).map(r => +r.rel.toFixed(4));
+  const runT = R.run(s1.recs, s1.ident, T1, { range: 0.15 }, new Map(), { relBasis: "targets" });
+  const foundArea = run1.rows.filter(r => r.found).reduce((x, r) => x + r.area, 0);
+  check("rel basis", "default: basis total, targets add up to their share of all peak area",
+    [run1.relBasis, +run1.relSum.toFixed(6)], ["total", +(100 * foundArea / 3400).toFixed(6)]);
+  check("rel basis", "normalized to the targets: sum 100", [runT.relBasis, +runT.relSum.toFixed(9)], ["targets", 100]);
+  check("rel basis", "normalized = default x (all area / target area), same order",
+    relOf(runT), relOf(run1).map(v => +(v * 3400 / foundArea).toFixed(4)));
+  check("rel basis", "a relative content column in the file wins over the option",
+    R.run(withRel, s1.ident, T1, { range: 0.15 }, new Map(), { relBasis: "targets" }).relBasis, "column");
+  check("rel basis", "relativeContent: targets basis uses the given target area", R.relativeContent({ area: 25 }, [], "targets", 50), 50);
+
+  // .xlsx export: CAS numbers stay text (Excel turns 4313-03-5 in a CSV into a date)
+  const xb = GcmsIO.xlsxBytes([["No.", "Compound", "CAS", "Relative content (%)"], ["1", "(E,E)-2,4-heptadienal", "4313-03-5", 0.55]], "HF19 result");
+  const xw = XLSX.read(xb, { type: "array" }), xs = xw.Sheets[xw.SheetNames[0]];
+  check("xlsx", "CAS cell is a text cell with the CAS number as written", [xs.C2.t, xs.C2.v], ["s", "4313-03-5"]);
+  check("xlsx", "numbers stay numbers; sheet name kept", [xs.D2.t, xs.D2.v, xw.SheetNames[0]], ["n", 0.55, "HF19 result"]);
+
+  // author group thresholds (data/thresholds-author.json), matched by CAS, else by a unique KB compound
+  const authorJson = await (await fetch("../data/thresholds-author.json")).json();
+  const AI = GcmsFlavor.authorIndex({ items: { "1-1-1": { mg_kg: 1, ref: "vg2011", page: 9 }, "2-2-2": { mg_kg: 2, ref: "vg2011", page: 9 }, "3-3-3": { mg_kg: 3, ref: "vg2011", page: 9 } } },
+    new Map([["1-1-1", ["kA"]], ["2-2-2", ["kB"]], ["3-3-3", ["kB"]]]));
+  check("author thr", "by CAS; by the KB compound when it has one valued CAS; none when it has two",
+    [GcmsFlavor.authorThreshold(AI, "3-3-3", "kB").mg_kg, GcmsFlavor.authorThreshold(AI, null, "kA").mg_kg, GcmsFlavor.authorThreshold(AI, null, "kB")], [3, 1, null]);
+  const AR = GcmsFlavor.authorIndex(authorJson, new Map());
+  const ah = id => GcmsFlavor.authorThreshold(AR, id, null);
+  check("author thr", "hexanal 4.5, octanal 0.70, nonanal 0.32 ug/kg (van Gemert pages 272, 327, 323)",
+    [ah("66-25-1").mg_kg, ah("66-25-1").page, ah("124-13-0").mg_kg, ah("124-19-6").mg_kg, ah("124-19-6").page], [0.0045, 272, 0.0007, 0.00032, 323]);
+  check("author thr", "(E,E)- and (E,Z)-2,4-decadienal keep their own values", [ah("25152-84-5").mg_kg, ah("25152-83-4").mg_kg], [0.00007, 0.00004]);
+  check("author thr", "every value has a van Gemert page or a DOI", Object.values(authorJson.items).every(v => (v.ref === "vg2011" && v.page > 206 && v.page < 359) || (v.ref !== "vg2011" && /^10\./.test(v.doi || ""))), true);
+
   // ---------- flavor.js: OAV, ROAV, profile ----------
   const F = GcmsFlavor;
   const FLI = F.buildIndex(await (await fetch("../data/flavor.json")).json());

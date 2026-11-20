@@ -42,7 +42,7 @@
   // Everything an analysis needs (Excel reader, name list, odor data, example files) is fetched right after
   // the first screen is shown and before any file is chosen; once "ready" shows, the page works offline
   // and choosing or analysing a file makes no network request. Steps that need them wait for them.
-  let nameIndex = null, FL = null;
+  let nameIndex = null, FL = null, AUTH = null;
   const exampleFiles = {};
   const exampleStd = {};
   function loadScript(src) {
@@ -64,14 +64,18 @@
     loadScript("../assets/vendor/sheetjs/xlsx.full.min.js"),
     getJson("data/names.json"),
     getJson("data/flavor.json"),
+    getJson("data/thresholds-author.json"),
     Promise.all(Object.entries(examples.examples).map(async ([id, ex]) => {
       exampleFiles[id] = new File([await getBytes("examples/" + ex.file)], ex.file);
       const std = examples.standards[id];
       exampleStd[id] = new File([await getBytes("examples/" + std)], std);
     })),
-  ])).then(([, namesJson, flavorJson]) => {
+  ])).then(([, namesJson, flavorJson, authorJson]) => {
     nameIndex = GcmsNames.buildIndex(namesJson);
     FL = GcmsFlavor.buildIndex(flavorJson);
+    const casToKb = new Map();
+    nameIndex.byCas.forEach((ids, cas) => casToKb.set(cas, [...ids]));
+    AUTH = GcmsFlavor.authorIndex(authorJson, casToKb);
     setResStatus("res.ready");
     window.__gcms = { S, STD, RUN, TOL, FLV, FL, load, loadStd, exampleFiles, exampleStd, nameIndex };  // test harness, offline check
   }, err => { console.error(err); setResStatus("res.error"); throw err; });
@@ -121,6 +125,7 @@
     $("scope-note").innerHTML = esc(I18N.t("scope.text")) + mailLink();
   }
 
+  const downloadBytes = (bytes, name, type) => download(bytes, name, type);
   function download(text, name, type) {
     const url = URL.createObjectURL(new Blob([text], { type }));
     const a = document.createElement("a");
@@ -561,10 +566,22 @@
   }
   $("tol-window").addEventListener("change", () => setTolerances({ range: tolNum($("tol-window").value) }, false));
 
+  // ---------- Relative content basis (saved in this browser) ----------
+  // "total": % of all peak area (default, as before); "targets": % of the found targets' area (sum 100)
+  const REL_KEY = "gcms-rel-basis";
+  let REL_BASIS = "total";
+  try { if (localStorage.getItem(REL_KEY) === "targets") REL_BASIS = "targets"; } catch (e) { /* storage off */ }
+  $("rel-basis").value = REL_BASIS;
+  $("rel-basis").addEventListener("change", e => {
+    REL_BASIS = e.target.value === "targets" ? "targets" : "total";
+    try { localStorage.setItem(REL_KEY, REL_BASIS); } catch (err) { /* storage off */ }
+    if (RUN.result && !RUN.stale) { runNow(); renderMatch(); }
+  });
+
   // ---------- Run ----------
   function runNow() {
     RUN.tol = { range: tolNum(TOL.range) };
-    RUN.result = GcmsRules.run(S.records, S.ident, STD.targets, RUN.tol, RUN.manual);
+    RUN.result = GcmsRules.run(S.records, S.ident, STD.targets, RUN.tol, RUN.manual, { relBasis: REL_BASIS });
     RUN.result.rows.forEach((r, i) => {
       const t = STD.targets[i];
       t.label = t.baseLabel || (r.hit && r.hit.name) || t.ident.casNorm || t.cas || "";
@@ -664,13 +681,15 @@
           const d = p.rt - t.rt;
           return '<div class="row-wrap" style="margin-top:4px"><button type="button" class="btn secondary" data-assign="' + i + '" data-key="' + esc(p.key) + '">' +
             esc(I18N.t("manual.assign")) + "</button><span>" + esc(fmtRt(p.rt) + " min (" + (d >= 0 ? "+" : "") + d.toFixed(3) + ")") + "</span><span>" +
-            esc(hits) + "</span><span class=\"muted\">" + esc(I18N.t("result.col.rel") + " " + fmtRel(GcmsRules.relativeContent(p, res.peaks))) + "</span></div>";
+            esc(hits) + "</span><span class=\"muted\">" + esc(I18N.t("result.free_rel") + " " + fmtRel(GcmsRules.relativeContent(p, res.peaks, "total"))) + "</span></div>";
         }).join("");
         html += '<tr class="sub"><td></td><td colspan="5">' + sub + "</td></tr>";
       }
     });
     $("result-table").innerHTML = html + "</tbody>";
-    $("rel-note").textContent = I18N.t(res.relSource === "column" ? "result.rel_column" : "result.rel_area");
+    $("rel-note").textContent = I18N.t(res.relBasis === "column" ? "result.rel_column" : res.relBasis === "targets" ? "result.rel_targets" : "result.rel_area") +
+      (res.relSum != null ? " " + I18N.t("result.rel_sum", { s: fmtRel(res.relSum) }) : "");
+    $("rel-basis").disabled = res.relBasis === "column";
 
     // processing log: every entry concerns a target of the standard file
     const entries = res.log.slice();
@@ -696,17 +715,33 @@
     renderMatch();
   });
 
-  $("export-btn").addEventListener("click", () => {
-    if (!RUN.result) return;
+  /**
+   * Save a table as CSV (for scripts: pandas / R read it unchanged) or .xlsx (for Excel: CAS stays text).
+   * rows[0] is the header; column textCol (CAS) is always text in the .xlsx, other number-like cells become numbers.
+   */
+  const NUM_RE = /^-?\d+(\.\d+)?(e[-+]?\d+)?$/i;
+  function saveTable(rows, base, kind, textCol) {
+    if (kind === "xlsx") {
+      const cells = rows.map((row, r) => row.map((v, c) => (r > 0 && c !== textCol && typeof v === "string" && NUM_RE.test(v) ? +v : v)));
+      downloadBytes(GcmsIO.xlsxBytes(cells, base), base + ".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      return;
+    }
     const q = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
-    const lines = [["No.", "Compound", "CAS", "Reference RT (min)", "Measured RT (min)", "Relative content (%)"].map(q).join(",")];
+    download("\ufeff" + rows.map(r => r.map(q).join(",")).join("\r\n") + "\r\n", base + ".csv", "text/csv");
+  }
+  const sampleBase = () => String(S.sample || "sample").replace(/[\\/:*?"<>|]+/g, "_");
+
+  function resultRows() {
+    const relHead = { column: "Relative content (%, from the peak table)", total: "Relative content (% of all peak area)", targets: "Relative content (% of found targets, sum 100)" }[RUN.result.relBasis];
+    const rows = [["No.", "Compound", "CAS", "Reference RT (min)", "Measured RT (min)", relHead]];
     RUN.result.rows.forEach((r, i) => {
       const t = STD.targets[i];
-      lines.push([i + 1, t.label, t.ident.casNorm || t.cas || "", fmtRt(t.rt), r.found ? fmtRt(r.peak.rt) : "-", r.found ? fmtRel(r.rel) : "-"].map(q).join(","));
+      rows.push([String(i + 1), t.label, t.ident.casNorm || t.cas || "", fmtRt(t.rt), r.found ? fmtRt(r.peak.rt) : "-", r.found ? fmtRel(r.rel) : "-"]);
     });
-    const name = String(S.sample || "sample").replace(/[\\/:*?"<>|]+/g, "_");
-    download("﻿" + lines.join("\r\n") + "\r\n", name + "_result.csv", "text/csv");
-  });
+    return rows;
+  }
+  $("export-btn").addEventListener("click", () => { if (RUN.result) saveTable(resultRows(), sampleBase() + "_result", "csv", 2); });
+  $("export-xlsx").addEventListener("click", () => { if (RUN.result) saveTable(resultRows(), sampleBase() + "_result", "xlsx", 2); });
 
   // ---------- Flavor: OAV or ROAV, thresholds, ranking, profile ----------
   const THR_KEY = "gcms-thresholds";   // the user's own threshold values (mg/kg) by compound key
@@ -715,6 +750,9 @@
   const saveThr = () => { try { localStorage.setItem(THR_KEY, JSON.stringify(THR)); } catch (e) { /* storage off */ } };
   const FLV = { mode: null, unit: null, view: "dairy" };   // mode/unit null = automatic; view: profile dimensions
   try { if (localStorage.getItem("gcms-profile-view") === "all") FLV.view = "all"; } catch (e) { /* storage off */ }
+  // built-in threshold source: "site" (this site's 53 values, default) or "author" (author group values)
+  FLV.thrSrc = "site";
+  try { if (localStorage.getItem("gcms-thr-source") === "author") FLV.thrSrc = "author"; } catch (e) { /* storage off */ }
   const tkey = t => (t.ident.kbId ? "kb:" + t.ident.kbId
     : t.ident.casNorm && t.ident.casStatus === "ok" ? "cas:" + t.ident.casNorm : "name:" + GcmsNames.normName(t.name || ""));
   const sig = (v, n) => (v == null ? "-" : v === 0 ? "0" : String(+v.toPrecision(n || 3)));
@@ -736,7 +774,9 @@
     const items = found.map(([r, i]) => {
       const t = STD.targets[i], key = tkey(t);
       // threshold: the user's edit on this page > the standard file > the built-in value
-      const built = GcmsFlavor.threshold(FL, t.ident.kbId);
+      const built = FLV.thrSrc === "author"
+        ? GcmsFlavor.authorThreshold(AUTH, t.ident.casStatus === "ok" ? t.ident.casNorm : null, t.ident.kbId)
+        : GcmsFlavor.threshold(FL, t.ident.kbId);
       const edited = THR[key] != null;
       const raw = r[basis];
       return {
@@ -748,6 +788,15 @@
     });
     return { items, mode, unit, unitGuess, basis, hasConc };
   }
+
+  /** Where a built-in threshold comes from, in the page language. */
+  function builtText(b) {
+    if (!b.author) return b.src + I18N.t("thr.src_builtin");
+    return b.ref === "vg2011" ? I18N.t("thr.src_author_vg", { p: b.page, orig: b.orig || "" }) : I18N.t("thr.src_author_doi", { doi: b.doi });
+  }
+  /** The same in English, for the exported files. */
+  const builtTextEn = b => (!b.author ? b.src + " (van Gemert 2011, built-in)"
+    : b.ref === "vg2011" ? "author group value; van Gemert (2011) p. " + b.page + (b.orig ? ", " + b.orig : "") : "author group value; doi:" + b.doi);
 
   const odorLink = text => '<a href="../odor-predictor/" target="_blank" rel="noopener">' + esc(text) + "</a>";
 
@@ -782,7 +831,7 @@
     let th = "<thead><tr>" + ["result.col.target", "result.col.cas", "thr.col.value", "thr.col.source", "thr.col.range", ""]
       .map(k => "<th>" + (k ? esc(I18N.t(k)) : "") + "</th>").join("") + "</tr></thead><tbody>";
     F.items.forEach(x => {
-      const src = x.edited ? I18N.t("thr.src_user") : x.fromFile ? I18N.t("thr.src_file") : x.built ? x.built.src + I18N.t("thr.src_builtin") : I18N.t("thr.src_none");
+      const src = x.edited ? I18N.t("thr.src_user") : x.fromFile ? I18N.t("thr.src_file") : x.built ? builtText(x.built) : I18N.t("thr.src_none");
       const range = !x.fromFile && !x.edited && x.built && x.built.range ? sig(x.built.range[0]) + " - " + sig(x.built.range[1]) : "";
       th += '<tr class="' + (x.thr > 0 ? "" : "no-thr") + '"><td>' + esc(x.t.label) + curveLink(x.t) + "</td><td>" + esc(x.t.ident.casNorm || x.t.cas || "") +
         '</td><td><input type="number" class="thr-in' + (x.edited ? " edited" : "") + '" min="0" step="any" data-thr="' + esc(x.key) +
@@ -839,6 +888,12 @@
 
   $("fl-mode").addEventListener("change", e => { FLV.mode = e.target.value; renderFlavor(); });
   $("fl-unit").addEventListener("change", e => { FLV.unit = e.target.value; renderFlavor(); });
+  $("thr-source").value = FLV.thrSrc;
+  $("thr-source").addEventListener("change", e => {
+    FLV.thrSrc = e.target.value === "author" ? "author" : "site";
+    try { localStorage.setItem("gcms-thr-source", FLV.thrSrc); } catch (err) { /* storage off */ }
+    renderFlavor();
+  });
   $("radar-view").addEventListener("change", e => {
     FLV.view = e.target.value === "all" ? "all" : "dairy";
     try { localStorage.setItem("gcms-profile-view", FLV.view); } catch (err) { /* storage off */ }
@@ -866,35 +921,34 @@
     renderFlavor();
   });
 
-  $("rank-export").addEventListener("click", () => {
-    if (!FLV.last) return;
+  function rankRows() {
     const { F, calc, order } = FLV.last;
-    const q = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
     const score = F.mode === "oav" ? "OAV" : "ROAV";
     const lines = [["Rank", "Compound", "CAS", F.mode === "oav" ? "Amount (ug/kg)" : "Relative content (%)", "Odor threshold in water (mg/kg)",
-      "Threshold source", score, "Odor descriptors", "Descriptor source", "KB id"].map(q).join(",")];
+      "Threshold source", score, "Odor descriptors", "Descriptor source", "KB id"]];
     let rank = 0;
     order.forEach(k => {
       const x = F.items[k], c = calc.rows[k], dt = descText(x.t.ident.kbId);
-      const src = x.edited ? "user" : x.fromFile ? "standard file" : x.built ? x.built.src + " (van Gemert 2011, built-in)" : "";
-      lines.push([c.status === "ok" ? ++rank : "", x.t.label, x.t.ident.casNorm || x.t.cas || "",
+      const src = x.edited ? "user" : x.fromFile ? "standard file" : x.built ? builtTextEn(x.built) : "";
+      lines.push([c.status === "ok" ? String(++rank) : "", x.t.label, x.t.ident.casNorm || x.t.cas || "",
         sig(F.mode === "oav" ? x.value : x.r.rel, 4), x.thr > 0 ? x.thr : "", src,
-        c.status === "ok" ? sig(c.score, 4) : c.status, dt.text, dt.d.src || "", x.t.ident.kbId || ""].map(q).join(","));
+        c.status === "ok" ? sig(c.score, 4) : c.status, dt.text, dt.d.src || "", x.t.ident.kbId || ""].map(v => (typeof v === "number" ? String(v) : v)));
     });
     // targets of the standard file that were not found in this sample (flavor-improver reads them as not detected)
     RUN.result.rows.forEach((r, i) => {
       if (r.found) return;
       const tg = STD.targets[i];
-      lines.push(["", tg.label, tg.ident.casNorm || tg.cas || "", "not detected", "", "", "not_detected", "", "", tg.ident.kbId || ""].map(q).join(","));
+      lines.push(["", tg.label, tg.ident.casNorm || tg.cas || "", "not detected", "", "", "not_detected", "", "", tg.ident.kbId || ""]);
     });
-    const name = String(S.sample || "sample").replace(/[\\/:*?"<>|]+/g, "_");
-    download("﻿" + lines.join("\r\n") + "\r\n", name + "_" + score + ".csv", "text/csv");
-  });
+    return { lines, score };
+  }
+  $("rank-export").addEventListener("click", () => { if (FLV.last) { const r = rankRows(); saveTable(r.lines, sampleBase() + "_" + r.score, "csv", 2); } });
+  $("rank-xlsx").addEventListener("click", () => { if (FLV.last) { const r = rankRows(); saveTable(r.lines, sampleBase() + "_" + r.score, "xlsx", 2); } });
 
   // ---------- Hand-off to flavor-improver (PLAN-userdata.md): this browser only ----------
   function handoffRecord() {
     const { F } = FLV.last;
-    const thrSource = x => (x.edited ? "user" : x.fromFile ? "standard file" : x.built ? "built-in" : null);
+    const thrSource = x => (x.edited ? "user" : x.fromFile ? "standard file" : x.built ? (x.built.author ? "author" : "built-in") : null);
     const compounds = F.items.filter(x => x.value != null).map(x => ({
       label: x.t.label, cas: x.t.ident.casNorm || x.t.cas || "", kbId: x.t.ident.kbId || null,
       value: x.value, thr_mg_kg: x.thr > 0 ? x.thr : null, thrSource: thrSource(x),
