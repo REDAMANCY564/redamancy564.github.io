@@ -4,11 +4,27 @@ Inputs
   training/data/flavordb_raw/entity_*.json   (fetch_flavordb.py; FlavorDB2, CC BY-NC-SA 3.0)
   training/knowledge/dunkel2014_main_text.json (KFO statements from the main text of Dunkel et al. 2014)
   odor-predictor/data/presets.json            (compounds already on the site)
+  training/data/foodb/foodb_subset.json       (training/foodb/extract_foodb.py; FooDB 2020-04-07, CC BY-NC 4.0)
+  training/knowledge/author_milk.json         (author's published data: human milk, Cui et al. Food Bioscience 2026)
+  training/knowledge/extra_compounds.json     (compounds of the author's data not yet in the knowledge base)
 Outputs (flavor-kb/data/)
   compounds.json  id -> compound record
-  foods.json      id -> food record (FlavorDB ingredients and Dunkel foods)
-  meta.json       sources, licenses, counts, build date
-  LICENSE.md      CC BY-NC-SA 3.0 notice for data derived from FlavorDB
+  foods.json      id -> food record (FlavorDB ingredients, FooDB foods, Dunkel foods)
+  refs.json       FooDB references (database names, article and textbook citations), indexed from compounds.json "ds"
+  meta.json       sources, licenses, counts, update record, build date
+  LICENSE.md      license notices (FlavorDB2 CC BY-NC-SA 3.0, FooDB CC BY-NC 4.0)
+
+Food links (2026-11-20, user decisions):
+  - FlavorDB2 links of "bulk" molecules are hidden: molecules whose FooDB record links them to >= 300 foods
+    without any reference (FlavorDB2 took over these FooDB entries). Such a link stays only when a referenced
+    FooDB entry (compound or nutrient) confirms the same food (FlavorDB and FooDB foods matched by exact name).
+  - FooDB links with a reference are added (PREDICTED and unreferenced entries are not used).
+  - Human milk: Table S1 volatiles (except the 4 migrants named in its footnote) and the defined fatty acids
+    of Table S2 of Cui et al. 2026, source "author's published data".
+  compounds.json "det" lists every shown food; "ds" {food id: [codes]} gives the sources of a link when it is
+  not FlavorDB alone: "F" FlavorDB2, a number = refs.json index (FooDB), "S1"/"S2" = author's Table S1/S2.
+  "fdbm": "sk14" when FooDB matched only the skeleton (first 14 InChIKey characters: stereo not distinguished),
+  "cas" when matched by CAS number.
 
 Compounds are merged across sources by standard InChI with stereo layers removed
 (the browser computes the same key with RDKit.js, see flavor-kb/kb.js).
@@ -79,6 +95,11 @@ class PubChem:
         props = d.get("PropertyTable", {}).get("Properties", [])
         return props[0] if props else None
 
+    def by_inchikey(self, key):
+        d = self._get(f"{PUG}/inchikey/{key}/property/Title/JSON")
+        props = d.get("PropertyTable", {}).get("Properties", [])
+        return props[0] if props else None
+
     def synonyms(self, cid):
         d = self._get(f"{PUG}/cid/{cid}/synonyms/JSON")
         info = d.get("InformationList", {}).get("Information", [])
@@ -107,6 +128,173 @@ def split_profile(s):
         return []
     items = [x.strip().lower() for x in re.split(r"[@,]", s) if x.strip()]
     return list(dict.fromkeys(items))
+
+
+# ---------- FooDB and the author's published data (2026-11-20) ----------
+FOODB = ROOT / "training" / "data" / "foodb" / "foodb_subset.json"
+AUTHOR = Path(__file__).parent / "author_milk.json"
+EXTRA = Path(__file__).parent / "extra_compounds.json"
+HIDDEN_OUT = ROOT / "training" / "data" / "foodb" / "hidden_flavordb_links.json"
+
+
+# FlavorDB and FooDB names of the same food that do not match exactly (user decision 2026-11-20, dairy only):
+# FlavorDB entity id -> FooDB food id. The FlavorDB name is kept, the FooDB name becomes a synonym; the pair also
+# counts as the same food when a referenced FooDB entry confirms a FlavorDB link of a bulk molecule.
+# Kept apart on purpose: cow milk 1 %, 2 %, 3.25 % fat; salted butter; "Dairy Products" / "Milk and milk products";
+# goat, sheep and "other mammals" milk; cheese varieties.
+SAME_FOOD = {"88": "632",    # Milk (cattle)      = Milk (Cow)
+             "91": "711",    # Milk Powder        = Dried milk
+             "93": "921",    # Skimmed Milk       = Cow milk, pasteurized, vitamin A + D added, 0% fat
+             "89": "785"}    # Milk Fat           = Butterfat
+
+
+def code_order(c):
+    return (0, 0) if c == "F" else (1, c) if isinstance(c, int) else (2, 0) if c == "S1" else (3, 0)
+
+
+def add_foodb_and_author(compounds, foods, upsert, pc):
+    """Adds FooDB and author links, hides FlavorDB bulk links; returns (links {key: {food id: [codes]}}, stats)."""
+    fs = json.loads(FOODB.read_text(encoding="utf-8"))
+    am = json.loads(AUTHOR.read_text(encoding="utf-8"))
+    extra = json.loads(EXTRA.read_text(encoding="utf-8"))
+    links = {}
+    for fid, f in foods.items():
+        if f["source"] == "flavordb":
+            for key in f["detected"]:
+                links.setdefault(key, {})[fid] = ["F"]
+    n_fl_before = sum(len(v) for v in links.values())
+
+    by_key = {}
+    for ik, m in fs["molecules"].items():
+        k = inchi_key_nostereo(m["smiles"])
+        if k:
+            by_key.setdefault(k, []).append((ik, m))
+    fmap = dict(fs["flavordb_food_map"])                # FlavorDB entity id -> FooDB food id (exact name)
+    fmap.update(SAME_FOOD)                              # + the same food under another name (user decision)
+    fo2site = {}
+    for eid in sorted(fmap, key=int):
+        fo2site.setdefault(fmap[eid], f"fdb{eid}")
+
+    def site_food(f):
+        if f in fo2site:
+            fid = fo2site[f]
+            foods[fid]["foodb"] = f
+            fo_name = fs["foods"][f]["name"]
+            if fo_name.lower() != foods[fid]["name"].lower() and fo_name not in foods[fid]["synonyms"]:
+                foods[fid]["synonyms"].append(fo_name)
+            return fid
+        fid = "fo" + f
+        if fid not in foods:
+            info = fs["foods"][f]
+            foods[fid] = {"name": info["name"], "category": info["group"] or "FooDB", "synonyms": [],
+                          "source": "foodb", "detected": [], "foodb": f}
+        return fid
+
+    # 1. hide FlavorDB links of bulk molecules unless a referenced FooDB entry confirms the food
+    hidden = []
+    for key, lk in links.items():
+        ms = [m for _, m in by_key.get(key, [])]
+        if not any(m["uncited_max"] >= fs["bulk_min"] for m in ms):
+            continue
+        cited = set().union(*(set(m["foods"]) for m in ms))
+        for fid in list(lk):
+            f = fmap.get(fid[3:])
+            if not (f and f in cited):
+                hidden.append([compounds[key]["names"][0], foods[fid]["name"]])
+                del lk[fid]
+    n_hidden_mols = len({h[0] for h in hidden})
+
+    # 2. FooDB links with a reference (and the compounds they bring into the knowledge base)
+    n_new_foodb = 0
+    for key, pairs in by_key.items():
+        with_foods = [(ik, m) for ik, m in pairs if m["foods"]]
+        if not with_foods:
+            continue
+        if key not in compounds:
+            ik, m = with_foods[0]
+            p = pc.by_inchikey(ik)
+            name = m["name"] or (p or {}).get("Title") or m["smiles"]
+            upsert(key, name=name, cid=(p or {}).get("CID"), smiles=m["smiles"])
+            compounds[key]["origin"] = "foodb"
+            n_new_foodb += 1
+        lk = links.setdefault(key, {})
+        for ik, m in with_foods:
+            for f, refs in m["foods"].items():
+                if f not in fs["foods"]:      # food id missing from Food.csv
+                    continue
+                codes = lk.setdefault(site_food(f), [])
+                codes.extend(r for r in refs if r not in codes)
+            if m.get("nutrient_note"):
+                compounds[key]["isomer_note"] = m["nutrient_note"]
+        kinds = {m["match"] for _, m in with_foods}
+        if "full" not in kinds:
+            compounds[key]["fdbm"] = "sk14" if "sk14" in kinds else "cas"
+
+    # 3. the author's published data: human milk (Table S1 volatiles, Table S2 fatty acids)
+    n_new_author = 0
+    for e in extra:
+        key = inchi_key_nostereo(e["smiles"])
+        if key not in compounds:
+            n_new_author += 1
+            upsert(key, name=e["name"], cid=e["cid"], smiles=e["smiles"])
+            compounds[key]["origin"] = "author"
+    milk = next(fid for fid, f in foods.items() if f["source"] == "flavordb" and f["name"] == "Milk Human")
+    mf = foods[milk]
+    mf["name"], mf["zh"] = "Human milk", "母乳"
+    mf["synonyms"] = list(dict.fromkeys(["Milk Human", "Milk (Human)", "Breast milk"] + mf["synonyms"]))
+    n_author = {"S1": 0, "S2": 0}
+    for table in ("S1", "S2"):
+        for r in am[table]:
+            if r.get("migrant"):
+                continue
+            key = inchi_key_nostereo(r["smiles"])
+            assert key in compounds, r
+            codes = links.setdefault(key, {}).setdefault(milk, [])
+            if table not in codes:
+                codes.append(table)
+                n_author[table] += 1
+
+    # 4. food records follow the links (FlavorDB order kept, new links appended)
+    det = {}
+    for fid, f in foods.items():
+        for key in f.get("detected", []):
+            if fid in links.get(key, {}):
+                det.setdefault(fid, []).append(key)
+    for key, lk in links.items():
+        for fid, codes in lk.items():
+            codes.sort(key=code_order)
+            if key not in det.get(fid, []):
+                det.setdefault(fid, []).append(key)
+    for fid, f in foods.items():
+        if f["source"] in ("flavordb", "foodb"):
+            f["detected"] = det.get(fid, [])
+        srcs = set()
+        for key in f.get("detected", []):
+            for c in links[key][fid]:
+                srcs.add("flavordb" if c == "F" else "author" if isinstance(c, str) else "foodb")
+        if srcs and srcs != {f["source"]}:
+            f["sources"] = [x for x in ("flavordb", "foodb", "author") if x in srcs]
+    for fid in [fid for fid, f in foods.items() if f["source"] == "foodb" and not f["detected"]]:
+        del foods[fid]
+
+    def count(pred):
+        mols = {k for k, lk in links.items() for c in lk.values() if any(pred(x) for x in c)}
+        n = sum(1 for lk in links.values() for c in lk.values() if any(pred(x) for x in c))
+        return len(mols), n
+    stats = {
+        "refs": fs["refs"],
+        "flavordb": dict(zip(("molecules", "links"), count(lambda c: c == "F")), links_before=n_fl_before,
+                         hidden=len(hidden), hidden_molecules=n_hidden_mols),
+        "foodb": dict(zip(("molecules", "links"), count(lambda c: isinstance(c, int))),
+                      foods=sum(1 for f in foods.values() if f.get("foodb")), new_compounds=n_new_foodb,
+                      molecules_sk14=sum(1 for c in compounds.values() if c.get("fdbm") == "sk14")),
+        "author": dict(zip(("molecules", "links"), count(lambda c: c in ("S1", "S2"))), s1=n_author["S1"], s2=n_author["S2"],
+                       new_compounds=n_new_author),
+    }
+    HIDDEN_OUT.parent.mkdir(parents=True, exist_ok=True)
+    HIDDEN_OUT.write_text(json.dumps(hidden, ensure_ascii=False, indent=0), encoding="utf-8")
+    print("FooDB/author:", json.dumps({k: {a: b for a, b in v.items()} for k, v in stats.items() if k != "refs"}))
+    return links, stats
 
 
 # ---------- build ----------
@@ -189,6 +377,9 @@ def main():
         rec["names"] = [p["name_en"]] + [n for n in rec["names"] if n.lower() != p["name_en"].lower()]
         rec["preset"] = p["id"]
 
+    links, hist = add_foodb_and_author(compounds, foods, upsert, pc)
+    am_src = json.loads(AUTHOR.read_text(encoding="utf-8"))["source"]
+
     # Reverse links and core-compound synonyms
     for fid, f in foods.items():
         for key in f.get("kfo", []):
@@ -224,10 +415,18 @@ def main():
         if c.get("preset"): rec["preset"] = c["preset"]
         if c["foods_kfo"]: rec["kfo"] = c["foods_kfo"]
         if c["foods_detected"]: rec["det"] = c["foods_detected"]
+        ds = {fid: codes for fid, codes in links.get(key, {}).items() if codes != ["F"]}
+        if ds: rec["ds"] = ds
+        if c.get("fdbm"): rec["fdbm"] = c["fdbm"]
+        if c.get("isomer_note"): rec["isomer_note"] = c["isomer_note"]
+        if c.get("origin"): rec["origin"] = c["origin"]
         out_c[ids[key]] = rec
     out_f = {}
     for fid, f in foods.items():
         rec = {"name": f["name"], "cat": f["category"], "src": f["source"]}
+        if f.get("sources"): rec["srcs"] = f["sources"]
+        if f.get("zh"): rec["zh"] = f["zh"]
+        if f.get("foodb"): rec["fo"] = f["foodb"]
         if f["synonyms"]: rec["syn"] = f["synonyms"]
         if f.get("kfo"): rec["kfo"] = [ids[k] for k in f["kfo"]]
         if f.get("statements"): rec["notes"] = f["statements"]
@@ -235,21 +434,37 @@ def main():
         out_f[fid] = rec
 
     OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "refs.json").write_text(json.dumps(hist["refs"], ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (OUT / "compounds.json").write_text(json.dumps(out_c, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (OUT / "foods.json").write_text(json.dumps(out_f, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     meta = {
         "built": datetime.date.today().isoformat(),
         "counts": {"compounds": len(out_c), "foods": len(out_f),
                    "foods_flavordb": sum(1 for f in out_f.values() if f["src"] == "flavordb"),
+                   "foods_foodb_only": sum(1 for f in out_f.values() if f["src"] == "foodb"),
                    "foods_dunkel": sum(1 for f in out_f.values() if f["src"] == "dunkel"),
-                   "core_compounds": len(core)},
+                   "compounds_with_foods": sum(1 for c in out_c.values() if c.get("det")),
+                   "core_compounds": len(core),
+                   "links": {k: {a: b for a, b in v.items()} for k, v in hist.items() if k != "refs"}},
         "sources": {
             "dunkel": {"citation": dk["source"]["citation"], "doi": dk["source"]["doi"],
                        "scope": "Statements from the main text only; the full food x odorant matrix is in the article's Supporting Information."},
             "flavordb": {"citation": "Garg N, et al. FlavorDB: a database of flavor molecules. Nucleic Acids Res. 2018, 46, D1210-D1216.",
                          "doi": FLAVORDB_DOI, "url": "https://cosylab.iiitd.edu.in/flavordb2/",
-                         "license": "CC BY-NC-SA 3.0"},
+                         "license": "CC BY-NC-SA 3.0", "version": "FlavorDB2, downloaded 2026-10-16"},
+            "foodb": {"citation": "FooDB, version 1.0 (data export 2020-04-07). www.foodb.ca",
+                      "url": "https://foodb.ca/", "license": "CC BY-NC 4.0", "version": "2020-04-07 CSV export",
+                      "scope": "Compound entries with a reference (database, article, textbook) and nutrient entries of one defined structure; predicted (HMDB, PathBank) and unreferenced entries are not used."},
+            "author": {"citation": am_src["citation"], "doi": am_src["doi"], "tables": {"S1": am_src["S1"], "S2": am_src["S2"]},
+                       "note": am_src["migrants_note"]},
         },
+        "updates": [
+            {"date": "2026-10-16", "what": "initial", "sources": ["flavordb", "dunkel"], "compounds": 1648, "foods": 952},
+            {"date": "2026-11-20", "what": "foodb_author", "sources": ["foodb", "author"],
+             "compounds_added_foodb": hist["foodb"]["new_compounds"], "compounds_added_author": hist["author"]["new_compounds"],
+             "flavordb_links_hidden": hist["flavordb"]["hidden"], "flavordb_molecules_hidden": hist["flavordb"]["hidden_molecules"],
+             "foodb_links": hist["foodb"]["links"], "author_links": hist["author"]["links"]},
+        ],
     }
     (OUT / "meta.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False), encoding="utf-8")
     (OUT / "LICENSE.md").write_text(
@@ -260,6 +475,11 @@ def main():
         "(https://creativecommons.org/licenses/by-nc-sa/3.0/). These derived data are shared under the same license.\n\n"
         "Key food odorant statements are short citations from the main text of Dunkel et al., "
         "Angew. Chem. Int. Ed. 2014, 53, 7124-7143 (doi:10.1002/anie.201309508), each with its page number.\n\n"
+        "Food links with a FooDB source (compounds.json field \"ds\", references in refs.json) are derived from FooDB "
+        "(www.foodb.ca, data export of 2020-04-07), licensed under Creative Commons Attribution-NonCommercial 4.0 "
+        "(https://creativecommons.org/licenses/by-nc/4.0/).\n\n"
+        "Human milk links with the source S1 or S2 are the author's published data: Cui J, et al., Food Bioscience 2026 "
+        "(doi:10.1016/j.fbio.2026.110162), Tables S1 and S2.\n\n"
         "Compound names, structures and synonyms were retrieved from PubChem (https://pubchem.ncbi.nlm.nih.gov/).\n",
         encoding="utf-8")
     for f in ("compounds.json", "foods.json"):

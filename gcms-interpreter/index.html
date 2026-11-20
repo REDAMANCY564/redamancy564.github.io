@@ -25,8 +25,8 @@
   <meta name="twitter:title" content="1 GC-MS 风味解读 | 崔京伟">
   <meta name="twitter:description" content="Upload one sample's GC-MS peak table to rank key flavor compounds by OAV or ROAV. Data stay in your browser.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/gcms-interpreter.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261119e">
-  <script src="../assets/i18n.js?v=20261119e" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261120a">
+  <script src="../assets/i18n.js?v=20261120a" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -249,6 +249,14 @@
           <input type="number" id="tol-window" min="0" step="0.01" style="width:90px" data-tip data-i18n-attr="title:tol.window_help" title="规则 1：以每个目标物质的参考保留时间为中心，在 ± 该值内查找被鉴定为该物质的峰，中间没有夹着其他物质的峰全部相加。范围越大，越不容易漏检，但越容易把误鉴定的峰也加进来。"></span>
         <a class="help" href="about.html#tolerances" data-i18n-attr="title:tol.window_help" title="规则 1：以每个目标物质的参考保留时间为中心，在 ± 该值内查找被鉴定为该物质的峰，中间没有夹着其他物质的峰全部相加。范围越大，越不容易漏检，但越容易把误鉴定的峰也加进来。">?</a>
       </div>
+      <div class="row-wrap">
+        <span class="field-inline"><label for="rel-basis" data-i18n="rel.basis">相对含量计算基准</label>
+          <select id="rel-basis">
+            <option value="total" data-i18n="rel.basis_total">占全部峰面积（默认）</option>
+            <option value="targets" data-i18n="rel.basis_targets">按目标物质归一化（合计 100%）</option>
+          </select></span>
+        <a class="help" href="about.html#rel-content" data-i18n-attr="title:rel.basis_help" title="峰表没有相对含量列时，相对含量的分母可以是全部峰面积之和，也可以是找到的目标物质峰面积之和。峰表自带相对含量列时直接用原值，这个选项不起作用。">?</a>
+      </div>
       <p class="small" id="tol-note"></p>
       <div class="row-wrap"><button type="button" class="btn" id="run-btn" data-i18n="run.button">运行</button></div>
       <p class="small search-status" id="run-msg" aria-live="polite"></p>
@@ -258,7 +266,9 @@
         <p id="result-summary"></p>
         <div class="table-wrap"><table class="preview ident" id="result-table"></table></div>
         <p class="small muted" id="rel-note" style="margin-top:6px"></p>
-        <div class="row-wrap"><button type="button" class="btn secondary" id="export-btn" data-i18n="result.export">导出结果（CSV）</button></div>
+        <div class="row-wrap"><button type="button" class="btn secondary" id="export-btn" data-i18n="result.export">导出结果（CSV）</button>
+          <button type="button" class="btn secondary" id="export-xlsx" data-i18n="result.export_xlsx">导出结果（Excel .xlsx）</button></div>
+        <p class="small muted" data-i18n="result.xlsx_hint">用 Excel 打开 CSV 时，CAS 号可能被识别为日期（如 4313-03-5 变成 4313/3/5），请改用 .xlsx。</p>
         <details class="small" style="margin-top:14px">
           <summary class="linkbtn" data-i18n="log.title">处理日志</summary>
           <div class="table-wrap"><table class="preview" id="log-table"></table></div>
@@ -281,7 +291,8 @@
       <h3 data-sec="2" style="margin-top:20px" data-i18n="rank.title" data-no="1.4.1">关键风味物质排序</h3>
       <p id="rank-summary"></p>
       <div class="table-wrap"><table class="preview ident" id="rank-table"></table></div>
-      <div class="row-wrap"><button type="button" class="btn secondary" id="rank-export" data-i18n="rank.export">导出排序（CSV）</button></div>
+      <div class="row-wrap"><button type="button" class="btn secondary" id="rank-export" data-i18n="rank.export">导出排序（CSV）</button>
+        <button type="button" class="btn secondary" id="rank-xlsx" data-i18n="rank.export_xlsx">导出排序（Excel .xlsx）</button></div>
       <div class="card handoff">
         <p style="margin:0 0 6px"><b data-i18n="handoff.title">在乳品风味改良中和目标样品对比</b></p>
         <p class="small muted" data-i18n="handoff.intro" style="margin:0 0 8px">把这个结果保存在你的浏览器里（不上传），然后在乳品风味改良页面与目标对比。</p>
@@ -305,6 +316,14 @@
       <div class="radar-wrap" id="radar"></div>
 
       <h3 data-sec="2" style="margin-top:20px" data-i18n="thr.title" data-no="1.4.3">气味阈值</h3>
+      <div class="row-wrap">
+        <span class="field-inline"><label for="thr-source" data-i18n="thr.source">内置阈值来源</label>
+          <select id="thr-source">
+            <option value="site" data-i18n="thr.source_site">本站内置（默认）</option>
+            <option value="author" data-i18n="thr.source_author">作者课题组取值</option>
+          </select></span>
+        <a class="help" href="about.html#thresholds" data-i18n-attr="title:thr.source_help" title="标准文件中没有阈值的物质使用内置阈值。本站内置：乳品风味改良已采用的 53 个水中阈值。作者课题组取值：从 van Gemert (2011) 汇编中选定的水中觉察阈值，按 CAS 号对应，逐条注明页码。">?</a>
+      </div>
       <p class="small" id="thr-intro"></p>
       <div class="table-wrap"><table class="preview ident" id="thr-table"></table></div>
       <div class="row-wrap"><button type="button" class="linkbtn" id="thr-reset-all" data-i18n="thr.reset_all">恢复全部内置阈值</button></div>
@@ -319,15 +338,15 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261119e" defer></script>
-  <script src="../assets/intensity.js?v=20261119e" defer></script>
-  <script src="io.js?v=20261119e" defer></script>
-  <script src="mapping.js?v=20261119e" defer></script>
-  <script src="cas.js?v=20261119e" defer></script>
-  <script src="names.js?v=20261119e" defer></script>
-  <script src="rules.js?v=20261119e" defer></script>
-  <script src="flavor.js?v=20261119e" defer></script>
-  <script src="../assets/flavor-handoff.js?v=20261119e" defer></script>
-  <script src="app.js?v=20261119e" defer></script>
+  <script src="../assets/projects.js?v=20261120a" defer></script>
+  <script src="../assets/intensity.js?v=20261120a" defer></script>
+  <script src="io.js?v=20261120a" defer></script>
+  <script src="mapping.js?v=20261120a" defer></script>
+  <script src="cas.js?v=20261120a" defer></script>
+  <script src="names.js?v=20261120a" defer></script>
+  <script src="rules.js?v=20261120a" defer></script>
+  <script src="flavor.js?v=20261120a" defer></script>
+  <script src="../assets/flavor-handoff.js?v=20261120a" defer></script>
+  <script src="app.js?v=20261120a" defer></script>
 </body>
 </html>

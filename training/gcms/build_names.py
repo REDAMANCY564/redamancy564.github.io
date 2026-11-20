@@ -8,19 +8,30 @@ CAS numbers = synonyms that look like a CAS number, pass the check digit and als
 the registry numbers (if none appears there, the valid synonym ones are kept). Synonyms are
 filtered to chemical names (database codes, registry ids and very long strings dropped).
 
+Extra spellings (2026-11-20): training/gcms/aliases.json, keyed by PubChem CID with its SMILES, is mapped
+to the knowledge-base compound with the same structure (standard InChI without stereo layers, as the
+knowledge base merges compounds) and adds Chinese names, NIST library spellings, the names used in
+Cui et al. Food Bioscience 2026 and CAS numbers (also of other stereoisomers, e.g. (E,Z)-2,4-decadienal)
+in front of the PubChem synonyms. Every alias CAS must pass the check digit and point to one compound.
+
 Raw responses are cached in training/data/gcms/ (not committed).
 Output: gcms-interpreter/data/names.json
   {"source": ..., "compounds": [[kb_id, display_name, [cas...], [synonyms...]], ...]}
 """
 import json
 import re
+import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "training" / "knowledge"))
+from build_kb import inchi_key_nostereo  # noqa: E402
 KB = ROOT / "flavor-kb" / "data" / "compounds.json"
+ALIASES = Path(__file__).parent / "aliases.json"
 CACHE = ROOT / "training" / "data" / "gcms"
 OUT = ROOT / "gcms-interpreter" / "data" / "names.json"
 PUG = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{}/JSON"
@@ -66,6 +77,13 @@ def fetch(kind, cids):
                 with urllib.request.urlopen(url, timeout=120) as r:
                     path.write_bytes(r.read())
                 break
+            except urllib.error.HTTPError as e:
+                if e.code == 404:   # none of these CIDs has such data
+                    path.write_text("{}", encoding="utf-8")
+                    break
+                if attempt == 3:
+                    raise
+                time.sleep(3 * (attempt + 1))
             except Exception as e:  # noqa: BLE001  (retry on throttling / network errors)
                 if attempt == 3:
                     raise
@@ -84,12 +102,40 @@ def main():
     for kid, c in kb.items():
         by_cid.setdefault(c["cid"], []).append(kid)
     cids = sorted(by_cid)
+    # Cached responses first, oldest file first: compounds already on the site keep the data they were
+    # published with (PubChem changes over time); only compounds without cached data are fetched (2026-11-20).
     syn, rn = {}, {}
-    for i in range(0, len(cids), BATCH):
-        batch = cids[i:i + BATCH]
-        syn.update(fetch("synonyms", batch))
-        rn.update(fetch("xrefs/RN", batch))
-        print(f"  {min(i + BATCH, len(cids))}/{len(cids)} CIDs")
+    for kind, store, key in (("synonyms", syn, "Synonym"), ("xrefs_RN", rn, "RN")):
+        for path in sorted(CACHE.glob(f"{kind}_*.json"), key=lambda q: q.stat().st_mtime):
+            for x in json.loads(path.read_text(encoding="utf-8")).get("InformationList", {}).get("Information", []):
+                if x.get(key):
+                    store.setdefault(x["CID"], x[key])
+    todo = [c for c in cids if c not in syn and c not in rn]
+    for i in range(0, len(todo), BATCH):
+        batch = todo[i:i + BATCH]
+        for k, v in fetch("synonyms", batch).items():
+            syn.setdefault(k, v)
+        for k, v in fetch("xrefs/RN", batch).items():
+            rn.setdefault(k, v)
+        print(f"  fetched {min(i + BATCH, len(todo))}/{len(todo)} new CIDs")
+
+    # extra spellings by structure
+    by_key = {}
+    for kid, c in kb.items():
+        by_key.setdefault(c["inchi"], kid)
+    extra = {}
+    for cid, a in json.loads(ALIASES.read_text(encoding="utf-8"))["compounds"].items():
+        kid = by_key.get(inchi_key_nostereo(a["smiles"]))
+        assert kid, f"alias CID {cid} has no knowledge-base compound"
+        e = extra.setdefault(kid, {"names": [], "cas": []})
+        e["names"] += a["zh"] + a["names"]
+        for c in a["cas"]:
+            assert cas_ok(c), (cid, c)
+            e["cas"].append(c)
+    owner = {}
+    for kid, e in extra.items():
+        for c in e["cas"]:
+            assert owner.setdefault(c, kid) == kid, f"alias CAS {c} on two compounds"
 
     rows, n_cas, n_multi, no_syn = [], 0, 0, 0
     for kid, c in kb.items():
@@ -99,15 +145,15 @@ def main():
         reg = set(rn.get(c["cid"], []))
         cas_all = [x for x in s if cas_ok(x)]
         cas = [x for x in cas_all if x in reg] or cas_all
-        cas = list(dict.fromkeys(cas))
-        names = [c["name"]] + [x for x in c.get("alt", []) + c.get("syn", []) + s if is_name(x)]
+        cas = list(dict.fromkeys(cas + extra.get(kid, {}).get("cas", [])))
+        names = [c["name"]] + extra.get(kid, {}).get("names", []) + [x for x in c.get("alt", []) + c.get("syn", []) + s if is_name(x)]
         seen, keep = set(), []
         for x in names:
             k = x.strip().lower()
             if k and k not in seen:
                 seen.add(k)
                 keep.append(x.strip())
-        rows.append([kid, c["name"], cas, keep[:MAX_SYNONYMS]])
+        rows.append([kid, c["name"], cas, keep[:MAX_SYNONYMS + len(extra.get(kid, {}).get("names", []))]])   # aliases do not push PubChem names out
         n_cas += bool(cas)
         n_multi += len(cas) > 1
 

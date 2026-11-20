@@ -22,8 +22,8 @@
   <meta name="twitter:title" content="6 味觉预测 | 崔京伟">
   <meta name="twitter:description" content="Predicts whether a small molecule is sweet, bitter, umami or tasteless.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/taste-predictor.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261119e">
-  <script src="../assets/i18n.js?v=20261119e" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261120a">
+  <script src="../assets/i18n.js?v=20261120a" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -31,7 +31,7 @@
     @media (min-width: 760px) { .demo-grid { grid-template-columns: 5fr 7fr; } }
     .demo-grid > * { min-width: 0; }
     .mol-name { font-weight: 700; margin: 0; }
-    .mol-smiles { color: var(--muted); font-size: .875rem; word-break: break-all; margin: 2px 0 8px; }
+    .mol-smiles { color: var(--muted); font-size: .875rem; word-break: break-all; text-wrap: balance; margin: 2px 0 8px; }   /* balance: no line holds only the last few characters */
     .mol-svg { aspect-ratio: 4 / 3; display: grid; place-items: center; color: var(--muted); font-size: .875rem; text-align: center; }
     .mol-svg svg { width: 100%; height: auto; }
     .chart-box { position: relative; height: 240px; }
@@ -500,11 +500,11 @@ L 328.5 154.4
   </footer>
 
   <script src="../assets/vendor/chartjs/chart.umd.min.js" defer></script>
-  <script src="../assets/libs.js?v=20261119e" defer></script>
-  <script src="../odor-predictor/engine.js?v=20261119e" defer></script>
-  <script src="engine.js?v=20261119e" defer></script>
-  <script src="../assets/projects.js?v=20261119e" defer></script>
-  <script src="../assets/contrib.js?v=20261119e" defer></script>
-  <script src="app.js?v=20261119e" defer></script>
+  <script src="../assets/libs.js?v=20261120a" defer></script>
+  <script src="../odor-predictor/engine.js?v=20261120a" defer></script>
+  <script src="engine.js?v=20261120a" defer></script>
+  <script src="../assets/projects.js?v=20261120a" defer></script>
+  <script src="../assets/contrib.js?v=20261120a" defer></script>
+  <script src="app.js?v=20261120a" defer></script>
 </body>
 </html>

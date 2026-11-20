@@ -31,8 +31,14 @@
 cd training
 .\.venv\Scripts\Activate.ps1
 python knowledge/fetch_flavordb.py   # 下载 FlavorDB2（约 1,000 次请求，每秒 1 次，已下载的会跳过）
-python knowledge/build_kb.py         # 生成 flavor-kb/data/*.json
+python foodb/extract_foodb.py --extra knowledge/extra_compounds.json   # FooDB 有出处条目（原始 CSV 放在 _inputs/foodb/，不进 git）
+python knowledge/build_kb.py         # 生成 flavor-kb/data/*.json（FlavorDB2、FooDB、作者已发表数据；隐藏 FlavorDB2 批量关联）
+python knowledge/update_about_text.py   # 把 meta.json 的数字写进说明页 7.5「数据来源与更新记录」
+python gcms/build_names.py           # GC-MS 名称表（PubChem 同义词 + gcms/aliases.json；已有物质沿用已发布的缓存）
+python gcms/build_flavor.py          # GC-MS 气味数据（53 个内置阈值不变）
+python gcms/build_author_thresholds.py   # 作者课题组取值（gcms/author_thresholds.csv，逐条注明 van Gemert 页码）
 ```
+之后按「原料与替代物检索」一节重建候选库和下游数据（新分子追加在候选库末尾，已有分子的序号不变）。2026-11-20 起的数据来源：FooDB（www.foodb.ca，2020-04-07 导出版，CC BY-NC 4.0，只用有出处的条目）和作者已发表数据（Cui et al., Food Bioscience 2026，表 S1、S2，母乳）；规则和数字见风味知识库说明页 7.5。
 原文 PDF（Dunkel 2014、van Gemert 2011）有版权，已加入 `.gitignore`，不会上传。
 
 ### 法规查询（flavor-kb/regulatory.html）
@@ -183,7 +189,7 @@ python taste/make_site_assets.py   # labels、presets、一致性测试数据
 
 ## 5 风味分子的气味空间与结构空间对比图谱（odor-map/）
 
-把原料与替代物检索的候选库（5,072 个有机分子）用 UMAP 降到二维：气味地图按 GNN 的 138 维预测概率排列（余弦距离，邻居数 30，最小距离 0.3），结构地图按 Morgan 指纹排列（Jaccard 距离，15，0.1），随机种子 42。参数在验证集上从 3 组中选，以「至少一个标签相同」的比例为准；结构地图取最好的一组。2026-11-18 换用消息传递网络后，气味地图在验证集上 (15, 0.1) 略高（0.755 对 0.746），但分子被拉成细条、成团不明显，为可读性保留 (30, 0.3)（用户决定，页面如实说明）。测试集定稿后只算一次。颜色按描述词固定（`training/odormap/make_site_data.py` 的 `COLOUR_OF`，写入 `map.json` 的 `colour_hex`），新进前十的描述词须先在那里指定颜色。
+把原料与替代物检索的候选库（建图时 5,072 个有机分子，2026-11-20 起 5,094 个，新增的 22 个按已有地图投影）用 UMAP 降到二维：气味地图按 GNN 的 138 维预测概率排列（余弦距离，邻居数 30，最小距离 0.3），结构地图按 Morgan 指纹排列（Jaccard 距离，15，0.1），随机种子 42。参数在验证集上从 3 组中选，以「至少一个标签相同」的比例为准；结构地图取最好的一组。2026-11-18 换用消息传递网络后，气味地图在验证集上 (15, 0.1) 略高（0.755 对 0.746），但分子被拉成细条、成团不明显，为可读性保留 (30, 0.3)（用户决定，页面如实说明）。测试集定稿后只算一次。颜色按描述词固定（`training/odormap/make_site_data.py` 的 `COLOUR_OF`，写入 `map.json` 的 `colour_hex`），新进前十的描述词须先在那里指定颜色。
 
 - **页面**：Canvas 2D 绘图，d3-zoom 缩放拖动，d3-quadtree 悬停查找（固定版本，本站托管于 `assets/vendor/`）；两张地图平滑切换；按主要预测描述词或单个描述词的概率着色；自动区域标签；点击打开详情卡片（跳转气味预测、找替代原料、风味知识库）；搜索；食品高亮（Dunkel 2014 的 16 种食品为关键风味物质，其余 FlavorDB 食品为检出物质）。分子、名称和预测概率直接读取 `ingredient-finder/data/`，不重复存储。
 - **链接参数**：`?smiles=`、`?food=` / `?food2=`（知识库食品 id）、`?map=structure`、`?colour=<描述词 id>`。
@@ -198,8 +204,9 @@ python ingredient/export_embed.py    # 新气味模型对候选库的预测（fe
 python ingredient/evaluate_finder.py --embedding probs   # 原料检索评估（嵌入按用户决定用概率向量）
 python ingredient/make_site_data.py  # ingredient-finder/data/（probs.bin 等）
 python odormap/umap_compare.py      # 第 1 阶段：3 组参数对比（效果图和验证集指标）
-python odormap/build_maps.py        # 定稿地图 + 评估（测试集只算一次）
-python odormap/make_site_data.py    # odor-map/data/：坐标、区域标签、食品列表
+python odormap/build_maps.py        # 定稿地图 + 评估（测试集只算一次）；地图已发布后不要重跑
+python odormap/extend_maps.py       # 候选库新增分子：先核对重新拟合与已发布地图完全一致，再用 UMAP.transform 投影新分子
+python odormap/make_site_data.py    # odor-map/data/：坐标、区域标签、食品列表（缩放、区域、颜色只按拟合时的分子算）
 python odormap/make_training_video.py frames   # 训练过程动画的关键帧（部署种子的检查点）+ 逐帧检查 (a)/(b)
 python odormap/make_training_video.py video    # odor-map/media/training.mp4、training-poster.webp、data/training_frames.json
 ```

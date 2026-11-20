@@ -5,7 +5,7 @@ Writes ingredient-finder/data/:
                  1 = validation, 2 = test, 3 = knowledge base only; food names; odor labels;
                  the odor-similarity threshold; sources
   probs.bin      uint8 [n, 138]: predicted probability x 255 (odor model of odor-predictor, the online
-                 odor_gnn.onnx); the odor embedding of mode B is this vector (chosen on validation)
+                 odor_mpnn.onnx); the odor embedding of mode B is this vector (chosen on validation)
   fps.bin        Morgan fingerprints (radius 2, 2048 bits) as on-bit lists:
                  uint32 offsets [n + 1] then uint16 bit indices
   presets.json   mode A presets (user-approved descriptors and weights); mode B presets (library index)
@@ -99,16 +99,28 @@ def main():
             if fid not in seen and fid in kb_foods:
                 seen[fid] = len(food_ids)
                 food_ids.append(fid)
+    # food sources per link (2026-11-20): digit string aligned with the food list, sum of
+    # 1 = FlavorDB2, 2 = FooDB, 4 = author's published data (compounds.json "ds"; absent = FlavorDB2 only)
+    kb_comp = json.loads((ROOT / "flavor-kb" / "data" / "compounds.json").read_text(encoding="utf-8"))
+
+    def src_digit(codes):
+        return str((1 if "F" in codes else 0) + (2 if any(isinstance(c, int) for c in codes) else 0) +
+                   (4 if any(c in ("S1", "S2") for c in codes) else 0))
+
+    def food_src(r):
+        ds = kb_comp.get(r["kb"], {}).get("ds", {}) if r["kb"] else {}
+        return "".join(src_digit(ds.get(x, ["F"])) for x in r.get("foods", []) if x in seen)
     mols = [[r["smiles"], r["name"] or "", GROUP[r["split"]], r["kb"] or "",
-             [seen[x] for x in r.get("foods", []) if x in seen]] for r in lib]
+             [seen[x] for x in r.get("foods", []) if x in seen], food_src(r)] for r in lib]
 
     library = {
         "version": ev.get("built", ""),
         "n": len(mols),
-        "fields": ["smiles", "name", "group", "kb", "foods"],
+        "fields": ["smiles", "name", "group", "kb", "foods", "food_sources"],
         "groups": ["train", "valid", "test", "kb"],
         "molecules": mols,
         "foods": [kb_foods[x]["name"] for x in food_ids],
+        "foods_zh": {str(i): kb_foods[x]["zh"] for i, x in enumerate(food_ids) if kb_foods[x].get("zh")},
         "labels": [{"id": l["id"], "en": l["en"], "zh": l["zh"]} for l in labels_full],
         "excluded": [{k: e[k] for k in ("name", "smiles", "category", "reason")} for e in
                      json.loads((DATA / "library.json").read_text(encoding="utf-8"))["excluded"]],
@@ -120,8 +132,10 @@ def main():
             "molecules": "odor-predictor dataset (OpenPOM curated GoodScents + Leffingwell; labels not redistributed) "
                          "and the flavor knowledge base of this site",
             "names": "flavor knowledge base, else PubChem title (by InChIKey)",
-            "foods": "FlavorDB2 via the flavor knowledge base (CC BY-NC-SA 3.0)",
-            "predictions": "odor-predictor GNN (odor_gnn.onnx), training split only",
+            "foods": "flavor knowledge base: FlavorDB2 (CC BY-NC-SA 3.0), FooDB 2020-04-07 (CC BY-NC 4.0, www.foodb.ca), "
+                     "author's published data (Cui et al., Food Bioscience 2026, doi:10.1016/j.fbio.2026.110162)",
+            "food_sources": "per food link: 1 FlavorDB2, 2 FooDB, 4 author's published data (sum)",
+            "predictions": "odor-predictor MPNN (odor_mpnn.onnx), training split only",
         },
     }
     (SITE / "data" / "library.json").write_text(json.dumps(library, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")

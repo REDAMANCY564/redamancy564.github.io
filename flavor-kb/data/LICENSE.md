@@ -4,4 +4,8 @@
 
 Key food odorant statements are short citations from the main text of Dunkel et al., Angew. Chem. Int. Ed. 2014, 53, 7124-7143 (doi:10.1002/anie.201309508), each with its page number.
 
+Food links with a FooDB source (compounds.json field "ds", references in refs.json) are derived from FooDB (www.foodb.ca, data export of 2020-04-07), licensed under Creative Commons Attribution-NonCommercial 4.0 (https://creativecommons.org/licenses/by-nc/4.0/).
+
+Human milk links with the source S1 or S2 are the author's published data: Cui J, et al., Food Bioscience 2026 (doi:10.1016/j.fbio.2026.110162), Tables S1 and S2.
+
 Compound names, structures and synonyms were retrieved from PubChem (https://pubchem.ncbi.nlm.nih.gov/).

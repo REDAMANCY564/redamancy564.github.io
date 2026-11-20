@@ -1,11 +1,36 @@
 {
- "built": "2026-10-16",
+ "built": "2026-11-20",
  "counts": {
-  "compounds": 1648,
-  "foods": 952,
+  "compounds": 2009,
+  "foods": 1195,
   "foods_flavordb": 936,
+  "foods_foodb_only": 243,
   "foods_dunkel": 16,
-  "core_compounds": 67
+  "compounds_with_foods": 1953,
+  "core_compounds": 67,
+  "links": {
+   "flavordb": {
+    "molecules": 1602,
+    "links": 26044,
+    "links_before": 58315,
+    "hidden": 32271,
+    "hidden_molecules": 125
+   },
+   "foodb": {
+    "molecules": 1544,
+    "links": 30974,
+    "foods": 873,
+    "new_compounds": 329,
+    "molecules_sk14": 282
+   },
+   "author": {
+    "molecules": 78,
+    "links": 78,
+    "s1": 69,
+    "s2": 14,
+    "new_compounds": 32
+   }
+  }
  },
  "sources": {
   "dunkel": {
@@ -17,7 +42,50 @@
    "citation": "Garg N, et al. FlavorDB: a database of flavor molecules. Nucleic Acids Res. 2018, 46, D1210-D1216.",
    "doi": "10.1093/nar/gkx957",
    "url": "https://cosylab.iiitd.edu.in/flavordb2/",
-   "license": "CC BY-NC-SA 3.0"
+   "license": "CC BY-NC-SA 3.0",
+   "version": "FlavorDB2, downloaded 2026-10-16"
+  },
+  "foodb": {
+   "citation": "FooDB, version 1.0 (data export 2020-04-07). www.foodb.ca",
+   "url": "https://foodb.ca/",
+   "license": "CC BY-NC 4.0",
+   "version": "2020-04-07 CSV export",
+   "scope": "Compound entries with a reference (database, article, textbook) and nutrient entries of one defined structure; predicted (HMDB, PathBank) and unreferenced entries are not used."
+  },
+  "author": {
+   "citation": "Cui J, et al. Food Bioscience 2026",
+   "doi": "10.1016/j.fbio.2026.110162",
+   "tables": {
+    "S1": "Table S1: volatile compounds of human milk (n = 50), relative content min ~ max (mean)",
+    "S2": "Table S2: fatty acid composition of human milk samples"
+   },
+   "note": "Table S1 footnote: 2,4-di-tert-butylphenol, 2-ethyl-1-hexanol, 2-phenoxyethanol and isophorone come from the sampling containers and laboratory consumables; they get no human milk link."
   }
- }
+ },
+ "updates": [
+  {
+   "date": "2026-10-16",
+   "what": "initial",
+   "sources": [
+    "flavordb",
+    "dunkel"
+   ],
+   "compounds": 1648,
+   "foods": 952
+  },
+  {
+   "date": "2026-11-20",
+   "what": "foodb_author",
+   "sources": [
+    "foodb",
+    "author"
+   ],
+   "compounds_added_foodb": 329,
+   "compounds_added_author": 32,
+   "flavordb_links_hidden": 32271,
+   "flavordb_molecules_hidden": 125,
+   "foodb_links": 30974,
+   "author_links": 78
+  }
+ ]
 }

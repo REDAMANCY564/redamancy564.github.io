@@ -67,14 +67,14 @@
   let dataPromise = null;
   function load() {
     if (!dataPromise) {
-      dataPromise = Promise.all(["compounds", "foods", "meta"].map(n =>
+      dataPromise = Promise.all(["compounds", "foods", "meta", "refs"].map(n =>
         fetch(new URL("data/" + n + ".json", BASE)).then(r => {
           if (!r.ok) throw new Error("Failed to load " + n);
           return r.json();
-        }))).then(([compounds, foods, meta]) => {
+        }))).then(([compounds, foods, meta, refs]) => {
           const byInchi = new Map();
           for (const [id, c] of Object.entries(compounds)) byInchi.set(c.inchi, id);
-          return { compounds, foods, meta, byInchi };
+          return { compounds, foods, meta, refs, byInchi };
         });
       dataPromise.catch(() => { dataPromise = null; });
     }

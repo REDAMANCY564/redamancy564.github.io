@@ -23,11 +23,11 @@
   <meta name="twitter:title" content="方法与来源 | 5 气味地图 | 崔京伟">
   <meta name="twitter:description" content="Odor Space vs Structure Space Map of Flavor Molecules: how the map was made, how well it groups similar-smelling molecules, its limitations and data sources.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/odor-map.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261119e">
+  <link rel="stylesheet" href="../assets/style.css?v=20261120a">
   <script src="../assets/i18n.js?v=20261119b" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="about.css?v=20261119e">
+  <link rel="stylesheet" href="about.css?v=20261120a">
 </head>
 <body>
   <header class="site-header">
@@ -64,7 +64,7 @@
 
     <section id="overview">
       <h2 data-sec="1" data-i18n="about.overview" data-no="5.1">概述</h2>
-      <p id="hero-intro" data-snap="hero-intro">图中每个点是一个分子，共 5,072 个。点的位置由气味预测模型给出的 138 个描述词概率决定，两个点越近，模型认为它们的<span class="nobr">气味越相似</span>。</p>
+      <p id="hero-intro" data-snap="hero-intro">图中每个点是一个分子，共 5,094 个。点的位置由气味预测模型给出的 138 个描述词概率决定，两个点越近，模型认为它们的气味越相似。 其中 22 个是建图后加入候选库的分子，按已有地图投影放上，原有分子的位置不变。</p>
       <p data-i18n="about.practice">结构差别大、气味却相近的分子，主要用于寻找替代物：原分子受法规限制时，替代物可能可以使用，或者成本更低、稳定性更好。这类分子也有助于理解气味和结构之间的关系，为风味优化和调香<span class="nobr">提供思路</span>。</p>
     </section>
 
@@ -74,12 +74,12 @@
       <p id="desc-structure" data-snap="desc-structure">结构地图：按 Morgan 分子指纹（只看结构）排列，颜色仍是预测的气味。和气味地图对比，同一颜色的点明显更分散。</p>
       <p id="colour-note" data-snap="colour-note">「按主要预测描述词」着色时，每个分子取预测概率最高的描述词，最常见的 10 个各有一种颜色，其余归为「其他」。果香分子最多（20%），这主要反映数据集本身的组成：香料数据库中酯类等果香分子较多。</p>
       <p id="region-note" data-snap="region-note">区域标签是自动生成的：先把地图上的分子分成 40 个小区，如果某个描述词在一个小区中超过一半的分子里预测概率不低于 50%，并且这一比例至少是全库的 1.5 倍，就用满足条件、比例最高的描述词命名该区；相邻的同名小区合并。用同一规则，气味地图上得到 21 个区域标签，结构地图上只有 11 个。</p>
-      <p data-i18n="food.legend_more">食品高亮：大圆点是关键风味物质，小圆点是检出物质，灰色是其他分子。只有 16 种食品有关键风味物质数据（知识库中没有咖啡的关键风味物质数据）；其他食品的检出物质名单来自 FlavorDB，不说明哪些物质对气味重要。</p>
+      <p data-i18n="food.legend_more">食品高亮：大圆点是关键风味物质，小圆点是检出物质，灰色是其他分子。只有 16 种食品有关键风味物质数据（知识库中没有咖啡的关键风味物质数据）；其他食品的检出物质名单来自 FlavorDB2、FooDB 或作者已发表数据，不说明哪些物质对气味重要。</p>
       <h3 data-sec="2" data-i18n="params.title" data-no="5.2.1">地图参数</h3>
       <p data-i18n="params.text">两张地图都用 UMAP 降到二维，随机种子固定。UMAP 的两个关键参数（邻居数, 最小距离）试了 3 组：(15, 0.1)、(30, 0.3)、(50, 0.5)，只用验证集选择，以「至少一个标签相同」的比例为准。结构地图取验证集上最好的一组，让作为对照的结构地图也发挥出最好水平。气味地图在验证集上 (15, 0.1) 略高（0.755 对 0.746），但这一组把分子拉成细条，成团不明显，为了便于阅读保留了 (30, 0.3)；这样选对气味地图并不占优，不影响与结构地图的比较。验证集结果见下表，指标含义见 5.3。</p>
       <div class="table-wrap"><table id="params-table" data-snap="params-table"><thead><tr><th></th><th>气味地图</th><th>结构地图</th></tr></thead><tbody><tr><th>输入</th><td>138 个描述词的预测概率</td><td>Morgan 指纹（半径 2，2048 位）</td></tr><tr><th>距离</th><td>余弦距离</td><td>Jaccard 距离</td></tr><tr><th>邻居数</th><td>30</td><td>15</td></tr><tr><th>最小距离</th><td>0.3</td><td>0.1</td></tr><tr><th>随机种子</th><td>42</td><td>42</td></tr><tr><th>验证集（至少一个标签相同 / 平均 Jaccard）</th><td>0.746 / 0.205</td><td>0.640 / 0.160</td></tr></tbody></table></div>
       <h3 id="training" data-sec="2" data-i18n="train.title" data-no="5.2.2">训练过程中的气味地图</h3>
-      <p data-i18n="train.intro">下面的动画用训练过程中保存的模型，依次算出候选库 5,072 个分子的预测概率，再按与上方相同的方法降到二维。第 0 轮是随机初始化的模型，还没有学到气味；因为未训练的网络对结构相近的分子本来就会给出相近的输出，画面是十几个各色混杂的小团。最初两轮先变成几条混杂的长带，此后同一颜色的分子逐渐聚到一起，硫味分子最先分出来。最后一帧是网页上使用的模型（第 26 轮，验证集上最好），与工具页气味地图的位置完全相同。每个点的颜色固定为最终模型的主要预测描述词，便于看出同类分子怎样聚到一起。</p>
+      <p data-i18n="train.intro">下面的动画用训练过程中保存的模型，依次算出建图时 5,072 个分子的预测概率，再按与上方相同的方法降到二维。第 0 轮是随机初始化的模型，还没有学到气味；因为未训练的网络对结构相近的分子本来就会给出相近的输出，画面是十几个各色混杂的小团。最初两轮先变成几条混杂的长带，此后同一颜色的分子逐渐聚到一起，硫味分子最先分出来。最后一帧是网页上使用的模型（第 26 轮，验证集上最好），与工具页气味地图的位置完全相同。每个点的颜色固定为最终模型的主要预测描述词，便于看出同类分子怎样聚到一起。</p>
       <p data-i18n="train.later">第 10 轮以后，验证集分数增长变慢；第 26 轮最好，之后 20 轮没有再提高，训练在第 46 轮停止。但模型的预测每轮仍有小幅变化，而且不再继续减小（见视频下方的曲线）：训练中学习率固定，权重每轮仍在小步调整。许多分子有几个描述词的概率很接近，排第一的会来回换：第 10 轮以后，每两轮约有四分之一的分子换了排第一的描述词，所以画面后期仍在移动。第 10 轮以后每两轮保存一次模型，动画里这样的一段播 1 秒，是前面每段的两倍，画面的快慢与训练轮数对应。</p>
       <figure class="train-video">
         <div class="train-frame">
@@ -92,7 +92,7 @@
           <p class="train-readout small" id="train-readout" aria-hidden="true"></p>
           <svg id="train-curve-svg" role="img" data-i18n-attr="aria-label:train.curve_aria" aria-label="训练过程中的验证集分数和每轮预测变化"></svg>
           <div class="sr-only"><table id="train-curve-table"></table></div>
-          <p class="small muted" data-i18n="train.curve_note">预测变化是候选库 5,072 个分子在 138 个描述词上预测概率的平均绝对差。视频播到第 26 轮（网页使用的模型），曲线继续画到训练停止的第 46 轮。第 10 轮以后每两轮保存一次模型，这时的预测变化是两轮的总变化除以 2。</p>
+          <p class="small muted" data-i18n="train.curve_note">预测变化是建图时候选库 5,072 个分子在 138 个描述词上预测概率的平均绝对差。视频播到第 26 轮（网页使用的模型），曲线继续画到训练停止的第 46 轮。第 10 轮以后每两轮保存一次模型，这时的预测变化是两轮的总变化除以 2。</p>
         </div>
         <figcaption class="small muted" data-i18n="train.note">点的移动表示模型预测的变化，分子本身没有移动。为了让前后两帧连贯，每一帧都以后一帧的坐标为起点计算，再整体旋转、缩放、平移，对齐到后一帧；这只为让前后帧更连贯，不改变点之间的相对位置。帧与帧之间做了平滑过渡。部分移动来自降维本身的随机性：同样的预测重新降维一次，点平均也会移动约地图宽度的 2%。所以中间过程只是一种可视化，团与团之间的距离不能精确解读。</figcaption>
       </figure>
@@ -106,7 +106,7 @@
       <p id="res-take" class="mt-10" data-snap="res-take">两项指标上气味地图都高于结构地图，差值的 95% 置信区间（配对 bootstrap，5000 次）都不包含 0；两张地图都远高于随机挑选（0.387）。降到二维会损失一部分邻近关系，结构地图损失更多：结构从 0.708 降到 0.647，气味只从 0.782 降到 0.756。</p>
       <details class="supp small">
         <summary data-i18n="supp.summary">补充指标：主要预测描述词一致比例（有循环论证成分）</summary>
-        <p id="supp-text" class="mt-8" data-snap="supp-text">对全部 5072 个分子，计算地图上最近 15 个邻居中主要预测描述词（预测概率最高的描述词）与它相同的比例：气味地图 0.696，结构地图 0.438。这个指标天然偏向气味地图，因为气味地图本身就是用这些预测概率画出来的，所以只作为补充，不作为结论依据。</p>
+        <p id="supp-text" class="mt-8" data-snap="supp-text">对建图时的全部 5,072 个分子，计算地图上最近 15 个邻居中主要预测描述词（预测概率最高的描述词）与它相同的比例：气味地图 0.696，结构地图 0.438。这个指标天然偏向气味地图，因为气味地图本身就是用这些预测概率画出来的，所以只作为补充，不作为结论依据。</p>
       </details>
     </section>
 
@@ -125,8 +125,8 @@
       <h2 data-sec="1" data-i18n="about.data" data-no="5.5">数据、许可与引用</h2>
       <p data-i18n-html="footer.data"><b>数据与致谢：</b>气味预测来自本站<a href="../odor-predictor/">气味预测</a>的图神经网络，训练数据来自 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC），由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始气味标签，页面只展示模型预测。<b>模型及预测结果仅供非商业<span class="nobr">学术演示</span>。</b></p>
       <p data-i18n-html="footer.ref"><b>参考工作：</b>Lee BK, Mayhew EJ, Sanchez-Lengeling B, et al. A principal odor map unifies diverse tasks in olfactory perception. <i>Science</i> 2023, 381(6661): 999-1006. <a href="https://doi.org/10.1126/science.ade4401" target="_blank" rel="noopener">doi:10.1126/science.ade4401</a>。本页借鉴这一思路，用本站模型的预测和 UMAP 绘制，不是该<span class="nobr">论文的结果</span>。</p>
-      <p data-i18n-html="footer.kb"><b>分子名称与食品：</b>来自本站<a href="../flavor-kb/">风味知识库</a>（Dunkel et al. 2014；FlavorDB2，Garg et al., <i>NAR</i> 2018，CC BY-NC-SA 3.0）或 PubChem。</p>
-      <p id="excluded-note" data-snap="excluded-note">本地图与「原料与替代物检索」使用同一个候选库，共 5072 个有机分子。已移除 47 个非风味分子：不含碳的无机物（包括硫化氢、氨、二氧化硫等无机气味物质）、有机硅（如 D6 硅氧烷，<span class="nobr">GC-MS</span> 色谱柱流失的常见杂质）、非挥发性物质，以及原始数据中只以混合物形式出现的条目（其气味标签描述的是混合物，不能对应到单个分子）。</p>
+      <p data-i18n-html="footer.kb"><b>分子名称与食品：</b>来自本站<a href="../flavor-kb/">风味知识库</a>（Dunkel et al. 2014；FlavorDB2，Garg et al., <i>NAR</i> 2018，CC BY-NC-SA 3.0；FooDB，www.foodb.ca，2020-04-07 版，CC BY-NC 4.0；作者已发表数据）或 PubChem。食品后的上标表示来源：F = FlavorDB2，Fo = FooDB，A = 作者已发表数据。</p>
+      <p id="excluded-note" data-snap="excluded-note">本地图与「原料与替代物检索」使用同一个候选库，共 5,094 个有机分子。已移除 47 个非风味分子：不含碳的无机物（包括硫化氢、氨、二氧化硫等无机气味物质）、有机硅（如 D6 硅氧烷，<span class="nobr">GC-MS</span> 色谱柱流失的常见杂质）、非挥发性物质，以及原始数据中只以混合物形式出现的条目（其气味标签描述的是混合物，不能对应到单个分子）。</p>
       <details class="small">
         <summary data-i18n="excluded.summary">查看移除的分子及原因</summary>
         <ul id="excluded-list" class="mt-6" data-snap="excluded-list"><li><b>无机物（不含碳，另含碳酸）</b> (32): hydrochloric acid, Ammonia, Water, sterile filtered, Hydrogen carbonate;hydron, Metaphosphoric Acid, Dihydrogen phosphate;hydron, Hydron;phosphono phosphate, Hydrogen sulfate;hydron, Hydron;sulfite, sulfur dioxide, Potassium Nitrate, Metasilicic acid, Silica, Tetraborate(2-), hydrogen peroxide, Perborate(2-), Orthosilicic acid, hydrogen sulfide, Aluminum Cation, Helium, Potassium Cation, Nitrous Oxide, Calcium Iodate, Bismuth-oxygen, Calcium Oxide, CID 73689919, Copper oxide, Magnesium Oxide, Titanium dioxide, Vanadium oxide (V2O5), Desitin, Zinc</li><li><b>原始数据只以混合物形式出现</b> (11): CID 524257, 1-(2,6,6-Trimethyl-2-cyclohexen-1-yl)-3-pentanone, 1-(5-Cyanopyridin-2-yl)-3-[2-(6-fluoro-2-hydroxy-3-propanoylphenyl)cyclopropyl]urea, Glycerides, palm-oil mono- and di-, hydrogenated, 3-oxooctanoates, 3-Oxodecanoic acid, Glycerides, palm-oil mono- and di-, hydrogenated, 3-oxododecanoates, 3-Oxotetradecanoic acid, Methanediol, (2-methylphenyl)-, GlyTouCan:G09597LJ, 1,5-Dihydroxypentan-3-yl dihydrogen phosphate, Triethanolamine</li><li><b>非挥发性、与气味无关</b> (2): 1-Popc, Anthocyanins</li><li><b>有机硅</b> (2): Allyldimethylsilane, Dodecamethylcyclohexasiloxane</li></ul>
@@ -140,7 +140,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261119e" defer></script>
+  <script src="../assets/projects.js?v=20261120a" defer></script>
   <script src="about.js?v=20261119b" defer></script>
 </body>
 </html>

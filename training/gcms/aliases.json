@@ -1,0 +1,1915 @@
+{
+ "note": "Extra spellings for GC-MS name matching, keyed by PubChem CID (mapped to the knowledge-base compound by structure in build_names.py): Chinese names, NIST library spellings, names used in Cui et al. Food Bioscience 2026 (Tables S1, S2) and CAS numbers checked against PubChem.",
+ "compounds": {
+  "11251": {
+   "smiles": "CC(C)C(=O)C",
+   "zh": [
+    "3-甲基-2-丁酮"
+   ],
+   "names": [
+    "2-Butanone, 3-methyl-"
+   ],
+   "cas": [
+    "563-80-4"
+   ]
+  },
+  "8063": {
+   "smiles": "CCCCC=O",
+   "zh": [
+    "戊醛"
+   ],
+   "names": [
+    "Pentanal"
+   ],
+   "cas": [
+    "110-62-3"
+   ]
+  },
+  "6569": {
+   "smiles": "CCC(=O)C",
+   "zh": [
+    "2-丁酮",
+    "丁酮"
+   ],
+   "names": [
+    "2-Butanone"
+   ],
+   "cas": [
+    "78-93-3"
+   ]
+  },
+  "6184": {
+   "smiles": "CCCCCC=O",
+   "zh": [
+    "己醛"
+   ],
+   "names": [
+    "Hexanal"
+   ],
+   "cas": [
+    "66-25-1"
+   ]
+  },
+  "15289": {
+   "smiles": "CC=CC(C)O",
+   "zh": [
+    "3-戊烯-2-醇"
+   ],
+   "names": [
+    "3-Penten-2-ol",
+    "3-penten-2-ol"
+   ],
+   "cas": [
+    "1569-50-2"
+   ]
+  },
+  "21414": {
+   "smiles": "CCCCCCCCCCC(CCCCCCCC)CO",
+   "zh": [
+    "2-辛基-1-十二醇"
+   ],
+   "names": [
+    "1-Dodecanol, 2-octyl-",
+    "2-Octyl-1-dodecanol"
+   ],
+   "cas": [
+    "5333-42-6"
+   ]
+  },
+  "79553": {
+   "smiles": "CCCCCCCCCCOC(=O)CCCC",
+   "zh": [
+    "戊酸癸酯"
+   ],
+   "names": [
+    "Pentanoic acid, decyl ester",
+    "Decyl pentanoate"
+   ],
+   "cas": [
+    "5454-12-6"
+   ]
+  },
+  "7288": {
+   "smiles": "CCC(=O)CC",
+   "zh": [
+    "3-戊酮"
+   ],
+   "names": [
+    "3-Pentanone"
+   ],
+   "cas": [
+    "96-22-0"
+   ]
+  },
+  "7824": {
+   "smiles": "CCCCCC(=O)OC",
+   "zh": [
+    "己酸甲酯"
+   ],
+   "names": [
+    "Hexanoic acid, methyl ester"
+   ],
+   "cas": [
+    "106-70-7"
+   ]
+  },
+  "8130": {
+   "smiles": "CCCCCCC=O",
+   "zh": [
+    "庚醛"
+   ],
+   "names": [
+    "Heptanal"
+   ],
+   "cas": [
+    "111-71-7"
+   ]
+  },
+  "440917": {
+   "smiles": "CC1=CC[C@@H](CC1)C(=C)C",
+   "zh": [
+    "D-柠檬烯",
+    "柠檬烯"
+   ],
+   "names": [
+    "D-Limonene",
+    "D-limonene"
+   ],
+   "cas": [
+    "5989-27-5"
+   ]
+  },
+  "11716": {
+   "smiles": "CC(C=C)O",
+   "zh": [
+    "3-丁烯-2-醇"
+   ],
+   "names": [
+    "3-Buten-2-ol"
+   ],
+   "cas": [
+    "598-32-3"
+   ]
+  },
+  "5326164": {
+   "smiles": "C/C=C/CC(=O)C",
+   "zh": [
+    "4-己烯-2-酮"
+   ],
+   "names": [
+    "4-Hexen-2-one"
+   ],
+   "cas": [
+    "25659-22-7"
+   ]
+  },
+  "6561": {
+   "smiles": "CC(C)C=O",
+   "zh": [
+    "2-甲基丙醛",
+    "异丁醛"
+   ],
+   "names": [
+    "Propanal, 2-methyl-"
+   ],
+   "cas": [
+    "78-84-2"
+   ]
+  },
+  "89560": {
+   "smiles": "CCCCCCC(C=C)O",
+   "zh": [
+    "1-壬烯-3-醇"
+   ],
+   "names": [
+    "1-Nonen-3-ol"
+   ],
+   "cas": [
+    "21964-44-3"
+   ]
+  },
+  "8209": {
+   "smiles": "CCCCCCCCCCCCCCO",
+   "zh": [
+    "1-十四醇",
+    "十四醇"
+   ],
+   "names": [
+    "1-Tetradecanol"
+   ],
+   "cas": [
+    "112-72-1"
+   ]
+  },
+  "5281168": {
+   "smiles": "CCC/C=C/C=O",
+   "zh": [
+    "(E)-2-己烯醛",
+    "反-2-己烯醛",
+    "2-己烯醛"
+   ],
+   "names": [
+    "2-Hexenal, (E)-",
+    "(E)-2-hexenal",
+    "2-Hexenal"
+   ],
+   "cas": [
+    "6728-26-3",
+    "505-57-7"
+   ]
+  },
+  "19602": {
+   "smiles": "CCCCCC1=CC=CO1",
+   "zh": [
+    "2-戊基呋喃"
+   ],
+   "names": [
+    "Furan, 2-pentyl-",
+    "2-pentylfuran"
+   ],
+   "cas": [
+    "3777-69-3"
+   ]
+  },
+  "8051": {
+   "smiles": "CCCCCC(=O)C",
+   "zh": [
+    "2-庚酮"
+   ],
+   "names": [
+    "2-Heptanone"
+   ],
+   "cas": [
+    "110-43-0"
+   ]
+  },
+  "11552": {
+   "smiles": "CC(C)CC=O",
+   "zh": [
+    "3-甲基丁醛",
+    "异戊醛"
+   ],
+   "names": [
+    "Butanal, 3-methyl-"
+   ],
+   "cas": [
+    "590-86-3"
+   ]
+  },
+  "7636": {
+   "smiles": "CCCCC(CC)COC(=O)C=C",
+   "zh": [
+    "丙烯酸 2-乙基己酯",
+    "丙烯酸-2-乙基己酯"
+   ],
+   "names": [
+    "2-Ethylhexyl acrylate"
+   ],
+   "cas": [
+    "103-11-7"
+   ]
+  },
+  "6570": {
+   "smiles": "CC(=O)C=C",
+   "zh": [
+    "甲基乙烯基酮",
+    "3-丁烯-2-酮"
+   ],
+   "names": [
+    "Methyl vinyl ketone"
+   ],
+   "cas": [
+    "78-94-4"
+   ]
+  },
+  "31260": {
+   "smiles": "CC(C)CCO",
+   "zh": [
+    "3-甲基-1-丁醇",
+    "异戊醇"
+   ],
+   "names": [
+    "1-Butanol, 3-methyl-"
+   ],
+   "cas": [
+    "123-51-3"
+   ]
+  },
+  "6276": {
+   "smiles": "CCCCCO",
+   "zh": [
+    "1-戊醇",
+    "戊醇"
+   ],
+   "names": [
+    "1-Pentanol",
+    "1-pentanol"
+   ],
+   "cas": [
+    "71-41-0"
+   ]
+  },
+  "12529": {
+   "smiles": "CCCCCOC=O",
+   "zh": [
+    "甲酸戊酯"
+   ],
+   "names": [],
+   "cas": [
+    "638-49-3"
+   ]
+  },
+  "246728": {
+   "smiles": "CCCCCC(=O)CC",
+   "zh": [
+    "3-辛酮"
+   ],
+   "names": [
+    "3-Octanone",
+    "3-octanone"
+   ],
+   "cas": [
+    "106-68-3"
+   ]
+  },
+  "79544": {
+   "smiles": "CCCCCCCOC(=O)CCCC",
+   "zh": [
+    "戊酸庚酯"
+   ],
+   "names": [
+    "Heptyl pentanoate"
+   ],
+   "cas": [
+    "5451-80-9"
+   ]
+  },
+  "454": {
+   "smiles": "CCCCCCCC=O",
+   "zh": [
+    "辛醛"
+   ],
+   "names": [
+    "Octanal"
+   ],
+   "cas": [
+    "124-13-0"
+   ]
+  },
+  "11747": {
+   "smiles": "CCC(=O)C(=O)C",
+   "zh": [
+    "2,3-戊二酮"
+   ],
+   "names": [
+    "2,3-Pentanedione"
+   ],
+   "cas": [
+    "600-14-6"
+   ]
+  },
+  "74172": {
+   "smiles": "CCOC(=O)CC=C",
+   "zh": [
+    "3-丁烯酸乙酯"
+   ],
+   "names": [
+    "3-Butenoic acid, ethyl ester",
+    "Ethyl 3-butenoate"
+   ],
+   "cas": [
+    "1617-18-1"
+   ]
+  },
+  "520420": {
+   "smiles": "CCCCC(=O)C=C",
+   "zh": [
+    "1-庚烯-3-酮"
+   ],
+   "names": [
+    "1-Hepten-3-one",
+    "1-hepten-3-one"
+   ],
+   "cas": [
+    "2918-13-0"
+   ]
+  },
+  "61346": {
+   "smiles": "CCCCCC(=O)C=C",
+   "zh": [
+    "1-辛烯-3-酮"
+   ],
+   "names": [
+    "1-Octen-3-one",
+    "1-octen-3-one"
+   ],
+   "cas": [
+    "4312-99-6"
+   ]
+  },
+  "11449": {
+   "smiles": "CCCCCC(=O)C(=O)C",
+   "zh": [
+    "2,3-辛二酮"
+   ],
+   "names": [
+    "2,3-Octanedione",
+    "2,3-octanedione"
+   ],
+   "cas": [
+    "585-25-1"
+   ]
+  },
+  "5283316": {
+   "smiles": "CCCC/C=C/C=O",
+   "zh": [
+    "(E)-2-庚烯醛",
+    "反-2-庚烯醛"
+   ],
+   "names": [
+    "2-Heptenal, (E)-",
+    "(E)-2-heptenal"
+   ],
+   "cas": [
+    "18829-55-5"
+   ]
+  },
+  "9862": {
+   "smiles": "CC(=CCCC(=O)C)C",
+   "zh": [
+    "6-甲基-5-庚烯-2-酮",
+    "甲基庚烯酮"
+   ],
+   "names": [
+    "5-Hepten-2-one, 6-methyl-",
+    "6-methyl-5-hepten-2-one"
+   ],
+   "cas": [
+    "110-93-0"
+   ]
+  },
+  "8103": {
+   "smiles": "CCCCCCO",
+   "zh": [
+    "1-己醇",
+    "己醇"
+   ],
+   "names": [
+    "1-Hexanol",
+    "1-hexanol"
+   ],
+   "cas": [
+    "111-27-3"
+   ]
+  },
+  "61235": {
+   "smiles": "CCCCCCC(=O)CC",
+   "zh": [
+    "3-壬酮"
+   ],
+   "names": [
+    "3-Nonanone",
+    "3-nonanone"
+   ],
+   "cas": [
+    "925-78-0"
+   ]
+  },
+  "11509": {
+   "smiles": "CCCC(=O)CC",
+   "zh": [
+    "3-己酮"
+   ],
+   "names": [
+    "3-Hexanone"
+   ],
+   "cas": [
+    "589-38-8"
+   ]
+  },
+  "13187": {
+   "smiles": "CCCCCCCC(=O)C",
+   "zh": [
+    "2-壬酮"
+   ],
+   "names": [
+    "2-Nonanone",
+    "2-nonanone"
+   ],
+   "cas": [
+    "821-55-6"
+   ]
+  },
+  "8091": {
+   "smiles": "CCCCCCCC(=O)OC",
+   "zh": [
+    "辛酸甲酯"
+   ],
+   "names": [
+    "Octanoic acid, methyl ester",
+    "Methyl octanoate"
+   ],
+   "cas": [
+    "111-11-5"
+   ]
+  },
+  "31289": {
+   "smiles": "CCCCCCCCC=O",
+   "zh": [
+    "壬醛"
+   ],
+   "names": [
+    "Nonanal"
+   ],
+   "cas": [
+    "124-19-6"
+   ]
+  },
+  "637564": {
+   "smiles": "C/C=C/C=C/C=O",
+   "zh": [
+    "(E,E)-2,4-己二烯醛",
+    "2,4-己二烯醛"
+   ],
+   "names": [
+    "2,4-Hexadienal, (E,E)-"
+   ],
+   "cas": [
+    "142-83-6"
+   ]
+  },
+  "15827": {
+   "smiles": "CC(C)CCCC=O",
+   "zh": [
+    "5-甲基己醛"
+   ],
+   "names": [
+    "Hexanal, 5-methyl-",
+    "5-methyl-hexanal",
+    "5-Methylhexanal"
+   ],
+   "cas": [
+    "1860-39-5"
+   ]
+  },
+  "19800": {
+   "smiles": "CCCCCCC(CCCC)CO",
+   "zh": [
+    "2-丁基-1-辛醇"
+   ],
+   "names": [
+    "1-Octanol, 2-butyl-",
+    "2-butyl-1-octanol"
+   ],
+   "cas": [
+    "3913-02-8"
+   ]
+  },
+  "3084890": {
+   "smiles": "CCCCCCCCC(CCCCCCCC)CO",
+   "zh": [
+    "2-辛基-1-癸醇"
+   ],
+   "names": [
+    "1-Decanol, 2-octyl-",
+    "2-Octyl-1-decanol"
+   ],
+   "cas": [
+    "45235-48-1"
+   ]
+  },
+  "7720": {
+   "smiles": "CCCCC(CC)CO",
+   "zh": [
+    "2-乙基-1-己醇",
+    "异辛醇"
+   ],
+   "names": [
+    "1-Hexanol, 2-ethyl-",
+    "2-ethyl-1-hexanol"
+   ],
+   "cas": [
+    "104-76-7"
+   ]
+  },
+  "5363229": {
+   "smiles": "CCCC/C=C/C(=O)C",
+   "zh": [
+    "3-辛烯-2-酮"
+   ],
+   "names": [
+    "3-Octen-2-one",
+    "3-octen-2-one"
+   ],
+   "cas": [
+    "1669-44-9"
+   ]
+  },
+  "31374": {
+   "smiles": "CC(=O)N(C)C",
+   "zh": [
+    "N,N-二甲基乙酰胺"
+   ],
+   "names": [
+    "N,N-Dimethylacetamide"
+   ],
+   "cas": [
+    "127-19-5"
+   ]
+  },
+  "76662": {
+   "smiles": "CCC(=O)C1=CC=CO1",
+   "zh": [
+    "1-(2-呋喃基)-1-丙酮",
+    "2-丙酰基呋喃"
+   ],
+   "names": [
+    "1-Propanone, 1-(2-furanyl)-",
+    "1-(2-Furanyl)-1-propanone"
+   ],
+   "cas": [
+    "3194-15-8"
+   ]
+  },
+  "580057": {
+   "smiles": "CCC1CCC=C1C=O",
+   "zh": [
+    "5-乙基-1-环戊烯-1-甲醛",
+    "5-乙基环戊-1-烯甲醛"
+   ],
+   "names": [
+    "5-Ethylcyclopent-1-enecarboxaldehyde",
+    "5-ethylcyclopent-1-enecarboxaldehyde"
+   ],
+   "cas": [
+    "36431-60-4"
+   ]
+  },
+  "137594": {
+   "smiles": "CCCCC1=CCCC1",
+   "zh": [
+    "1-丁基环戊烯"
+   ],
+   "names": [
+    "Cyclopentene, 1-butyl-",
+    "1-Butylcyclopentene"
+   ],
+   "cas": [
+    "2423-01-0"
+   ]
+  },
+  "5368955": {
+   "smiles": "CC/C=C(/CC)\\C(=C)C",
+   "zh": [
+    "(Z)-3-乙基-2-甲基-1,3-己二烯"
+   ],
+   "names": [
+    "1,3-Hexadiene, 3-ethyl-2-methyl-, (Z)-"
+   ],
+   "cas": [
+    "74752-97-9"
+   ]
+  },
+  "5318017": {
+   "smiles": "CCCC/C=C/CO",
+   "zh": [
+    "2-庚烯-1-醇",
+    "2-庚烯醇"
+   ],
+   "names": [
+    "2-Heptenol",
+    "2-heptenol",
+    "2-Hepten-1-ol"
+   ],
+   "cas": []
+  },
+  "5283324": {
+   "smiles": "CCCCC/C=C/C=O",
+   "zh": [
+    "(E)-2-辛烯醛",
+    "反-2-辛烯醛"
+   ],
+   "names": [
+    "2-Octenal, (E)-",
+    "(E)-2-octenal"
+   ],
+   "cas": [
+    "2548-87-0"
+   ]
+  },
+  "7799": {
+   "smiles": "CCCCCCCC(=O)OCC",
+   "zh": [
+    "辛酸乙酯"
+   ],
+   "names": [
+    "Octanoic acid, ethyl ester",
+    "Ethyl octanoate"
+   ],
+   "cas": [
+    "106-32-1"
+   ]
+  },
+  "13023": {
+   "smiles": "CC1CCC2=CC=CC=C12",
+   "zh": [
+    "1-甲基茚满"
+   ],
+   "names": [
+    "Indan, 1-methyl-",
+    "1-methylindan"
+   ],
+   "cas": [
+    "767-58-8"
+   ]
+  },
+  "176": {
+   "smiles": "CC(=O)O",
+   "zh": [
+    "乙酸",
+    "醋酸"
+   ],
+   "names": [
+    "Acetic acid"
+   ],
+   "cas": [
+    "64-19-7"
+   ]
+  },
+  "7802": {
+   "smiles": "CCCCC(=O)CC",
+   "zh": [
+    "3-庚酮"
+   ],
+   "names": [
+    "3-Heptanone"
+   ],
+   "cas": [
+    "106-35-4"
+   ]
+  },
+  "31241": {
+   "smiles": "CCCCC(CC)C=O",
+   "zh": [
+    "2-乙基己醛"
+   ],
+   "names": [
+    "Hexanal, 2-ethyl-",
+    "2-ethyl-hexanal",
+    "2-Ethylhexanal"
+   ],
+   "cas": [
+    "123-05-7"
+   ]
+  },
+  "13576": {
+   "smiles": "CCCCCCCC(=O)CC",
+   "zh": [
+    "3-癸酮"
+   ],
+   "names": [
+    "3-Decanone"
+   ],
+   "cas": [
+    "928-80-3"
+   ]
+  },
+  "18827": {
+   "smiles": "CCCCCC(C=C)O",
+   "zh": [
+    "1-辛烯-3-醇"
+   ],
+   "names": [
+    "1-Octen-3-ol",
+    "1-octen-3-ol"
+   ],
+   "cas": [
+    "3391-86-4"
+   ]
+  },
+  "8129": {
+   "smiles": "CCCCCCCO",
+   "zh": [
+    "1-庚醇",
+    "庚醇"
+   ],
+   "names": [
+    "1-Heptanol",
+    "1-heptanol"
+   ],
+   "cas": [
+    "111-70-6"
+   ]
+  },
+  "8169": {
+   "smiles": "CCCCCCCOC=O",
+   "zh": [
+    "甲酸庚酯"
+   ],
+   "names": [
+    "Formic acid, heptyl ester"
+   ],
+   "cas": [
+    "112-23-2"
+   ]
+  },
+  "5283321": {
+   "smiles": "CC/C=C/C=C/C=O",
+   "zh": [
+    "(E,E)-2,4-庚二烯醛",
+    "反,反-2,4-庚二烯醛"
+   ],
+   "names": [
+    "2,4-Heptadienal, (E,E)-",
+    "(E,E)-2,4-heptadienal"
+   ],
+   "cas": [
+    "4313-03-5"
+   ]
+  },
+  "77907": {
+   "smiles": "CCCC1=CC=CO1",
+   "zh": [
+    "2-丙基呋喃"
+   ],
+   "names": [
+    "Furan, 2-propyl-",
+    "2-propylfuran"
+   ],
+   "cas": [
+    "4229-91-8"
+   ]
+  },
+  "95495": {
+   "smiles": "CC(C)CCCC(C)CCCC(=O)C",
+   "zh": [
+    "6,10-二甲基-2-十一酮"
+   ],
+   "names": [
+    "2-Undecanone, 6,10-dimethyl-"
+   ],
+   "cas": [
+    "1604-34-8"
+   ]
+  },
+  "8175": {
+   "smiles": "CCCCCCCCCC=O",
+   "zh": [
+    "癸醛"
+   ],
+   "names": [
+    "Decanal"
+   ],
+   "cas": [
+    "112-31-2"
+   ]
+  },
+  "240": {
+   "smiles": "C1=CC=C(C=C1)C=O",
+   "zh": [
+    "苯甲醛"
+   ],
+   "names": [
+    "Benzaldehyde"
+   ],
+   "cas": [
+    "100-52-7"
+   ]
+  },
+  "66077": {
+   "smiles": "CCCCCCCCCCCCCCCCCC(=O)OC=C",
+   "zh": [
+    "硬脂酸乙烯酯",
+    "十八酸乙烯酯"
+   ],
+   "names": [
+    "Octadecanoic acid, ethenyl ester",
+    "Vinyl octadecanoate"
+   ],
+   "cas": [
+    "111-63-7"
+   ]
+  },
+  "98346": {
+   "smiles": "CCC(C)CCCO",
+   "zh": [
+    "4-甲基-1-己醇"
+   ],
+   "names": [
+    "1-Hexanol, 4-methyl-",
+    "4-methyl-1-hexanol",
+    "4-Methyl-1-hexanol"
+   ],
+   "cas": [
+    "818-49-5"
+   ]
+  },
+  "5283335": {
+   "smiles": "CCCCCC/C=C/C=O",
+   "zh": [
+    "(E)-2-壬烯醛",
+    "反-2-壬烯醛"
+   ],
+   "names": [
+    "2-Nonenal, (E)-",
+    "(E)-2-nonenal"
+   ],
+   "cas": [
+    "18829-56-6"
+   ]
+  },
+  "5362620": {
+   "smiles": "CCCCC/C=C\\CCC=O",
+   "zh": [
+    "(Z)-4-癸烯醛",
+    "顺-4-癸烯醛"
+   ],
+   "names": [
+    "cis-4-Decenal"
+   ],
+   "cas": [
+    "21662-09-9"
+   ]
+  },
+  "69951": {
+   "smiles": "CCC(CC)C(=O)OC",
+   "zh": [
+    "2-乙基丁酸甲酯"
+   ],
+   "names": [
+    "Butanoic acid, 2-ethyl-, methyl ester",
+    "Methyl 2-ethylbutanoate"
+   ],
+   "cas": [
+    "816-11-5"
+   ]
+  },
+  "6549": {
+   "smiles": "CC(=CCCC(C)(C=C)O)C",
+   "zh": [
+    "芳樟醇"
+   ],
+   "names": [
+    "Linalool"
+   ],
+   "cas": [
+    "78-70-6"
+   ]
+  },
+  "7798": {
+   "smiles": "CCCC(=O)OC(=O)CCC",
+   "zh": [
+    "丁酸酐"
+   ],
+   "names": [
+    "Butanoic acid, anhydride",
+    "Butanoic anhydride"
+   ],
+   "cas": [
+    "106-31-0"
+   ]
+  },
+  "957": {
+   "smiles": "CCCCCCCCO",
+   "zh": [
+    "1-辛醇",
+    "辛醇"
+   ],
+   "names": [
+    "1-Octanol",
+    "1-octanol"
+   ],
+   "cas": [
+    "111-87-5"
+   ]
+  },
+  "20524": {
+   "smiles": "CC(CCO)CCO",
+   "zh": [
+    "3-甲基-1,5-戊二醇"
+   ],
+   "names": [
+    "1,5-Pentanediol, 3-methyl-",
+    "3-methyl-1,5-pentanediol"
+   ],
+   "cas": [
+    "4457-71-0"
+   ]
+  },
+  "447466": {
+   "smiles": "C/C=C/C=O",
+   "zh": [
+    "(E)-2-丁烯醛",
+    "巴豆醛",
+    "2-丁烯醛"
+   ],
+   "names": [
+    "2-Butenal",
+    "2-Butenal, (E)-",
+    "(E)-2-butenal"
+   ],
+   "cas": [
+    "4170-30-3",
+    "123-73-9"
+   ]
+  },
+  "75189": {
+   "smiles": "CCCCCCCCC(=O)CC",
+   "zh": [
+    "3-十一酮"
+   ],
+   "names": [
+    "3-Undecanone",
+    "3-undecanone"
+   ],
+   "cas": [
+    "2216-87-7"
+   ]
+  },
+  "5352876": {
+   "smiles": "CC/C=C/C=C/C(=O)C",
+   "zh": [
+    "(E,E)-3,5-辛二烯-2-酮",
+    "3,5-辛二烯-2-酮"
+   ],
+   "names": [
+    "3,5-Octadien-2-one, (E,E)-",
+    "(E,E)-3,5-octadien-2-one"
+   ],
+   "cas": [
+    "30086-02-3"
+   ]
+  },
+  "643731": {
+   "smiles": "CC/C=C\\CC/C=C/C=O",
+   "zh": [
+    "(E,Z)-2,6-壬二烯醛",
+    "反,顺-2,6-壬二烯醛"
+   ],
+   "names": [
+    "2,6-Nonadienal, (E,Z)-"
+   ],
+   "cas": [
+    "557-48-2"
+   ]
+  },
+  "5370101": {
+   "smiles": "CC(=C/C=C/C(=O)C)C",
+   "zh": [
+    "6-甲基-3,5-庚二烯-2-酮"
+   ],
+   "names": [
+    "6-Methyl-3,5-heptadiene-2-one"
+   ],
+   "cas": [
+    "1604-28-0"
+   ]
+  },
+  "6544": {
+   "smiles": "CC1=CC(=O)CC(C1)(C)C",
+   "zh": [
+    "异佛尔酮"
+   ],
+   "names": [
+    "Isophorone"
+   ],
+   "cas": [
+    "78-59-1"
+   ]
+  },
+  "8050": {
+   "smiles": "CCCCCCCCCC(=O)OC",
+   "zh": [
+    "癸酸甲酯"
+   ],
+   "names": [
+    "Decanoic acid, methyl ester",
+    "Methyl decanoate"
+   ],
+   "cas": [
+    "110-42-9"
+   ]
+  },
+  "22556": {
+   "smiles": "CCCCCCCCCCC(=O)C",
+   "zh": [
+    "2-十二酮"
+   ],
+   "names": [
+    "2-Dodecanone",
+    "2-dodecanone"
+   ],
+   "cas": [
+    "6175-49-1"
+   ]
+  },
+  "61303": {
+   "smiles": "CCCCCCCCCCCCCC(=O)C",
+   "zh": [
+    "2-十五酮"
+   ],
+   "names": [
+    "2-Pentadecanone"
+   ],
+   "cas": [
+    "2345-28-0"
+   ]
+  },
+  "31245": {
+   "smiles": "CCCC(C)C=O",
+   "zh": [
+    "2-甲基戊醛"
+   ],
+   "names": [
+    "Pentanal, 2-methyl-"
+   ],
+   "cas": [
+    "123-15-9"
+   ]
+  },
+  "8163": {
+   "smiles": "CCCCCCCCCC(=O)C",
+   "zh": [
+    "2-十一酮"
+   ],
+   "names": [
+    "2-Undecanone",
+    "2-undecanone"
+   ],
+   "cas": [
+    "112-12-9"
+   ]
+  },
+  "264": {
+   "smiles": "CCCC(=O)O",
+   "zh": [
+    "丁酸"
+   ],
+   "names": [
+    "Butanoic acid",
+    "Butyric acid"
+   ],
+   "cas": [
+    "107-92-6"
+   ]
+  },
+  "8048": {
+   "smiles": "CCCCCCCCCC(=O)OCC",
+   "zh": [
+    "癸酸乙酯"
+   ],
+   "names": [
+    "Decanoic acid, ethyl ester"
+   ],
+   "cas": [
+    "110-38-3"
+   ]
+  },
+  "10341": {
+   "smiles": "C1C=CC(=O)O1",
+   "zh": [
+    "2(5H)-呋喃酮"
+   ],
+   "names": [
+    "2(5H)-Furanone"
+   ],
+   "cas": [
+    "497-23-4"
+   ]
+  },
+  "5283345": {
+   "smiles": "CCCCCCC/C=C/C=O",
+   "zh": [
+    "(E)-2-癸烯醛",
+    "反-2-癸烯醛"
+   ],
+   "names": [
+    "2-Decenal, (E)-",
+    "(E)-2-decenal"
+   ],
+   "cas": [
+    "3913-81-3"
+   ]
+  },
+  "7410": {
+   "smiles": "CC(=O)C1=CC=CC=C1",
+   "zh": [
+    "苯乙酮"
+   ],
+   "names": [
+    "Acetophenone"
+   ],
+   "cas": [
+    "98-86-2"
+   ]
+  },
+  "75515": {
+   "smiles": "CCCCCC(=O)SC",
+   "zh": [
+    "硫代己酸 S-甲酯"
+   ],
+   "names": [
+    "Hexanethioic acid, S-methyl ester"
+   ],
+   "cas": [
+    "2432-77-1"
+   ]
+  },
+  "5283339": {
+   "smiles": "CCCC/C=C/C=C/C=O",
+   "zh": [
+    "(E,E)-2,4-壬二烯醛",
+    "反,反-2,4-壬二烯醛"
+   ],
+   "names": [
+    "2,4-Nonadienal, (E,E)-",
+    "(E,E)-2,4-nonadienal"
+   ],
+   "cas": [
+    "5910-87-2"
+   ]
+  },
+  "118623": {
+   "smiles": "CCC1=CC(=CC=C1)C=O",
+   "zh": [
+    "3-乙基苯甲醛"
+   ],
+   "names": [
+    "Benzaldehyde, 3-ethyl-",
+    "3-Ethylbenzaldehyde"
+   ],
+   "cas": [
+    "34246-54-3"
+   ]
+  },
+  "8174": {
+   "smiles": "CCCCCCCCCCO",
+   "zh": [
+    "1-癸醇",
+    "癸醇"
+   ],
+   "names": [
+    "1-Decanol"
+   ],
+   "cas": [
+    "112-30-1"
+   ]
+  },
+  "5283363": {
+   "smiles": "CCCCCCCCCC/C=C/C=O",
+   "zh": [
+    "(E)-2-十三烯醛"
+   ],
+   "names": [
+    "2-Tridecenal, (E)-"
+   ],
+   "cas": [
+    "7069-41-2"
+   ]
+  },
+  "5283356": {
+   "smiles": "CCCCCCCC/C=C/C=O",
+   "zh": [
+    "(E)-2-十一烯醛",
+    "2-十一烯醛"
+   ],
+   "names": [
+    "2-Undecenal, E-"
+   ],
+   "cas": [
+    "53448-07-0"
+   ]
+  },
+  "62447": {
+   "smiles": "CCCCCCCCC=CC=O",
+   "zh": [],
+   "names": [
+    "2-Undecenal"
+   ],
+   "cas": [
+    "2463-77-6"
+   ]
+  },
+  "5283361": {
+   "smiles": "CCCCCCCCC/C=C/C=O",
+   "zh": [
+    "(E)-2-十二烯醛"
+   ],
+   "names": [
+    "2-Dodecenal, (E)-",
+    "(E)-2-dodecenal"
+   ],
+   "cas": [
+    "20407-84-5"
+   ]
+  },
+  "62375": {
+   "smiles": "COC(C1=CC=CC=C1)OC",
+   "zh": [
+    "苯甲醛二甲缩醛"
+   ],
+   "names": [
+    "Benzaldehyde dimethyl acetal"
+   ],
+   "cas": [
+    "1125-88-8"
+   ]
+  },
+  "21872": {
+   "smiles": "CCCCCC#CC(=O)O",
+   "zh": [
+    "2-辛炔酸"
+   ],
+   "names": [
+    "2-Octynoic acid"
+   ],
+   "cas": [
+    "5663-96-7"
+   ]
+  },
+  "6427087": {
+   "smiles": "CCCCC/C=C\\C=C\\C=O",
+   "zh": [
+    "(E,Z)-2,4-癸二烯醛",
+    "反,顺-2,4-癸二烯醛"
+   ],
+   "names": [
+    "2,4-Decadienal, (E,Z)-",
+    "(E,Z)-2,4-decadienal"
+   ],
+   "cas": [
+    "25152-83-4"
+   ]
+  },
+  "15606": {
+   "smiles": "CCCCCCCCC(=O)OC",
+   "zh": [
+    "壬酸甲酯"
+   ],
+   "names": [
+    "Nonanoic acid, methyl ester"
+   ],
+   "cas": [
+    "1731-84-6"
+   ]
+  },
+  "15607": {
+   "smiles": "CCCCCCCCCCC(=O)OC",
+   "zh": [
+    "十一酸甲酯"
+   ],
+   "names": [
+    "Undecanoic acid, methyl ester"
+   ],
+   "cas": [
+    "1731-86-8"
+   ]
+  },
+  "8139": {
+   "smiles": "CCCCCCCCCCCC(=O)OC",
+   "zh": [
+    "十二酸甲酯",
+    "月桂酸甲酯"
+   ],
+   "names": [
+    "Dodecanoic acid, methyl ester"
+   ],
+   "cas": [
+    "111-82-0"
+   ]
+  },
+  "23203": {
+   "smiles": "CCCCC=CC=CC=O",
+   "zh": [
+    "2,4-壬二烯醛"
+   ],
+   "names": [
+    "2,4-Nonadienal",
+    "2,4-nonadienal"
+   ],
+   "cas": [
+    "6750-03-4"
+   ]
+  },
+  "5283349": {
+   "smiles": "CCCCC/C=C/C=C/C=O",
+   "zh": [
+    "(E,E)-2,4-癸二烯醛",
+    "反,反-2,4-癸二烯醛"
+   ],
+   "names": [
+    "2,4-Decadienal, (E,E)-",
+    "(E,E)-2,4-decadienal"
+   ],
+   "cas": [
+    "25152-84-5"
+   ]
+  },
+  "637511": {
+   "smiles": "C1=CC=C(C=C1)/C=C/C=O",
+   "zh": [
+    "肉桂醛",
+    "(E)-肉桂醛",
+    "3-苯基-2-丙烯醛"
+   ],
+   "names": [
+    "Cinnamaldehyde, (E)-",
+    "2-Propenal, 3-phenyl-"
+   ],
+   "cas": [
+    "14371-10-9",
+    "104-55-2"
+   ]
+  },
+  "20263": {
+   "smiles": "CC1=CC2=CC=CC=C2O1",
+   "zh": [
+    "2-甲基苯并呋喃"
+   ],
+   "names": [
+    "Benzofuran, 2-methyl-"
+   ],
+   "cas": [
+    "4265-25-2"
+   ]
+  },
+  "7409": {
+   "smiles": "CC(C1=CC=CC=C1)O",
+   "zh": [
+    "1-苯乙醇",
+    "α-甲基苯甲醇"
+   ],
+   "names": [
+    "Benzenemethanol, .alpha.-methyl-"
+   ],
+   "cas": []
+  },
+  "8892": {
+   "smiles": "CCCCCC(=O)O",
+   "zh": [
+    "己酸"
+   ],
+   "names": [
+    "Hexanoic acid",
+    "Caproic acid"
+   ],
+   "cas": [
+    "142-62-1"
+   ]
+  },
+  "20155": {
+   "smiles": "C#CC(C1=CC=CC=C1)O",
+   "zh": [
+    "α-乙炔基苯甲醇",
+    "1-苯基-2-丙炔-1-醇"
+   ],
+   "names": [
+    "Benzenemethanol, .alpha.-ethynyl-",
+    "1-Phenyl-2-propyn-1-ol"
+   ],
+   "cas": [
+    "4187-87-5"
+   ]
+  },
+  "244": {
+   "smiles": "C1=CC=C(C=C1)CO",
+   "zh": [
+    "苯甲醇"
+   ],
+   "names": [
+    "Benzyl alcohol"
+   ],
+   "cas": [
+    "100-51-6"
+   ]
+  },
+  "6213": {
+   "smiles": "CS(=O)(=O)C",
+   "zh": [
+    "二甲基砜"
+   ],
+   "names": [
+    "Dimethyl sulfone"
+   ],
+   "cas": [
+    "67-71-0"
+   ]
+  },
+  "7755": {
+   "smiles": "CCC(C)CC(=O)O",
+   "zh": [
+    "3-甲基戊酸"
+   ],
+   "names": [
+    "Pentanoic acid, 3-methyl-",
+    "3-methyl-pentanoic acid"
+   ],
+   "cas": [
+    "105-43-1"
+   ]
+  },
+  "67328": {
+   "smiles": "CCCCC(=O)OCCC",
+   "zh": [
+    "戊酸丙酯"
+   ],
+   "names": [
+    "Pentanoic acid, propyl ester",
+    "Propyl pentanoate"
+   ],
+   "cas": [
+    "141-06-0"
+   ]
+  },
+  "5371707": {
+   "smiles": "CCCCCCC(=O)/C=C/C1=CC=CC=C1",
+   "zh": [
+    "1-苯基-1-壬烯-3-酮"
+   ],
+   "names": [
+    "1-Nonen-3-one, 1-phenyl-",
+    "1-Phenyl-1-nonen-3-one"
+   ],
+   "cas": [
+    "30669-47-7"
+   ]
+  },
+  "637759": {
+   "smiles": "CC(=O)/C=C/C1=CC=CC=C1",
+   "zh": [
+    "(E)-4-苯基-3-丁烯-2-酮",
+    "苄叉丙酮"
+   ],
+   "names": [
+    "3-Buten-2-one, 4-phenyl-, (E)-"
+   ],
+   "cas": [
+    "1896-62-4"
+   ]
+  },
+  "15909": {
+   "smiles": "CC(=O)C=CC1=CC=CC=C1",
+   "zh": [
+    "4-苯基-3-丁烯-2-酮"
+   ],
+   "names": [
+    "3-Buten-2-one, 4-phenyl-"
+   ],
+   "cas": [
+    "122-57-6"
+   ]
+  },
+  "8094": {
+   "smiles": "CCCCCCC(=O)O",
+   "zh": [
+    "庚酸"
+   ],
+   "names": [
+    "Heptanoic acid"
+   ],
+   "cas": [
+    "111-14-8"
+   ]
+  },
+  "5362814": {
+   "smiles": "CC/C=C\\CCC=O",
+   "zh": [
+    "(Z)-4-庚烯醛",
+    "顺-4-庚烯醛"
+   ],
+   "names": [
+    "4-Heptenal, (Z)-"
+   ],
+   "cas": [
+    "6728-31-0"
+   ]
+  },
+  "996": {
+   "smiles": "C1=CC=C(C=C1)O",
+   "zh": [
+    "苯酚"
+   ],
+   "names": [
+    "Phenol"
+   ],
+   "cas": [
+    "108-95-2"
+   ]
+  },
+  "6434067": {
+   "smiles": "CCC/C=C\\CC(=O)O",
+   "zh": [
+    "3-庚烯酸"
+   ],
+   "names": [
+    "3-Heptenoic acid"
+   ],
+   "cas": [
+    "29901-85-7"
+   ]
+  },
+  "71590": {
+   "smiles": "CCC=CCCC=O",
+   "zh": [
+    "4-庚烯醛"
+   ],
+   "names": [
+    "4-Heptenal"
+   ],
+   "cas": [
+    "62238-34-0"
+   ]
+  },
+  "13181": {
+   "smiles": "C=CCCCO",
+   "zh": [
+    "4-戊烯-1-醇"
+   ],
+   "names": [
+    "4-Penten-1-ol",
+    "4-penten-1-ol"
+   ],
+   "cas": [
+    "821-09-0"
+   ]
+  },
+  "12756": {
+   "smiles": "CCC1CCC(=O)O1",
+   "zh": [
+    "γ-己内酯"
+   ],
+   "names": [
+    "2(3H)-Furanone, 5-ethyldihydro-"
+   ],
+   "cas": [
+    "695-06-7"
+   ]
+  },
+  "16821": {
+   "smiles": "CCCCCCCCC1CCC(=O)O1",
+   "zh": [
+    "γ-十二内酯"
+   ],
+   "names": [
+    ".gamma.-Dodecalactone"
+   ],
+   "cas": [
+    "2305-05-7"
+   ]
+  },
+  "379": {
+   "smiles": "CCCCCCCC(=O)O",
+   "zh": [
+    "辛酸"
+   ],
+   "names": [
+    "Octanoic acid",
+    "Caprylic acid"
+   ],
+   "cas": [
+    "124-07-2"
+   ]
+  },
+  "31236": {
+   "smiles": "C1=CC=C(C=C1)OCCO",
+   "zh": [
+    "2-苯氧基乙醇",
+    "苯氧乙醇"
+   ],
+   "names": [
+    "Ethanol, 2-phenoxy-",
+    "2-phenoxy-ethanol",
+    "2-Phenoxyethanol"
+   ],
+   "cas": [
+    "122-99-6"
+   ]
+  },
+  "10430": {
+   "smiles": "CC(C)CC(=O)O",
+   "zh": [
+    "3-甲基丁酸",
+    "异戊酸"
+   ],
+   "names": [
+    "Butanoic acid, 3-methyl-",
+    "3-methyl-butanoic acid"
+   ],
+   "cas": [
+    "503-74-2"
+   ]
+  },
+  "7991": {
+   "smiles": "CCCCC(=O)O",
+   "zh": [
+    "戊酸"
+   ],
+   "names": [
+    "Pentanoic acid"
+   ],
+   "cas": [
+    "109-52-4"
+   ]
+  },
+  "8158": {
+   "smiles": "CCCCCCCCC(=O)O",
+   "zh": [
+    "壬酸"
+   ],
+   "names": [
+    "Nonanoic acid"
+   ],
+   "cas": [
+    "112-05-0"
+   ]
+  },
+  "13642": {
+   "smiles": "CCC1=CC=C(C=C1)C(=O)C",
+   "zh": [
+    "4-乙基苯乙酮"
+   ],
+   "names": [
+    "Ethanone, 1-(4-ethylphenyl)-",
+    "4'-Ethylacetophenone"
+   ],
+   "cas": [
+    "937-30-4"
+   ]
+  },
+  "87306010": {
+   "smiles": "CCCC/C=C/C(=O)OCC(C)C",
+   "zh": [
+    "2-庚烯酸异丁酯"
+   ],
+   "names": [
+    "2-Heptenoic acid, isobutyl ester",
+    "Isobutyl 2-heptenoate"
+   ],
+   "cas": []
+  },
+  "2969": {
+   "smiles": "CCCCCCCCCC(=O)O",
+   "zh": [
+    "癸酸"
+   ],
+   "names": [
+    "n-Decanoic acid",
+    "n-decanoic acid",
+    "Capric acid"
+   ],
+   "cas": [
+    "334-48-5"
+   ]
+  },
+  "7311": {
+   "smiles": "CC(C)(C)C1=CC(=C(C=C1)O)C(C)(C)C",
+   "zh": [
+    "2,4-二叔丁基苯酚"
+   ],
+   "names": [
+    "2,4-Di-tert-butylphenol",
+    "2,4-di-tert-butylphenol"
+   ],
+   "cas": [
+    "96-76-4"
+   ]
+  },
+  "8180": {
+   "smiles": "CCCCCCCCCCC(=O)O",
+   "zh": [
+    "十一酸"
+   ],
+   "names": [
+    "Undecanoic acid"
+   ],
+   "cas": [
+    "112-37-8"
+   ]
+  },
+  "22169183": {
+   "smiles": "CCCCCCCCCCCC(=O)OCCCCCC(C)C",
+   "zh": [
+    "月桂酸异辛酯",
+    "十二酸异辛酯"
+   ],
+   "names": [
+    "Dodecanoic acid, isooctyl ester",
+    "Isooctyl dodecanoate"
+   ],
+   "cas": [
+    "84713-06-4"
+   ]
+  },
+  "3893": {
+   "smiles": "CCCCCCCCCCCC(=O)O",
+   "zh": [
+    "十二酸",
+    "月桂酸"
+   ],
+   "names": [
+    "Dodecanoic acid",
+    "Lauric acid"
+   ],
+   "cas": [
+    "143-07-7"
+   ]
+  },
+  "11005": {
+   "smiles": "CCCCCCCCCCCCCC(=O)O",
+   "zh": [
+    "十四酸",
+    "肉豆蔻酸"
+   ],
+   "names": [
+    "Myristic acid"
+   ],
+   "cas": []
+  },
+  "985": {
+   "smiles": "CCCCCCCCCCCCCCCC(=O)O",
+   "zh": [
+    "十六酸",
+    "棕榈酸"
+   ],
+   "names": [
+    "Palmitic acid"
+   ],
+   "cas": []
+  },
+  "5281": {
+   "smiles": "CCCCCCCCCCCCCCCCCC(=O)O",
+   "zh": [
+    "十八酸",
+    "硬脂酸"
+   ],
+   "names": [
+    "Stearic acid"
+   ],
+   "cas": []
+  },
+  "445638": {
+   "smiles": "CCCCCC/C=C\\CCCCCCCC(=O)O",
+   "zh": [
+    "棕榈油酸",
+    "(Z)-9-十六碳烯酸"
+   ],
+   "names": [
+    "Palmitoleic acid"
+   ],
+   "cas": []
+  },
+  "445639": {
+   "smiles": "CCCCCCCC/C=C\\CCCCCCCC(=O)O",
+   "zh": [
+    "油酸",
+    "(Z)-9-十八碳烯酸"
+   ],
+   "names": [
+    "Oleic acid"
+   ],
+   "cas": []
+  },
+  "5282761": {
+   "smiles": "CCCCCC/C=C\\CCCCCCCCCC(=O)O",
+   "zh": [
+    "异油酸",
+    "11-十八碳烯酸"
+   ],
+   "names": [
+    "Vaccenic acid"
+   ],
+   "cas": []
+  },
+  "5280450": {
+   "smiles": "CCCCC/C=C\\C/C=C\\CCCCCCCC(=O)O",
+   "zh": [
+    "亚油酸"
+   ],
+   "names": [
+    "Linoleic acid"
+   ],
+   "cas": []
+  },
+  "5280934": {
+   "smiles": "CC/C=C\\C/C=C\\C/C=C\\CCCCCCCC(=O)O",
+   "zh": [
+    "α-亚麻酸"
+   ],
+   "names": [
+    "α-Linolenic acid",
+    "alpha-Linolenic acid"
+   ],
+   "cas": []
+  },
+  "444899": {
+   "smiles": "CCCCC/C=C\\C/C=C\\C/C=C\\C/C=C\\CCCC(=O)O",
+   "zh": [
+    "花生四烯酸"
+   ],
+   "names": [
+    "Arachidonic acid"
+   ],
+   "cas": []
+  }
+ }
+}

@@ -450,7 +450,14 @@
     const m = lib.molecules[i];
     const smiles = m[0], kb = m[3];
     const tops = topLabels(i, TOP_BARS);
-    const foods = m[4].map(k => lib.foods[k]);
+    const zhF = lib.foods_zh || {};
+    const SRC = [[1, "F", "src.flavordb"], [2, "Fo", "src.foodb"], [4, "A", "src.author"]];
+    // food name (Chinese where the knowledge base has one) with its source marks; title = the sources
+    const foods = m[4].map((k, j) => {
+      const code = +((m[5] || "")[j] || 1), ms = SRC.filter(([b]) => code & b);
+      return esc(I18N.lang === "zh" && zhF[k] ? zhF[k] : lib.foods[k]) + '<sup class="fsrc" title="' +
+        esc(I18N.t("src.title") + " " + ms.map(x => I18N.t(x[2])).join("; ")) + '">' + ms.map(x => x[1]).join("·") + "</sup>";
+    });
     const enc = encodeURIComponent(smiles);
     box.innerHTML = '<div class="card det-card"><button type="button" class="close" id="card-close" aria-label="' + esc(I18N.t("card.close")) + '">×</button>' +
       '<div class="det"><div class="svg" id="card-svg" data-smiles="' + esc(smiles) + '"></div><div>' +
@@ -459,7 +466,7 @@
       '<p class="small" style="margin:10px 0 0"><b>' + esc(I18N.t("card.profile")) + "</b></p>" +
       '<div class="bars">' + tops.map(([j, p]) => "<span>" + esc(labelName(j)) + '</span><span><span class="bar" style="display:block;width:' +
         Math.max(1, Math.round(100 * p)) + '%"></span></span><span class="v">' + Math.round(100 * p) + "%</span>").join("") + "</div>" +
-      '<p class="small" style="margin:0">' + (foods.length ? esc(I18N.t("card.foods", { n: foods.length })) + esc(foods.slice(0, 6).join(", ")) + (foods.length > 6 ? " …" : "")
+      '<p class="small" style="margin:0">' + (foods.length ? esc(I18N.t("card.foods", { n: foods.length })) + foods.slice(0, 6).join(", ") + (foods.length > 6 ? " …" : "")
         : '<span class="muted">' + esc(I18N.t("card.no_foods")) + "</span>") + "</p>" +
       '<div class="links">' +
       '<a href="../odor-predictor/?q=' + enc + '">' + esc(I18N.t("card.to_predictor")) + "</a>" +
@@ -541,7 +548,8 @@
       const el = $("food-" + slot), cur = S.foods[k] ? S.foods[k].id : "";
       const none = '<option value="">' + esc(I18N.t(k ? "find.food_none_b" : "find.food_none")) + "</option>";
       if (!foods) { el.innerHTML = none + '<option value="" disabled>' + esc(I18N.t("find.food_loading")) + "</option>"; return; }
-      const opt = f => '<option value="' + esc(f.id) + '">' + esc(f.name) + " (" + (f.key.length + f.det.length) + ")</option>";
+      const fname = f => (I18N.lang === "zh" && f.zh ? f.zh + " " + f.name : f.name);
+      const opt = f => '<option value="' + esc(f.id) + '">' + esc(fname(f)) + " (" + (f.key.length + f.det.length) + ")</option>";
       el.innerHTML = none + '<optgroup label="' + esc(I18N.t("find.group_key")) + '">' + foods.filter(f => f.src === "dunkel").map(opt).join("") + "</optgroup>" +
         '<optgroup label="' + esc(I18N.t("find.group_det")) + '">' + foods.filter(f => f.src !== "dunkel").map(opt).join("") + "</optgroup>";
       el.value = cur;
@@ -570,8 +578,9 @@
     box.innerHTML = on.map(([f, k]) => {
       const dunkel = f.src === "dunkel";
       const ids = f.key.concat(f.det);
-      const head = dunkel ? I18N.t("food.key_note", { food: f.name, n: f.key.length, m: f.n_kb })
-        : I18N.t("food.det_note", { food: f.name, n: f.det.length, m: f.n_kb });
+      const fn = I18N.lang === "zh" && f.zh ? f.zh : f.name;
+      const head = dunkel ? I18N.t("food.key_note", { food: fn, n: f.key.length, m: f.n_kb })
+        : I18N.t("food.det_note", { food: fn, n: f.det.length, m: f.n_kb });
       return '<div style="margin-top:8px"><b style="color:' + FOOD_COLOURS[k] + '">● </b>' + esc(head) +
         ' <a href="../flavor-kb/?food=' + encodeURIComponent(f.id) + '">' + esc(I18N.t("food.to_kb")) + "</a>" +
         '<span class="ex-list">' + ids.slice(0, FOOD_CHIPS).map(i => '<button type="button" data-mol="' + i + '" class="linklike' + (f.key.includes(i) ? " key" : "") + '">' +

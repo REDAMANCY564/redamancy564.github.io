@@ -38,6 +38,29 @@
   /** Built-in threshold of a knowledge-base compound: {mg_kg, src, range, cas} or null. */
   const threshold = (idx, kbId) => (kbId && idx.thresholds[kbId]) || null;
 
+  /**
+   * Author group values (data/thresholds-author.json), keyed by CAS number. index: from authorIndex.
+   * The target's own CAS number decides; without one (or without a value for it) the knowledge-base
+   * compound is used only when exactly one of its CAS numbers has a value (stereoisomers such as
+   * (E,E)- and (E,Z)-2,4-decadienal share one knowledge-base compound but have their own values).
+   * Returns {mg_kg, cas, ref, page|doi, orig, author: true} or null.
+   */
+  function authorIndex(json, casByKb) {
+    const byKb = new Map();
+    Object.keys(json.items).forEach(cas => (casByKb.get(cas) || []).forEach(kb => {
+      if (!byKb.has(kb)) byKb.set(kb, []);
+      byKb.get(kb).push(cas);
+    }));
+    return { items: json.items, source: json.source, byKb };
+  }
+  function authorThreshold(aidx, cas, kbId) {
+    if (!aidx) return null;
+    const rec = c => Object.assign({ cas: c, author: true }, aidx.items[c]);
+    if (cas && aidx.items[cas]) return rec(cas);
+    const list = kbId ? aidx.byKb.get(kbId) || [] : [];
+    return list.length === 1 ? rec(list[0]) : null;
+  }
+
   /** lift vector (one value per label) of a knowledge-base compound, or null without a GNN prediction. */
   function lift(idx, kbId) {
     const c = kbId && idx.compounds[kbId];
@@ -165,5 +188,5 @@
     return s + "</svg>";
   }
 
-  window.GcmsFlavor = { UNITS, DAIRY_DIMS, guessUnit, buildIndex, threshold, lift, probs, weights, viewDims, descriptors, intensity, compute, topDims, radarSvg };
+  window.GcmsFlavor = { UNITS, DAIRY_DIMS, guessUnit, buildIndex, threshold, authorIndex, authorThreshold, lift, probs, weights, viewDims, descriptors, intensity, compute, topDims, radarSvg };
 })();

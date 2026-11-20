@@ -13,6 +13,7 @@
   });
   const [lib, meta] = await Promise.all([get("../ingredient-finder/data/library.json"), get("data/map.json"), I18N.ready]);
   const n = lib.molecules.length;
+  const nFit = meta.n_fit || n;   // molecules of the UMAP fit; later ones were placed with UMAP.transform
   const labelIndex = Object.fromEntries(lib.labels.map((l, j) => [l.id, j]));
   const labelName = j => I18N.pick(lib.labels[j]);
   const nCat = meta.colours.length;
@@ -20,12 +21,15 @@
   const f3 = x => Number(x).toFixed(3);
   const pct = x => Math.round(100 * x) + "%";
 
+  // counts written the same way everywhere on the page (5,094)
+  const fmtN = x => Number(x).toLocaleString(I18N.lang === "zh" ? "zh-CN" : "en");
   function renderText() {
-    $("hero-intro").textContent = I18N.t("hero.intro", { n: n.toLocaleString(I18N.lang === "zh" ? "zh-CN" : "en") }); I18N.nobr($("hero-intro"));
+    $("hero-intro").textContent = I18N.t("hero.intro", { n: fmtN(n) }) +
+      (n > nFit ? " " + I18N.t("hero.added", { m: n - nFit }) : ""); I18N.nobr($("hero-intro"));
     $("desc-odor").textContent = I18N.t("map.desc.odor", { n: meta.k });
     $("desc-structure").textContent = I18N.t("map.desc.structure", { n: meta.k });
     const fr = meta.top1_counts.fruity || 0;
-    $("colour-note").textContent = I18N.t("colour.note", { k: nCat, fruity: labelName(labelIndex.fruity), p: pct(fr / n) });
+    $("colour-note").textContent = I18N.t("colour.note", { k: nCat, fruity: labelName(labelIndex.fruity), p: pct(fr / nFit) });
     $("region-note").textContent = I18N.t("region.note", { o: meta.regions.odor.length, s: meta.regions.structure.length, k: meta.region_rule.k_clusters });
 
     const P = meta.params, V = meta.eval.valid;
@@ -55,14 +59,20 @@
       sh: f3(T.structure_highdim.share_common_label), sm: f3(T.structure_map.share_common_label),
       rnd: f3(T.random.share_common_label) });
     const sup = meta.eval.supplementary_top1_agreement;
-    $("supp-text").textContent = I18N.t("supp.text", { n, k: meta.k, o: f3(sup.odor), s: f3(sup.structure) });
+    $("supp-text").textContent = I18N.t("supp.text", { n: fmtN(nFit), k: meta.k, o: f3(sup.odor), s: f3(sup.structure) });
 
     const ex = lib.excluded || [], by = {};
     ex.forEach(e => { (by[e.category] = by[e.category] || []).push(e); });
-    $("excluded-note").textContent = I18N.t("excluded.note", { n: ex.length, total: n });
+    $("excluded-note").textContent = I18N.t("excluded.note", { n: ex.length, total: fmtN(n) });
     I18N.nobr($("excluded-note"));
+    // English lists end with "and <last name>" kept on one line, so no list ends with a lone name on its last line
+    const nameList = names => {
+      const e = names.map(esc);
+      if (I18N.lang === "zh" || e.length < 2) return e.join(", ");
+      return e.slice(0, -1).join(", ") + " <span class=\"nobr\">and " + e[e.length - 1] + "</span>";
+    };
     $("excluded-list").innerHTML = Object.keys(by).map(c => "<li><b>" + esc(I18N.t("excluded.cat." + c)) + "</b> (" + by[c].length + "): " +
-      esc(by[c].map(e => e.name || e.smiles).join(", ")) + "</li>").join("");
+      nameList(by[c].map(e => e.name || e.smiles)) + "</li>").join("");
   }
 
   // ---------- 5.2.2 training animation (odor-map/media, training/odormap/make_training_video.py) ----------

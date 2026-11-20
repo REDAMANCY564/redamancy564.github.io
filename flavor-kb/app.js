@@ -2,7 +2,11 @@
 (async function () {
   const MAX_CHIPS = 40;
   const $ = id => document.getElementById(id);
-  const { el, tag, link, chips, literature, litFoods } = FlavorKBUI;
+  const { el, tag, link, chips, literature, litFoods, foodName, linkSources, foodChips } = FlavorKBUI;
+
+  /** Sources of a food record (src + srcs) as a sentence. */
+  const SRC_KEY = { flavordb: "src.flavordb", foodb: "src.foodb", author: "src.author" };
+  const foodSourceLine = f => (f.srcs || [f.src]).filter(s => SRC_KEY[s]).map(s => I18N.t(SRC_KEY[s])).join("; ");
 
   await I18N.ready;
 
@@ -104,8 +108,9 @@
     // The tier tag is shown once, at the section that lists the compounds; the heading carries it only
     // when the food has neither section.
     const hasKfo = !!(f.kfo && f.kfo.length), hasDet = !!(f.det && f.det.length);
-    card.append(el("h3", {}, [f.name, hasKfo || hasDet ? null : f.src === "dunkel" ? tag("t1k") : tag("t1d")]));
-    if (f.src === "flavordb" && f.cat) card.append(el("p", { class: "small muted", text: I18N.t("food.category", { c: f.cat }) }));
+    card.append(el("h3", {}, [foodName(f), I18N.lang === "zh" && f.zh ? " (" + f.name + ")" : null, hasKfo || hasDet ? null : f.src === "dunkel" ? tag("t1k") : tag("t1d")]));
+    if (f.src !== "dunkel" && f.cat) card.append(el("p", { class: "small muted", text: I18N.t("food.category", { c: f.cat }) }));
+    if (f.src !== "dunkel") card.append(el("p", { class: "small muted", text: I18N.t("food.sources", { s: foodSourceLine(f) }) }));
 
     if (hasKfo) {
       card.append(el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t("food.kfo_desc")]));
@@ -122,8 +127,12 @@
       card.append(el("div", { class: "kb-row-title small" }, [tag("t1d"), " ", I18N.t("food.detected", { n: f.det.length })]));
       card.append(el("p", { class: "small muted", text: I18N.t("food.detected_note") }));
       const sorted = f.det.slice().sort((a, b) => (kbd.compounds[b].kfo ? 1 : 0) - (kbd.compounds[a].kfo ? 1 : 0));
-      card.append(chips(sorted.map(c => ({ label: kbd.compounds[c].name, href: "?compound=" + c, id: c, strong: !!kbd.compounds[c].kfo })),
-        MAX_CHIPS, it => showCompound(it.id, true)));
+      card.append(chips(sorted.map(c => {
+        const s = linkSources(kbd, c, id);
+        return { label: kbd.compounds[c].name, href: "?compound=" + c, id: c, strong: !!kbd.compounds[c].kfo, mark: s.mark,
+                 title: I18N.t("src.title") + "\n" + s.lines.join("\n") };
+      }), MAX_CHIPS, it => showCompound(it.id, true)));
+      card.append(el("p", { class: "small muted", text: I18N.t("src.legend") }));
     }
     card.append(literature([f.name], null));   // the bracketed note ("wine (red and white)") is dropped in FlavorKB
     d.append(card);
@@ -170,13 +179,22 @@
     if (c.dunkel) right.append(el("p", { class: "small" }, [tag("t1k"), " ", I18N.t("cmp.generalist", { odor: c.dunkel.odor }) + " (" + I18N.t("food.page", { p: c.dunkel.page }) + ")"]));
     if (c.kfo && c.kfo.length) {
       right.append(el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t("cmp.kfo_foods_desc")]));
-      right.append(chips(c.kfo.map(f => ({ label: kbd.foods[f].name, href: "?food=" + f, id: f, strong: true })), MAX_CHIPS, it => showFood(it.id, true)));
+      right.append(chips(c.kfo.map(f => ({ label: foodName(kbd.foods[f]), href: "?food=" + f, id: f, strong: true })), MAX_CHIPS, it => showFood(it.id, true)));
     } else {
       right.append(el("p", { class: "small muted", text: I18N.t("cmp.no_kfo") }));
     }
     if (c.det && c.det.length) {
       right.append(el("div", { class: "kb-row-title small" }, [tag("t1d"), " ", I18N.t("cmp.det_foods", { n: c.det.length })]));
-      right.append(chips(c.det.map(f => ({ label: kbd.foods[f].name, href: "?food=" + f, id: f })), MAX_CHIPS, it => showFood(it.id, true)));
+      right.append(chips(foodChips(kbd, id, c.det, false).map(it => Object.assign(it, { href: "?food=" + it.id })), MAX_CHIPS, it => showFood(it.id, true)));
+      right.append(el("p", { class: "small muted", text: I18N.t("src.legend") }));
+      if (c.fdbm) right.append(el("p", { class: "small muted", text: I18N.t(c.fdbm === "sk14" ? "cmp.fdbm_sk14" : "cmp.fdbm_cas") }));
+      if (c.isomer_note) right.append(el("p", { class: "small muted", text: I18N.t("cmp.isomer_note") }));
+      // every food with its sources (FooDB references in full), for touch screens without hover
+      const det = el("details", { class: "small" }, [el("summary", { text: I18N.t("cmp.src_details", { n: c.det.length }) })]);
+      const ul = el("ul", { class: "kb-src-list" });
+      c.det.forEach(f => ul.append(el("li", {}, [el("b", { text: foodName(kbd.foods[f]) }), ": " + linkSources(kbd, id, f).lines.join("; ")])));
+      det.append(ul);
+      right.append(det);
     }
     if (c.flavor && c.flavor.length) {
       right.append(el("div", { class: "kb-row-title small", text: I18N.t("cmp.flavor") }));

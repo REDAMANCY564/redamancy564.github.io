@@ -1,0 +1,623 @@
+{
+ "source": {
+  "citation": "Cui J, et al. Food Bioscience 2026",
+  "doi": "10.1016/j.fbio.2026.110162",
+  "S1": "Table S1: volatile compounds of human milk (n = 50), relative content min ~ max (mean)",
+  "S2": "Table S2: fatty acid composition of human milk samples",
+  "migrants_note": "Table S1 footnote: 2,4-di-tert-butylphenol, 2-ethyl-1-hexanol, 2-phenoxyethanol and isophorone come from the sampling containers and laboratory consumables; they get no human milk link."
+ },
+ "S1": [
+  {
+   "no": 1,
+   "name": "Acetic acid",
+   "cid": 176,
+   "smiles": "CC(=O)O",
+   "migrant": false
+  },
+  {
+   "no": 2,
+   "name": "Butanoic acid",
+   "cid": 264,
+   "smiles": "CCCC(=O)O",
+   "migrant": false
+  },
+  {
+   "no": 3,
+   "name": "Hexanoic acid",
+   "cid": 8892,
+   "smiles": "CCCCCC(=O)O",
+   "migrant": false
+  },
+  {
+   "no": 4,
+   "name": "3-methyl-pentanoic acid",
+   "cid": 7755,
+   "smiles": "CCC(C)CC(=O)O",
+   "migrant": false
+  },
+  {
+   "no": 5,
+   "name": "Heptanoic acid",
+   "cid": 8094,
+   "smiles": "CCCCCCC(=O)O",
+   "migrant": false
+  },
+  {
+   "no": 6,
+   "name": "Octanoic acid",
+   "cid": 379,
+   "smiles": "CCCCCCCC(=O)O",
+   "migrant": false
+  },
+  {
+   "no": 7,
+   "name": "3-methyl-butanoic acid",
+   "cid": 10430,
+   "smiles": "CC(C)CC(=O)O",
+   "migrant": false
+  },
+  {
+   "no": 8,
+   "name": "Nonanoic acid",
+   "cid": 8158,
+   "smiles": "CCCCCCCCC(=O)O",
+   "migrant": false
+  },
+  {
+   "no": 9,
+   "name": "n-decanoic acid",
+   "cid": 2969,
+   "smiles": "CCCCCCCCCC(=O)O",
+   "migrant": false
+  },
+  {
+   "no": 10,
+   "name": "Undecanoic acid",
+   "cid": 8180,
+   "smiles": "CCCCCCCCCCC(=O)O",
+   "migrant": false
+  },
+  {
+   "no": 11,
+   "name": "Dodecanoic acid",
+   "cid": 3893,
+   "smiles": "CCCCCCCCCCCC(=O)O",
+   "migrant": false
+  },
+  {
+   "no": 12,
+   "name": "Pentanal",
+   "cid": 8063,
+   "smiles": "CCCCC=O",
+   "migrant": false
+  },
+  {
+   "no": 13,
+   "name": "Hexanal",
+   "cid": 6184,
+   "smiles": "CCCCCC=O",
+   "migrant": false
+  },
+  {
+   "no": 14,
+   "name": "Heptanal",
+   "cid": 8130,
+   "smiles": "CCCCCCC=O",
+   "migrant": false
+  },
+  {
+   "no": 15,
+   "name": "(E)-2-hexenal",
+   "cid": 5281168,
+   "smiles": "CCC/C=C/C=O",
+   "migrant": false
+  },
+  {
+   "no": 16,
+   "name": "Octanal",
+   "cid": 454,
+   "smiles": "CCCCCCCC=O",
+   "migrant": false
+  },
+  {
+   "no": 17,
+   "name": "(E)-2-heptenal",
+   "cid": 5283316,
+   "smiles": "CCCC/C=C/C=O",
+   "migrant": false
+  },
+  {
+   "no": 18,
+   "name": "Nonanal",
+   "cid": 31289,
+   "smiles": "CCCCCCCCC=O",
+   "migrant": false
+  },
+  {
+   "no": 19,
+   "name": "5-ethylcyclopent-1-enecarboxaldehyde",
+   "cid": 580057,
+   "smiles": "CCC1CCC=C1C=O",
+   "migrant": false
+  },
+  {
+   "no": 20,
+   "name": "5-methyl-hexanal",
+   "cid": 15827,
+   "smiles": "CC(C)CCCC=O",
+   "migrant": false
+  },
+  {
+   "no": 21,
+   "name": "(E)-2-octenal",
+   "cid": 5283324,
+   "smiles": "CCCCC/C=C/C=O",
+   "migrant": false
+  },
+  {
+   "no": 22,
+   "name": "2-ethyl-hexanal",
+   "cid": 31241,
+   "smiles": "CCCCC(CC)C=O",
+   "migrant": false
+  },
+  {
+   "no": 23,
+   "name": "(E,E)-2,4-heptadienal",
+   "cid": 5283321,
+   "smiles": "CC/C=C/C=C/C=O",
+   "migrant": false
+  },
+  {
+   "no": 24,
+   "name": "Decanal",
+   "cid": 8175,
+   "smiles": "CCCCCCCCCC=O",
+   "migrant": false
+  },
+  {
+   "no": 25,
+   "name": "Benzaldehyde",
+   "cid": 240,
+   "smiles": "C1=CC=C(C=C1)C=O",
+   "migrant": false
+  },
+  {
+   "no": 26,
+   "name": "(E)-2-nonenal",
+   "cid": 5283335,
+   "smiles": "CCCCCC/C=C/C=O",
+   "migrant": false
+  },
+  {
+   "no": 27,
+   "name": "(E)-2-butenal",
+   "cid": 447466,
+   "smiles": "C/C=C/C=O",
+   "migrant": false
+  },
+  {
+   "no": 28,
+   "name": "(E)-2-decenal",
+   "cid": 5283345,
+   "smiles": "CCCCCCC/C=C/C=O",
+   "migrant": false
+  },
+  {
+   "no": 29,
+   "name": "(E,E)-2,4-nonadienal",
+   "cid": 5283339,
+   "smiles": "CCCC/C=C/C=C/C=O",
+   "migrant": false
+  },
+  {
+   "no": 30,
+   "name": "(E)-2-dodecenal",
+   "cid": 5283361,
+   "smiles": "CCCCCCCCC/C=C/C=O",
+   "migrant": false
+  },
+  {
+   "no": 31,
+   "name": "Benzaldehyde dimethyl acetal",
+   "cid": 62375,
+   "smiles": "COC(C1=CC=CC=C1)OC",
+   "migrant": false
+  },
+  {
+   "no": 32,
+   "name": "(E,Z)-2,4-decadienal",
+   "cid": 6427087,
+   "smiles": "CCCCC/C=C\\C=C\\C=O",
+   "migrant": false
+  },
+  {
+   "no": 33,
+   "name": "(E,E)-2,4-decadienal",
+   "cid": 5283349,
+   "smiles": "CCCCC/C=C/C=C/C=O",
+   "migrant": false
+  },
+  {
+   "no": 34,
+   "name": "2,4-nonadienal",
+   "cid": 23203,
+   "smiles": "CCCCC=CC=CC=O",
+   "migrant": false
+  },
+  {
+   "no": 35,
+   "name": "3-penten-2-ol",
+   "cid": 15289,
+   "smiles": "CC=CC(C)O",
+   "migrant": false
+  },
+  {
+   "no": 36,
+   "name": "1-pentanol",
+   "cid": 6276,
+   "smiles": "CCCCCO",
+   "migrant": false
+  },
+  {
+   "no": 37,
+   "name": "1-hexanol",
+   "cid": 8103,
+   "smiles": "CCCCCCO",
+   "migrant": false
+  },
+  {
+   "no": 38,
+   "name": "2-ethyl-1-hexanol",
+   "cid": 7720,
+   "smiles": "CCCCC(CC)CO",
+   "migrant": true
+  },
+  {
+   "no": 39,
+   "name": "2-butyl-1-octanol",
+   "cid": 19800,
+   "smiles": "CCCCCCC(CCCC)CO",
+   "migrant": false
+  },
+  {
+   "no": 40,
+   "name": "2-heptenol",
+   "cid": 5318017,
+   "smiles": "CCCC/C=C/CO",
+   "migrant": false
+  },
+  {
+   "no": 41,
+   "name": "1-octen-3-ol",
+   "cid": 18827,
+   "smiles": "CCCCCC(C=C)O",
+   "migrant": false
+  },
+  {
+   "no": 42,
+   "name": "1-heptanol",
+   "cid": 8129,
+   "smiles": "CCCCCCCO",
+   "migrant": false
+  },
+  {
+   "no": 43,
+   "name": "4-methyl-1-hexanol",
+   "cid": 98346,
+   "smiles": "CCC(C)CCCO",
+   "migrant": false
+  },
+  {
+   "no": 44,
+   "name": "1-octanol",
+   "cid": 957,
+   "smiles": "CCCCCCCCO",
+   "migrant": false
+  },
+  {
+   "no": 45,
+   "name": "3-methyl-1,5-pentanediol",
+   "cid": 20524,
+   "smiles": "CC(CCO)CCO",
+   "migrant": false
+  },
+  {
+   "no": 46,
+   "name": "Benzyl alcohol",
+   "cid": 244,
+   "smiles": "C1=CC=C(C=C1)CO",
+   "migrant": false
+  },
+  {
+   "no": 47,
+   "name": "Phenol",
+   "cid": 996,
+   "smiles": "C1=CC=C(C=C1)O",
+   "migrant": false
+  },
+  {
+   "no": 48,
+   "name": "4-penten-1-ol",
+   "cid": 13181,
+   "smiles": "C=CCCCO",
+   "migrant": false
+  },
+  {
+   "no": 49,
+   "name": "2-phenoxy-ethanol",
+   "cid": 31236,
+   "smiles": "C1=CC=C(C=C1)OCCO",
+   "migrant": true
+  },
+  {
+   "no": 50,
+   "name": "2,4-di-tert-butylphenol",
+   "cid": 7311,
+   "smiles": "CC(C)(C)C1=CC(=C(C=C1)O)C(C)(C)C",
+   "migrant": true
+  },
+  {
+   "no": 51,
+   "name": "3-octanone",
+   "cid": 246728,
+   "smiles": "CCCCCC(=O)CC",
+   "migrant": false
+  },
+  {
+   "no": 52,
+   "name": "1-octen-3-one",
+   "cid": 61346,
+   "smiles": "CCCCCC(=O)C=C",
+   "migrant": false
+  },
+  {
+   "no": 53,
+   "name": "1-hepten-3-one",
+   "cid": 520420,
+   "smiles": "CCCCC(=O)C=C",
+   "migrant": false
+  },
+  {
+   "no": 54,
+   "name": "2,3-octanedione",
+   "cid": 11449,
+   "smiles": "CCCCCC(=O)C(=O)C",
+   "migrant": false
+  },
+  {
+   "no": 55,
+   "name": "6-methyl-5-hepten-2-one",
+   "cid": 9862,
+   "smiles": "CC(=CCCC(=O)C)C",
+   "migrant": false
+  },
+  {
+   "no": 56,
+   "name": "3-nonanone",
+   "cid": 61235,
+   "smiles": "CCCCCCC(=O)CC",
+   "migrant": false
+  },
+  {
+   "no": 57,
+   "name": "2-nonanone",
+   "cid": 13187,
+   "smiles": "CCCCCCCC(=O)C",
+   "migrant": false
+  },
+  {
+   "no": 58,
+   "name": "3-octen-2-one",
+   "cid": 5363229,
+   "smiles": "CCCC/C=C/C(=O)C",
+   "migrant": false
+  },
+  {
+   "no": 59,
+   "name": "3-undecanone",
+   "cid": 75189,
+   "smiles": "CCCCCCCCC(=O)CC",
+   "migrant": false
+  },
+  {
+   "no": 60,
+   "name": "(E,E)-3,5-octadien-2-one",
+   "cid": 5352876,
+   "smiles": "CC/C=C/C=C/C(=O)C",
+   "migrant": false
+  },
+  {
+   "no": 61,
+   "name": "Isophorone",
+   "cid": 6544,
+   "smiles": "CC1=CC(=O)CC(C1)(C)C",
+   "migrant": true
+  },
+  {
+   "no": 62,
+   "name": "2-undecanone",
+   "cid": 8163,
+   "smiles": "CCCCCCCCCC(=O)C",
+   "migrant": false
+  },
+  {
+   "no": 63,
+   "name": "2-dodecanone",
+   "cid": 22556,
+   "smiles": "CCCCCCCCCCC(=O)C",
+   "migrant": false
+  },
+  {
+   "no": 64,
+   "name": "Acetophenone",
+   "cid": 7410,
+   "smiles": "CC(=O)C1=CC=CC=C1",
+   "migrant": false
+  },
+  {
+   "no": 65,
+   "name": "Decyl pentanoate",
+   "cid": 79553,
+   "smiles": "CCCCCCCCCCOC(=O)CCCC",
+   "migrant": false
+  },
+  {
+   "no": 66,
+   "name": "Heptyl pentanoate",
+   "cid": 79544,
+   "smiles": "CCCCCCCOC(=O)CCCC",
+   "migrant": false
+  },
+  {
+   "no": 67,
+   "name": "Methyl octanoate",
+   "cid": 8091,
+   "smiles": "CCCCCCCC(=O)OC",
+   "migrant": false
+  },
+  {
+   "no": 68,
+   "name": "Ethyl octanoate",
+   "cid": 7799,
+   "smiles": "CCCCCCCC(=O)OCC",
+   "migrant": false
+  },
+  {
+   "no": 69,
+   "name": "Vinyl octadecanoate",
+   "cid": 66077,
+   "smiles": "CCCCCCCCCCCCCCCCCC(=O)OC=C",
+   "migrant": false
+  },
+  {
+   "no": 70,
+   "name": "Methyl decanoate",
+   "cid": 8050,
+   "smiles": "CCCCCCCCCC(=O)OC",
+   "migrant": false
+  },
+  {
+   "no": 71,
+   "name": "Butanoic anhydride",
+   "cid": 7798,
+   "smiles": "CCCC(=O)OC(=O)CCC",
+   "migrant": false
+  },
+  {
+   "no": 72,
+   "name": "D-limonene",
+   "cid": 440917,
+   "smiles": "CC1=CC[C@@H](CC1)C(=C)C",
+   "migrant": false
+  },
+  {
+   "no": 73,
+   "name": "2-pentylfuran",
+   "cid": 19602,
+   "smiles": "CCCCCC1=CC=CO1",
+   "migrant": false
+  },
+  {
+   "no": 74,
+   "name": "1-methylindan",
+   "cid": 13023,
+   "smiles": "CC1CCC2=CC=CC=C12",
+   "migrant": false
+  },
+  {
+   "no": 75,
+   "name": "2-propylfuran",
+   "cid": 77907,
+   "smiles": "CCCC1=CC=CO1",
+   "migrant": false
+  }
+ ],
+ "S2": [
+  {
+   "notation": "C4:0",
+   "name": "Butyric acid",
+   "cid": 264,
+   "smiles": "CCCC(=O)O"
+  },
+  {
+   "notation": "C6:0",
+   "name": "Caproic acid",
+   "cid": 8892,
+   "smiles": "CCCCCC(=O)O"
+  },
+  {
+   "notation": "C8:0",
+   "name": "Caprylic acid",
+   "cid": 379,
+   "smiles": "CCCCCCCC(=O)O"
+  },
+  {
+   "notation": "C10:0",
+   "name": "Capric acid",
+   "cid": 2969,
+   "smiles": "CCCCCCCCCC(=O)O"
+  },
+  {
+   "notation": "C12:0",
+   "name": "Lauric acid",
+   "cid": 3893,
+   "smiles": "CCCCCCCCCCCC(=O)O"
+  },
+  {
+   "notation": "C14:0",
+   "name": "Myristic acid",
+   "cid": 11005,
+   "smiles": "CCCCCCCCCCCCCC(=O)O"
+  },
+  {
+   "notation": "C16:0",
+   "name": "Palmitic acid",
+   "cid": 985,
+   "smiles": "CCCCCCCCCCCCCCCC(=O)O"
+  },
+  {
+   "notation": "C18:0",
+   "name": "Stearic acid",
+   "cid": 5281,
+   "smiles": "CCCCCCCCCCCCCCCCCC(=O)O"
+  },
+  {
+   "notation": "C16:1",
+   "name": "Palmitoleic acid",
+   "cid": 445638,
+   "smiles": "CCCCCC/C=C\\CCCCCCCC(=O)O"
+  },
+  {
+   "notation": "C18:1 n-9c",
+   "name": "Oleic acid",
+   "cid": 445639,
+   "smiles": "CCCCCCCC/C=C\\CCCCCCCC(=O)O"
+  },
+  {
+   "notation": "C18:1 n-7",
+   "name": "Vaccenic acid",
+   "cid": 5282761,
+   "smiles": "CCCCCC/C=C\\CCCCCCCCCC(=O)O",
+   "note": "n-7 isomer; cis/trans not given in the table"
+  },
+  {
+   "notation": "C18:2 n-6c",
+   "name": "Linoleic acid",
+   "cid": 5280450,
+   "smiles": "CCCCC/C=C\\C/C=C\\CCCCCCCC(=O)O"
+  },
+  {
+   "notation": "C18:3 n-3",
+   "name": "α-Linolenic acid",
+   "cid": 5280934,
+   "smiles": "CC/C=C\\C/C=C\\C/C=C\\CCCCCCCC(=O)O"
+  },
+  {
+   "notation": "C20:4 n-6",
+   "name": "Arachidonic acid",
+   "cid": 444899,
+   "smiles": "CCCCC/C=C\\C/C=C\\C/C=C\\C/C=C\\CCCC(=O)O"
+  }
+ ]
+}

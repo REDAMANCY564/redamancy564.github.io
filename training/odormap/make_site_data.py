@@ -44,12 +44,13 @@ COLOUR_OF = {
 }
 
 
-def scale(xy):
-    lo, hi = xy.min(0), xy.max(0)
+def scale(xy, n_fit):
+    """Scale by the fitted molecules only, so molecules placed later (extend_maps.py) do not move the map."""
+    lo, hi = xy[:n_fit].min(0), xy[:n_fit].max(0)
     span = (hi - lo).max()
     out = (xy - lo) / span
     out += (1 - (hi - lo) / span) / 2          # centre the shorter axis
-    return out
+    return np.clip(out, 0, 1)
 
 
 def regions(xy, on, labels):
@@ -104,13 +105,16 @@ def main():
     maps = np.load(DATA / "odormap" / "maps.npz")
     ev = json.loads((DATA / "odormap" / "eval.json").read_text(encoding="utf-8"))
 
-    xy = {k: scale(maps[k].astype(np.float64)) for k in ("odor", "structure")}
+    n_fit = int(maps["n_fit"]) if "n_fit" in maps.files else n
+    assert len(maps["odor"]) == n, "run extend_maps.py after adding molecules to the library"
+    xy = {k: scale(maps[k].astype(np.float64), n_fit) for k in ("odor", "structure")}
     q = np.stack([np.round(xy[k] * 65535) for k in ("odor", "structure")]).astype("<u2")
     (SITE / "coords.bin").write_bytes(q.tobytes())
 
-    on = P >= P_ON
-    reg = {k: regions(xy[k], on, labels) for k in xy}
-    top1 = Counter(P.argmax(1).tolist())
+    # regions and colours from the fitted molecules (unchanged when molecules are placed later)
+    on = P[:n_fit] >= P_ON
+    reg = {k: regions(xy[k][:n_fit], on, labels) for k in xy}
+    top1 = Counter(P[:n_fit].argmax(1).tolist())
     colours = [labels[j]["id"] for j, _ in top1.most_common() if labels[j]["id"] != "odorless"][:N_COLORS]
     missing = [c for c in colours if c not in COLOUR_OF]
     assert not missing, f"give these descriptors a fixed colour in COLOUR_OF: {missing}"
@@ -127,11 +131,16 @@ def main():
         det = sorted({i for c in f.get("det", []) for i in by_kb.get(c, [])} - set(key))
         n_kb = len(f.get("kfo", [])) if f["src"] == "dunkel" else len(f.get("det", []))
         if key or det:
-            foods.append({"id": fid, "name": f["name"], "src": f["src"], "key": key, "det": det, "n_kb": n_kb})
+            rec = {"id": fid, "name": f["name"], "src": f["src"], "key": key, "det": det, "n_kb": n_kb}
+            if f.get("zh"): rec["zh"] = f["zh"]
+            if f.get("srcs"): rec["srcs"] = f["srcs"]
+            foods.append(rec)
     foods.sort(key=lambda f: (f["src"] != "dunkel", f["name"].lower()))
 
     out = {
         "n": n,
+        "n_fit": n_fit,
+        "placed_later": "molecules after n_fit were placed with UMAP.transform on the fitted maps (training/odormap/extend_maps.py)",
         "coords": "coords.bin: uint16 [2, n, 2], maps in the order of 'maps', scaled to [0, 65535]",
         "maps": ["odor", "structure"],
         "params": ev["params"],

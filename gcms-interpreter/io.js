@@ -146,5 +146,17 @@
     };
   }
 
-  window.GcmsIO = { decode, parseDelimited, detectDelimiter, detectDecimalComma, parseNumber, readFile };
+  /**
+   * .xlsx file (Uint8Array) of a table, written with SheetJS (loaded with the page, no network).
+   * rows: array of arrays; strings stay text cells (a CAS number such as 4313-03-5 is not turned
+   * into a date as when Excel opens a CSV), numbers become number cells.
+   */
+  function xlsxBytes(rows, sheetName) {
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, String(sheetName || "Sheet1").replace(/[\\/?*[\]:]/g, "_").slice(0, 31) || "Sheet1");
+    return new Uint8Array(XLSX.write(wb, { bookType: "xlsx", type: "array" }));
+  }
+
+  window.GcmsIO = { xlsxBytes, decode, parseDelimited, detectDelimiter, detectDecimalComma, parseNumber, readFile };
 })();

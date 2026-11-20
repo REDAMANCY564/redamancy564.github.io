@@ -195,7 +195,7 @@
         if (c.c) lines.push(li(esc(note(c.c)), "muted"));
         if (c.s) lines.push(li(esc(t("reg.stereo")), "muted"));
       });
-      if (!opts.bare) lines.push(li(esc(t("reg.cn.infant")), "muted"));
+      if (!opts.bare) lines.push(li(t("reg.cn.infant"), "muted"));
     } else {
       lines.push(li(esc(nfNote("cn", opts)), "muted"));
     }
@@ -266,7 +266,7 @@
   function common(anyListedInChina) {
     return '<div class="reg"><p class="reg-src">' + t("reg.src_eu", { url: EU_URL }) + '</p><p class="reg-src">' + t("reg.src_cn", { url: R.meta.cn.url }) + "</p>" +
       '<p class="reg-src">' + usSrc() + "</p>" +
-      (anyListedInChina ? '<p class="reg-src">' + esc(t("reg.cn.infant")) + "</p>" : "") + "</div>";
+      (anyListedInChina ? '<p class="reg-src">' + t("reg.cn.infant") + "</p>" : "") + "</div>";
   }
 
   window.Reg = {
