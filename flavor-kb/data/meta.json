@@ -2,18 +2,18 @@
  "built": "2026-11-20",
  "counts": {
   "compounds": 2009,
-  "foods": 1199,
+  "foods": 1195,
   "foods_flavordb": 936,
-  "foods_foodb_only": 247,
+  "foods_foodb_only": 243,
   "foods_dunkel": 16,
   "compounds_with_foods": 1953,
   "core_compounds": 67,
   "links": {
    "flavordb": {
     "molecules": 1602,
-    "links": 26033,
+    "links": 26044,
     "links_before": 58315,
-    "hidden": 32282,
+    "hidden": 32271,
     "hidden_molecules": 125
    },
    "foodb": {
@@ -82,7 +82,7 @@
    ],
    "compounds_added_foodb": 329,
    "compounds_added_author": 32,
-   "flavordb_links_hidden": 32282,
+   "flavordb_links_hidden": 32271,
    "flavordb_molecules_hidden": 125,
    "foodb_links": 30974,
    "author_links": 78

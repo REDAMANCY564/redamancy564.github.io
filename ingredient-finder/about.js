@@ -40,10 +40,16 @@
     const ex = D.lib.excluded || [];
     const by = {};
     ex.forEach(e => { (by[e.category] = by[e.category] || []).push(e); });
-    $("excluded-note").textContent = I18N.t("excluded.note", { n: ex.length, total: D.n });
+    $("excluded-note").textContent = I18N.t("excluded.note", { n: ex.length, total: D.n.toLocaleString(I18N.lang === "zh" ? "zh-CN" : "en") });
     I18N.nobr($("excluded-note"));
+    // English lists end with "and <last name>" kept on one line, so no list ends with a lone name on its last line
+    const nameList = names => {
+      const e = names.map(esc);
+      if (I18N.lang === "zh" || e.length < 2) return e.join(", ");
+      return e.slice(0, -1).join(", ") + " <span class=\"nobr\">and " + e[e.length - 1] + "</span>";
+    };
     $("excluded-list").innerHTML = Object.keys(by).map(cat => "<li><b>" + esc(I18N.t("excluded.cat." + cat)) + "</b> (" + by[cat].length + "): " +
-      esc(by[cat].map(e => e.name || e.smiles).join(", ")) + "</li>").join("");
+      nameList(by[cat].map(e => e.name || e.smiles)) + "</li>").join("");
   }
 
   function renderAll() {

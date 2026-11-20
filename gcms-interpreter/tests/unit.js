@@ -357,6 +357,7 @@
   check("author thr", "hexanal 4.5, octanal 0.70, nonanal 0.32 ug/kg (van Gemert pages 272, 327, 323)",
     [ah("66-25-1").mg_kg, ah("66-25-1").page, ah("124-13-0").mg_kg, ah("124-19-6").mg_kg, ah("124-19-6").page], [0.0045, 272, 0.0007, 0.00032, 323]);
   check("author thr", "(E,E)- and (E,Z)-2,4-decadienal keep their own values", [ah("25152-84-5").mg_kg, ah("25152-83-4").mg_kg], [0.00007, 0.00004]);
+  check("author thr", "2,3-octanedione 2.52 ug/kg from Cui et al. 2026 Table 1 (not van Gemert)", [ah("585-25-1").mg_kg, ah("585-25-1").ref, ah("585-25-1").orig], [0.00252, "cui2026", "Table 1"]);
   check("author thr", "every value has a van Gemert page or a DOI", Object.values(authorJson.items).every(v => (v.ref === "vg2011" && v.page > 206 && v.page < 359) || (v.ref !== "vg2011" && /^10\./.test(v.doi || ""))), true);
 
   // ---------- flavor.js: OAV, ROAV, profile ----------

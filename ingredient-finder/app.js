@@ -235,7 +235,7 @@
         ms.map(x => x[1]).join("·") + "</sup>";
     };
     return esc(I18N.t("r.foods")) + ": " + m.foods.slice(0, FOODS_SHOWN).map((n, j) => one(n, m.foodsZh[j], m.foodSrc[j])).join(", ") +
-      (m.foods.length > FOODS_SHOWN ? " " + esc(I18N.t("r.foods_more", { n: m.foods.length - FOODS_SHOWN })) : "") +
+      (m.foods.length > FOODS_SHOWN ? " " + esc(I18N.t("r.foods_more", { n: m.foods.length })) : "") +
       (m.kb ? ' <a class="small" href="../flavor-kb/?compound=' + encodeURIComponent(m.kb) + '" target="_blank" rel="noopener">' + esc(I18N.t("r.food_all")) + "</a>" : "");
   }
 

@@ -39,7 +39,7 @@
   "r.score": "Score",
   "r.top": "Predicted odor (top 5)",
   "r.foods": "Occurs in",
-  "r.foods_more": "and {n} more foods",
+  "r.foods_more": "({n} foods in all)",
   "r.food_src": "Source: ",
   "r.food_all": "all foods and references",
   "r.no_foods": "No natural occurrence record in the knowledge base",

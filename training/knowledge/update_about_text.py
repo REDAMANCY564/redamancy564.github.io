@@ -47,7 +47,7 @@ def main():
               "<li><b>2026-10-16</b>：建立知识库，收录 FlavorDB2 检出数据和 Dunkel 等 (2014) 正文中的关键风味物质，共 1,648 个物质、952 种食品。</li>"
               f'<li><b>{up["date"]}</b>：① 并入 FooDB（2020-04-07 导出版）中有出处的条目（数据库、期刊论文、专著），{n(up["foodb_links"])} 条关联，'
               f'新增 {n(up["compounds_added_foodb"])} 个物质；推测数据（HMDB、PathBank）和无出处的条目不用。只按结构骨架（InChIKey 前 14 位）对应上的分子，'
-              f'物质卡片注明未区分立体构型。② 隐藏 FlavorDB2 中来自 FooDB 无出处批量条目的关联 {n(up["flavordb_links_hidden"])} 条（涉及 {n(up["flavordb_molecules_hidden"])} 个物质）：'
+              f'物质卡片注明未区分立体构型；FlavorDB2 与 FooDB 名称不同的 4 种乳制品（牛乳 Milk / Milk (Cow)，奶粉 Milk Powder / Dried milk，脱脂乳 Skimmed Milk / Cow milk 0% fat，乳脂 Milk Fat / Butterfat）合并为同一食品。② 隐藏 FlavorDB2 中来自 FooDB 无出处批量条目的关联 {n(up["flavordb_links_hidden"])} 条（涉及 {n(up["flavordb_molecules_hidden"])} 个物质）：'
               "FooDB 把这些分子各自无出处地关联到 300 种以上食品，FlavorDB2 沿用了这批数据；同一食品有 FooDB 有出处的条目确认时保留。"
               f'③ 加入作者已发表数据：母乳（Human milk），{n(up["author_links"])} 个分子，出处为 Cui 等，<i>Food Bioscience</i> 2026，'
               '<a href="https://doi.org/10.1016/j.fbio.2026.110162" target="_blank" rel="noopener">doi:10.1016/j.fbio.2026.110162</a>：'
@@ -58,7 +58,7 @@ def main():
               "<li><b>2026-10-16</b>: knowledge base built from FlavorDB2 detection data and the key food odorants in the main text of Dunkel et al. (2014): 1,648 compounds, 952 foods.</li>"
               f'<li><b>{up["date"]}</b>: (1) FooDB (2020-04-07 export) entries with a reference (databases, journal articles, books) added: {n(up["foodb_links"])} links, '
               f'{n(up["compounds_added_foodb"])} new compounds; predicted data (HMDB, PathBank) and entries without a reference are not used. Molecules matched only by the skeleton '
-              f'(first 14 InChIKey characters) say so on their card (stereoisomers not distinguished). (2) {n(up["flavordb_links_hidden"])} FlavorDB2 links '
+              f'(first 14 InChIKey characters) say so on their card (stereoisomers not distinguished); 4 dairy foods named differently in FlavorDB2 and FooDB are merged (Milk / Milk (Cow), Milk Powder / Dried milk, Skimmed Milk / Cow milk 0% fat, Milk Fat / Butterfat). (2) {n(up["flavordb_links_hidden"])} FlavorDB2 links '
               f'({n(up["flavordb_molecules_hidden"])} compounds) hidden that came from FooDB bulk entries without a reference: FooDB links each of these molecules to more than 300 foods '
               "without a reference, and FlavorDB2 took these over; a link stays when a FooDB entry with a reference confirms the same food. "
               f'(3) Author\'s published data added: human milk, {n(up["author_links"])} molecules, from Cui et al., <i>Food Bioscience</i> 2026, '

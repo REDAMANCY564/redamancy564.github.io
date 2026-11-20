@@ -792,11 +792,14 @@
   /** Where a built-in threshold comes from, in the page language. */
   function builtText(b) {
     if (!b.author) return b.src + I18N.t("thr.src_builtin");
-    return b.ref === "vg2011" ? I18N.t("thr.src_author_vg", { p: b.page, orig: b.orig || "" }) : I18N.t("thr.src_author_doi", { doi: b.doi });
+    if (b.ref === "vg2011") return I18N.t("thr.src_author_vg", { p: b.page, orig: b.orig || "" });
+    if (b.ref === "cui2026") return I18N.t("thr.src_author_cui", { t: b.orig || "", doi: b.doi });
+    return I18N.t("thr.src_author_doi", { doi: b.doi });
   }
   /** The same in English, for the exported files. */
   const builtTextEn = b => (!b.author ? b.src + " (van Gemert 2011, built-in)"
-    : b.ref === "vg2011" ? "author group value; van Gemert (2011) p. " + b.page + (b.orig ? ", " + b.orig : "") : "author group value; doi:" + b.doi);
+    : b.ref === "vg2011" ? "author group value; van Gemert (2011) p. " + b.page + (b.orig ? ", " + b.orig : "")
+    : b.ref === "cui2026" ? "author group value; Cui et al. (2026) Food Bioscience, " + (b.orig || "") + ", doi:" + b.doi : "author group value; doi:" + b.doi);
 
   const odorLink = text => '<a href="../odor-predictor/" target="_blank" rel="noopener">' + esc(text) + "</a>";
 

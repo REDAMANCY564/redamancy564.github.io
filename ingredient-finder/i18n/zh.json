@@ -39,7 +39,7 @@
   "r.score": "评分",
   "r.top": "预测气味（前 5）",
   "r.foods": "天然存在于",
-  "r.foods_more": "等 {n} 种食品",
+  "r.foods_more": "等，共 {n} 种食品",
   "r.food_src": "来源：",
   "r.food_all": "全部食品与出处",
   "r.no_foods": "知识库中没有天然存在记录",

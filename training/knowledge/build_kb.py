@@ -137,6 +137,17 @@ EXTRA = Path(__file__).parent / "extra_compounds.json"
 HIDDEN_OUT = ROOT / "training" / "data" / "foodb" / "hidden_flavordb_links.json"
 
 
+# FlavorDB and FooDB names of the same food that do not match exactly (user decision 2026-11-20, dairy only):
+# FlavorDB entity id -> FooDB food id. The FlavorDB name is kept, the FooDB name becomes a synonym; the pair also
+# counts as the same food when a referenced FooDB entry confirms a FlavorDB link of a bulk molecule.
+# Kept apart on purpose: cow milk 1 %, 2 %, 3.25 % fat; salted butter; "Dairy Products" / "Milk and milk products";
+# goat, sheep and "other mammals" milk; cheese varieties.
+SAME_FOOD = {"88": "632",    # Milk (cattle)      = Milk (Cow)
+             "91": "711",    # Milk Powder        = Dried milk
+             "93": "921",    # Skimmed Milk       = Cow milk, pasteurized, vitamin A + D added, 0% fat
+             "89": "785"}    # Milk Fat           = Butterfat
+
+
 def code_order(c):
     return (0, 0) if c == "F" else (1, c) if isinstance(c, int) else (2, 0) if c == "S1" else (3, 0)
 
@@ -158,7 +169,8 @@ def add_foodb_and_author(compounds, foods, upsert, pc):
         k = inchi_key_nostereo(m["smiles"])
         if k:
             by_key.setdefault(k, []).append((ik, m))
-    fmap = fs["flavordb_food_map"]                      # FlavorDB entity id -> FooDB food id (exact name)
+    fmap = dict(fs["flavordb_food_map"])                # FlavorDB entity id -> FooDB food id (exact name)
+    fmap.update(SAME_FOOD)                              # + the same food under another name (user decision)
     fo2site = {}
     for eid in sorted(fmap, key=int):
         fo2site.setdefault(fmap[eid], f"fdb{eid}")
@@ -167,6 +179,9 @@ def add_foodb_and_author(compounds, foods, upsert, pc):
         if f in fo2site:
             fid = fo2site[f]
             foods[fid]["foodb"] = f
+            fo_name = fs["foods"][f]["name"]
+            if fo_name.lower() != foods[fid]["name"].lower() and fo_name not in foods[fid]["synonyms"]:
+                foods[fid]["synonyms"].append(fo_name)
             return fid
         fid = "fo" + f
         if fid not in foods:
