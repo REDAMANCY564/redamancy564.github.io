@@ -46,6 +46,16 @@
         <tbody id="rows-occ"></tbody>
       </table>
     </div>
+    <h2>Part 4: training-data lookup</h2>
+    <p class="muted small">InChIKey of the standardized input (stereo kept), Morgan fingerprint (radius 2, 2048 bits) and
+      the Tanimoto to the nearest of the 3,937 training molecules (data/dataset.json, data/fps.bin), against
+      training/taste/make_dataset_lookup.py.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>input</th><th>InChIKey</th><th>match</th><th class="num">nearest Tanimoto</th><th>result</th></tr></thead>
+        <tbody id="rows-dom"></tbody>
+      </table>
+    </div>
   </main>
 
   <script src="../../assets/vendor/rdkit/RDKit_minimal.js"></script>
@@ -139,6 +149,32 @@
             "</td><td class=\"num\">" + dC.toExponential(1) + "</td>" + cell(ok, err) + "</tr>");
         }
         document.getElementById("rows-occ").innerHTML = rowsO.join("");
+
+        const [dsJson, fpsBuf] = await Promise.all([
+          fetch("../data/dataset.json").then(r => r.json()),
+          fetch("../data/fps.bin").then(r => r.arrayBuffer()),
+        ]);
+        const ds = TasteEngine.parseDataset(dsJson, fpsBuf);
+        const rowsD = [];
+        for (const [idx, fx] of fixtures.domain.entries()) {
+          let ok = false, err = "", m = null;
+          try {
+            const std = TasteEngine.standardizedFeatures(rdkit, fx.input, spec);
+            m = TasteEngine.datasetMatch(rdkit, std.smiles, ds);
+            const sameBits = m.bits.length === fx.on_bits.length && m.bits.every((b, k) => b === fx.on_bits[k]);
+            ok = m.key === fx.inchikey && sameBits && Math.abs(m.nn.tanimoto - fx.nn_tanimoto) < 1e-9;
+            if (!ok) err = m.key !== fx.inchikey ? "InChIKey " + m.key : !sameBits ? "fingerprint differs" : "Tanimoto differs";
+          } catch (e) {
+            err = e.code || String(e);
+          }
+          total++; if (ok) passed++;
+          const match = m && m.matches.length ? (m.matches[0].exact ? "exact" : "first 14") + " (" +
+            m.matches.map(x => esc(ds.recs[x.index][1] || "#" + x.index)).join("; ") + ")" : "none";
+          rowsD.push("<tr><td>" + (idx + 1) + "</td><td class=\"mono\">" + esc(fx.input) + "</td><td class=\"mono\">" +
+            esc(fx.inchikey) + "</td><td>" + match + "</td><td class=\"num\">" + (m ? m.nn.tanimoto.toFixed(3) : "") + "</td>" +
+            cell(ok, err) + "</tr>");
+        }
+        document.getElementById("rows-dom").innerHTML = rowsD.join("");
 
         summary.textContent = (passed === total ? "PASS " : "FAIL ") + passed + "/" + total;
         summary.className = passed === total ? "pass" : "fail";

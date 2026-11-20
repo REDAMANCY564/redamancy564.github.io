@@ -1,0 +1,13 @@
+{
+ "fingerprint": "Morgan radius 2, 2048 bits",
+ "percentile": 5,
+ "threshold": 0.3087,
+ "n_test": 394,
+ "test_nn_quantiles": {
+  "1": 0.2313,
+  "5": 0.3087,
+  "10": 0.3554,
+  "25": 0.4615,
+  "50": 0.5814
+ }
+}

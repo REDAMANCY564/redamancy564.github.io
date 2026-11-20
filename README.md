@@ -168,7 +168,9 @@ python flavor_improver/make_parity_fixtures.py  # 生成一致性测试数据
 - **部署模型**：评估用只训练集的模型；评估后按相同设置用全部数据重新训练作为网页模型（因为核苷酸类鲜味分子整组落在测试集，用户 2026-10-17 选择此方案）。
 - **浏览器端标准化**：RDKit.js 没有 neutralize，`taste-predictor/engine.js` 按 RDKit Uncharger 规则重写了中和步骤，其余复用 `odor-predictor/engine.js`。
 - **原子贡献高亮**：同气味页面，在标准化后的结构上计算和绘图（预设分子显示原始形式备注）。
-- **一致性测试**：https://redamancy564.github.io/taste-predictor/tests/parity.html （64 个特征用例 + 23 个标准化用例，含盐和两性离子，+ 23 个原子贡献用例）。**修改特征、标准化或重新训练后，必须确认全部 PASS。**
+- **数据集记录与适用范围**（`training/taste/make_dataset_lookup.py`）：`data/dataset.json` 是 3,937 个训练分子的 InChIKey、整理后的标签、来源、划分和原始味觉描述（文件内附两个数据源的许可声明），`data/fps.bin` 是它们的 Morgan 指纹（r = 2，2,048 位）。搜索的分子按 InChIKey 匹配，匹配不到再按前 14 位（去掉立体）匹配并注明“未区分立体”。与最相近训练分子的 Tanimoto 低于 `data/domain.json` 的阈值（测试集分子与训练集最近邻相似度的 5% 分位数，0.3087）时提示“预测仅供参考”。注意：半径 2 的 Morgan 指纹看不出链长，C7 以上的直链饱和脂肪酸彼此指纹完全相同（硬脂酸与庚酸 Tanimoto = 1），三棕榈酸甘油酯与三硬脂酸甘油酯也是 1，所以这个提示抓不到长链脂肪酸和甘油三酯的问题。
+- **训练集自检**：`training/taste/audit_training.py` 用网页模型预测全部训练分子，按 0.5 阈值统计与标签不符的分子（按化合物类别），报告写到 `_inputs/TASTE-AUDIT.md`（不提交）。
+- **一致性测试**：https://redamancy564.github.io/taste-predictor/tests/parity.html （64 个特征用例 + 23 个标准化用例，含盐和两性离子，+ 23 个原子贡献用例 + 13 个训练数据匹配用例：InChIKey、指纹和最近邻 Tanimoto）。**修改特征、标准化或重新训练后，必须确认全部 PASS。**
 
 **重新训练：**
 ```powershell
@@ -183,6 +185,7 @@ python taste/train_gnn.py          # GNN 3 个种子 + 全数据部署模型
 python taste/umami_valid.py        # 鲜味的验证集参考值
 python taste/export_taste_onnx.py  # 导出 ONNX 并验证
 python taste/make_site_assets.py   # labels、presets、一致性测试数据
+python taste/make_dataset_lookup.py   # dataset.json、fps.bin、domain.json，预设的最近邻相似度（须在 make_site_assets 之后运行）
 ```
 
 **当前结果（测试集 AUROC，GNN 为 3 个种子均值）：** 甜 0.854 / 基线 0.866；苦 0.863 / 0.867；无味 0.889 / 0.826；鲜两者均为 1.000，但测试集鲜味以核苷酸为主且无含磷阴性样本，不可信（验证集无磷鲜味参考 0.943 / 0.950）。苦味中药物分子 AUROC 0.736，非药物 0.875。

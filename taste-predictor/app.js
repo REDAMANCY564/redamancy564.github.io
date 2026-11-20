@@ -66,6 +66,21 @@
     return sessionPromise;
   }
 
+  // ---------- Training data lookup (lazy: loaded on first search) ----------
+  let domain = null;
+  let datasetPromise = null;
+  function getDataset() {
+    if (!datasetPromise) {
+      datasetPromise = Promise.all([
+        getJson("data/dataset.json"),
+        fetch("data/fps.bin").then(r => { if (!r.ok) throw new Error("fps.bin"); return r.arrayBuffer(); }),
+        getJson("data/domain.json"),
+      ]).then(([json, buf, dom]) => { domain = dom; return TasteEngine.parseDataset(json, buf); });
+      datasetPromise.catch(() => { datasetPromise = null; });
+    }
+    return datasetPromise;
+  }
+
   // ---------- Demo rendering ----------
   function renderSelect() {
     const sel = $("preset");
@@ -175,43 +190,83 @@
 
     const status = $("mol-status");
     status.innerHTML = "";
-    const msg = document.createElement("div");
-    status.appendChild(msg);
+    const line = (text, cls) => {
+      const div = document.createElement("div");
+      if (cls) div.className = cls;
+      if (text !== undefined) div.textContent = text;
+      status.appendChild(div);
+      return div;
+    };
+    // Training-data records: presets carry them in presets.json, searches are matched by
+    // InChIKey against data/dataset.json (TasteEngine.datasetMatch)
+    let recs = null, exact = true;
     if (current.source === "search") {
-      msg.textContent = I18N.t("status.search");
-      status.classList.remove("warn");
-      return;
+      if (current.match) {
+        recs = current.match.records;
+        exact = current.match.exact;
+      }
+    } else if (current.dataset_labels) {
+      recs = [{ labels: Object.assign({}, current.dataset_labels, current.dataset_sour_salty || {}),
+                sources: current.dataset_sources, split: current.dataset_split, raw: current.dataset_raw_labels }];
     }
-    const split = current.dataset_split;
-    msg.textContent = I18N.t(split ? "status." + split : "status.none");
+    const split = recs && recs.length ? recs[0].split : null;
+    const sp = I18N.lang === "zh" ? "" : " ";  // space between sentences (none in Chinese)
+    let head = current.source === "search" ? I18N.t("status.live") + sp : "";
+    if (current.source === "search" && !current.match) head += I18N.t("status.search");
+    else head += I18N.t(split ? "status." + split : "status.none");
+    line(head);
     status.classList.toggle("warn", split === "train");
-    if (!current.dataset_labels) return;
+    (recs || []).forEach(r => renderRecord(line, r, recs.length > 1));
+    if (recs && recs.length && !exact) line(I18N.t("status.no_stereo"), "small");
 
-    const lab = Object.assign({}, current.dataset_labels, current.dataset_sour_salty || {});
+    // Applicability domain: similarity to the nearest training molecule
+    if (typeof current.nn_tanimoto === "number" && domain && current.nn_tanimoto < domain.threshold) {
+      line(I18N.t("status.far", { t: current.nn_tanimoto.toFixed(2), thr: domain.threshold.toFixed(2) }), "domain-warn");
+      status.classList.add("warn");
+    }
+  }
+
+  // One training record: recorded tastes (modeled ones in bold), sources, raw records
+  function renderRecord(line, r, showName) {
+    const lab = r.labels;
     const pos = ids.concat(["sour", "salty"]).filter(k => lab[k] === 1);
-    const head = document.createElement("div");
+    const head = line();
     head.style.marginTop = "6px";
-    head.textContent = I18N.t("status.labels");
-    // Recorded tastes as plain text; the four modeled tastes in bold
-    pos.forEach((k, i) => {
-      if (i) head.append(I18N.t("list.comma"));
-      else head.append(" ");
-      const c = document.createElement(ids.includes(k) ? "b" : "span");
-      c.textContent = ids.includes(k) ? labelName(k) : I18N.t("taste." + k);
-      head.appendChild(c);
-    });
+    if (pos.length) {
+      head.append(I18N.t("status.labels"));
+      // Recorded tastes as plain text; the four modeled tastes in bold
+      pos.forEach((k, i) => {
+        if (i) head.append(I18N.t("list.comma"));
+        const c = document.createElement(ids.includes(k) ? "b" : "span");
+        c.textContent = ids.includes(k) ? labelName(k) : I18N.t("taste." + k);
+        head.appendChild(c);
+      });
+    } else {
+      const neg = ids.filter(k => lab[k] === 0).map(labelName).join(I18N.t("list.comma"));
+      const unk = ids.filter(k => lab[k] === null).map(labelName).join(I18N.t("list.comma"));
+      head.append(I18N.t("status.labels_none", { neg: neg || "-" }) +
+                  (unk ? I18N.t("status.labels_unknown", { unk }) : ""));
+    }
+    head.append(I18N.t("status.sources", { src: r.sources.join(" / ") }));
+    if (showName && r.name) head.append((I18N.lang === "zh" ? "" : " ") + I18N.t("status.record_name", { name: r.name }));
+    if (!pos.length && (r.raw || []).includes("Virt:Other")) line(I18N.t("status.virt_other"), "small");
     const raw = document.createElement("details");
     raw.className = "raw-labels small";
     const sum = document.createElement("summary");
     sum.textContent = I18N.t("status.raw");
     const ul = document.createElement("ul");
-    current.dataset_raw_labels.forEach(r => {
+    if (r.name && !showName) {
       const li = document.createElement("li");
-      li.textContent = r.replace(/^Chem:/, "ChemTastesDB: ").replace(/^Virt:/, "VirtuousMultiTaste: ");
+      li.textContent = I18N.t("status.record_name", { name: r.name });
+      ul.appendChild(li);
+    }
+    (r.raw || []).forEach(x => {
+      const li = document.createElement("li");
+      li.textContent = x.replace(/^Chem:/, "ChemTastesDB: ").replace(/^Virt:/, "VirtuousMultiTaste: ");
       ul.appendChild(li);
     });
     raw.append(sum, ul);
-    status.append(head, raw);
+    line().appendChild(raw);
   }
 
   function renderDemo() {
@@ -300,8 +355,19 @@
       setSearchStatus("search.predicting");
       const std = TasteEngine.standardizedFeatures(rd, smiles, spec);
       const { probs: out, contrib } = await TasteEngine.occlusion(session, std.feats, spec);
+      // Training records and nearest neighbour; the prediction is still shown if this fails
+      let match = null, nn = null;
+      try {
+        const ds = await getDataset();
+        const m = TasteEngine.datasetMatch(rd, std.smiles, ds);
+        if (m) {
+          match = { exact: m.matches.length ? m.matches[0].exact : true,
+                    records: m.matches.map(x => TasteEngine.record(ds, x.index)) };
+          nn = m.nn.tanimoto;
+        }
+      } catch (err) { console.error(err); }
       current = {
-        source: "search", smiles: std.smiles, title, pubchem_cid: cid,
+        source: "search", smiles: std.smiles, title, pubchem_cid: cid, match, nn_tanimoto: nn,
         probs: Object.fromEntries(ids.map((id, j) => [id, out[j]])),
         contrib: Object.fromEntries(ids.map((id, j) => [id, contrib.map(c => c[j])])),
       };
