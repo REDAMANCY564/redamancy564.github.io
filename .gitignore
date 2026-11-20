@@ -16,6 +16,7 @@ training/data/
 # Model checkpoints (only the exported ONNX file is published)
 *.pt
 *.pth
+training/checkpoints/
 
 # OS / editor files
 Thumbs.db
