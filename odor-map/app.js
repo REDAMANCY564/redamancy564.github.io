@@ -276,10 +276,16 @@
     return i == null ? -1 : i;
   }
 
+  // Molecule name: merged stereoisomers have a generic name and a Chinese name (library.json
+  // names_zh, training/knowledge/apply_stereo_names.py), shown first on the Chinese page
+  const molName = i => {
+    const m = lib.molecules[i], zh = (lib.names_zh || {})[i];
+    return I18N.lang === "zh" && zh ? zh + " (" + m[1] + ")" : m[1] || m[0];
+  };
   const tip = $("tip");
   function showTip(i, px, py) {
     const m = lib.molecules[i];
-    tip.innerHTML = "<b>" + esc(m[1] || m[0]) + "</b>" +
+    tip.innerHTML = "<b>" + esc(molName(i)) + "</b>" +
       topLabels(i, 3).map(([j, p]) => esc(labelName(j)) + " " + Math.round(100 * p) + "%").join(" · ") +
       '<div class="muted">' + esc(I18N.t(m[2] === 0 ? "g.train" : "g.unseen")) + "</div>";
     tip.classList.remove("hidden");
@@ -461,7 +467,7 @@
     const enc = encodeURIComponent(smiles);
     box.innerHTML = '<div class="card det-card"><button type="button" class="close" id="card-close" aria-label="' + esc(I18N.t("card.close")) + '">×</button>' +
       '<div class="det"><div class="svg" id="card-svg" data-smiles="' + esc(smiles) + '"></div><div>' +
-      "<h3>" + esc(m[1] || smiles) + (Intensity.ready ? Intensity.link(Intensity.byLib(i)) : "") + "</h3>" + '<p class="smi mono">' + esc(smiles) + "</p>" +
+      "<h3>" + esc(molName(i)) + (Intensity.ready ? Intensity.link(Intensity.byLib(i)) : "") + "</h3>" + '<p class="smi mono">' + esc(smiles) + "</p>" +
       '<p class="small muted" style="margin:0">' + esc(I18N.t(m[2] === 0 ? "card.train_help" : "card.unseen_help")) + "</p>" +
       '<p class="small" style="margin:10px 0 0"><b>' + esc(I18N.t("card.profile")) + "</b></p>" +
       '<div class="bars">' + tops.map(([j, p]) => "<span>" + esc(labelName(j)) + '</span><span><span class="bar" style="display:block;width:' +
@@ -487,11 +493,13 @@
   }
 
   // ---------- Search ----------
-  const nameIndex = lib.molecules.map((m, i) => ({ i, name: (m[1] || "").toLowerCase(), smiles: m[0] }));
+  // also found by the Chinese name and the former isomer name of merged stereoisomers
+  const nameIndex = lib.molecules.map((m, i) => ({ i, name: (m[1] || "").toLowerCase(), smiles: m[0],
+    alt: [(lib.names_zh || {})[i], (lib.names_old || {})[i]].filter(Boolean).join(" | ").toLowerCase() }));
   const F = { list: [], active: -1 };
   function suggest() {
     const raw = $("search").value.trim(), q = raw.toLowerCase();
-    F.list = q.length < 2 ? [] : nameIndex.filter(x => x.name.includes(q) || x.smiles === raw)
+    F.list = q.length < 2 ? [] : nameIndex.filter(x => x.name.includes(q) || x.alt.includes(q) || x.smiles === raw)
       .sort((a, b) => (b.name.startsWith(q) - a.name.startsWith(q)) || a.name.length - b.name.length).slice(0, 8);
     F.active = -1;
     renderSuggest();
@@ -501,7 +509,7 @@
     box.classList.toggle("hidden", !F.list.length);
     $("search").setAttribute("aria-expanded", String(!!F.list.length));
     box.innerHTML = F.list.map((x, k) => '<button type="button" role="option" data-pick="' + x.i + '" class="' + (k === F.active ? "active" : "") + '">' +
-      esc(lib.molecules[x.i][1] || x.smiles) + '<span class="smi mono">' + esc(x.smiles) + "</span></button>").join("");
+      esc(molName(x.i)) + '<span class="smi mono">' + esc(x.smiles) + "</span></button>").join("");
   }
   function choose(i) {
     $("search").value = lib.molecules[i][1] || lib.molecules[i][0];
@@ -585,7 +593,7 @@
       return '<div style="margin-top:8px"><b style="color:' + FOOD_COLOURS[k] + '">● </b>' + esc(head) +
         ' <a href="../flavor-kb/?food=' + encodeURIComponent(f.id) + '">' + esc(I18N.t("food.to_kb")) + "</a>" +
         '<span class="ex-list">' + ids.slice(0, FOOD_CHIPS).map(i => '<button type="button" data-mol="' + i + '" class="linklike' + (f.key.includes(i) ? " key" : "") + '">' +
-          esc(lib.molecules[i][1] || lib.molecules[i][0]) + "</button>").join("") + "</span>" +
+          esc(molName(i)) + "</button>").join("") + "</span>" +
         (ids.length > FOOD_CHIPS ? ' <span class="muted">' + esc(I18N.t("food.more", { n: ids.length - FOOD_CHIPS })) + "</span>" : "") + "</div>";
     }).join("") + '<p class="muted" style="margin:8px 0 0">' + esc(I18N.t("food.legend")) + "</p>";
   }

@@ -184,6 +184,10 @@ def main():
     for fn in ("library.json", "probs.bin", "fps.bin", "presets.json", "metrics.json"):
         print(f"{fn:14s} {(SITE / 'data' / fn).stat().st_size / 1e6:.3f} MB")
     print("foods:", len(food_ids), "| threshold:", library["odor_threshold"])
+    # generic names for merged stereoisomers (case-fix-3): applied to the written site data
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "knowledge"))
+    from apply_stereo_names import apply
+    apply()
 
 
 if __name__ == "__main__":

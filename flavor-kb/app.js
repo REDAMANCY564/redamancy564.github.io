@@ -6,6 +6,10 @@
 
   /** Sources of a food record (src + srcs) as a sentence. */
   const SRC_KEY = { flavordb: "src.flavordb", foodb: "src.foodb", author: "src.author" };
+  // Compound name for lists and titles: merged stereoisomers have a generic name with a Chinese
+  // name (c.zh, training/knowledge/apply_stereo_names.py), shown first on the Chinese page
+  const cName = c => (I18N.lang === "zh" && c.zh ? c.zh + " (" + c.name + ")" : c.name);
+
   const foodSourceLine = f => (f.srcs || [f.src]).filter(s => SRC_KEY[s]).map(s => I18N.t(SRC_KEY[s])).join("; ");
 
   await I18N.ready;
@@ -84,7 +88,7 @@
     const cmpList = el("ul", {}, r.compounds.map(id => {
       const c = kbd.compounds[id];
       return el("li", {}, [
-        el("a", { href: "?compound=" + id, text: c.name, onclick: e => { e.preventDefault(); showCompound(id, true); } }), " ",
+        el("a", { href: "?compound=" + id, text: cName(c), onclick: e => { e.preventDefault(); showCompound(id, true); } }), " ",
         (c.kfo || c.dunkel) ? tag("t1k") : null,
         el("div", { class: "meta", text: (c.flavor || []).slice(0, 5).join(", ") }),
       ]);
@@ -127,7 +131,7 @@
           n.complete ? el("strong", { text: " " + I18N.t("food.kfo_complete") }) : null,
         ]));
       }
-      card.append(chips(f.kfo.map(c => ({ label: kbd.compounds[c].name, href: "?compound=" + c, id: c, strong: true })),
+      card.append(chips(f.kfo.map(c => ({ label: cName(kbd.compounds[c]), href: "?compound=" + c, id: c, strong: true })),
         MAX_CHIPS, it => showCompound(it.id, true)));
     }
     if (hasDet) {
@@ -136,7 +140,7 @@
       const sorted = FlavorKBUI.sortDetected(kbd, id, f.det);
       card.append(chips(sorted.map(c => {
         const s = linkSources(kbd, c, id);
-        return { label: kbd.compounds[c].name, href: "?compound=" + c, id: c, strong: !!kbd.compounds[c].kfo, mark: s.mark,
+        return { label: cName(kbd.compounds[c]), href: "?compound=" + c, id: c, strong: !!kbd.compounds[c].kfo, mark: s.mark,
                  title: I18N.t("src.title") + "\n" + s.lines.join("\n") };
       }), MAX_CHIPS, it => showCompound(it.id, true)));
       card.append(el("p", { class: "small muted", text: I18N.t("src.legend") }));
@@ -166,7 +170,7 @@
     const card = el("div", { class: "card" });
     // "intensity curve" link beside the name when this compound has an odor intensity curve (matched by CAS, assets/intensity.js)
     const curve = el("span", {});
-    card.append(el("h3", {}, [casName || c.name, curve]));   // the key flavor compound tag is shown once, in the section below
+    card.append(el("h3", {}, [casName || cName(c), curve]));   // the key flavor compound tag is shown once, in the section below
     // opened from a CAS number of another stereoisomer: say whose data the card shows
     if (casName) card.append(el("p", { class: "small muted", text: I18N.t("cmp.cas_isomer", { cas, name: c.name }) }));
     Intensity.load().then(() => { curve.innerHTML = Intensity.link(Intensity.byKb(id)); }, () => { /* no link without the data */ });
@@ -293,7 +297,7 @@
     card.append(abs);
     if (found.size) {
       card.append(el("div", { class: "kb-row-title small", text: I18N.t("doi.matches", { n: found.size }) }));
-      card.append(chips([...found.keys()].map(id => ({ label: kb.compounds[id].name, href: "?compound=" + id, id, strong: !!kb.compounds[id].kfo })),
+      card.append(chips([...found.keys()].map(id => ({ label: cName(kb.compounds[id]), href: "?compound=" + id, id, strong: !!kb.compounds[id].kfo })),
         MAX_CHIPS, it => showCompound(it.id, true)));
     } else {
       card.append(el("p", { class: "small muted", text: I18N.t("doi.no_matches") }));

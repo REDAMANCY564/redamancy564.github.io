@@ -39,6 +39,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import sys
 from pathlib import Path
 
 from rdkit import Chem, RDLogger
@@ -522,6 +523,10 @@ def main():
     for f in ("compounds.json", "foods.json"):
         print(f"Wrote {f}: {(OUT / f).stat().st_size / 1e6:.2f} MB")
     print(json.dumps(meta["counts"]))
+    # generic names for merged stereoisomers (case-fix-3): applied to the written site data
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "knowledge"))
+    from apply_stereo_names import apply
+    apply()
 
 
 if __name__ == "__main__":
