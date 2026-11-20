@@ -225,13 +225,24 @@
     el.innerHTML = svg || esc(I18N.t("r.no_draw"));
   }
 
+  /** "Occurs in: a, b, c and n more", each food with its source mark (F FlavorDB2, Fo FooDB, A author's data). */
+  function foodLine(m) {
+    if (!m.foods.length) return '<span class="muted">' + esc(I18N.t("r.no_foods")) + "</span>";
+    const mark = code => [[1, "F", "src.flavordb"], [2, "Fo", "src.foodb"], [4, "A", "src.author"]].filter(([b]) => code & b);
+    const one = (name, zh, code) => {
+      const ms = mark(code);
+      return esc(I18N.lang === "zh" && zh ? zh : name) + '<sup class="fsrc" title="' + esc(I18N.t("r.food_src") + ms.map(x => I18N.t(x[2])).join("; ")) + '">' +
+        ms.map(x => x[1]).join("·") + "</sup>";
+    };
+    return esc(I18N.t("r.foods")) + ": " + m.foods.slice(0, FOODS_SHOWN).map((n, j) => one(n, m.foodsZh[j], m.foodSrc[j])).join(", ") +
+      (m.foods.length > FOODS_SHOWN ? " " + esc(I18N.t("r.foods_more", { n: m.foods.length - FOODS_SHOWN })) : "") +
+      (m.kb ? ' <a class="small" href="../flavor-kb/?compound=' + encodeURIComponent(m.kb) + '" target="_blank" rel="noopener">' + esc(I18N.t("r.food_all")) + "</a>" : "");
+  }
+
   function resultCard(rank, hit, wantIds) {
     const m = F.molecule(D, hit.index);
     const top = F.topLabels(D, hit.index, TOP_PRED);
-    const foods = m.foods.length
-      ? esc(I18N.t("r.foods")) + ": " + esc(m.foods.slice(0, FOODS_SHOWN).join(", ")) +
-        (m.foods.length > FOODS_SHOWN ? " " + esc(I18N.t("r.foods_more", { n: m.foods.length - FOODS_SHOWN })) : "")
-      : '<span class="muted">' + esc(I18N.t("r.no_foods")) + "</span>";
+    const foods = foodLine(m);
     const badge = trainNote(m.group === 0);
     return '<div class="card res"><div class="svg" data-smiles="' + esc(m.smiles) + '"></div><div>' +
       '<p class="small muted" style="margin:0">' + esc(I18N.t("r.rank", { n: rank })) + " · " + esc(I18N.t("r.score")) + " <b>" + (100 * hit.score).toFixed(1) + "</b> " + badge + "</p>" +
@@ -511,9 +522,7 @@
     $("b-results").innerHTML = res.top.map((h, k) => {
       const m = F.molecule(D, h.index);
       const preds = F.topLabels(D, h.index, TOP_PRED);
-      const foods = m.foods.length
-        ? esc(I18N.t("r.foods")) + ": " + esc(m.foods.slice(0, FOODS_SHOWN).join(", ")) + (m.foods.length > FOODS_SHOWN ? " " + esc(I18N.t("r.foods_more", { n: m.foods.length - FOODS_SHOWN })) : "")
-        : '<span class="muted">' + esc(I18N.t("r.no_foods")) + "</span>";
+      const foods = foodLine(m);
       const badge = trainNote(m.group === 0);
       const open = B.open.has(h.index);
       return '<div class="card res' + (h.highlight ? " hi" : "") + '"><div class="svg" data-smiles="' + esc(m.smiles) + '"></div><div>' +

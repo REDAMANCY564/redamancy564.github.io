@@ -224,6 +224,11 @@ ul.plain li { margin-bottom: 6px; }
 .kb-chip:hover { border-color: var(--accent); color: var(--accent); }
 .kb-chip.strong { background: #1f6f3f; border-color: #1f6f3f; color: #fff; }
 .kb-chip.strong:hover { background: #185a33; color: #fff; }
+/* food source marks (F FlavorDB2, Fo FooDB, A author's published data), title = full source */
+sup.fsrc { font-size: .68em; color: var(--muted); margin-left: 2px; cursor: help; letter-spacing: .02em; }
+.kb-chip sup.fsrc { color: inherit; opacity: .75; }
+.kb-src-list { margin: 4px 0 0 1.2em; padding: 0; font-size: .875rem; }
+.kb-src-list li { margin: 2px 0; }
 .kb-more { font: inherit; font-size: .875rem; border: 0; background: none; color: var(--accent); cursor: pointer; padding: 2px 4px; }
 .kb-row-title { font-weight: 600; }
 .kb-tag-line { margin: 10px 0 4px; }

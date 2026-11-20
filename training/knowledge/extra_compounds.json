@@ -1,0 +1,227 @@
+[
+ {
+  "cid": 6570,
+  "name": "Methyl vinyl ketone",
+  "smiles": "CC(=O)C=C"
+ },
+ {
+  "cid": 7636,
+  "name": "2-Ethylhexyl acrylate",
+  "smiles": "CCCCC(CC)COC(=O)C=C"
+ },
+ {
+  "cid": 7798,
+  "name": "Butanoic anhydride",
+  "smiles": "CCCC(=O)OC(=O)CCC"
+ },
+ {
+  "cid": 8050,
+  "name": "Methyl decanoate",
+  "smiles": "CCCCCCCCCC(=O)OC"
+ },
+ {
+  "cid": 11716,
+  "name": "3-Buten-2-ol",
+  "smiles": "CC(C=C)O"
+ },
+ {
+  "cid": 13023,
+  "name": "1-Methylindan",
+  "smiles": "CC1CCC2=CC=CC=C12"
+ },
+ {
+  "cid": 13181,
+  "name": "4-Penten-1-ol",
+  "smiles": "C=CCCCO"
+ },
+ {
+  "cid": 13642,
+  "name": "4'-Ethylacetophenone",
+  "smiles": "CCC1=CC=C(C=C1)C(=O)C"
+ },
+ {
+  "cid": 15289,
+  "name": "3-Penten-2-ol",
+  "smiles": "CC=CC(C)O"
+ },
+ {
+  "cid": 15607,
+  "name": "Methyl undecanoate",
+  "smiles": "CCCCCCCCCCC(=O)OC"
+ },
+ {
+  "cid": 15827,
+  "name": "5-Methylhexanal",
+  "smiles": "CC(C)CCCC=O"
+ },
+ {
+  "cid": 19800,
+  "name": "2-Butyl-1-octanol",
+  "smiles": "CCCCCCC(CCCC)CO"
+ },
+ {
+  "cid": 20155,
+  "name": "1-Phenyl-2-propyn-1-ol",
+  "smiles": "C#CC(C1=CC=CC=C1)O"
+ },
+ {
+  "cid": 20263,
+  "name": "2-Methylbenzofuran",
+  "smiles": "CC1=CC2=CC=CC=C2O1"
+ },
+ {
+  "cid": 20524,
+  "name": "3-Methyl-1,5-pentanediol",
+  "smiles": "CC(CCO)CCO"
+ },
+ {
+  "cid": 21414,
+  "name": "2-Octyl-1-dodecanol",
+  "smiles": "CCCCCCCCCCC(CCCCCCCC)CO"
+ },
+ {
+  "cid": 21872,
+  "name": "2-Octynoic acid",
+  "smiles": "CCCCCC#CC(=O)O"
+ },
+ {
+  "cid": 31236,
+  "name": "2-Phenoxyethanol",
+  "smiles": "C1=CC=C(C=C1)OCCO"
+ },
+ {
+  "cid": 31241,
+  "name": "2-Ethylhexanal",
+  "smiles": "CCCCC(CC)C=O"
+ },
+ {
+  "cid": 31374,
+  "name": "N,N-Dimethylacetamide",
+  "smiles": "CC(=O)N(C)C"
+ },
+ {
+  "cid": 66077,
+  "name": "Vinyl octadecanoate",
+  "smiles": "CCCCCCCCCCCCCCCCCC(=O)OC=C"
+ },
+ {
+  "cid": 67328,
+  "name": "Propyl pentanoate",
+  "smiles": "CCCCC(=O)OCCC"
+ },
+ {
+  "cid": 69951,
+  "name": "Methyl 2-ethylbutanoate",
+  "smiles": "CCC(CC)C(=O)OC"
+ },
+ {
+  "cid": 74172,
+  "name": "Ethyl 3-butenoate",
+  "smiles": "CCOC(=O)CC=C"
+ },
+ {
+  "cid": 75189,
+  "name": "3-Undecanone",
+  "smiles": "CCCCCCCCC(=O)CC"
+ },
+ {
+  "cid": 76662,
+  "name": "1-(2-Furanyl)-1-propanone",
+  "smiles": "CCC(=O)C1=CC=CO1"
+ },
+ {
+  "cid": 77907,
+  "name": "2-Propylfuran",
+  "smiles": "CCCC1=CC=CO1"
+ },
+ {
+  "cid": 79544,
+  "name": "Heptyl pentanoate",
+  "smiles": "CCCCCCCOC(=O)CCCC"
+ },
+ {
+  "cid": 79553,
+  "name": "Decyl pentanoate",
+  "smiles": "CCCCCCCCCCOC(=O)CCCC"
+ },
+ {
+  "cid": 89560,
+  "name": "1-Nonen-3-ol",
+  "smiles": "CCCCCCC(C=C)O"
+ },
+ {
+  "cid": 98346,
+  "name": "4-Methyl-1-hexanol",
+  "smiles": "CCC(C)CCCO"
+ },
+ {
+  "cid": 118623,
+  "name": "3-Ethylbenzaldehyde",
+  "smiles": "CCC1=CC(=CC=C1)C=O"
+ },
+ {
+  "cid": 137594,
+  "name": "1-Butylcyclopentene",
+  "smiles": "CCCCC1=CCCC1"
+ },
+ {
+  "cid": 444899,
+  "name": "Arachidonic acid",
+  "smiles": "CCCCC/C=C\\C/C=C\\C/C=C\\C/C=C\\CCCC(=O)O"
+ },
+ {
+  "cid": 520420,
+  "name": "1-Hepten-3-one",
+  "smiles": "CCCCC(=O)C=C"
+ },
+ {
+  "cid": 580057,
+  "name": "5-Ethylcyclopent-1-enecarboxaldehyde",
+  "smiles": "CCC1CCC=C1C=O"
+ },
+ {
+  "cid": 3084890,
+  "name": "2-Octyl-1-decanol",
+  "smiles": "CCCCCCCCC(CCCCCCCC)CO"
+ },
+ {
+  "cid": 5280934,
+  "name": "alpha-Linolenic acid",
+  "smiles": "CC/C=C\\C/C=C\\C/C=C\\CCCCCCCC(=O)O"
+ },
+ {
+  "cid": 5282761,
+  "name": "Vaccenic acid",
+  "smiles": "CCCCCC/C=C\\CCCCCCCCCC(=O)O"
+ },
+ {
+  "cid": 5318017,
+  "name": "2-Hepten-1-ol",
+  "smiles": "CCCC/C=C/CO"
+ },
+ {
+  "cid": 5326164,
+  "name": "4-Hexen-2-one",
+  "smiles": "C/C=C/CC(=O)C"
+ },
+ {
+  "cid": 5371707,
+  "name": "1-Phenyl-1-nonen-3-one",
+  "smiles": "CCCCCCC(=O)/C=C/C1=CC=CC=C1"
+ },
+ {
+  "cid": 6434067,
+  "name": "3-Heptenoic acid",
+  "smiles": "CCC/C=C\\CC(=O)O"
+ },
+ {
+  "cid": 22169183,
+  "name": "Isooctyl dodecanoate",
+  "smiles": "CCCCCCCCCCCC(=O)OCCCCCC(C)C"
+ },
+ {
+  "cid": 87306010,
+  "name": "Isobutyl 2-heptenoate",
+  "smiles": "CCCC/C=C/C(=O)OCC(C)C"
+ }
+]

@@ -176,6 +176,17 @@
   check("identify", "CAS from an Excel number", idf("Butyric acid", "107926").slice(0, 2), ["Butyric acid", "cas"]);
   check("identify", "CAS wins over a conflicting name", idf("Hexanal", "124-19-6"), ["Nonanal", "cas", "cas_name_conflict"]);
   check("identify", "valid CAS not in the knowledge base", idf("Cyclotetrasiloxane, octamethyl-", "556-67-2").slice(1), [null, "cas_not_in_kb"]);
+  // human milk volatiles (2026-11-20): every spelling of the GC-MS library output, Tables S1/S2 of Cui et al. 2026 and the
+  // Chinese names finds its compound (CAS first; a CAS not in the knowledge base falls back to the name)
+  const milk = (await (await fetch("milk_names.json")).json()).cases;
+  const milkBad = milk.filter(([name, cas, want]) => N.identify(idx, name, cas, false, false).kbId !== want).map(x => x[0] + " " + x[1]);
+  check("milk names", "all " + milk.length + " spellings of the human milk volatiles find the expected compound", milkBad, []);
+  const kbOfM = r => r.kbId;
+  check("milk names", "1-Pentanethiol with CAS 5451-80-9 = heptyl pentanoate by CAS; the name alone finds nothing",
+    [idx.info.get(kbOfM(N.identify(idx, "1-Pentanethiol", "005451-80-9", false, false))).name, N.identify(idx, "1-Pentanethiol", "", false, false).kbId], ["Heptyl pentanoate", null]);
+  check("milk names", "NIST name with a wrong CAS not in the knowledge base falls back to the name (1-phenylethanol)",
+    (r => [idx.info.get(r.kbId).name, r.method, r.note])(N.identify(idx, "Benzenemethanol, .alpha.-methyl-", "061967-11-1", false, false)), ["1-Phenylethanol", "name", "cas_not_in_kb"]);
+  check("milk names", "the NIST mismatch name alone is not an alias (oxalate ester)", N.identify(idx, "Oxalic acid, cyclobutyl decyl ester", "", false, false).kbId, null);
   const typo = N.identify(idx, "Hexanall", "");
   check("identify", "typo: not adopted, offered as a candidate", [typo.kbId, typo.candidates.length > 0 && idx.info.get(typo.candidates[0].id).name], [null, "Hexanal"]);
   check("identify", "search by part of a name", N.search(idx, "decalactone").map(c => idx.info.get(c.id).name).some(n => /decalactone/i.test(n)), true);

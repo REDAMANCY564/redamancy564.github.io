@@ -34,9 +34,9 @@
     const render = (n) => {
       box.innerHTML = "";
       items.slice(0, n).forEach(it => box.append(el("a", {
-        class: "kb-chip" + (it.strong ? " strong" : ""), href: it.href, text: it.label,
+        class: "kb-chip" + (it.strong ? " strong" : ""), href: it.href, title: it.title || null,
         onclick: onClick ? (e) => { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); onClick(it); } } : null,
-      })));
+      }, [it.label, it.mark ? el("sup", { class: "fsrc", text: it.mark }) : null])));
       if (items.length > n) {
         box.append(el("button", { type: "button", class: "kb-more", text: I18N.t("cmp.show_all", { n: items.length }),
           onclick: () => render(items.length) }));
@@ -193,15 +193,45 @@
     };
   }
 
+  /** Food name in the page language (only a few foods have a Chinese name, e.g. human milk). */
+  const foodName = f => (I18N.lang === "zh" && f.zh ? f.zh : f.name);
+
+  /**
+   * Sources of one compound-food link (compounds.json "ds"; absent = FlavorDB2 only):
+   * {mark: "F·Fo·A", lines: ["FlavorDB2", "FooDB: USDA ...", "author's published data: ..."]}.
+   */
+  function linkSources(kb, cid, fid) {
+    const c = kb.compounds[cid];
+    const codes = (c && c.ds && c.ds[fid]) || ["F"];
+    const marks = [], lines = [];
+    if (codes.includes("F")) { marks.push("F"); lines.push(I18N.t("src.flavordb")); }
+    const refs = codes.filter(x => typeof x === "number");
+    if (refs.length) {
+      marks.push("Fo");
+      refs.forEach(i => lines.push(I18N.t("src.foodb_ref", { r: (kb.refs[i] || {}).text || "" })));
+    }
+    const tabs = codes.filter(x => x === "S1" || x === "S2");
+    if (tabs.length) { marks.push("A"); lines.push(I18N.t("src.author_ref", { t: tabs.join(", ") })); }
+    return { mark: marks.join("·"), lines };
+  }
+
+  /** Chip items for the foods of a compound, with source marks and the sources as title. */
+  function foodChips(kb, cid, fids, strong) {
+    return fids.map(f => {
+      const s = linkSources(kb, cid, f);
+      return { label: foodName(kb.foods[f]), href: link("food", f), id: f, strong: !!strong, mark: s.mark, title: I18N.t("src.title") + "\n" + s.lines.join("\n") };
+    });
+  }
+
   /** "Typical flavor sources" summary for one compound (used on the odor predictor page). */
   function sourcesSummary(kb, id) {
     const c = kb.compounds[id];
     const wrap = el("div", { class: "kb-sources" });
     if (c.dunkel) wrap.append(el("p", { class: "small" }, [tag("t1k"), " ", I18N.t("cmp.generalist", { odor: c.dunkel.odor })]));
-    const kfo = (c.kfo || []).map(f => ({ label: kb.foods[f].name, href: link("food", f), strong: true }));
+    const kfo = (c.kfo || []).map(f => ({ label: foodName(kb.foods[f]), href: link("food", f), strong: true }));
     if (kfo.length) wrap.append(el("div", { class: "kb-row" }, [
       el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t("cmp.kfo_foods_desc")]), chips(kfo, 12)]));
-    const det = (c.det || []).map(f => ({ label: kb.foods[f].name, href: link("food", f) }));
+    const det = foodChips(kb, id, c.det || [], false);
     if (det.length) wrap.append(el("div", { class: "kb-row" }, [
       el("div", { class: "small kb-row-title" }, [tag("t1d"), " ", I18N.t("cmp.det_foods", { n: det.length })]), chips(det, 12)]));
     if (!kfo.length && !det.length && !c.dunkel) wrap.append(el("p", { class: "small muted", text: I18N.t("kb.not_in_kb") }));
@@ -229,5 +259,5 @@
     return out;
   }
 
-  window.FlavorKBUI = { el, tag, link, chips, literature, waitBar, sourcesSummary, litFoods };
+  window.FlavorKBUI = { el, tag, link, chips, literature, waitBar, sourcesSummary, litFoods, foodName, linkSources, foodChips };
 })();

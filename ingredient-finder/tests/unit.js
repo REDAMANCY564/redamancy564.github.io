@@ -12,11 +12,11 @@
   const lib = D.lib;
 
   check("data", "library, probabilities and fingerprints have matching sizes",
-    [D.n, D.L, D.probs.length === D.n * D.L, D.offsets.length === D.n + 1], [5072, 138, true, true]);
+    [D.n, D.L, D.probs.length === D.n * D.L, D.offsets.length === D.n + 1], [5094, 138, true, true]);
   check("data", "47 excluded molecules listed with a reason", [lib.excluded.length, lib.excluded.every(e => e.reason && e.category)], [47, true]);
   check("data", "no excluded molecule left in the library", lib.excluded.filter(e => lib.molecules.some(m => m[0] === e.smiles)).length, 0);
-  check("data", "groups: 3881 train, 479 valid, 486 test, 226 knowledge base only (47 non-flavor molecules excluded)",
-    [0, 1, 2, 3].map(g => lib.molecules.filter(m => m[2] === g).length), [3881, 479, 486, 226]);
+  check("data", "groups: 3881 train, 479 valid, 486 test, 248 knowledge base only (47 non-flavor molecules excluded)",
+    [0, 1, 2, 3].map(g => lib.molecules.filter(m => m[2] === g).length), [3881, 479, 486, 248]);
 
   for (const c of fx.mode_a) {
     const hits = F.scoreA(D, c.want, c.avoid, null).slice(0, 20);
@@ -27,8 +27,14 @@
   const all = F.scoreA(D, want, [], null), nat = F.scoreA(D, want, [], { natural: true }), uns = F.scoreA(D, want, [], { unseen: true });
   check("filters", "natural: only molecules with food records", [nat.length, nat.every(h => lib.molecules[h.index][4].length > 0)],
     [lib.molecules.filter(m => m[4].length).length, true]);
-  check("filters", "not used in training: valid + test + knowledge base only (1191)", [uns.length, uns.every(h => lib.molecules[h.index][2] !== 0)], [1191, true]);
-  check("filters", "no filter: every molecule", all.length, 5072);
+  check("filters", "not used in training: valid + test + knowledge base only (1213)", [uns.length, uns.every(h => lib.molecules[h.index][2] !== 0)], [1213, true]);
+  check("filters", "no filter: every molecule", all.length, 5094);
+  // food sources (2026-11-20): one digit per food, 1 FlavorDB2 + 2 FooDB + 4 author's data
+  check("foods", "every food link has a source digit 1 to 7", lib.molecules.every(m => (m[5] || "").length === m[4].length && /^[1-7]*$/.test(m[5] || "")), true);
+  const hm = lib.foods.indexOf("Human milk");
+  const hept = lib.molecules.findIndex(m => m[1] === "1-Hepten-3-one");
+  check("foods", "1-hepten-3-one occurs in human milk (author's published data); the food has a Chinese name",
+    [hept >= 0 && F.molecule(D, hept).foods.includes("Human milk"), (F.molecule(D, hept).foodSrc[F.molecule(D, hept).foods.indexOf("Human milk")] & 4) > 0, lib.foods_zh[hm]], [true, true, "母乳"]);
   check("weights", "high / mid / low = 1 / 0.5 / 0.25", F.WEIGHTS, { high: 1, mid: 0.5, low: 0.25 });
   const j = D.labelIndex.creamy, i0 = all[0].index;
   const scoreOf = (want, avoid, i) => F.scoreA(D, want, avoid, null).find(h => h.index === i).score;
@@ -69,8 +75,8 @@
   const regOf = i => Reg.byLib(i);
   const inLib = Reg.items.every(it => lib.molecules[it.li] && lib.molecules[it.li][0] === it.smiles);
   check("regulatory", "every item is a library molecule (same index and SMILES)", inLib, true);
-  check("regulatory", "molecules listed: EU 2014, China 1283, both 1184",
-    ["eu", "cn", "both"].map(r => Reg.items.filter(it => Reg.permitted(it, r)).length), [2014, 1283, 1184]);
+  check("regulatory", "molecules listed: EU 2016, China 1284, both 1185",
+    ["eu", "cn", "both"].map(r => Reg.items.filter(it => Reg.permitted(it, r)).length), [2016, 1284, 1185]);
   const dia = regOf(396), van = regOf(3302), cou = regOf(5023);
   check("regulatory", "diacetyl: FL 07.052, GB S0207 / FEMA 2370", [dia.eu.map(e => e.fl), dia.cn.map(c => c.code + "/" + c.fema)], [["07.052"], ["S0207/2370"]]);
   check("regulatory", "vanillin: FL 05.018 without restriction, GB S0172", [van.eu.map(e => [e.fl, e.r]), van.cn.map(c => [c.code, c.r])], [[["05.018", null]], [["S0172", null]]]);
@@ -84,8 +90,8 @@
   // US: 21 CFR flavouring sections and the FDA list (user decisions D1-D6, E1-E6)
   await I18N.ready;   // the status blocks are checked in the page language
   const usK = it => it.us.map(e => e.kind + ":" + (e.sec || e.fema || "") + (e.lim != null ? ";l" : "") + (e.nlfg != null ? ";n" : "") + (e.note ? ";k" : ""));
-  check("regulatory US", "molecules: US permitted 1852, all three 1164",
-    ["us", "all3"].map(r => Reg.items.filter(it => Reg.permitted(it, r)).length), [1852, 1164]);
+  check("regulatory US", "molecules: US permitted 1853, all three 1165",
+    ["us", "all3"].map(r => Reg.items.filter(it => Reg.permitted(it, r)).length), [1853, 1165]);
   check("regulatory US", "coumarin 189.130 and safrole 189.180 prohibited, not permitted", [usK(cou), usK(regOf(4016)), Reg.permitted(cou, "us")],
     [["p:189.130"], ["p:189.180"], false]);
   check("regulatory US", "diacetyl 184.1278 + FEMA 2370; vanillin 182.60; acetal 172.515", [usK(dia), usK(van), usK(regOf(2995))],
@@ -153,11 +159,11 @@
 
   const euSet = new Set(smallItems.filter(it => Reg.permitted(it, "eu")).map(it => it.li));
   const onlyEu = F.scoreA(D, want, [], { only: euSet });
-  check("filters", "region filter: only molecules permitted in the EU (2014)", [onlyEu.length, onlyEu.every(h => euSet.has(h.index))], [2014, true]);
+  check("filters", "region filter: only molecules permitted in the EU (2016)", [onlyEu.length, onlyEu.every(h => euSet.has(h.index))], [2016, true]);
   const usSet = new Set(smallItems.filter(it => Reg.permitted(it, "us")).map(it => it.li));
   const onlyUs = F.scoreA(D, want, [], { only: usSet });
-  check("filters", "region filter: only molecules permitted in the US (1852), coumarin and pulegone left out",
-    [onlyUs.length, onlyUs.every(h => usSet.has(h.index)), usSet.has(5023), usSet.has(4102)], [1852, true, false, false]);
+  check("filters", "region filter: only molecules permitted in the US (1853), coumarin and pulegone left out",
+    [onlyUs.length, onlyUs.every(h => usSet.has(h.index)), usSet.has(5023), usSet.has(4102)], [1853, true, false, false]);
   const cnSet = new Set(smallItems.filter(it => Reg.permitted(it, "cn")).map(it => it.li));
   const nb = F.neighbours(D, F.vector(D, 396), F.fpBits(D, 396), 396, { keep: i => cnSet.has(i) });
   check("mode B", "region filter: the 20 neighbours are all listed in China, best odor similarity first",

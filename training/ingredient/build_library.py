@@ -187,6 +187,15 @@ def main():
     excluded.sort(key=lambda e: (e["category"], e["smiles"]))
 
     mols = sorted(lib.values(), key=lambda r: (r["split"] != "train", r["smiles"]))
+    # Keep the order of the previous build (2026-11-20): the site data, the odor map coordinates and its
+    # training animation use the library index, so molecules added later are appended at the end.
+    prev_path = OUT_DIR / "library.json"
+    if prev_path.exists():
+        prev = [r["smiles"] for r in json.loads(prev_path.read_text(encoding="utf-8"))["molecules"]]
+        pos = {s: i for i, s in enumerate(prev)}
+        missing = [s for s in prev if s not in lib]
+        assert not missing, f"molecules of the previous build are gone: {missing[:5]}"
+        mols.sort(key=lambda r: (pos.get(r["smiles"], len(prev)), r["smiles"]))
     counts = pd.Series([r["split"] for r in mols]).value_counts().to_dict()
     out = {
         "built": time.strftime("%Y-%m-%d"),
