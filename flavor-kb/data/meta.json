@@ -7,7 +7,7 @@
   "foods_foodb_only": 243,
   "foods_dunkel": 16,
   "compounds_with_foods": 1953,
-  "core_compounds": 67,
+  "core_compounds": 72,
   "links": {
    "flavordb": {
     "molecules": 1602,
@@ -28,7 +28,8 @@
     "links": 78,
     "s1": 69,
     "s2": 14,
-    "new_compounds": 32
+    "new_compounds": 32,
+    "kfo": 10
    }
   }
  },
@@ -57,7 +58,8 @@
    "doi": "10.1016/j.fbio.2026.110162",
    "tables": {
     "S1": "Table S1: volatile compounds of human milk (n = 50), relative content min ~ max (mean)",
-    "S2": "Table S2: fatty acid composition of human milk samples"
+    "S2": "Table S2: fatty acid composition of human milk samples",
+    "T1": "Table 1: key aroma compounds of human milk (ROAV >= 1 and perceived at the sniffing port in GC-O); entered as the key flavor compounds of human milk (user decision 2026-11-20)"
    },
    "note": "Table S1 footnote: 2,4-di-tert-butylphenol, 2-ethyl-1-hexanol, 2-phenoxyethanol and isophorone come from the sampling containers and laboratory consumables; they get no human milk link."
   }
@@ -86,6 +88,16 @@
    "flavordb_molecules_hidden": 125,
    "foodb_links": 30974,
    "author_links": 78
+  },
+  {
+   "date": "2026-11-20",
+   "what": "author_kfo",
+   "sources": [
+    "author"
+   ],
+   "food": "fdb796",
+   "kfo": 10,
+   "dairy_zh": 60
   }
  ]
 }

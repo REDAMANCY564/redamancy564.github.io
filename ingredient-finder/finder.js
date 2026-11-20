@@ -3,7 +3,8 @@
  *
  * Data (training/ingredient/make_site_data.py):
  *   library.json  molecules [smiles, name, group, kb, foods, food_sources], group 0 train / 1 valid / 2 test / 3 kb only;
- *                 food_sources: one digit per food, sum of 1 FlavorDB2, 2 FooDB, 4 author's published data
+ *                 food_sources: one hexadecimal digit per food, sum of 1 FlavorDB2, 2 FooDB, 4 author's published data,
+ *                 8 key flavor compound of that food (human milk: Table 1 of the author's published data)
  *   probs.bin     uint8 [n, L]: predicted probability x 255 (odor-predictor model)
  *   fps.bin       uint32 offsets [n + 1], then uint16 on-bit indices (Morgan r = 2, 2048 bits)
  *
@@ -72,7 +73,7 @@
     const m = d.lib.molecules[i];
     const zh = d.lib.foods_zh || {};
     return { index: i, smiles: m[0], name: m[1], group: m[2], kb: m[3], foods: m[4].map(k => d.lib.foods[k]),
-             foodsZh: m[4].map(k => zh[k] || null), foodSrc: m[4].map((k, j) => +((m[5] || "")[j] || 1)) };
+             foodsZh: m[4].map(k => zh[k] || null), foodSrc: m[4].map((k, j) => parseInt((m[5] || "")[j] || "1", 16)) };
   }
 
   /**

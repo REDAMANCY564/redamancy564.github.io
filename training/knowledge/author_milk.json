@@ -4,7 +4,8 @@
   "doi": "10.1016/j.fbio.2026.110162",
   "S1": "Table S1: volatile compounds of human milk (n = 50), relative content min ~ max (mean)",
   "S2": "Table S2: fatty acid composition of human milk samples",
-  "migrants_note": "Table S1 footnote: 2,4-di-tert-butylphenol, 2-ethyl-1-hexanol, 2-phenoxyethanol and isophorone come from the sampling containers and laboratory consumables; they get no human milk link."
+  "migrants_note": "Table S1 footnote: 2,4-di-tert-butylphenol, 2-ethyl-1-hexanol, 2-phenoxyethanol and isophorone come from the sampling containers and laboratory consumables; they get no human milk link.",
+  "T1": "Table 1: key aroma compounds of human milk (ROAV >= 1 and perceived at the sniffing port in GC-O); entered as the key flavor compounds of human milk (user decision 2026-11-20)"
  },
  "S1": [
   {
@@ -618,6 +619,68 @@
    "name": "Arachidonic acid",
    "cid": 444899,
    "smiles": "CCCCC/C=C\\C/C=C\\C/C=C\\C/C=C\\CCCC(=O)O"
+  }
+ ],
+ "T1": [
+  {
+   "name": "Hexanal",
+   "s1": 13,
+   "cid": 6184,
+   "smiles": "CCCCCC=O"
+  },
+  {
+   "name": "Heptanal",
+   "s1": 14,
+   "cid": 8130,
+   "smiles": "CCCCCCC=O"
+  },
+  {
+   "name": "Octanal",
+   "s1": 16,
+   "cid": 454,
+   "smiles": "CCCCCCCC=O"
+  },
+  {
+   "name": "Nonanal",
+   "s1": 18,
+   "cid": 31289,
+   "smiles": "CCCCCCCCC=O"
+  },
+  {
+   "name": "(E)-2-octenal",
+   "s1": 21,
+   "cid": 5283324,
+   "smiles": "CCCCC/C=C/C=O"
+  },
+  {
+   "name": "(E)-2-nonenal",
+   "s1": 26,
+   "cid": 5283335,
+   "smiles": "CCCCCC/C=C/C=O"
+  },
+  {
+   "name": "(E,E)-2,4-nonadienal",
+   "s1": 29,
+   "cid": 5283339,
+   "smiles": "CCCC/C=C/C=C/C=O"
+  },
+  {
+   "name": "2,3-octanedione",
+   "s1": 54,
+   "cid": 11449,
+   "smiles": "CCCCCC(=O)C(=O)C"
+  },
+  {
+   "name": "1-hepten-3-one",
+   "s1": 53,
+   "cid": 520420,
+   "smiles": "CCCCC(=O)C=C"
+  },
+  {
+   "name": "1-octen-3-one",
+   "s1": 52,
+   "cid": 61346,
+   "smiles": "CCCCCC(=O)C=C"
   }
  ]
 }

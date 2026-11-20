@@ -73,11 +73,12 @@
     const foodList = el("ul", {}, r.foods.map(id => {
       const f = kbd.foods[id];
       return el("li", {}, [
-        el("a", { href: "?food=" + id, text: f.name, onclick: e => { e.preventDefault(); showFood(id, true); } }), " ",
-        f.src === "dunkel" ? tag("t1k") : tag("t1d"),
+        el("a", { href: "?food=" + id, text: foodName(f) + (I18N.lang === "zh" && f.zh ? " (" + f.name + ")" : ""), onclick: e => { e.preventDefault(); showFood(id, true); } }), " ",
+        f.src === "dunkel" || f.kfo_src ? tag("t1k") : tag("t1d"),
         el("div", { class: "meta", text: f.src === "dunkel"
           ? I18N.t("search.meta_kfo", { n: (f.kfo || []).length })
-          : I18N.t("search.meta_det", { c: f.cat || "", n: (f.det || []).length }) }),
+          : I18N.t("search.meta_det", { c: f.cat || "", n: (f.det || []).length }) +
+            (f.kfo_src === "author" ? I18N.t("search.meta_kfo_author", { n: f.kfo.length }) : "") }),
       ]);
     }));
     const cmpList = el("ul", {}, r.compounds.map(id => {
@@ -113,7 +114,13 @@
     if (f.src !== "dunkel") card.append(el("p", { class: "small muted", text: I18N.t("food.sources", { s: foodSourceLine(f) }) }));
 
     if (hasKfo) {
-      card.append(el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t("food.kfo_desc")]));
+      // key flavor compounds: Dunkel 2014 statements, or the author's published data (human milk, Table 1)
+      const author = f.kfo_src === "author";
+      card.append(el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t(author ? "food.kfo_desc_author" : "food.kfo_desc")]));
+      if (author) {
+        card.append(el("p", { class: "stmt muted" }, [I18N.t("food.kfo_author_src") + " ",
+          el("a", { href: "https://doi.org/10.1016/j.fbio.2026.110162", target: "_blank", rel: "noopener", text: "doi:10.1016/j.fbio.2026.110162" })]));
+      }
       for (const n of f.notes || []) {
         card.append(el("p", { class: "stmt muted" }, [
           n.text + " (Dunkel et al. 2014, " + I18N.t("food.page", { p: n.page }) + ")",
@@ -126,7 +133,7 @@
     if (hasDet) {
       card.append(el("div", { class: "kb-row-title small" }, [tag("t1d"), " ", I18N.t("food.detected", { n: f.det.length })]));
       card.append(el("p", { class: "small muted", text: I18N.t("food.detected_note") }));
-      const sorted = f.det.slice().sort((a, b) => (kbd.compounds[b].kfo ? 1 : 0) - (kbd.compounds[a].kfo ? 1 : 0));
+      const sorted = FlavorKBUI.sortDetected(kbd, id, f.det);
       card.append(chips(sorted.map(c => {
         const s = linkSources(kbd, c, id);
         return { label: kbd.compounds[c].name, href: "?compound=" + c, id: c, strong: !!kbd.compounds[c].kfo, mark: s.mark,
@@ -178,8 +185,10 @@
     const right = el("div", {});
     if (c.dunkel) right.append(el("p", { class: "small" }, [tag("t1k"), " ", I18N.t("cmp.generalist", { odor: c.dunkel.odor }) + " (" + I18N.t("food.page", { p: c.dunkel.page }) + ")"]));
     if (c.kfo && c.kfo.length) {
-      right.append(el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t("cmp.kfo_foods_desc")]));
-      right.append(chips(c.kfo.map(f => ({ label: foodName(kbd.foods[f]), href: "?food=" + f, id: f, strong: true })), MAX_CHIPS, it => showFood(it.id, true)));
+      FlavorKBUI.kfoGroups(kbd, c).forEach(g => {
+        right.append(el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t(g.desc)]));
+        right.append(chips(g.foods.map(f => ({ label: foodName(kbd.foods[f]), href: "?food=" + f, id: f, strong: true })), MAX_CHIPS, it => showFood(it.id, true)));
+      });
     } else {
       right.append(el("p", { class: "small muted", text: I18N.t("cmp.no_kfo") }));
     }

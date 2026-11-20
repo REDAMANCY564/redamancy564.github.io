@@ -193,8 +193,34 @@
     };
   }
 
-  /** Food name in the page language (only a few foods have a Chinese name, e.g. human milk). */
+  /** Food name in the page language (dairy foods and human milk have a Chinese name). */
   const foodName = f => (I18N.lang === "zh" && f.zh ? f.zh : f.name);
+
+  /**
+   * Foods where a compound is a key flavor compound, in groups by evidence: Dunkel 2014 (GC-O,
+   * quantitation, recombination) and the author's published data (foods.json "kfo_src": "author":
+   * human milk, Table 1 of Cui et al. 2026, ROAV >= 1 and perceived in GC-O). [{desc, foods}]
+   */
+  function kfoGroups(kb, c) {
+    const ids = c.kfo || [];
+    return [["cmp.kfo_foods_desc", ids.filter(f => kb.foods[f].kfo_src !== "author")],
+            ["cmp.kfo_foods_author", ids.filter(f => kb.foods[f].kfo_src === "author")]]
+      .filter(g => g[1].length).map(([desc, foods]) => ({ desc, foods }));
+  }
+
+  /**
+   * Compound ids of a food's detected list in display order: the food's own key flavor compounds,
+   * then the rest; by name within each group (locants,
+   * stereo descriptors and n-/alpha- prefixes ignored, so "(E)-2-nonenal" sorts under n).
+   */
+  const nameKey = n => String(n || "").toLowerCase()
+    .replace(/^(?:\([^)]*\)-|[0-9][0-9,']*-|(?:(?:cis|trans)(?:,(?:cis|trans))*|alpha|beta|gamma|delta|n|dl|d|l|[a-z])-(?=[a-z0-9(]))+/, "");
+  function sortDetected(kb, fid, ids) {
+    const own = new Set(kb.foods[fid].kfo || []);
+    const tier = c => (own.has(c) ? 0 : 1);
+    return ids.slice().sort((a, b) => tier(a) - tier(b) ||
+      nameKey(kb.compounds[a].name).localeCompare(nameKey(kb.compounds[b].name)) || kb.compounds[a].name.localeCompare(kb.compounds[b].name));
+  }
 
   /**
    * Sources of one compound-food link (compounds.json "ds"; absent = FlavorDB2 only):
@@ -228,9 +254,11 @@
     const c = kb.compounds[id];
     const wrap = el("div", { class: "kb-sources" });
     if (c.dunkel) wrap.append(el("p", { class: "small" }, [tag("t1k"), " ", I18N.t("cmp.generalist", { odor: c.dunkel.odor })]));
-    const kfo = (c.kfo || []).map(f => ({ label: foodName(kb.foods[f]), href: link("food", f), strong: true }));
-    if (kfo.length) wrap.append(el("div", { class: "kb-row" }, [
-      el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t("cmp.kfo_foods_desc")]), chips(kfo, 12)]));
+    const groups = kfoGroups(kb, c);
+    groups.forEach(g => wrap.append(el("div", { class: "kb-row" }, [
+      el("p", { class: "small kb-tag-line" }, [tag("t1k"), " ", I18N.t(g.desc)]),
+      chips(g.foods.map(f => ({ label: foodName(kb.foods[f]), href: link("food", f), strong: true })), 12)])));
+    const kfo = c.kfo || [];
     const det = foodChips(kb, id, c.det || [], false);
     if (det.length) wrap.append(el("div", { class: "kb-row" }, [
       el("div", { class: "small kb-row-title" }, [tag("t1d"), " ", I18N.t("cmp.det_foods", { n: det.length })]), chips(det, 12)]));
@@ -259,5 +287,5 @@
     return out;
   }
 
-  window.FlavorKBUI = { el, tag, link, chips, literature, waitBar, sourcesSummary, litFoods, foodName, linkSources, foodChips };
+  window.FlavorKBUI = { el, tag, link, chips, literature, waitBar, sourcesSummary, litFoods, foodName, linkSources, foodChips, kfoGroups, sortDetected, nameKey };
 })();
