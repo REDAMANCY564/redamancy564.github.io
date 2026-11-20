@@ -558,8 +558,8 @@
     await nextFrame();
     STD.targets = recs.map(r => {
       const a = ident(r);
-      const kb = a.kbId && nameIndex.info.get(a.kbId);
-      const base = r.name || (kb && kb.name) || "";
+      // CAS-only rows: the name of that CAS (another stereoisomer may hold the knowledge-base name)
+      const base = r.name || (a.kbId && GcmsNames.nameFor(nameIndex, a.kbId, a.method === "cas" ? a.casNorm : null)) || "";
       return Object.assign(r, {
         ident: a, keys: GcmsRules.idKeys(a.kbId, a.casNorm, a.casStatus, r.name),
         // standard files may list CAS only: name from the knowledge base, else (after the run) from the matched library hit

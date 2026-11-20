@@ -35,6 +35,7 @@
   "cmp.flavor": "Flavor descriptors (FlavorDB)",
   "cmp.fema": "FEMA flavor profile",
   "cmp.no_kfo": "Neither the main text of Dunkel 2014 nor the author's published data name this compound as a key flavor compound of a specific food.",
+  "cmp.cas_isomer": "Opened by CAS {cas}; the title is the name of that CAS number. The knowledge base merges compounds by structure without stereo, so this card combines its stereoisomers (name in the knowledge base: {name}).",
   "cmp.synonyms": "Synonyms",
   "cmp.predict": "See the graph neural network's odor prediction for this compound",
   "cmp.pubchem": "View on PubChem",

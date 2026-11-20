@@ -168,6 +168,11 @@
   check("cas", "all " + allCas.length + " knowledge-base CAS numbers normalize as valid", notOk, []);
   const kbName = r => (r.kbId ? idx.info.get(r.kbId).name : null);
   const idf = (name, c, d) => { const r = N.identify(idx, name, c, d); return [kbName(r), r.method, r.note]; };
+  // names of CAS numbers that belong to another stereoisomer than the merged compound's name (2026-11-20)
+  const casName = c => { const r = N.identify(idx, "", c, false); return N.nameFor(idx, r.kbId, r.method === "cas" ? r.casNorm : null); };
+  check("names", "a CAS of another stereoisomer shows its own name",
+    ["25152-83-4", "123-73-9", "5989-27-5", "62238-34-0", "25152-84-5", "66-25-1"].map(casName),
+    ["(E,Z)-2,4-decadienal", "(E)-2-butenal", "D-Limonene", "4-Heptenal", "(2E,4E)-deca-2,4-dienal", "Hexanal"]);
   check("identify", "by CAS with leading zeros", idf("2,3-Butanedione", "000431-03-8"), ["Diacetyl", "cas", null]);
   check("identify", "inverted CAS index name, no CAS", idf("2-Butanone, 3-hydroxy-", ""), ["Acetoin", "name", null]);
   check("identify", "Greek letter name, no CAS", idf("γ-Nonalactone", "")[0] !== null && idf("γ-Nonalactone", "")[1], "norm");

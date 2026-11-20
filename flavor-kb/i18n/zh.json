@@ -35,6 +35,7 @@
   "cmp.flavor": "风味描述（FlavorDB）",
   "cmp.fema": "FEMA 风味描述",
   "cmp.no_kfo": "Dunkel 2014 正文和作者已发表数据都没有把该物质列为某个食品的关键风味物质。",
+  "cmp.cas_isomer": "按 CAS {cas} 打开，标题是这个 CAS 对应的名称。知识库按去掉立体的结构合并物质，这张卡片的数据合并了它的各立体异构体（知识库中的名称：{name}）。",
   "cmp.synonyms": "别名",
   "cmp.predict": "查看图神经网络对该物质的气味预测",
   "cmp.pubchem": "在 PubChem 查看",

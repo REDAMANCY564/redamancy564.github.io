@@ -53,8 +53,8 @@
       if (!map.has(key)) map.set(key, new Set());
       map.get(key).add(id);
     };
-    for (const [id, display, cas, syns] of namesJson.compounds) {
-      info.set(id, { id, name: display, cas });
+    for (const [id, display, cas, syns, casNames] of namesJson.compounds) {
+      info.set(id, { id, name: display, cas, casNames: casNames || null });
       cas.forEach(c => add(byCas, c, id));
       [display].concat(syns).forEach(s => {
         add(exact, s.trim().toLowerCase(), id);
@@ -141,5 +141,16 @@
     return [...hits.entries()].slice(0, 6).map(([id, score]) => ({ id, score }));
   }
 
-  window.GcmsNames = { normName, similarity, buildIndex, identify, fuzzy, search };
+  /**
+   * Display name of a knowledge-base compound reached through a CAS number: the knowledge base
+   * merges stereoisomers, so a CAS of another isomer than the display name gets its own name
+   * (names.json fifth element, e.g. 25152-83-4 -> (E,Z)-2,4-decadienal); otherwise the display name.
+   */
+  function nameFor(index, id, cas) {
+    const k = id && index.info.get(id);
+    if (!k) return null;
+    return (cas && k.casNames && k.casNames[cas]) || k.name;
+  }
+
+  window.GcmsNames = { normName, similarity, buildIndex, identify, fuzzy, search, nameFor };
 })();
