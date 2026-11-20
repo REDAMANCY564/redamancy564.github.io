@@ -58,14 +58,18 @@
     });
   }
 
-  // Judgement thresholds (metrics.json gnn.thresholds, Youden J on the validation split)
+  // Judgement thresholds (metrics.json gnn.thresholds: sweet and bitter Youden J, umami and tasteless
+  // best F1, all on the validation split; training/taste/train_gnn.py judgement_thresholds)
   function renderThreshold() {
     const t = metrics.gnn.thresholds;
     if (!t) return;
     const pct = v => (v < 0.1 ? (v * 100).toFixed(1) : String(Math.round(v * 100))) + "%";
+    const two = v => v.toFixed(2);
     const vars = Object.fromEntries(ids.map(id => [id, pct(t[id].threshold)]));
-    vars.u_fp = Math.round((1 - t.umami.valid_specificity) * 100) + "%";
-    vars.t_fp = Math.round((1 - t.tasteless.valid_specificity) * 100) + "%";
+    vars.u_p = two(t.umami.valid_precision);
+    vars.u_r = two(t.umami.valid_recall);
+    vars.t_p = two(t.tasteless.valid_precision);
+    vars.t_r = two(t.tasteless.valid_recall);
     $("method-threshold").innerHTML = I18N.t("method.threshold", vars);
     I18N.nobr($("method-threshold"));
   }

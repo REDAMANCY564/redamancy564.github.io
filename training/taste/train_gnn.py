@@ -8,7 +8,7 @@ whole-molecule descriptors (descriptors.py), sum pooling, depth/width/dropout, c
   python train_gnn.py select            all CONFIGS on train/valid only (no test scores);
                                         writes checkpoints/taste_select.json
   python train_gnn.py final NAME [...]  for each config: 3 seeds -> test AUROC (mean +/- std),
-                                        per-label Youden thresholds on valid, then the deployed
+                                        per-label judgement thresholds on valid, then the deployed
                                         model: the best-valid seed retrained on ALL molecules for
                                         the median best epoch (checkpoints/taste_<NAME>.pt).
                                         Writes checkpoints/taste_final_<NAME>.json
@@ -18,8 +18,10 @@ whole-molecule descriptors (descriptors.py), sum pooling, depth/width/dropout, c
 
 Deployment (user decision 2026-10-17, option A): the deployed model is trained on all
 molecules; its test scores are not measurable, so the site reports the train-split models.
-Judgement thresholds (2026-11-20): per label, the Youden J optimum (max TPR - FPR) of the
+Judgement thresholds (2026-11-20): see judgement_thresholds() (sweet, bitter: Youden J; umami,
+tasteless: best F1; no judgement shown when validation precision < 0.5), computed with the
 evaluated (best-valid seed) model on the validation split.
+  python train_gnn.py thresholds        recompute them for the deployed model (no retraining)
 """
 import json
 import shutil
@@ -28,7 +30,7 @@ import time
 
 import numpy as np
 import torch
-from sklearn.metrics import roc_curve
+from sklearn.metrics import precision_recall_curve, roc_curve
 
 from common import LABELS, TRAINING, load, macro, per_label, print_report, test_report, update_metrics
 from descriptors import NAMES as DESC_NAMES, describe_many
@@ -159,6 +161,74 @@ def youden(y, p):
     return float(min(thr[j], 1.0)), float(tpr[j]), float(1 - fpr[j])
 
 
+def best_f1(y, p):
+    """Threshold with the highest F1 -> (threshold, precision, recall, F1)."""
+    k = ~np.isnan(y)
+    pr, rc, thr = precision_recall_curve(y[k], p[k])
+    f = 2 * pr * rc / np.maximum(pr + rc, 1e-12)
+    j = int(np.argmax(f[:-1]))
+    return float(thr[j]), float(pr[j]), float(rc[j]), float(f[j])
+
+
+# Judgement thresholds (user decisions 2026-11-20): sweet and bitter by Youden J; the rare labels
+# umami and tasteless by the best F1 (Youden J put them below 1% and flagged many non-umami /
+# non-tasteless molecules). A label whose F1 threshold still has validation precision < 0.5 is
+# shown on the page as a probability only ("show": false).
+F1_LABELS = ("umami", "tasteless")
+MIN_PRECISION = 0.5
+THRESHOLDS_RULE = ("sweet, bitter: Youden J optimum (max sensitivity + specificity - 1); umami, tasteless: "
+                   "threshold with the best F1. All on the validation split with the evaluated model (train split "
+                   "only). A label whose validation precision at its threshold is below 0.5 shows no judgement on "
+                   "the page (show: false).")
+
+
+def judgement_thresholds(Yv, Pv):
+    out = {}
+    for j, lab in enumerate(LABELS):
+        y, p = Yv[:, j], Pv[:, j]
+        k = ~np.isnan(y)
+        if lab in F1_LABELS:
+            t, prec, rec, f1 = best_f1(y, p)
+            rule = "f1"
+        else:
+            t = youden(y, p)[0]
+            rule = "youden"
+        pred = p[k] >= t
+        yk = y[k] == 1
+        tp = int((pred & yk).sum())
+        prec = tp / max(int(pred.sum()), 1)
+        rec = tp / max(int(yk.sum()), 1)
+        spec = int((~pred & ~yk).sum()) / max(int((~yk).sum()), 1)
+        out[lab] = {"threshold": round(t, 4), "rule": rule, "valid_precision": round(prec, 4),
+                    "valid_recall": round(rec, 4), "valid_specificity": round(spec, 4),
+                    "valid_f1": round(2 * prec * rec / max(prec + rec, 1e-12), 4),
+                    "show": bool(prec >= MIN_PRECISION)}
+    return out
+
+
+def refresh_thresholds():
+    """Recompute the judgement thresholds of the deployed configuration from checkpoints/taste_gnn_eval.pt
+    (no retraining) and write them to metrics.json and checkpoints/taste_final_<config>.json."""
+    from export_taste_onnx import load_model, predict_smiles
+    d = load()
+    va = d["split"] == "valid"
+    model, ckpt = load_model("taste_gnn_eval.pt")
+    Pv = predict_smiles(model, ckpt, [s for s, v in zip(d["smiles"], va) if v])
+    thr = judgement_thresholds(d["Y"][va], Pv)
+    import json as _json
+    from common import METRICS_PATH
+    m = _json.loads(METRICS_PATH.read_text(encoding="utf-8"))["gnn"]
+    m["thresholds"], m["thresholds_rule"] = thr, THRESHOLDS_RULE
+    update_metrics("gnn", m)
+    fin = CKPT_DIR / f"taste_final_{m['config_name']}.json"
+    if fin.exists():
+        f = _json.loads(fin.read_text(encoding="utf-8"))
+        f["thresholds"], f["thresholds_rule"] = thr, THRESHOLDS_RULE
+        fin.write_text(_json.dumps(f, indent=1, ensure_ascii=False), encoding="utf-8")
+    for lab, v in thr.items():
+        print(f"  {lab:10s} {v}")
+
+
 def run_seeds(d, name, verbose=True):
     cfg = cfg_of(name)
     data = {s: tensors(d, d["split"] == s) for s in ("train", "valid")}
@@ -213,12 +283,8 @@ def final(name, site=False):
     print_report(f"Evaluated model (seed {best['seed']}, valid {best['valid']:.4f})", best["report"])
 
     Yv = d["Y"][d["split"] == "valid"]
-    thresholds = {}
-    for j, lab in enumerate(LABELS):
-        t, sens, spec = youden(Yv[:, j], best["pv"][:, j])
-        thresholds[lab] = {"threshold": round(t, 4), "valid_sensitivity": round(sens, 4),
-                           "valid_specificity": round(spec, 4)}
-    print("Youden thresholds (valid):", thresholds)
+    thresholds = judgement_thresholds(Yv, best["pv"])
+    print("Judgement thresholds (valid):", thresholds)
 
     full_epochs = int(np.median([r["epoch"] for r in runs]))
     print(f"Deployment model: seed {best['seed']}, all {len(d['X'])} molecules, {full_epochs} epochs")
@@ -246,8 +312,7 @@ def final(name, site=False):
         "evaluated_seed": best["seed"],
         "valid_macro_auroc": round(best["valid"], 4),
         "thresholds": thresholds,
-        "thresholds_rule": "per label, Youden J optimum (max sensitivity + specificity - 1) of the evaluated "
-                           "model on the validation split",
+        "thresholds_rule": THRESHOLDS_RULE,
         "deployed_model": {"trained_on": "all molecules (train+valid+test)", "epochs": full_epochs,
                            "note": "test metrics come from the models trained on the train split only"},
         **best["report"],
@@ -269,6 +334,8 @@ def main():
         site = "--site" in args
         for name in [a for a in args[1:] if not a.startswith("--")]:
             final(name, site=site)
+    elif args[0] == "thresholds":
+        refresh_thresholds()
     else:
         raise SystemExit(__doc__)
 

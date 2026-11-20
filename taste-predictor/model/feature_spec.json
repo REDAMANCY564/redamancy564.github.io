@@ -113,10 +113,16 @@
   "thresholds": {
     "sweet": 0.5758,
     "bitter": 0.4218,
-    "umami": 0.0073,
-    "tasteless": 0.0221
+    "umami": 0.1757,
+    "tasteless": 0.1271
   },
-  "thresholds_rule": "per label, Youden J optimum (max sensitivity + specificity - 1) of the evaluated model on the validation split",
+  "thresholds_show": {
+    "sweet": true,
+    "bitter": true,
+    "umami": true,
+    "tasteless": false
+  },
+  "thresholds_rule": "sweet, bitter: Youden J optimum (max sensitivity + specificity - 1); umami, tasteless: threshold with the best F1. All on the validation split with the evaluated model (train split only). A label whose validation precision at its threshold is below 0.5 shows no judgement on the page (show: false).",
   "model_file": "taste_gnn.onnx",
   "onnx_opset": 17,
   "num_labels": 4,

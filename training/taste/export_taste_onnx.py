@@ -106,6 +106,8 @@ def main():
     metrics = json.loads(METRICS_PATH.read_text(encoding="utf-8"))["gnn"]
     if "thresholds" in metrics:
         spec["thresholds"] = {lab: metrics["thresholds"][lab]["threshold"] for lab in LABELS}
+        # labels whose judgement is shown on the page (validation precision >= 0.5 at the threshold)
+        spec["thresholds_show"] = {lab: metrics["thresholds"][lab].get("show", True) for lab in LABELS}
         spec["thresholds_rule"] = metrics["thresholds_rule"]
     spec.update(model_file=ONNX_PATH.name, onnx_opset=17, num_labels=len(LABELS),
                 model_output={"name": "probs", "shape": "[B, num_labels]", "sigmoid_applied": True,

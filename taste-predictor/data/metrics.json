@@ -154,26 +154,42 @@
     "thresholds": {
       "sweet": {
         "threshold": 0.5758,
-        "valid_sensitivity": 0.7966,
-        "valid_specificity": 0.8704
+        "rule": "youden",
+        "valid_precision": 0.8343,
+        "valid_recall": 0.7966,
+        "valid_specificity": 0.8704,
+        "valid_f1": 0.815,
+        "show": true
       },
       "bitter": {
         "threshold": 0.4218,
-        "valid_sensitivity": 0.7791,
-        "valid_specificity": 0.8619
+        "rule": "youden",
+        "valid_precision": 0.8221,
+        "valid_recall": 0.7791,
+        "valid_specificity": 0.8619,
+        "valid_f1": 0.8,
+        "show": true
       },
       "umami": {
-        "threshold": 0.0073,
-        "valid_sensitivity": 1.0,
-        "valid_specificity": 0.9508
+        "threshold": 0.1757,
+        "rule": "f1",
+        "valid_precision": 0.8,
+        "valid_recall": 0.75,
+        "valid_specificity": 0.9918,
+        "valid_f1": 0.7742,
+        "show": true
       },
       "tasteless": {
-        "threshold": 0.0221,
-        "valid_sensitivity": 1.0,
-        "valid_specificity": 0.7081
+        "threshold": 0.1271,
+        "rule": "f1",
+        "valid_precision": 0.3,
+        "valid_recall": 0.6,
+        "valid_specificity": 0.9191,
+        "valid_f1": 0.4,
+        "show": false
       }
     },
-    "thresholds_rule": "per label, Youden J optimum (max sensitivity + specificity - 1) of the evaluated model on the validation split",
+    "thresholds_rule": "sweet, bitter: Youden J optimum (max sensitivity + specificity - 1); umami, tasteless: threshold with the best F1. All on the validation split with the evaluated model (train split only). A label whose validation precision at its threshold is below 0.5 shows no judgement on the page (show: false).",
     "deployed_model": {
       "trained_on": "all molecules (train+valid+test)",
       "epochs": 85,

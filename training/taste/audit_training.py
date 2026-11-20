@@ -5,8 +5,9 @@ molecules: it shows where the model does not even reproduce the labels it was tr
 
 case-fix-3 (2026-11-20): compares the first version (checkpoints/taste_gnn_v1.pt, the model
 the site used until then) with the retrained one (--new, default checkpoints/taste_gnn.pt),
-each at probability 0.5 and at its per-label judgement thresholds (Youden J on the validation
-split, computed from the matching train-split model *_eval.pt, as in train_gnn.py).
+each at probability 0.5 and at its per-label judgement thresholds (train_gnn.judgement_thresholds:
+sweet and bitter Youden J, umami and tasteless best F1, on the validation split, computed from the
+matching train-split model *_eval.pt).
 Detailed sections use the new model at its thresholds.
 Writes a Markdown report (default: _inputs/TASTE-AUDIT.md, not committed).
 
@@ -19,7 +20,7 @@ from rdkit import Chem
 
 from common import DATA_DIR, LABELS, ROOT, auroc, load
 from export_taste_onnx import load_model, predict_smiles
-from train_gnn import youden
+from train_gnn import judgement_thresholds
 
 ZH = {"sweet": "甜", "bitter": "苦", "umami": "鲜", "tasteless": "无味"}
 P = Chem.MolFromSmarts
@@ -71,7 +72,8 @@ def run(name, smiles):
 def thresholds(eval_name, d):
     va = d["split"] == "valid"
     P = run(eval_name, [s for s, v in zip(d["smiles"], va) if v])
-    return np.array([youden(d["Y"][va][:, j], P[:, j])[0] for j in range(len(LABELS))])
+    t = judgement_thresholds(d["Y"][va], P)
+    return np.array([t[lab]["threshold"] for lab in LABELS])
 
 
 def mismatch(Y, Pr, thr):
@@ -105,7 +107,7 @@ def main():
       "所以这里的不符说明模型连训练标签都没有学到，而不是对新分子的泛化误差。")
     w(f"- 旧模型：{args.old}（第一版，3 层 GCN，平均 + 最大池化）。新模型：{args.new}"
       "（同样 3 层 GCN，读出层加求和池化和 8 个全局分子描述符）。")
-    w("- 判定有两种口径：概率 ≥ 0.5；概率 ≥ 该标签的判断阈值（验证集 Youden J，由对应的只用训练集训练的模型算出）。"
+    w("- 判定有两种口径：概率 ≥ 0.5；概率 ≥ 该标签的判断阈值（验证集上甜、苦取 Youden J 最大处，鲜、无味取 F1 最高处，由对应的只用训练集训练的模型算出；新模型的无味阈值在验证集上精确率只有 0.30，页面上不显示无味的判断，这里仍按该阈值统计）。"
       "只统计数据集中该标签已知（1 或 0）的分子；未知（-）不计。")
     w("- 化合物类别是启发式 SMARTS 规则（按下表顺序，先匹配先归类）：甘油酯骨架 → 无环、只含 C/O、一个羧基的脂肪酸"
       "（按碳数分 ≥C12 / <C12）→ 肽 → α-氨基酸 → 糖环（≥2 个环上 OH）或多元醇 → 酯 → 其他。\n")
