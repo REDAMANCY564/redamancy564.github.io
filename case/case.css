@@ -1,0 +1,22 @@
+/* Case page /case/: one human milk sample through the site's tools (layout from .about in assets/style.css) */
+.case > section, .case > .toc { max-width: 860px; }
+.case .cs-q { margin-bottom: 4px; }
+.case .cs-tool { margin-top: 0; }
+.case .cs-lim { color: var(--muted); font-size: .9375rem; }
+.case .note.warn { margin: var(--sp-3) 0; }
+.cs-table td { white-space: normal; vertical-align: top; }
+.cs-table td.num, .cs-table td.nw { white-space: nowrap; }
+.cs-table th { white-space: normal; vertical-align: bottom; }
+.cs-table .cs-sum td { font-weight: 600; border-top: 2px solid var(--border); }
+.cs-table .cs-diff td { background: var(--warn-soft); }
+.cs-narrow { width: auto; min-width: 60%; }
+.table-wrap { margin: var(--sp-3) 0; }
+.cs-fig { margin: var(--sp-3) 0; }
+.cs-fig img { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 4px; }
+.cs-fig figcaption { font-size: .875rem; color: var(--muted); margin-top: 6px; }
+.cs-src { padding-left: 1.2em; font-size: .9375rem; }
+.cs-src li { margin-bottom: 6px; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .cs-narrow { width: 100%; }
+  .cs-table th, .cs-table td { padding: 6px 6px; }
+}
