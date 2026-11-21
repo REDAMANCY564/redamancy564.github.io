@@ -100,6 +100,27 @@ window.UserMode = (function () {
     return null;
   }
 
+  // Compound names: on the Chinese page the knowledge base's Chinese name (flavor-kb/data/compounds.json "zh",
+  // by the row's knowledge-base id), else the name from the file; the English page shows the file's name.
+  let kbZh = null, kbZhPromise = null;
+  function loadKbZh() {
+    if (!kbZhPromise) {
+      kbZhPromise = fetch("../flavor-kb/data/compounds.json").then(r => (r.ok ? r.json() : {})).then(j => {
+        kbZh = {};
+        for (const [id, c] of Object.entries(j)) if (c.zh) kbZh[id] = c.zh;
+        if (FL) renderMerge();
+      }).catch(() => { kbZh = {}; });
+    }
+  }
+  // Merged stereoisomers have a generic Chinese name ("2,4-癸二烯醛"): the configuration given in the file's name
+  // ("(E,Z)-2,4-Decadienal") is put in front, so (E,E)- and (E,Z)- rows stay apart.
+  function nm(r) {
+    const zh = I18N.lang === "zh" && kbZh && r.kbId && kbZh[r.kbId];
+    if (!zh) return r.label;
+    const cfg = /^\(([EZRS\d,]+)\)-/.exec(r.label || "");
+    return cfg && !/^\(/.test(zh) ? "(" + cfg[1] + ")-" + zh : zh;
+  }
+
   function thresholdOf(row) {
     if (state.thr[row.key] > 0) return { v: state.thr[row.key], from: "user" };
     if (row.thr) return { v: row.thr, from: row.thrFrom };
@@ -125,6 +146,7 @@ window.UserMode = (function () {
   }
 
   function render() {
+    if (I18N.lang === "zh") loadKbZh();
     if (window.Intensity && !Intensity.ready) Intensity.load().then(() => { if (FL) renderMerge(); }, () => { /* no links */ });
     readSlots();
     renderSlots();
@@ -183,9 +205,9 @@ window.UserMode = (function () {
         else if (r.thrUse.from === "builtin") notes.push(t("user.note_thr_builtin"));
       }
       const vec = r.vec ? (r.vec.src === "kb" ? t("user.vec_kb") : t("user.vec_model")) : '<span class="error">' + esc(t("user.vec_none")) + "</span>";
-      h += "<tr><td>" + esc(r.label) + curveLink(r) + '</td><td class="nw">' + esc(r.cas) + '</td><td class="num nw">' + (r.s ? fmt(r.s.value) : "-") +
+      h += "<tr><td>" + esc(nm(r)) + curveLink(r) + '</td><td class="nw">' + esc(r.cas) + '</td><td class="num nw">' + (r.s ? fmt(r.s.value) : "-") +
         '</td><td class="num nw">' + (r.t ? fmt(r.t.value) : "-") + '</td><td class="num"><input class="thr" type="number" min="0" step="any" data-uthr="' +
-        esc(r.key) + '" value="' + (r.thrUse.v ? r.thrUse.v : "") + '" aria-label="' + esc(r.label) + '"></td><td class="nw">' +
+        esc(r.key) + '" value="' + (r.thrUse.v ? r.thrUse.v : "") + '" aria-label="' + esc(nm(r)) + '"></td><td class="nw">' +
         (r.vec ? esc(vec) : vec) + '</td><td class="small">' + esc(notes.join("; ")) + "</td></tr>";
     });
     h += "</tbody></table></div>";
@@ -194,14 +216,14 @@ window.UserMode = (function () {
     // compounds without an odor vector: list them and offer the odor-predictor model
     const miss = m.rows.filter(r => !r.vec);
     if (miss.length) {
-      h += '<div class="note warn" style="margin-top:12px"><p style="margin:0 0 6px">' + esc(t("user.novec", { n: miss.length, list: miss.map(r => r.label).join(t("ref.list_sep")) })) + "</p>";
+      h += '<div class="note warn" style="margin-top:12px"><p style="margin:0 0 6px">' + esc(t("user.novec", { n: miss.length, list: miss.map(r => nm(r)).join(t("ref.list_sep")) })) + "</p>";
       if (!state.predOpen) {
         h += '<button type="button" class="btn-sm" id="user-pred-open">' + esc(t("user.pred_ask")) + "</button>";
       } else {
         h += '<p class="small" style="margin:6px 0">' + esc(t("user.pred_intro")) + '</p><div class="table-wrap"><table class="user-table"><thead><tr><th>' +
           esc(t("col.compound")) + "</th><th>CAS</th><th>SMILES</th></tr></thead><tbody>" +
-          miss.map(r => "<tr><td>" + esc(r.label) + "</td><td>" + esc(r.cas) + '</td><td><input type="text" class="smiles-in" data-smiles="' + esc(r.key) +
-            '" value="' + esc((state.pred[r.key] && state.pred[r.key].smiles) || "") + '" spellcheck="false" autocapitalize="off" aria-label="SMILES: ' + esc(r.label) + '"></td></tr>').join("") +
+          miss.map(r => "<tr><td>" + esc(nm(r)) + "</td><td>" + esc(r.cas) + '</td><td><input type="text" class="smiles-in" data-smiles="' + esc(r.key) +
+            '" value="' + esc((state.pred[r.key] && state.pred[r.key].smiles) || "") + '" spellcheck="false" autocapitalize="off" aria-label="SMILES: ' + esc(nm(r)) + '"></td></tr>').join("") +
           '</tbody></table></div><div class="thr-tools"><button type="button" class="btn-sm" id="user-pubchem">' + esc(t("user.pubchem")) +
           '</button><button type="button" class="btn-sm" id="user-predict">' + esc(t("user.predict")) + "</button></div>" +
           '<p class="small muted" style="margin:4px 0 0">' + esc(t("user.pubchem_note")) + "</p>";
@@ -210,7 +232,7 @@ window.UserMode = (function () {
     }
     const predicted = m.rows.filter(r => r.vec && r.vec.src === "model");
     if (predicted.length) {
-      h += '<p class="small" style="margin-top:10px">' + esc(t("user.predicted", { list: predicted.map(r => r.label + " (" + topLabels(r.vec.p, 3) + ")").join("; ") })) +
+      h += '<p class="small" style="margin-top:10px">' + esc(t("user.predicted", { list: predicted.map(r => nm(r) + " (" + topLabels(r.vec.p, 3) + ")").join("; ") })) +
         ' <button type="button" class="btn-sm" id="user-pred-clear">' + esc(t("user.pred_clear")) + "</button></p>";
     }
     box.innerHTML = h;
@@ -274,19 +296,19 @@ window.UserMode = (function () {
     $("user-gap-head").innerHTML = "<tr><th>" + esc(t("col.compound")) + '</th><th class="num">' + esc(t("user.slot_sample")) + " " + sc +
       '</th><th class="num">' + esc(t("user.slot_target")) + " " + sc + '</th><th class="num">' + esc(t(A.mode === "oav" ? "user.col.ratio" : "user.col.share")) +
       "</th><th>" + esc(t("user.col.higher")) + "</th><th>" + esc(t("user.col.odor")) + "</th></tr>";
-    $("user-gap-body").innerHTML = A.gaps.length ? A.gaps.map(g => '<tr><td>' + esc(g.row.label) + curveLink(g.row) + '</td><td class="num nw">' + esc(val(g.s)) +
+    $("user-gap-body").innerHTML = A.gaps.length ? A.gaps.map(g => '<tr><td>' + esc(nm(g.row)) + curveLink(g.row) + '</td><td class="num nw">' + esc(val(g.s)) +
       '</td><td class="num nw">' + esc(val(g.t)) + '</td><td class="num nw">' + esc(gapText(g)) + '</td><td class="nw">' + esc(higher(g)) +
       '</td><td class="small">' + esc(vecText(g.row)) + "</td></tr>").join("")
       : '<tr><td colspan="6" class="muted">' + esc(t("user.no_gaps")) + "</td></tr>";
     const notes = [t(A.mode === "oav" ? "user.gap_def_oav" : "user.gap_def_roav", { fold: fmt(A.fold), pp: fmt(100 * A.pp) })];
-    const unk = side => A.unknown.filter(u => u.side === side).map(u => u.row.label);
+    const unk = side => A.unknown.filter(u => u.side === side).map(u => nm(u.row));
     if (unk("s").length) notes.push(t("user.unknown_s", { list: unk("s").join(t("ref.list_sep")) }));
     if (unk("t").length) notes.push(t("user.unknown_t", { list: unk("t").join(t("ref.list_sep")) }));
     $("user-gap-note").textContent = notes.join(" ");
 
     // the two lists
     $("user-list-t-intro").textContent = t("user.list_t_intro");
-    const li = (g, key) => "<li>" + esc(t(key, { name: g.row.label, gap: gapText(g), odor: vecText(g.row) })) + "</li>";
+    const li = (g, key) => "<li>" + esc(t(key, { name: nm(g.row), gap: gapText(g), odor: vecText(g.row) })) + "</li>";
     $("user-higher-s").innerHTML = A.higherSample.map(g => li(g, "user.li_s")).join("") || '<li class="muted">' + esc(t("user.none")) + "</li>";
     $("user-higher-t").innerHTML = A.higherTarget.map(g => li(g, g.row.vec && g.row.thrUse.v ? "user.li_t" : "user.li_t_novec")).join("") ||
       '<li class="muted">' + esc(t("user.none")) + "</li>";
@@ -298,7 +320,7 @@ window.UserMode = (function () {
       h += "<ol class=\"small rec-list\">" + R.items.map(g => {
         const effect = A.mode === "oav" && g.cosAfter != null && A.cos != null
           ? t("user.rec_effect", { from: A.cos.toFixed(3), to: g.cosAfter.toFixed(3), d: (g.cosAfter - A.cos >= 0 ? "+" : "") + (g.cosAfter - A.cos).toFixed(3) }) : "";
-        return "<li><b>" + esc(g.row.label) + "</b>" + curveLink(g.row) + (g.row.cas ? ' <span class="muted">' + esc(g.row.cas) + "</span>" : "") + esc(t("ref.colon")) +
+        return "<li><b>" + esc(nm(g.row)) + "</b>" + curveLink(g.row) + (g.row.cas ? ' <span class="muted">' + esc(g.row.cas) + "</span>" : "") + esc(t("ref.colon")) +
           esc(t("user.rec_item", { gap: gapText(g), odor: vecText(g.row) })) + (effect ? " " + esc(effect) : "") +
           (g.row.vec.src === "model" ? ' <span class="muted">' + esc(t("user.rec_model")) + "</span>" : "") + "</li>";
       }).join("") + "</ol>";
@@ -306,9 +328,9 @@ window.UserMode = (function () {
     } else {
       h += '<p class="small muted">' + esc(t("user.rec_none")) + "</p>";
     }
-    if (R.noVec.length) h += '<p class="small">' + esc(t("user.rec_novec", { list: R.noVec.map(g => g.row.label).join(t("ref.list_sep")) })) + "</p>";
-    if (R.unmeasured.length) h += '<p class="small">' + esc(t("user.rec_unmeasured", { list: R.unmeasured.map(u => u.row.label).join(t("ref.list_sep")) })) + "</p>";
-    if (A.higherSample.length) h += '<p class="small">' + esc(t("user.rec_lower", { list: A.higherSample.map(g => g.row.label).join(t("ref.list_sep")) })) + "</p>";
+    if (R.noVec.length) h += '<p class="small">' + esc(t("user.rec_novec", { list: R.noVec.map(g => nm(g.row)).join(t("ref.list_sep")) })) + "</p>";
+    if (R.unmeasured.length) h += '<p class="small">' + esc(t("user.rec_unmeasured", { list: R.unmeasured.map(u => nm(u.row)).join(t("ref.list_sep")) })) + "</p>";
+    if (A.higherSample.length) h += '<p class="small">' + esc(t("user.rec_lower", { list: A.higherSample.map(g => nm(g.row)).join(t("ref.list_sep")) })) + "</p>";
     $("user-rec").innerHTML = h;
   }
 
@@ -467,7 +489,7 @@ window.UserMode = (function () {
       }
     }
     store(PRED_KEY, state.pred);
-    const names = current().rows.filter(r => bad.includes(r.key)).map(r => r.label);
+    const names = current().rows.filter(r => bad.includes(r.key)).map(r => nm(r));
     state.predMsg = bad.length ? t("user.pred_bad", { list: names.join(t("ref.list_sep")) }) : t("user.pred_done", { n: keys.length });
     renderMerge();
   }
