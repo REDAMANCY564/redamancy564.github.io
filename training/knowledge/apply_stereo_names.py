@@ -43,7 +43,8 @@ def apply(verbose=True):
     names = json.loads(NAMES.read_text(encoding="utf-8"))["names"]
     disp = json.loads(DISPLAY.read_text(encoding="utf-8"))
     names = {**names, **disp["names"]}
-    case = disp.get("case", {})   # capitalization only: old spelling -> new, the old one kept as an alias
+    case = disp.get("case", {})
+    zh_only = disp.get("zh", {})   # Chinese name only (reviewed list), never over an existing Chinese name   # capitalization only: old spelling -> new, the old one kept as an alias
     def keep(e, old):
         if old.lower() == e["en"].lower():
             return False
@@ -66,6 +67,11 @@ def apply(verbose=True):
             rec["name"] = e["en"]
             changed.append(("kb", cid, old, e["en"]))
         rec["zh"] = e["zh"]
+    for cid, rec in kb.items():
+        z = zh_only.get(Chem.InchiToInchiKey(rec["inchi"])[:14])
+        if z and not rec.get("zh"):
+            rec["zh"] = z["zh"]
+            changed.append(("kb-zh", cid, "", z["zh"]))
     KB.write_text(json.dumps(kb, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
     lib = json.loads(LIB.read_text(encoding="utf-8"))
@@ -87,6 +93,12 @@ def apply(verbose=True):
             changed.append(("lib", i, m[1], e["en"]))
             m[1] = e["en"]
         zh[str(i)] = e["zh"]
+    for i, m in enumerate(lib["molecules"]):
+        mol = Chem.MolFromSmiles(m[0])
+        z = zh_only.get(Chem.MolToInchiKey(mol)[:14]) if mol else None
+        if z and str(i) not in zh:
+            zh[str(i)] = z["zh"]
+            changed.append(("lib-zh", i, "", z["zh"]))
     lib["names_zh"], lib["names_old"] = zh, olds
     LIB.write_text(json.dumps(lib, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     changed += apply_regulatory(lib["molecules"])

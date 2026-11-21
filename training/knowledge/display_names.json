@@ -1,5 +1,5 @@
 {
- "source": "curated by hand 2026-11-21 (machine-format names and the 10 key flavor compounds of human milk); see apply_stereo_names.py and _inputs/NAMES-29-REVIEW.md; 'case': capitalization only, old spelling kept as a search alias (2026-11-21)",
+ "source": "curated by hand 2026-11-21 (machine-format names and the 10 key flavor compounds of human milk); see apply_stereo_names.py and _inputs/NAMES-29-REVIEW.md; 'case': capitalization only, old spelling kept as a search alias (2026-11-21); 'zh': Chinese names only (reviewed list training/gcms/aliases.json), never over an existing one (2026-11-21)",
  "names": {
   "TYQCGQRIZGCHNB": {
    "en": "Ascorbic acid",
@@ -603,7 +603,16 @@
   "Allyl Methyl Disulfide": "Allyl methyl disulfide",
   "Allyl Methyl Trisulfide": "Allyl methyl trisulfide",
   "Allyl Propyl Disulfide": "Allyl propyl disulfide",
+  "Alpha-Ionone": "alpha-Ionone",
+  "Alpha-Methylcinnamaldehyde": "alpha-Methylcinnamaldehyde",
+  "Alpha-Methylstyrene": "alpha-Methylstyrene",
+  "Alpha-Phellandrene": "alpha-Phellandrene",
+  "Alpha-Pinene": "alpha-Pinene",
+  "Alpha-Selinene": "alpha-Selinene",
+  "Alpha-Sinensal": "alpha-Sinensal",
+  "Alpha-Terpinene": "alpha-Terpinene",
   "Alpha-Terpinyl Acetate": "alpha-Terpinyl acetate",
+  "Alpha-cyclohexylidene benzeneacetonitrile": "alpha-Cyclohexylidene benzeneacetonitrile",
   "Amyl Angelate": "Amyl angelate",
   "Amyl Salicylate": "Amyl salicylate",
   "Angelic Acid Isobutyl Ester": "Angelic acid isobutyl ester",
@@ -614,6 +623,12 @@
   "Benzyl Mercaptan": "Benzyl mercaptan",
   "Benzyl Propionate": "Benzyl propionate",
   "Benzyl Salicylate": "Benzyl salicylate",
+  "Beta-Caryophyllene": "beta-Caryophyllene",
+  "Beta-Ionone": "beta-Ionone",
+  "Beta-Phellandrene": "beta-Phellandrene",
+  "Beta-Pinene": "beta-Pinene",
+  "Beta-Sitosterol": "beta-Sitosterol",
+  "Beta-Terpineol": "beta-Terpineol",
   "Bornyl Isovalerate": "Bornyl isovalerate",
   "Butyl Anthranilate": "Butyl anthranilate",
   "Butyl Benzoate": "Butyl benzoate",
@@ -639,6 +654,9 @@
   "D-Isoleucine Methyl Ester Hydrochloride": "D-Isoleucine methyl ester hydrochloride",
   "Decyl Acetate": "Decyl acetate",
   "Decyl Nonanoate": "Decyl nonanoate",
+  "Delta-Dodecalactone": "delta-Dodecalactone",
+  "Delta-Nonalactone": "delta-Nonalactone",
+  "Delta-Valerolactone": "delta-Valerolactone",
   "Diallyl Disulfide": "Diallyl disulfide",
   "Diallyl Sulfide": "Diallyl sulfide",
   "Dibenzyl Disulfide": "Dibenzyl disulfide",
@@ -669,6 +687,8 @@
   "Dioctyl Adipate": "Dioctyl adipate",
   "Dipropyl Adipate": "Dipropyl adipate",
   "Dipropyl Malonate": "Dipropyl malonate",
+  "Dl-Alanine": "DL-Alanine",
+  "Dl-Methionine": "DL-Methionine",
   "Dodecyl Acetate": "Dodecyl acetate",
   "Dodecyl Gallate": "Dodecyl gallate",
   "Ethyl 3-Hexenoate": "Ethyl 3-hexenoate",
@@ -704,6 +724,8 @@
   "Ethyl Undecanoate": "Ethyl undecanoate",
   "Ethyl Vinyl Ketone": "Ethyl vinyl ketone",
   "Furfuryl Alcohol": "Furfuryl alcohol",
+  "Gamma-Terpinene": "gamma-Terpinene",
+  "Gamma-undecalactone": "gamma-Undecalactone",
   "Geranic Acid": "Geranic acid",
   "Geranyl Acetate": "Geranyl acetate",
   "Glutaric Acid": "Glutaric acid",
@@ -745,6 +767,8 @@
   "Levulinic Acid": "Levulinic acid",
   "Linalyl Acetate": "Linalyl acetate",
   "Linseed Acid": "Linseed acid",
+  "M-Cymene": "m-Cymene",
+  "M-Xylene": "m-Xylene",
   "METHYL beta-PHENYLGLYCIDATE": "Methyl beta-phenylglycidate",
   "Menthyl Anthranilate": "Menthyl anthranilate",
   "Mesityl Oxide": "Mesityl oxide",
@@ -780,6 +804,13 @@
   "Nona-1,5-dien-4-OL": "Nona-1,5-dien-4-ol",
   "Nonanoic Acid": "Nonanoic acid",
   "Nonyl Acetate": "Nonyl acetate",
+  "O-Methylbenzyl acetate": "o-Methylbenzyl acetate",
+  "O-Xylene": "o-Xylene",
+  "P-Chloroacetophenone": "p-Chloroacetophenone",
+  "P-Cresol": "p-Cresol",
+  "P-Cymene": "p-Cymene",
+  "P-Menth-1-en-9-yl acetate": "p-Menth-1-en-9-yl acetate",
+  "P-Xylene": "p-Xylene",
   "Pentadecanoic Acid": "Pentadecanoic acid",
   "Pentan-2-YL dodecanoate": "Pentan-2-yl dodecanoate",
   "Pentyl Benzoate": "Pentyl benzoate",
@@ -818,20 +849,655 @@
   "Undecanoic Acid": "Undecanoic acid",
   "Vanillyl Butyl Ether": "Vanillyl butyl ether",
   "Vanillylmandelic Acid": "Vanillylmandelic acid",
+  "acetaldehyde": "Acetaldehyde",
+  "acetamide": "Acetamide",
+  "acetic acid": "Acetic acid",
+  "acetone": "Acetone",
+  "adipic acid": "Adipic acid",
   "alpha-CAMPHOLENOL": "alpha-Campholenol",
   "alpha-TERPINEOL": "alpha-Terpineol",
+  "apigenin": "Apigenin",
+  "arbutin": "Arbutin",
+  "azepan-2-one": "Azepan-2-one",
+  "benzaldehyde": "Benzaldehyde",
+  "benzoic acid": "Benzoic acid",
+  "benzyl alcohol": "Benzyl alcohol",
+  "benzyl isothiocyanate": "Benzyl isothiocyanate",
   "beta-NAPHTHYL ANTHRANILATE": "beta-Naphthyl anthranilate",
   "beta-SANTALOL": "beta-Santalol",
+  "betaine": "Betaine",
+  "bis(2-Methyl-3-furyl) tetrasulfide": "Bis(2-Methyl-3-furyl) tetrasulfide",
+  "butein": "Butein",
+  "butyl (E,Z)-2,4-decadienoate": "Butyl (E,Z)-2,4-decadienoate",
+  "butyraldehyde": "Butyraldehyde",
+  "caffeine": "Caffeine",
+  "caftaric acid": "Caftaric acid",
+  "calcium lactate": "Calcium lactate",
+  "carnosol": "Carnosol",
+  "chrysin": "Chrysin",
+  "cinnamaldehyde": "Cinnamaldehyde",
+  "citric acid": "Citric acid",
+  "coumarin": "Coumarin",
+  "cyclopropyl (E,Z)-2,6-nonadienamide": "Cyclopropyl (E,Z)-2,6-nonadienamide",
+  "daidzein": "Daidzein",
+  "dibutyl phthalate": "Dibutyl phthalate",
+  "dihydrocoumarin": "Dihydrocoumarin",
+  "dimethyl sulfide": "Dimethyl sulfide",
+  "dimethyl sulfoxide": "Dimethyl sulfoxide",
+  "dimethylamine": "Dimethylamine",
   "epsilon-DECALACTONE": "epsilon-Decalactone",
+  "ethanol": "Ethanol",
+  "ethyl 2-methyl-3-sulfanylpropanoate": "Ethyl 2-methyl-3-sulfanylpropanoate",
+  "ethyl 3-acetoxy-2-methylbutanoate": "Ethyl 3-acetoxy-2-methylbutanoate",
+  "ethyl acetoacetate": "Ethyl acetoacetate",
+  "ethyl methyl trisulfide": "Ethyl methyl trisulfide",
+  "eugenol": "Eugenol",
+  "farnesol": "Farnesol",
+  "formic acid": "Formic acid",
+  "fumaric acid": "Fumaric acid",
+  "furan-2-ylmethyl pentanoate": "Furan-2-ylmethyl pentanoate",
   "gamma-OCTADECALACTONE": "gamma-Octadecalactone",
+  "gingerol": "Gingerol",
+  "glycerol": "Glycerol",
+  "guaiacol": "Guaiacol",
+  "hydrochloric acid": "Hydrochloric acid",
+  "hydrogen cyanide": "Hydrogen cyanide",
+  "hydrogen peroxide": "Hydrogen peroxide",
+  "hydrogen sulfide": "Hydrogen sulfide",
+  "hydroquinone": "Hydroquinone",
+  "indole": "Indole",
+  "indole-3-acetic acid": "Indole-3-acetic acid",
+  "isoliquiritigenin": "Isoliquiritigenin",
+  "isopropanol": "Isopropanol",
+  "isopropyl N-methylanthranilate": "Isopropyl N-methylanthranilate",
+  "kaempferol": "Kaempferol",
+  "lactic acid": "Lactic acid",
+  "lanatoside C": "Lanatoside C",
+  "lauric acid": "Lauric acid",
+  "linoleic acid": "Linoleic acid",
+  "luteolin": "Luteolin",
+  "methanethiol": "Methanethiol",
+  "methanol": "Methanol",
+  "methoxsalen": "Methoxsalen",
+  "methyl salicylate": "Methyl salicylate",
+  "methylglyoxal": "Methylglyoxal",
+  "morin": "Morin",
+  "naphthalene": "Naphthalene",
+  "naringenin": "Naringenin",
+  "naringin": "Naringin",
+  "nicotine": "Nicotine",
+  "noscapine": "Noscapine",
   "o-TOLYL ISOBUTYRATE": "o-Tolyl isobutyrate",
   "o-TOLYL SALICYLATE": "o-Tolyl salicylate",
+  "octane": "Octane",
+  "octanoic acid": "Octanoic acid",
+  "oleic acid": "Oleic acid",
+  "oxalic acid": "Oxalic acid",
   "p-CRESYL PHENYLACETATE": "p-Cresyl phenylacetate",
   "p-MENTHAN-8-OL": "p-Menthan-8-ol",
   "p-METHOXY-alpha-METHYLCINNAMALDEHYDE": "p-Methoxy-alpha-methylcinnamaldehyde",
   "p-TOLYL ISOBUTYRATE": "p-Tolyl isobutyrate",
+  "palmitic acid": "Palmitic acid",
+  "palmitoleic acid": "Palmitoleic acid",
+  "papaverine": "Papaverine",
+  "parthenolide": "Parthenolide",
+  "phenol": "Phenol",
+  "phenylacetaldehyde": "Phenylacetaldehyde",
+  "phloretin": "Phloretin",
+  "piperine": "Piperine",
+  "propionic acid": "Propionic acid",
+  "propyl gallate": "Propyl gallate",
+  "quercetin": "Quercetin",
+  "resorcinol": "Resorcinol",
+  "resveratrol": "Resveratrol",
+  "rosefuran": "Rosefuran",
+  "safrole": "Safrole",
+  "salicylic acid": "Salicylic acid",
   "sec-Butyl Disulfide": "sec-Butyl disulfide",
+  "spermine": "Spermine",
+  "stearic acid": "Stearic acid",
+  "succinic acid": "Succinic acid",
+  "sulfur dioxide": "Sulfur dioxide",
+  "taurine": "Taurine",
+  "tetrahydro-4-methyl-2-phenyl-2H-pyran": "Tetrahydro-4-methyl-2-phenyl-2H-pyran",
+  "theobromine": "Theobromine",
+  "thiamine": "Thiamine",
+  "toluene": "Toluene",
   "trans-2-Hexen-1-Ol": "trans-2-Hexen-1-ol",
-  "trans-2-Octen-1-Ol": "trans-2-Octen-1-ol"
+  "trans-2-Octen-1-Ol": "trans-2-Octen-1-ol",
+  "triacetin": "Triacetin",
+  "tridec-2-enal": "Tridec-2-enal",
+  "trimethylamine": "Trimethylamine",
+  "tyramine": "Tyramine",
+  "wine lactone": "Wine lactone"
+ },
+ "zh": {
+  "AFSIMBWBBOJPJG": {
+   "zh": "硬脂酸乙烯酯",
+   "cid": 66077
+  },
+  "AKGAHYLJHAOPKQ": {
+   "zh": "硫代己酸 S-甲酯",
+   "cid": 75515
+  },
+  "AMIMRNSIRUDHCM": {
+   "zh": "2-甲基丙醛",
+   "cid": 6561
+  },
+  "AMQJEAYHLZJPGS": {
+   "zh": "1-戊醇",
+   "cid": 6276
+  },
+  "ASFYPVGAALGVNR": {
+   "zh": "2-庚烯-1-醇",
+   "cid": 5318017
+  },
+  "BATOPAZDIZEVQF": {
+   "zh": "(E,E)-2,4-己二烯醛",
+   "cid": 637564
+  },
+  "BBMCTIGTTCKYKF": {
+   "zh": "1-庚醇",
+   "cid": 8129
+  },
+  "BCYXFRMDZWKZSF": {
+   "zh": "3-庚烯酸",
+   "cid": 6434067
+  },
+  "BFMKFCLXZSUVPI": {
+   "zh": "3-丁烯酸乙酯",
+   "cid": 74172
+  },
+  "BQDKCWCMDBMLEH": {
+   "zh": "2-辛炔酸",
+   "cid": 21872
+  },
+  "BWHOZHOGCMHOBV": {
+   "zh": "(E)-4-苯基-3-丁烯-2-酮",
+   "cid": 637759
+  },
+  "BXRHTYIYAZHIHF": {
+   "zh": "5-乙基-1-环戊烯-1-甲醛",
+   "cid": 580057
+  },
+  "CATSNJVOTSVZJV": {
+   "zh": "2-庚酮",
+   "cid": 8051
+  },
+  "CDOSHBSSFJOMGT": {
+   "zh": "芳樟醇",
+   "cid": 6549
+  },
+  "CJPNOLIZCWDHJK": {
+   "zh": "2-十五酮",
+   "cid": 61303
+  },
+  "CNLMHVUZVNKYJA": {
+   "zh": "戊酸癸酯",
+   "cid": 79553
+  },
+  "CPLJMYOQYRCCBY": {
+   "zh": "2-丙基呋喃",
+   "cid": 77907
+  },
+  "CWRKZMLUDFBPAO": {
+   "zh": "(Z)-4-癸烯醛",
+   "cid": 5362620
+  },
+  "DIQMPQMYFZXDAX": {
+   "zh": "甲酸戊酯",
+   "cid": 12529
+  },
+  "DTOSIQBPPRVQHS": {
+   "zh": "α-亚麻酸",
+   "cid": 5280934
+  },
+  "DWUPJMHAPOQKGJ": {
+   "zh": "1-壬烯-3-醇",
+   "cid": 89560
+  },
+  "FBUKVWPVBMHYJY": {
+   "zh": "壬酸",
+   "cid": 8158
+  },
+  "FDPIMTJIUBPUKL": {
+   "zh": "3-戊酮",
+   "cid": 7288
+  },
+  "FERIUCNNQQJTOY": {
+   "zh": "丁酸",
+   "cid": 264
+  },
+  "FIPKSKMDTAQBDJ": {
+   "zh": "1-甲基茚满",
+   "cid": 13023
+  },
+  "FTZILAQGHINQQR": {
+   "zh": "2-甲基戊醛",
+   "cid": 31245
+  },
+  "FUSUHKVFWTUUBE": {
+   "zh": "甲基乙烯基酮",
+   "cid": 6570
+  },
+  "FUZZWVXGSFPDMH": {
+   "zh": "己酸",
+   "cid": 8892
+  },
+  "FXHOOIRPVKKKFG": {
+   "zh": "N,N-二甲基乙酰胺",
+   "cid": 31374
+  },
+  "GBGPVUAOTCNZPT": {
+   "zh": "2-甲基苯并呋喃",
+   "cid": 20263
+  },
+  "GEKRISJWBAIIAA": {
+   "zh": "5-甲基己醛",
+   "cid": 15827
+  },
+  "GHVNFZFCNZKVNT": {
+   "zh": "癸酸",
+   "cid": 2969
+  },
+  "GJYMQFMQRRNLCY": {
+   "zh": "3-戊烯-2-醇",
+   "cid": 15289
+  },
+  "GOXQRTZXKQZDDN": {
+   "zh": "丙烯酸 2-乙基己酯",
+   "cid": 7636
+  },
+  "GWYFCOCPABKNJV": {
+   "zh": "3-甲基丁酸",
+   "cid": 10430
+  },
+  "HCPORNAVHSWTOJ": {
+   "zh": "1-(2-呋喃基)-1-丙酮",
+   "cid": 76662
+  },
+  "HEVMDQBCAHEHDY": {
+   "zh": "苯甲醛二甲缩醛",
+   "cid": 62375
+  },
+  "HGBOYTHUEUWSSQ": {
+   "zh": "戊醛",
+   "cid": 8063
+  },
+  "HHVIBTZHLRERCL": {
+   "zh": "二甲基砜",
+   "cid": 6213
+  },
+  "HJOVHMDZYOCNQW": {
+   "zh": "异佛尔酮",
+   "cid": 6544
+  },
+  "HLZKNKRTKFSKGZ": {
+   "zh": "1-十四醇",
+   "cid": 8209
+  },
+  "HUMNYLRZRPPJDN": {
+   "zh": "苯甲醛",
+   "cid": 240
+  },
+  "ICKWICRCANNIBI": {
+   "zh": "2,4-二叔丁基苯酚",
+   "cid": 7311
+  },
+  "ICVZMTIGTXBIHI": {
+   "zh": "(Z)-3-乙基-2-甲基-1,3-己二烯",
+   "cid": 5368955
+  },
+  "IGIDLTISMCAULB": {
+   "zh": "3-甲基戊酸",
+   "cid": 7755
+  },
+  "IJXHLVMUNBOGRR": {
+   "zh": "壬酸甲酯",
+   "cid": 15606
+  },
+  "IPCSVZSSVZVIGE": {
+   "zh": "十六酸",
+   "cid": 985
+  },
+  "ISWSIDIOOBJBQZ": {
+   "zh": "苯酚",
+   "cid": 996
+  },
+  "IYTXKIXETAELAV": {
+   "zh": "3-壬酮",
+   "cid": 61235
+  },
+  "JBFHTYHTHYHCDJ": {
+   "zh": "γ-己内酯",
+   "cid": 12756
+  },
+  "JGHZJRVDZXSNKQ": {
+   "zh": "辛酸甲酯",
+   "cid": 8091
+  },
+  "JLIDVCMBCGBIEY": {
+   "zh": "1-戊烯-3-酮",
+   "kb": "c15394",
+   "src": "common name, added 2026-11-21"
+  },
+  "JYZLSYFPFQTNNO": {
+   "zh": "2-辛基-1-癸醇",
+   "cid": 3084890
+  },
+  "KBPLFHHGFOOTCA": {
+   "zh": "1-辛醇",
+   "cid": 957
+  },
+  "KJPRLNWUNMBNBZ": {
+   "zh": "肉桂醛",
+   "cid": 637511
+  },
+  "KSKXSFZGARKWOW": {
+   "zh": "6-甲基-3,5-庚二烯-2-酮",
+   "cid": 5370101
+  },
+  "KSMVZQYAVGTKIV": {
+   "zh": "癸醛",
+   "cid": 8175
+  },
+  "KWOLFJPFCHCOCG": {
+   "zh": "苯乙酮",
+   "cid": 7410
+  },
+  "KYWIYKKSMDLRDC": {
+   "zh": "2-十一酮",
+   "cid": 8163
+  },
+  "LEACJMVNYZDSKR": {
+   "zh": "2-辛基-1-十二醇",
+   "cid": 21414
+  },
+  "LGYNIFWIKSEESD": {
+   "zh": "2-乙基己醛",
+   "cid": 31241
+  },
+  "LLYXUFQXCNIGDG": {
+   "zh": "3-乙基苯甲醛",
+   "cid": 118623
+  },
+  "LQAVWYMTUMSFBE": {
+   "zh": "4-戊烯-1-醇",
+   "cid": 13181
+  },
+  "LSKONYYRONEBKA": {
+   "zh": "2-十二酮",
+   "cid": 22556
+  },
+  "LWRKMRFJEUFXIB": {
+   "zh": "(E,E)-3,5-辛二烯-2-酮",
+   "cid": 5352876
+  },
+  "MHIRRFYTMFZXHD": {
+   "zh": "1-丁基环戊烯",
+   "cid": 137594
+  },
+  "MKUWVMRNQOOSAT": {
+   "zh": "3-丁烯-2-醇",
+   "cid": 11716
+  },
+  "MMFCJPPRCYDLLZ": {
+   "zh": "(E)-2-癸烯醛",
+   "cid": 5283345
+  },
+  "MNWFXJYAOYHMED": {
+   "zh": "庚酸",
+   "cid": 8094
+  },
+  "MWKFXSUHUHTGQN": {
+   "zh": "1-癸醇",
+   "cid": 8174
+  },
+  "NDFKTBCGKNOHPJ": {
+   "zh": "(E)-2-庚烯醛",
+   "cid": 5283316
+  },
+  "NGAZZOYFWWSOGK": {
+   "zh": "3-庚酮",
+   "cid": 7802
+  },
+  "NODGRWCMFMEGJH": {
+   "zh": "4-乙基苯乙酮",
+   "cid": 13642
+  },
+  "NQPDZGIKBAWPEJ": {
+   "zh": "戊酸",
+   "cid": 7991
+  },
+  "NUKZAGXMHTUAFE": {
+   "zh": "己酸甲酯",
+   "cid": 7824
+  },
+  "NUWFGSCHUJWGHJ": {
+   "zh": "1-苯基-1-壬烯-3-酮",
+   "cid": 5371707
+  },
+  "OYHQOLUKZRVURQ": {
+   "zh": "亚油酸",
+   "cid": 5280450
+  },
+  "PANBRUWVURLWGY": {
+   "zh": "(E)-2-十一烯醛",
+   "cid": 5283356
+  },
+  "PFCHFHIRKBAQGU": {
+   "zh": "3-己酮",
+   "cid": 11509
+  },
+  "PHTQWCKDNZKARW": {
+   "zh": "3-甲基-1-丁醇",
+   "cid": 31260
+  },
+  "POULHZVOKOAJMA": {
+   "zh": "十二酸",
+   "cid": 3893
+  },
+  "QCDWFXQBSFUVSP": {
+   "zh": "2-苯氧基乙醇",
+   "cid": 31236
+  },
+  "QIQXTHQIDYTFRH": {
+   "zh": "十八酸",
+   "cid": 5281
+  },
+  "QTBSBXVTEAMEQO": {
+   "zh": "乙酸",
+   "cid": 176
+  },
+  "RBGLEUBCAJNCTR": {
+   "zh": "6,10-二甲基-2-十一酮",
+   "cid": 95495
+  },
+  "RGXWDWUGBIJHDO": {
+   "zh": "癸酸乙酯",
+   "cid": 8048
+  },
+  "RHLVCLIPMVJYKS": {
+   "zh": "3-辛酮",
+   "cid": 246728
+  },
+  "ROJKPKOYARNFNB": {
+   "zh": "戊酸丙酯",
+   "cid": 67328
+  },
+  "SECPZKHBENQXJG": {
+   "zh": "棕榈油酸",
+   "cid": 445638
+  },
+  "SSNZFFBDIMUILS": {
+   "zh": "(E)-2-十二烯醛",
+   "cid": 5283361
+  },
+  "SXFJDZNJHVPHPH": {
+   "zh": "3-甲基-1,5-戊二醇",
+   "cid": 20524
+  },
+  "SYBYTAAJFKOIEJ": {
+   "zh": "3-甲基-2-丁酮",
+   "cid": 11251
+  },
+  "TUNFSRHWOTWDNC": {
+   "zh": "十四酸",
+   "cid": 11005
+  },
+  "TYWWFCUDDMMEQU": {
+   "zh": "2-庚烯酸异丁酯",
+   "cid": 87306010
+  },
+  "TZMFJUDUGYTVRY": {
+   "zh": "2,3-戊二酮",
+   "cid": 11747
+  },
+  "UHEPJGULSIKKTP": {
+   "zh": "6-甲基-5-庚烯-2-酮",
+   "cid": 9862
+  },
+  "UIGLAZDLBZDVBL": {
+   "zh": "α-乙炔基苯甲醇",
+   "cid": 20155
+  },
+  "UNEAEGWIVFZPFI": {
+   "zh": "2-乙基丁酸甲酯",
+   "cid": 69951
+  },
+  "UNOGLHIYPXTOGD": {
+   "zh": "月桂酸异辛酯",
+   "cid": 22169183
+  },
+  "UQDUPQYQJKYHQI": {
+   "zh": "十二酸甲酯",
+   "cid": 8139
+  },
+  "UWHZIFQPPBDJPM": {
+   "zh": "异油酸",
+   "cid": 5282761
+  },
+  "VIHAEDVKXSOUAT": {
+   "zh": "2(5H)-呋喃酮",
+   "cid": 10341
+  },
+  "VKCYHJWLYTUGCC": {
+   "zh": "2-壬酮",
+   "cid": 13187
+  },
+  "VMUNAKQXJLHODT": {
+   "zh": "(E)-2-十三烯醛",
+   "cid": 5283363
+  },
+  "VSMOENVRRABVKN": {
+   "zh": "1-辛烯-3-醇",
+   "cid": 18827
+  },
+  "WAPNOHKVXSQRPX": {
+   "zh": "1-苯乙醇",
+   "cid": 7409
+  },
+  "WGPCZPLRVAWXPW": {
+   "zh": "γ-十二内酯",
+   "cid": 16821
+  },
+  "WQOXQRCZOLPYPM": {
+   "zh": "二甲基二硫",
+   "kb": "c12232",
+   "src": "common name, added 2026-11-21"
+  },
+  "WVDDGKGOMKODPV": {
+   "zh": "苯甲醇",
+   "cid": 244
+  },
+  "WWZKQHOCKIZLMA": {
+   "zh": "辛酸",
+   "cid": 379
+  },
+  "XEAMDSXSXYAICO": {
+   "zh": "甲酸庚酯",
+   "cid": 8169
+  },
+  "XJLDYKIEURAVBW": {
+   "zh": "3-癸酮",
+   "cid": 13576
+  },
+  "XMVBHZBLHNOQON": {
+   "zh": "2-丁基-1-辛醇",
+   "cid": 19800
+  },
+  "XPQPWPZFBULGKT": {
+   "zh": "十一酸甲酯",
+   "cid": 15607
+  },
+  "YGHRJJRRZDOVPD": {
+   "zh": "3-甲基丁醛",
+   "cid": 11552
+  },
+  "YHASWHZGWUONAO": {
+   "zh": "丁酸酐",
+   "cid": 7798
+  },
+  "YIWUKEYIRIRTPP": {
+   "zh": "2-乙基-1-己醇",
+   "cid": 7720
+  },
+  "YJARPRLGQQFGOI": {
+   "zh": "戊酸庚酯",
+   "cid": 79544
+  },
+  "YNMZZHPSYMOGCI": {
+   "zh": "3-十一酮",
+   "cid": 75189
+  },
+  "YNPVNLWKVZZBTM": {
+   "zh": "4-甲基-1-己醇",
+   "cid": 98346
+  },
+  "YRHYCMZPEVDGFQ": {
+   "zh": "癸酸甲酯",
+   "cid": 8050
+  },
+  "YRXUQYBLFBZHNE": {
+   "zh": "4-己烯-2-酮",
+   "cid": 5326164
+  },
+  "YVBAUDVGOFCUSG": {
+   "zh": "2-戊基呋喃",
+   "cid": 19602
+  },
+  "YWHLKYXPLRWGSE": {
+   "zh": "二甲基三硫",
+   "kb": "c19310",
+   "src": "common name, added 2026-11-21"
+  },
+  "YYZUSRORWSJGET": {
+   "zh": "辛酸乙酯",
+   "cid": 7799
+  },
+  "YZXBAPSDXZZRGB": {
+   "zh": "花生四烯酸",
+   "cid": 444899
+  },
+  "ZCFOBLITZWHNNC": {
+   "zh": "3-辛烯-2-酮",
+   "cid": 5363229
+  },
+  "ZDPHROOEEOARMN": {
+   "zh": "十一酸",
+   "cid": 8180
+  },
+  "ZQPPMHVWECSIRJ": {
+   "zh": "油酸",
+   "cid": 445639
+  },
+  "ZSIAUFGUXNUGDI": {
+   "zh": "1-己醇",
+   "cid": 8103
+  },
+  "ZWEHNKRNPOVVGH": {
+   "zh": "2-丁酮",
+   "cid": 6569
+  }
  }
 }
