@@ -625,3 +625,12 @@ button.linklike.on { color: var(--text); font-weight: 600; text-decoration: none
 }
 @keyframes ui-spin { to { transform: rotate(360deg); } }
 @keyframes ui-pop { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: none; } }
+
+/* Homepage: entry card of the case page /case/, above the tool list */
+.case-card { display: block; max-width: 760px; margin: 0 0 var(--sp-4); padding: 14px 18px; border: 1px solid var(--border);
+             border-left: 4px solid var(--accent); border-radius: 6px; background: var(--accent-soft); color: var(--text); text-decoration: none; }
+.case-card:hover { border-color: var(--accent); }
+.case-card:hover .case-title { text-decoration: underline; }
+.case-kicker { display: block; font-size: .8125rem; color: var(--muted); }
+.case-title { display: block; font-weight: 600; font-size: 1.0625rem; margin: 2px 0 4px; }
+.case-desc { display: block; font-size: .9375rem; }
