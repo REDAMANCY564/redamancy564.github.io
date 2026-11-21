@@ -18,7 +18,13 @@ ROOT = Path(__file__).resolve().parents[1]
 B = ROOT / "_inputs" / "case-build"
 OUT = ROOT / "case"
 V = "20261121c"
-FC = "FC_CITE"   # placeholder for the FC paper (journal, year, DOI): see _inputs/CASE-RELEASE-CHECKLIST.md
+# Source of the step 9 data (formula and 303 human milk samples). No paper citation yet: the data are
+# named as the author group's. When the paper is out, add the citation and DOI here only, e.g.
+# FC_WHO = ("作者课题组（Cui 等，期刊 年份，doi:…）", "the author group (Cui et al., Journal year, doi:…)").
+FC_WHO = ("作者课题组", "the author group")                       # "第 9 步用{FC_WHO} 303 份母乳……"
+FC_DATA = ("作者课题组数据", "data of the author group")         # source line in the data list
+FC_COL = ("作者课题组计算值", "Author group's values")           # header of the ROAV column in step 9
+FC_RANK = ("课题组排序", "Group rank")                            # header of the rank column in step 9
 
 # ---------------------------------------------------------------- names (CAS -> zh, en)
 N = {
@@ -139,8 +145,8 @@ def fig(src, w, h, key, z, e, alt_key, alt_z, alt_e):
 section("background", "s0.h", "背景", "Background", [
     p("s0.p1", "母乳是婴儿喂养的金标准。婴儿配方奶粉的研发目标已从“营养母乳化”“结构母乳化”进一步迈向“风味母乳化”：婴儿配方奶粉的宏量营养素已较接近母乳，但在风味上仍有明显差异，这会影响婴儿的接受度，也可能影响婴儿日后的饮食偏好。弄清母乳的关键风味物质及其与配方奶粉的差别，是风味母乳化的第一步。",
       "Human milk is the gold standard for infant feeding. Infant formula development has moved from matching human milk in nutrition, to matching its structure, and now towards matching its flavor. Infant formula is already close to human milk in macronutrients but still differs clearly in flavor, which affects how well infants accept it and may also shape their later food preferences. Identifying the key flavor compounds of human milk, and how formula differs, is the first step towards matching its flavor."),
-    p("s0.p2", f"本页用一份母乳样品走完这条链路：样品 HM0031（下称 HF31）是 {P4ZH} 50 份母乳之一，挥发物组成接近 50 份的平均水平（按三种距离，在 50 份中分别排第 2、3、2 位）。第 1 到第 8 步只用这份样品和已发表数据；第 9 步用 Cui 等（{FC}）中 303 份母乳和 20 个婴儿配方奶粉的平均数据。每一步依次写明要回答的问题、用到的工具（链接直接打开同样的输入）、结果、解读和局限。",
-      f"This page follows one human milk sample through the whole chain: sample HM0031 (HF31 below) is one of the 50 human milk samples of {P4EN}, and its volatile profile is close to the average of the 50 (ranked 2nd, 3rd and 2nd of 50 by three distance measures). Steps 1 to 8 use only this sample and published data; step 9 uses the mean data of 303 human milk samples and 20 infant formulas from Cui et al. ({FC}). Each step gives the question, the tool (the links open the same input), the result, the interpretation and the limitations."),
+    p("s0.p2", f"本页用一份母乳样品走完这条链路：样品 HM0031（下称 HF31）是 {P4ZH} 50 份母乳之一，挥发物组成接近 50 份的平均水平（按三种距离，在 50 份中分别排第 2、3、2 位）。第 1 到第 8 步只用这份样品和已发表数据；第 9 步用{FC_WHO[0]} 303 份母乳和 20 个婴儿配方奶粉的平均数据。每一步依次写明要回答的问题、用到的工具（链接直接打开同样的输入）、结果、解读和局限。",
+      f"This page follows one human milk sample through the whole chain: sample HM0031 (HF31 below) is one of the 50 human milk samples of {P4EN}, and its volatile profile is close to the average of the 50 (ranked 2nd, 3rd and 2nd of 50 by three distance measures). Steps 1 to 8 use only this sample and published data; step 9 uses the mean data of {FC_WHO[1]} for 303 human milk samples and 20 infant formulas. Each step gives the question, the tool (the links open the same input), the result, the interpretation and the limitations."),
 ])
 
 # 1 GC-MS
@@ -353,8 +359,8 @@ for i, (c, v) in enumerate(hm_rows):
     rows9.append(f'<tr{dcls}><td class="num">{i + 1}</td><td>{cn(c)}</td><td class="num">{f3(v)}</td>'
                  f'<td class="num">{"-" if f is None else f"{f:.2f}"}</td><td class="num">{fc_rank.get(c, "-")}</td></tr>')
 tbl9 = ('<div class="table-wrap"><table class="cs-table"><thead><tr>' + th("s9.c0", "工具排序", "Tool rank", True) + th("s9.c1", "物质", "Compound")
-        + th("s9.c2", "工具：用平均含量计算", "Tool: from mean contents", True) + th("s9.c3", "Cui 等（FC_CITE）Table 2", "Cui et al. (FC_CITE), Table 2", True)
-        + th("s9.c4", "FC 排序", "FC rank", True) + "</tr></thead><tbody>" + "".join(rows9) + "</tbody></table></div>")
+        + th("s9.c2", "工具：用平均含量计算", "Tool: from mean contents", True) + th("s9.c3", FC_COL[0], FC_COL[1], True)
+        + th("s9.c4", FC_RANK[0], FC_RANK[1], True) + "</tr></thead><tbody>" + "".join(rows9) + "</tbody></table></div>")
 def gaps(rows, n):
     hi_t, hi_s = [], []
     for r in rows:
@@ -376,12 +382,12 @@ dl = (f'<a href="data/fc_target_HM_n303.csv" download>母乳 HM（n=303，目标
       f'<a href="data/fc_target_HM_n303.csv" download>human milk HM (n=303, target)</a>, <a href="data/fc_sample_CMF_n10.csv" download>cow-milk-based formula CMF (n=10)</a>, <a href="data/fc_sample_POF_n10.csv" download>plant-oil-based formula POF (n=10)</a>')
 section("step9", "s9.h", "第 9 步　风味改良", "Step 9. Flavor improvement", qa("s9",
     "婴儿配方奶粉和母乳的风味差在哪里？改良应朝哪个方向？", "Where does the flavor of infant formula differ from human milk, and in which direction should it be improved?",
-    f'{a("../flavor-improver/?mode=user", "乳品风味改良，“我的 GC-MS 数据”")}。输入是 Cui 等（{FC}）补充材料 Table S2 的平均相对含量，按工具的 CSV 格式整理（下载：{dl[0]}）；母乳为目标，两类配方奶粉分别作为当前样品；阈值用“作者课题组取值”（该文 Table 2 的 27 个关键风味物质的阈值与之逐一相同）。该文与 Cui 等（2026）用同一台仪器（8890B）和同一种萃取头（DVB/CAR/PDMS）。',
-    f'{a("../flavor-improver/?mode=user", "Dairy flavor improver, “my GC-MS data”")}. The input is the mean relative content from Table S2 of Cui et al. ({FC}), arranged in the tool\'s CSV format (download: {dl[1]}); human milk is the target and each formula type in turn the current sample; thresholds are the author group values (identical, one by one, to those of the 27 key flavor compounds in Table 2 of that paper). That study used the same instrument (8890B) and fibre (DVB/CAR/PDMS) as Cui et al. (2026).') + [
-    h3("s9.h3a", "母乳的 ROAV：工具与论文对照", "Human milk ROAV: tool and paper side by side"),
+    f'{a("../flavor-improver/?mode=user", "乳品风味改良，“我的 GC-MS 数据”")}。输入是{FC_WHO[0]}各类样品的平均相对含量，按工具的 CSV 格式整理（下载：{dl[0]}）；母乳为目标，两类配方奶粉分别作为当前样品；阈值用“作者课题组取值”（课题组 27 个关键风味物质的阈值与之逐一相同）。这些数据与 Cui 等（2026）用同一台仪器（8890B）和同一种萃取头（DVB/CAR/PDMS）测得。',
+    f'{a("../flavor-improver/?mode=user", "Dairy flavor improver, “my GC-MS data”")}. The input is the mean relative content of each sample group from {FC_WHO[1]}, arranged in the tool\'s CSV format (download: {dl[1]}); human milk is the target and each formula type in turn the current sample; thresholds are the author group values (identical, one by one, to the group\'s thresholds for its 27 key flavor compounds). These data were measured with the same instrument (8890B) and fibre (DVB/CAR/PDMS) as Cui et al. (2026).') + [
+    h3("s9.h3a", "母乳的 ROAV：工具与课题组计算值对照", "Human milk ROAV: tool and author group values side by side"),
     tbl9,
-    p("s9.r1", "论文逐个样品计算 ROAV 再求平均，工具用平均含量计算，所以数值不同（工具中最大值固定为 100），只比较排序。主要物质排序一致：前 6 位（(E,E)-2,4-壬二烯醛、1-辛烯-3-酮、1-庚烯-3-酮、己醛、(E)-2-壬烯醛、壬醛）和第 11~13 位完全相同。例外有两对相邻物质互换：(E)-2-辛烯醛与辛醛（第 7、8 位），(E)-2-癸烯醛与 (E,Z)-2,4-癸二烯醛（第 9、10 位）。工具算出 ROAV ≥ 1 的物质比论文多 3 个：(E,E)-2,4-癸二烯醛和 2,3-辛二酮（论文中都小于 1），以及 1-辛烯-3-醇（论文母乳一列未列）。",
-      "The paper computes ROAV for each sample and then averages; the tool computes it from the mean contents, so the values differ (the tool fixes the largest at 100) and only the ranks are compared. The main compounds rank the same: the top 6 ((E,E)-2,4-nonadienal, 1-octen-3-one, 1-hepten-3-one, hexanal, (E)-2-nonenal, nonanal) and ranks 11 to 13 are identical. The exceptions are two swapped neighbouring pairs: (E)-2-octenal and octanal (ranks 7 and 8), and (E)-2-decenal and (E,Z)-2,4-decadienal (ranks 9 and 10). The tool finds 3 more compounds with ROAV ≥ 1 than the paper: (E,E)-2,4-decadienal and 2,3-octanedione (both below 1 in the paper) and 1-octen-3-ol (not listed for human milk in the paper)."),
+    p("s9.r1", "课题组逐个样品计算 ROAV 再求平均，工具用平均含量计算，所以数值不同（工具中最大值固定为 100），只比较排序。主要物质排序一致：前 6 位（(E,E)-2,4-壬二烯醛、1-辛烯-3-酮、1-庚烯-3-酮、己醛、(E)-2-壬烯醛、壬醛）和第 11~13 位完全相同。例外有两对相邻物质互换：(E)-2-辛烯醛与辛醛（第 7、8 位），(E)-2-癸烯醛与 (E,Z)-2,4-癸二烯醛（第 9、10 位）。工具算出 ROAV ≥ 1 的物质比课题组多 3 个：(E,E)-2,4-癸二烯醛和 2,3-辛二酮（课题组计算值都小于 1），以及 1-辛烯-3-醇（课题组的母乳结果中未列）。",
+      "The author group computes ROAV for each sample and then averages; the tool computes it from the mean contents, so the values differ (the tool fixes the largest at 100) and only the ranks are compared. The main compounds rank the same: the top 6 ((E,E)-2,4-nonadienal, 1-octen-3-one, 1-hepten-3-one, hexanal, (E)-2-nonenal, nonanal) and ranks 11 to 13 are identical. The exceptions are two swapped neighbouring pairs: (E)-2-octenal and octanal (ranks 7 and 8), and (E)-2-decenal and (E,Z)-2,4-decadienal (ranks 9 and 10). The tool finds 3 more compounds with ROAV ≥ 1 than the author group: (E,E)-2,4-decadienal and 2,3-octanedione (both below 1 in the group's values) and 1-octen-3-ol (not listed in the group's human milk results)."),
     h3("s9.h3b", "配方奶粉与母乳的差距", "Gaps between formula and human milk"),
     fig("improver-cmf.webp", 840, 341, "s9.fig", "牛乳基配方奶粉（实线）与母乳（虚线）的气味轮廓，母乳 / 奶粉 12 维视图。", "Odor profiles of cow-milk-based formula (solid) and human milk (dashed), human milk / formula 12-dimension view.",
         "s9.alt", "乳品风味改良中 CMF 与母乳的雷达图截图", "Radar chart screenshot of CMF against human milk in the dairy flavor improver"),
@@ -389,10 +395,10 @@ section("step9", "s9.h", "第 9 步　风味改良", "Step 9. Flavor improvement
       f"<b>Cow-milk-based formula (CMF):</b> {cmf_n} compounds compared. Higher contribution share in human milk: {cte} (percentage points, likewise below); higher in CMF: {cse}."),
     p("s9.r3", f"<b>植物油基配方奶粉（POF）：</b>{pof_n} 个物质参与比较。母乳中更高的：{ptz}；POF 中更高的：{psz}。",
       f"<b>Plant-oil-based formula (POF):</b> {pof_n} compounds compared. Higher in human milk: {pte}; higher in POF: {pse}."),
-    p("s9.i1", "<b>解读：</b>两类配方奶粉与母乳的差距方向相近：母乳中 (E)-2-壬烯醛、1-庚烯-3-酮、1-辛烯-3-酮和 (E,E)-2,4-壬二烯醛的贡献更大，与论文的结论一致：论文认为母乳的香气以不饱和醛酮为主，这些物质在 GC-O 中呈金属味；配方奶粉中二甲基二硫、二甲基三硫更高，论文认为它们带来洋葱、大蒜样气味，通常由蛋氨酸的 Strecker 降解产生。工具对母乳更高的物质只给方向、不给添加量，并提示婴幼儿配方食品不得加香，只能从原料、工艺和前体调整；配方奶粉更高的物质需要从原料或工艺方向降低（如控制氧化、热处理和储存条件）。",
-      "<b>Interpretation:</b> both formula types differ from human milk in a similar direction: (E)-2-nonenal, 1-hepten-3-one, 1-octen-3-one and (E,E)-2,4-nonadienal contribute more in human milk, in line with the paper's conclusion that human milk aroma is dominated by unsaturated aldehydes and ketones, which showed metallic notes in GC-O; dimethyl disulfide and dimethyl trisulfide are higher in formula, which the paper links to onion- and garlic-like notes, typically formed by Strecker degradation of methionine. For compounds higher in human milk the tool gives directions only, no amounts, and notes that infant formula may not be flavored, so only raw materials, processing and precursors can change; compounds higher in formula have to be lowered through raw materials or processing (for example oxidation control, heat treatment and storage)."),
-    p("s9.i2", "<b>脂质来源（论文 Table S1）：</b>10 个 CMF 都含生牛乳；OPO 见于 6 个 CMF 和 5 个 POF；POF 的脂质来源中没有生牛乳或稀奶油，主要是 OPO 和植物油（大豆油、葵花籽油、椰子油、菜籽油、棕榈油等），其中 2 个另加 DHA。论文指出，CMF 和 POF 因组成不同而香气不同。",
-      "<b>Lipid sources (Table S1 of the paper):</b> all 10 CMF contain raw cow's milk; OPO appears in 6 CMF and 5 POF; the lipid sources of POF include no raw cow's milk or cream and are mainly OPO and vegetable oils (soybean, sunflower, coconut, rapeseed, palm and others), 2 of them with added DHA. The paper notes that CMF and POF differ in aroma because their composition differs."),
+    p("s9.i1", "<b>解读：</b>两类配方奶粉与母乳的差距方向相近：母乳中 (E)-2-壬烯醛、1-庚烯-3-酮、1-辛烯-3-酮和 (E,E)-2,4-壬二烯醛的贡献更大，与课题组的结论一致：课题组认为母乳的香气以不饱和醛酮为主，这些物质在 GC-O 中呈金属味；配方奶粉中二甲基二硫、二甲基三硫更高，课题组认为它们带来洋葱、大蒜样气味，通常由蛋氨酸的 Strecker 降解产生。工具对母乳更高的物质只给方向、不给添加量，并提示婴幼儿配方食品不得加香，只能从原料、工艺和前体调整；配方奶粉更高的物质需要从原料或工艺方向降低（如控制氧化、热处理和储存条件）。",
+      "<b>Interpretation:</b> both formula types differ from human milk in a similar direction: (E)-2-nonenal, 1-hepten-3-one, 1-octen-3-one and (E,E)-2,4-nonadienal contribute more in human milk, in line with the author group's conclusion that human milk aroma is dominated by unsaturated aldehydes and ketones, which showed metallic notes in GC-O; dimethyl disulfide and dimethyl trisulfide are higher in formula, which the group links to onion- and garlic-like notes, typically formed by Strecker degradation of methionine. For compounds higher in human milk the tool gives directions only, no amounts, and notes that infant formula may not be flavored, so only raw materials, processing and precursors can change; compounds higher in formula have to be lowered through raw materials or processing (for example oxidation control, heat treatment and storage)."),
+    p("s9.i2", "<b>脂质来源（课题组数据）：</b>10 个 CMF 都含生牛乳；OPO 见于 6 个 CMF 和 5 个 POF；POF 的脂质来源中没有生牛乳或稀奶油，主要是 OPO 和植物油（大豆油、葵花籽油、椰子油、菜籽油、棕榈油等），其中 2 个另加 DHA。课题组指出，CMF 和 POF 因组成不同而香气不同。",
+      "<b>Lipid sources (author group data):</b> all 10 CMF contain raw cow's milk; OPO appears in 6 CMF and 5 POF; the lipid sources of POF include no raw cow's milk or cream and are mainly OPO and vegetable oils (soybean, sunflower, coconut, rapeseed, palm and others), 2 of them with added DHA. The author group notes that CMF and POF differ in aroma because their composition differs."),
     lim("s9", "输入是每类样品的平均值，丢失了样品间的差异，配方奶粉每类只有 10 个样品；ROAV 是半定量结果，两边的数值不能直接相比，只比较贡献占比；这一步只给方向，不给添加量。",
         "The input is the mean of each group, which loses the variation between samples, and each formula group has only 10 samples; ROAV is semi-quantitative, so the two sides are compared by contribution shares, not by value; this step gives directions only, no amounts."),
 ])
@@ -415,7 +421,7 @@ tbl10 = ('<div class="table-wrap"><table class="cs-table"><thead><tr>' + th("s10
          + "</tr></thead><tbody>" + "".join(r10) + "</tbody></table></div>")
 src = [
     ("s10.d1", f"样品与关键风味物质：{P4ZH}，补充材料 Table S1、Table 1、Table 2。", f"Sample and key flavor compounds: {P4EN}, Supplementary Table S1, Table 1 and Table 2."),
-    ("s10.d2", f"婴儿配方奶粉与 303 份母乳：Cui 等（{FC}），Table 2，补充材料 Table S1、S2。", f"Infant formula and 303 human milk samples: Cui et al. ({FC}), Table 2, Supplementary Tables S1 and S2."),
+    ("s10.d2", f"婴儿配方奶粉与 303 份母乳：{FC_DATA[0]}。", f"Infant formula and 303 human milk samples: {FC_DATA[1]}."),
     ("s10.d3", "阈值：L.J. van Gemert (2011) <i>Odour Thresholds</i>，作者课题组取值。", "Thresholds: L.J. van Gemert (2011) <i>Odour Thresholds</i>, author group values."),
     ("s10.d4", "气相强度曲线：Wakayama H, et al. <i>Ind Eng Chem Res</i> 2019, " + doi("10.1021/acs.iecr.9b01225") + "。", "Gas-phase intensity curves: Wakayama H, et al. <i>Ind Eng Chem Res</i> 2019, " + doi("10.1021/acs.iecr.9b01225") + "."),
     ("s10.d5", "食物来源：FlavorDB2（CC BY-NC-SA 3.0）、FooDB（2020-04-07 版，CC BY-NC 4.0）和作者已发表数据。", "Food sources: FlavorDB2 (CC BY-NC-SA 3.0), FooDB (2020-04-07 export, CC BY-NC 4.0) and the author's published data."),
