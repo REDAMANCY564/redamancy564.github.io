@@ -95,6 +95,19 @@
         [byLabel.heptanal.thr, byLabel.heptanal.thrFrom, byLabel.heptanal.sNotFound, byLabel.heptanal.s], [null, null, true, null]);
       check("merge: only in one side", [byLabel.octanal.t, byLabel.octanal.tNotFound, byLabel.eucalyptol.s], [null, false, null]);
       check("merge: one side ROAV -> ROAV", C.merge(Object.assign({}, S, { mode: "roav" }), T).mode, "roav");
+      // stereoisomers merged under one knowledge-base id stay separate when a file lists both (2026-11-21)
+      const dS = { mode: "roav", compounds: [
+        { label: "(E,Z)-2,4-decadienal", cas: "25152-83-4", kbId: "c5283349", value: 0.31, thr_mg_kg: 0.00004 },
+        { label: "(E,E)-2,4-decadienal", cas: "25152-84-5", kbId: "c5283349", value: 0.73, thr_mg_kg: 0.00007 } ], notFound: [] };
+      const dT = { mode: "roav", compounds: [
+        { label: "(E,Z)-2,4-Decadienal", cas: "25152-83-4", kbId: "c5283349", value: 0.02, thr_mg_kg: 0.00004 },
+        { label: "(E,E)-2,4-Decadienal", cas: "25152-84-5", kbId: "c5283349", value: 0.02, thr_mg_kg: 0.00007 } ], notFound: [] };
+      const dm = C.merge(dS, dT);
+      check("merge: (E,E)/(E,Z)-2,4-decadienal (one KB id, two CAS) -> two rows, values kept per CAS",
+        dm.rows.map(r => [r.cas, r.s.value, r.t.value, r.thr]), [["25152-83-4", 0.31, 0.02, 0.00004], ["25152-84-5", 0.73, 0.02, 0.00007]]);
+      const dOne = C.merge({ mode: "roav", compounds: [dS.compounds[1]], notFound: [] },
+        { mode: "roav", compounds: [{ label: "2,4-Decadienal", cas: "", kbId: "c5283349", value: 0.02, thr_mg_kg: 0.00007 }], notFound: [] });
+      check("merge: one CAS per side -> still one row by KB id", dOne.rows.length, 1);
 
       const nd = C.recordFromCsv('"Compound","CAS","Amount (ug/kg)","Odor threshold in water (mg/kg)"\n"a","","5","0.001"\n"b","1-1-1","not detected",""\n"c","","n.d.",""\n');
       check("ranking CSV: 'not detected' rows -> notFound", [nd.rec.compounds.length, nd.rec.notFound.map(x => x.label)], [1, ["b", "c"]]);

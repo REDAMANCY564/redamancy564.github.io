@@ -235,9 +235,9 @@
   // Examples (top of the page): one click loads the peak table and its standard file, confirms them,
   // runs the matching and scrolls to the ranking. Uploading one's own files keeps the step-by-step flow.
   let exampleBusy = false;
-  document.querySelectorAll("[data-example]").forEach(b => b.addEventListener("click", async () => {
-    const id = b.dataset.example;
-    if (exampleBusy) return;
+  async function runExample(id) {
+    const b = document.querySelector('[data-example="' + id + '"]');
+    if (exampleBusy || !b || !examples.examples[id]) return;
     exampleBusy = true;
     const name = b.textContent;
     const status = $("try-status");
@@ -248,6 +248,7 @@
       await load(exampleFiles[id], id);
       await loadStd(exampleStd[id], true);
       setTolerances(examples.examples[id].tolerances, true);
+      applyExampleOptions(examples.examples[id].options || {});
       if (!(await confirmNow())) return;
       await runMatch();
       status.textContent = I18N.t("try.done", { name });
@@ -257,7 +258,15 @@
       exampleBusy = false;
       if (status.textContent === I18N.t("try.busy", { name })) status.textContent = "";
     }
-  }));
+  }
+  // An example may set the relative-content basis and the threshold source (example 4: targets, author
+  // group values). Like its tolerances these are not saved in the browser; examples without them keep
+  // the visitor's current choice.
+  function applyExampleOptions(o) {
+    if (o.rel_basis === "targets" || o.rel_basis === "total") { REL_BASIS = o.rel_basis; $("rel-basis").value = REL_BASIS; }
+    if (o.thr_source === "author" || o.thr_source === "site") { FLV.thrSrc = o.thr_source; $("thr-source").value = FLV.thrSrc; }
+  }
+  document.querySelectorAll("[data-example]").forEach(b => b.addEventListener("click", () => runExample(b.dataset.example)));
 
   $("dl-template").addEventListener("click", e => {
     e.preventDefault();
@@ -1062,4 +1071,9 @@
   // intensity curves load in the background; tables drawn before that get their links on the next draw
   if (window.Intensity) Intensity.load().then(() => { if (RUN.result) renderMatch(); }, () => { /* no links without the data */ });
   I18N.onChange(() => { const el = $("res-status"); if (el.dataset.key) el.textContent = I18N.t(el.dataset.key); });
+  // Shareable link: ?example=example1..example4 runs that example on load, as if its button were clicked
+  try {
+    const ex0 = new URLSearchParams(location.search).get("example");
+    if (ex0 && examples.examples[ex0]) setTimeout(() => runExample(ex0), 0);
+  } catch (e) { /* ignore */ }
 })();

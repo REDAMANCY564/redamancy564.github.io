@@ -108,11 +108,33 @@
   /** Normalized compound name for matching when there is no KB id and no CAS. */
   const normName = s => String(s || "").normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
 
-  /** Identity key of a compound: knowledge-base id, else CAS, else normalized name. */
-  function keyOf(c) {
+  const validCas = cas => !!cas && /^\d{2,7}-\d\d-\d$/.test(cas);
+
+  /**
+   * Identity key of a compound: knowledge-base id, else CAS, else normalized name. split: knowledge-base
+   * ids whose compounds are keyed by CAS instead (stereoisomers merged under one id in the knowledge base,
+   * e.g. (E,E)- and (E,Z)-2,4-decadienal, that a file lists as separate compounds; see merge()).
+   */
+  function keyOf(c, split) {
+    if (c.kbId && split && split.has(c.kbId) && validCas(c.cas)) return "kb:" + c.kbId + "|cas:" + c.cas;
     if (c.kbId) return "kb:" + c.kbId;
-    if (c.cas && /^\d{2,7}-\d\d-\d$/.test(c.cas)) return "cas:" + c.cas;
+    if (validCas(c.cas)) return "cas:" + c.cas;
     return "name:" + normName(c.label);
+  }
+
+  /** Knowledge-base ids that one record lists with two or more different CAS numbers. */
+  function splitIds(records) {
+    const out = new Set();
+    records.forEach(rec => {
+      const seen = new Map();
+      (rec.compounds || []).concat(rec.notFound || []).forEach(c => {
+        if (!c.kbId || !validCas(c.cas)) return;
+        if (!seen.has(c.kbId)) seen.set(c.kbId, new Set());
+        seen.get(c.kbId).add(c.cas);
+      });
+      seen.forEach((cas, id) => { if (cas.size > 1) out.add(id); });
+    });
+    return out;
   }
 
   /**
@@ -125,8 +147,9 @@
   function merge(sample, target) {
     const mode = sample.mode === "oav" && target.mode === "oav" ? "oav" : "roav";
     const rows = new Map();
+    const split = splitIds([sample, target]);   // stereoisomers listed separately stay separate rows
     const row = c => {
-      const k = keyOf(c);
+      const k = keyOf(c, split);
       if (!rows.has(k)) rows.set(k, { key: k, label: c.label, cas: c.cas || "", kbId: c.kbId || null, s: null, t: null, sNotFound: false, tNotFound: false });
       const r = rows.get(k);
       if (!r.kbId && c.kbId) r.kbId = c.kbId;
