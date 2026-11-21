@@ -62,6 +62,7 @@
     const sup = meta.eval.supplementary_top1_agreement;
     $("supp-text").textContent = I18N.t("supp.text", { n: fmtN(nFit), k: meta.k, o: f3(sup.odor), s: f3(sup.structure) });
 
+    // excluded molecules; name_zh (Chinese name) where given
     const ex = lib.excluded || [], by = {};
     ex.forEach(e => { (by[e.category] = by[e.category] || []).push(e); });
     $("excluded-note").textContent = I18N.t("excluded.note", { n: ex.length, total: fmtN(n) });
@@ -73,7 +74,7 @@
       return e.slice(0, -1).join(", ") + " <span class=\"nobr\">and " + e[e.length - 1] + "</span>";
     };
     $("excluded-list").innerHTML = Object.keys(by).map(c => "<li><b>" + esc(I18N.t("excluded.cat." + c)) + "</b> (" + by[c].length + "): " +
-      nameList(by[c].map(e => e.name || e.smiles)) + "</li>").join("");
+      nameList(by[c].map(e => (I18N.lang === "zh" && e.name_zh) || e.name || e.smiles)) + "</li>").join("");
   }
 
   // ---------- 5.2.2 training animation (odor-map/media, training/odormap/make_training_video.py) ----------

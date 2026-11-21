@@ -1,5 +1,5 @@
 {
- "source": "curated by hand 2026-11-21 (machine-format names and the 10 key flavor compounds of human milk); see apply_stereo_names.py and _inputs/NAMES-29-REVIEW.md",
+ "source": "curated by hand 2026-11-21 (machine-format names and the 10 key flavor compounds of human milk); see apply_stereo_names.py and _inputs/NAMES-29-REVIEW.md; 'case': capitalization only, old spelling kept as a search alias (2026-11-21)",
  "names": {
   "TYQCGQRIZGCHNB": {
    "en": "Ascorbic acid",
@@ -346,6 +346,252 @@
     "1-Octen-3-One"
    ],
    "keep_old": true
+  },
+  "MKPMHJQMNACGDI": {
+   "en": "p-Mentha-2,8-dien-1-ol",
+   "zh": "对薄荷-2,8-二烯-1-醇",
+   "cas": "7212-40-0（trans）",
+   "old": [
+    "UNII-R1AUQ945JN"
+   ]
+  },
+  "XZRVRYFILCSYSP": {
+   "en": "beta-Bisabolene",
+   "zh": "β-红没药烯",
+   "cas": "495-61-4",
+   "old": [
+    "CHEBI:49249"
+   ]
+  },
+  "XVULBTBTFGYVRC": {
+   "en": "Sclareol",
+   "zh": "香紫苏醇",
+   "cas": "515-03-7",
+   "old": [
+    "STK020088"
+   ]
+  },
+  "CLNYHERYALISIR": {
+   "en": "1,3-Nonadiene",
+   "zh": "1,3-壬二烯",
+   "cas": "—",
+   "old": [
+    "Npc232882"
+   ]
+  },
+  "LNOWXPKCCJROHI": {
+   "en": "Ethyl 4,7-octadienoate",
+   "zh": "4,7-辛二烯酸乙酯",
+   "cas": "—",
+   "old": [
+    "UNII-VD2YQW659E"
+   ]
+  },
+  "JYVQZJUEWVCZHN": {
+   "en": "2-(5-Isopropyl-2-methyltetrahydrothiophen-2-yl)ethyl acetate",
+   "zh": "乙酸 2-(5-异丙基-2-甲基四氢噻吩-2-基)乙酯",
+   "cas": "1658479-63-0",
+   "old": [
+    "48ER97K3ZJ"
+   ]
+  },
+  "JUQGWBAOQUBVFP": {
+   "en": "1,4-Cadinadiene",
+   "zh": "1,4-杜松二烯",
+   "cas": "16728-99-7",
+   "old": [
+    "Npc156155"
+   ]
+  },
+  "LHYBTGKZFCNGHT": {
+   "en": "2-sec-Butyl-5-ethyl-4-methyl-2,5-dihydrothiazole",
+   "zh": "2-仲丁基-5-乙基-4-甲基-2,5-二氢噻唑",
+   "cas": "—",
+   "old": [
+    "Unii-vbv00thq12"
+   ]
+  },
+  "KQXISUWXTVZWDG": {
+   "en": "5-Ethyl-2-isobutyl-4-methyl-2,5-dihydrothiazole",
+   "zh": "5-乙基-2-异丁基-4-甲基-2,5-二氢噻唑",
+   "cas": "83418-53-5",
+   "old": [
+    "Unii-OL1phn554H"
+   ]
+  },
+  "OUIASSQOLAEHIR": {
+   "en": "Propyl propanethiosulfonate",
+   "zh": "丙硫代磺酸丙酯",
+   "cas": "1113-13-9",
+   "old": [
+    "UNII-H5E892YJGG"
+   ]
+  },
+  "LPRNQMUKVDHCFX": {
+   "en": "Glucovanillin",
+   "zh": "香兰素葡萄糖苷",
+   "cas": "494-08-6",
+   "old": [
+    "STK737742"
+   ]
+  },
+  "IXQKXEUSCPEQRD": {
+   "en": "Cucurbitacin B",
+   "zh": "葫芦素 B",
+   "cas": "6199-67-3",
+   "old": [
+    "MLS002702988"
+   ]
+  },
+  "QQVQBUXUAZCLLZ": {
+   "en": "Isopropyl 3-methyl-2-butenoate",
+   "zh": "3-甲基-2-丁烯酸异丙酯",
+   "cas": "—",
+   "old": [
+    "Npc17697"
+   ]
+  },
+  "KBDSLGBFQAGHBE": {
+   "en": "Limonin",
+   "zh": "柠檬苦素",
+   "cas": "1180-71-8",
+   "old": [
+    "MLS002607979"
+   ]
+  },
+  "WMHJCSAICLADIN": {
+   "en": "Picrocrocin",
+   "zh": "苦藏花素",
+   "cas": "138-55-6",
+   "old": [
+    "HMDB05796"
+   ]
+  },
+  "NEDIAPMWNCQWNW": {
+   "en": "Massoia lactone",
+   "zh": "马索亚内酯",
+   "cas": "51154-96-2",
+   "old": [
+    "UNII-847O2V0IOA"
+   ]
+  },
+  "ZCOLJUOHXJRHDI": {
+   "en": "Genistin",
+   "zh": "染料木苷",
+   "cas": "529-59-9",
+   "old": [
+    "NSC5112"
+   ]
+  },
+  "IGSYEZFZPOZFNC": {
+   "en": "Digalacturonic acid",
+   "zh": "二聚半乳糖醛酸",
+   "cas": "5894-59-7",
+   "old": [
+    "GlyTouCan:G62645IG"
+   ]
+  },
+  "LCLHHZYHLXDRQG": {
+   "en": "Trigalacturonic acid",
+   "zh": "三聚半乳糖醛酸",
+   "cas": "6037-45-2",
+   "old": [
+    "GlyTouCan:G81858VJ"
+   ]
+  },
+  "MYHSVHWQEVDFQT": {
+   "en": "Progoitrin",
+   "zh": "原甲状腺肿素",
+   "cas": "585-95-5",
+   "old": [
+    "AC1LCV7P"
+   ]
+  },
+  "XJHDMGJURBVLLE": {
+   "en": "Santonin",
+   "zh": "山道年",
+   "cas": "481-06-1",
+   "old": [
+    "AC1LDI49"
+   ]
+  },
+  "VLXDPFLIRFYIME": {
+   "en": "alpha-Copaene",
+   "zh": "α-古巴烯",
+   "cas": "138874-68-7",
+   "old": [
+    "AC1L9CNW"
+   ]
   }
+ },
+ "case": {
+  "1,3,3-Trimethylbicyclo[2.2.1]heptan-2-YL 3-methylbutanoate": "1,3,3-Trimethylbicyclo[2.2.1]heptan-2-yl 3-methylbutanoate",
+  "1,3,4,5,6-Pentahydroxyhexan-2-One": "1,3,4,5,6-Pentahydroxyhexan-2-one",
+  "1-(2,6,6-Trimethylcyclohex-1-EN-1-YL)pent-1-EN-3-YL acetate": "1-(2,6,6-Trimethylcyclohex-1-en-1-yl)pent-1-en-3-yl acetate",
+  "1-Hepten-3-Ol": "1-Hepten-3-ol",
+  "1-Hexen-3-Ol": "1-Hexen-3-ol",
+  "1-Methyl-3-(prop-1-EN-1-YL)trisulfane": "1-Methyl-3-(prop-1-en-1-yl)trisulfane",
+  "1-Octen-3-Ol": "1-Octen-3-ol",
+  "1-Octen-3-YL propionate": "1-Octen-3-yl propionate",
+  "1-Oxacyclotridec-3-EN-2-one": "1-Oxacyclotridec-3-en-2-one",
+  "1-Penten-3-Ol": "1-Penten-3-ol",
+  "10-Undecen-1-Ol": "10-Undecen-1-ol",
+  "2,4,8-Trimethylnona-3,7-dien-2-OL": "2,4,8-Trimethylnona-3,7-dien-2-ol",
+  "2,4-Hexadien-1-Ol": "2,4-Hexadien-1-ol",
+  "2-Hepten-4-One": "2-Hepten-4-one",
+  "2-METHYLBUTYL 2-METHYLBUTYRATE": "2-Methylbutyl 2-methylbutyrate",
+  "2-Methyl-3-Buten-2-Ol": "2-Methyl-3-buten-2-ol",
+  "2-Methylnon-4-EN-3-one": "2-Methylnon-4-en-3-one",
+  "2-Methyltetrahydrofuran-3-One": "2-Methyltetrahydrofuran-3-one",
+  "2-Phenyl-2-Butenal": "2-Phenyl-2-butenal",
+  "3,7-Dimethyloct-7-EN-1-YL 3-methylbutanoate": "3,7-Dimethyloct-7-en-1-yl 3-methylbutanoate",
+  "3-Buten-2-one, 3-methyl-4-(2,6,6-trimethyl-2-cyclohexen-1-YL)-": "3-Buten-2-one, 3-methyl-4-(2,6,6-trimethyl-2-cyclohexen-1-yl)-",
+  "3-Hepten-2-One": "3-Hepten-2-one",
+  "3-Methyl-2-Buten-1-Ol": "3-Methyl-2-buten-1-ol",
+  "3-Methyl-2-Cyclohexen-1-One": "3-Methyl-2-cyclohexen-1-one",
+  "3-Methyl-2-Cyclopenten-1-One": "3-Methyl-2-cyclopenten-1-one",
+  "3-Methylpentan-2-One": "3-Methylpentan-2-one",
+  "3-Octen-2-One": "3-Octen-2-one",
+  "4,4-DIBUTYL-gamma-BUTYROLACTONE": "4,4-Dibutyl-gamma-butyrolactone",
+  "4-(2,2-Dimethyl-6-Methylenecyclohexyl)Butan-2-One": "4-(2,2-Dimethyl-6-methylenecyclohexyl)butan-2-one",
+  "4-(2,6,6-Trimethylcyclohexa-1,3-dien-1-YL)but-3-EN-2-one": "4-(2,6,6-Trimethylcyclohexa-1,3-dien-1-yl)but-3-en-2-one",
+  "4-(p-ACETOXYPHENYL)-2-BUTANONE": "4-(p-Acetoxyphenyl)-2-butanone",
+  "4-DECENYL ACETATE (Z)": "4-Decenyl acetate (Z)",
+  "4-Hexen-1-Ol": "4-Hexen-1-ol",
+  "4-Hexen-3-One": "4-Hexen-3-one",
+  "4-Penten-1-OL": "4-Penten-1-ol",
+  "4-Penten-2-Ol": "4-Penten-2-ol",
+  "5-(Hex-1-EN-1-YL)-4-methyloxolan-2-one": "5-(Hex-1-en-1-yl)-4-methyloxolan-2-one",
+  "5-(Octa-2,5-dien-1-YL)oxolan-2-one": "5-(Octa-2,5-dien-1-yl)oxolan-2-one",
+  "5-HYDROXY-2-DODECENOIC ACID delta-LACTONE": "5-Hydroxy-2-dodecenoic acid delta-lactone",
+  "5-Hexenyl Acetate": "5-Hexenyl acetate",
+  "5-Methyl-3-Hexen-2-One": "5-Methyl-3-hexen-2-one",
+  "6-Methyl-5-Hepten-2-One": "6-Methyl-5-hepten-2-one",
+  "7-Octen-2-One": "7-Octen-2-one",
+  "Ethyl 3-Hexenoate": "Ethyl 3-hexenoate",
+  "Hept-2-EN-1-YL acetate": "Hept-2-en-1-yl acetate",
+  "Hept-4-EN-2-YL 2-hydroxybenzoate": "Hept-4-en-2-yl 2-hydroxybenzoate",
+  "Hex-1-EN-1-YL hex-2-enoate": "Hex-1-en-1-yl hex-2-enoate",
+  "Isovaleric acid (4,7-dimethyl-1,6-octadien-3-YL) ester": "Isovaleric acid (4,7-dimethyl-1,6-octadien-3-yl) ester",
+  "METHYL beta-PHENYLGLYCIDATE": "Methyl beta-phenylglycidate",
+  "Methyl 2-Hexenoate": "Methyl 2-hexenoate",
+  "Nona-1,5-dien-4-OL": "Nona-1,5-dien-4-ol",
+  "Pentan-2-YL dodecanoate": "Pentan-2-yl dodecanoate",
+  "Undeca-1,3-dien-1-OL": "Undeca-1,3-dien-1-ol",
+  "Undeca-2,4-dien-1-OL": "Undeca-2,4-dien-1-ol",
+  "alpha-CAMPHOLENOL": "alpha-Campholenol",
+  "alpha-TERPINEOL": "alpha-Terpineol",
+  "beta-NAPHTHYL ANTHRANILATE": "beta-Naphthyl anthranilate",
+  "beta-SANTALOL": "beta-Santalol",
+  "epsilon-DECALACTONE": "epsilon-Decalactone",
+  "gamma-OCTADECALACTONE": "gamma-Octadecalactone",
+  "o-TOLYL ISOBUTYRATE": "o-Tolyl isobutyrate",
+  "o-TOLYL SALICYLATE": "o-Tolyl salicylate",
+  "p-CRESYL PHENYLACETATE": "p-Cresyl phenylacetate",
+  "p-MENTHAN-8-OL": "p-Menthan-8-ol",
+  "p-METHOXY-alpha-METHYLCINNAMALDEHYDE": "p-Methoxy-alpha-methylcinnamaldehyde",
+  "p-TOLYL ISOBUTYRATE": "p-Tolyl isobutyrate",
+  "trans-2-Hexen-1-Ol": "trans-2-Hexen-1-ol",
+  "trans-2-Octen-1-Ol": "trans-2-Octen-1-ol"
  }
 }

@@ -41,7 +41,9 @@ REG_LOOKUP = ROOT / "flavor-kb" / "data" / "regulatory-lookup.json"
 
 def apply(verbose=True):
     names = json.loads(NAMES.read_text(encoding="utf-8"))["names"]
-    names = {**names, **json.loads(DISPLAY.read_text(encoding="utf-8"))["names"]}
+    disp = json.loads(DISPLAY.read_text(encoding="utf-8"))
+    names = {**names, **disp["names"]}
+    case = disp.get("case", {})   # capitalization only: old spelling -> new, the old one kept as an alias
     def keep(e, old):
         if old.lower() == e["en"].lower():
             return False
@@ -52,6 +54,11 @@ def apply(verbose=True):
     for cid, rec in kb.items():
         e = names.get(Chem.InchiToInchiKey(rec["inchi"])[:14])
         if not e:
+            if rec["name"] in case:
+                old = rec["name"]
+                rec["alt"] = [old] + [a for a in rec.get("alt", []) if a != old]
+                rec["name"] = case[old]
+                changed.append(("kb", cid, old, rec["name"]))
             continue
         old = rec["name"]
         if old != e["en"]:
@@ -67,6 +74,11 @@ def apply(verbose=True):
         mol = Chem.MolFromSmiles(m[0])
         e = names.get(Chem.MolToInchiKey(mol)[:14]) if mol else None
         if not e:
+            if m[1] in case:
+                prev = olds.get(str(i))
+                olds[str(i)] = m[1] + (" | " + prev if prev and prev != m[1] else "")
+                changed.append(("lib", i, m[1], case[m[1]]))
+                m[1] = case[m[1]]
             continue
         if m[1] != e["en"]:
             if m[1] and keep(e, m[1]):
@@ -89,17 +101,18 @@ def apply_regulatory(molecules):
     training/regulatory/build_regulatory.py; patched here so that no rebuild is needed). Only names
     listed as "old" in display_names.json are replaced; the Chinese names there are the official
     list names and stay."""
-    disp = json.loads(DISPLAY.read_text(encoding="utf-8"))["names"]
-    new = {o: e["en"] for e in disp.values() for o in e.get("old", [])}
+    d = json.loads(DISPLAY.read_text(encoding="utf-8"))
+    new = {o: e["en"] for e in d["names"].values() for o in e.get("old", [])}
+    new.update(d.get("case", {}))
     changed = []
     reg = json.loads(REG.read_text(encoding="utf-8"))
     for it in reg["items"]:
-        if it[2] in new:
+        if it[2] in new and it[2] != molecules[it[0]][1]:
             changed.append(("reg", it[0], it[2], molecules[it[0]][1])); it[2] = molecules[it[0]][1]
     REG.write_text(json.dumps(reg, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     lk = json.loads(REG_LOOKUP.read_text(encoding="utf-8"))
     for s in lk["s"]:
-        if s[0] in new:
+        if s[0] in new and s[0] != new[s[0]]:
             changed.append(("lookup", s[2], s[0], new[s[0]])); s[0] = new[s[0]]
         for m in s[6]:
             if m[1] in new:

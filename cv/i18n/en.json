@@ -70,7 +70,7 @@
   "res.1.3": "Weight model: quantified the contribution of maternal mood, diet, and milk fatty acid / amino acid composition to human milk flavor.",
   "res.1.4": "Optimization model: optimized fatty acid and amino acid types and ratios in infant formula to bring formula flavor closer to human milk.",
   "res.2.date": "2020.09 – 2023.06",
-  "res.2.h": "Master's thesis: Neural network prediction of beef flavor compounds from hydrolysis–Maillard reaction of beef tallow residue",
+  "res.2.h": "Master's thesis: Neural network prediction of beef flavor compounds from hydrolysis-Maillard reaction of beef tallow residue",
   "res.2.1": "Flavor prediction model accounting for interactions between volatile compounds to predict overall sample flavor.",
   "res.2.2": "Curve-fitting model for ROAV of volatile compounds as a function of enzymatic hydrolysis time.",
   "res.2.3": "Additive optimization model selecting the optimal ratio among 17 amino acids, balancing flavor against cost.",
