@@ -1,19 +1,19 @@
 ﻿Compound,CAS,Relative content (%),Odor threshold in water (mg/kg),Threshold source
 Acetic acid,64-19-7,0.66,22.0,Author group values (van Gemert 2011)
-Propionic acid,79-09-4,0.12,,
-Butyric acid,107-92-6,0.17,0.05,Author group values (van Gemert 2011)
-Valeric acid,109-52-4,0.02,0.024,Author group values (van Gemert 2011)
+Propanoic acid,79-09-4,0.12,,
+Butanoic acid,107-92-6,0.17,0.05,Author group values (van Gemert 2011)
+Pentanoic acid,109-52-4,0.02,0.024,Author group values (van Gemert 2011)
 Hexanoic acid,142-62-1,0.63,0.89,Author group values (van Gemert 2011)
 Heptanoic acid,111-14-8,not detected,0.64,Author group values (van Gemert 2011)
 Octanoic acid,124-07-2,0.44,0.91,Author group values (van Gemert 2011)
 Nonanoic acid,112-05-0,0.02,3.0,Author group values (van Gemert 2011)
 Decanoic acid,334-48-5,0.03,0.13,Author group values (van Gemert 2011)
 Benzoic acid,65-85-0,not detected,,
-Lauric acid,143-07-7,not detected,,
-Palmitic acid,57-10-3,not detected,,
+Dodecanoic acid,143-07-7,not detected,,
+n-Hexadecanoic acid,57-10-3,not detected,,
 2-Octynoic acid,5663-96-3,not detected,,
-3-Methylvaleric acid,105-43-1,not detected,0.046,Author group values (van Gemert 2011)
-Isovaleric acid,503-74-2,not detected,0.012,Author group values (van Gemert 2011)
+3-Methylpentanoic acid,105-43-1,not detected,0.046,Author group values (van Gemert 2011)
+3-Methylbutanoic acid,503-74-2,not detected,0.012,Author group values (van Gemert 2011)
 Undecanoic acid,112-37-8,not detected,10.0,Author group values (van Gemert 2011)
 Pentanal,110-62-3,5.23,0.0027,Author group values (van Gemert 2011)
 Hexanal,66-25-1,49.59,0.0045,Author group values (van Gemert 2011)
@@ -21,7 +21,7 @@ Hexanal,66-25-1,49.59,0.0045,Author group values (van Gemert 2011)
 3-Methyl-2-butenal,107-86-8,0.06,,
 Heptanal,111-71-7,2.29,0.003,Author group values (van Gemert 2011)
 (E)-2-Hexenal,6728-26-3,0.77,0.017,Author group values (van Gemert 2011)
-Butyraldehyde,123-72-8,not detected,,
+Butanal,123-72-8,not detected,,
 Octanal,124-13-0,3.04,0.0007,Author group values (van Gemert 2011)
 (E)-Hept-2-enal,18829-55-5,4.4,0.013,Author group values (van Gemert 2011)
 (Z)-2-Heptenal,57266-86-1,0.88,,
@@ -50,8 +50,8 @@ Benzaldehyde,100-52-7,3.13,0.024,Author group values (van Gemert 2011)
 2-Butanone,78-93-3,3.32,7.0,Author group values (van Gemert 2011)
 2-Pentanone,107-87-9,not detected,0.01,Author group values (van Gemert 2011)
 3-Methyl-2-Butanone,563-80-4,not detected,0.81,Author group values (van Gemert 2011)
-Diacetyl,431-03-8,0.4,0.0011,Author group values (van Gemert 2011)
-Ethyl vinyl ketone,1629-58-9,0.31,0.0009,Author group values (van Gemert 2011)
+"2,3-Butanedione",431-03-8,0.4,0.0011,Author group values (van Gemert 2011)
+1-Penten-3-one,1629-58-9,0.31,0.0009,Author group values (van Gemert 2011)
 "2,3-Pentanedione",600-14-6,0.24,,
 3-Hexanone,589-38-8,not detected,0.041,Author group values (van Gemert 2011)
 3-Pentanone,96-22-0,0.06,0.04,Author group values (van Gemert 2011)
@@ -60,7 +60,7 @@ Ethyl vinyl ketone,1629-58-9,0.31,0.0009,Author group values (van Gemert 2011)
 3-Octanone,106-68-3,not detected,0.0214,Author group values (van Gemert 2011)
 Acetoin,513-86-0,0.04,0.014,Author group values (van Gemert 2011)
 Octan-2-one,111-13-7,not detected,,
-Hydroxyacetone,116-09-6,not detected,,
+1-Hydroxy-2-propanone,116-09-6,not detected,,
 1-Hepten-3-one,2918-13-0,0.4,4e-05,Author group values (van Gemert 2011)
 1-Octen-3-one,4312-99-6,0.28,5e-05,Author group values (van Gemert 2011)
 "2,3-Octanedione",585-25-1,not detected,0.00252,Author group values (van Gemert 2011)
@@ -87,7 +87,7 @@ Dihydroxyacetone,96-26-4,not detected,,
 1-Octen-3-ol,3391-86-4,0.76,0.0015,Author group values (van Gemert 2011)
 1-Heptanol,111-70-6,0.09,0.0054,Author group values (van Gemert 2011)
 2-Ethylhexan-1-ol,104-76-7,not detected,0.198,Author group values (van Gemert 2011)
-Furfuryl alcohol,98-00-0,0.72,,
+2-Furanmethanol,98-00-0,0.72,,
 Benzyl alcohol,100-51-6,not detected,0.62,Author group values (van Gemert 2011)
 Maltol,118-71-8,0.03,,
 p-Cresol,106-44-5,not detected,,
@@ -116,7 +116,7 @@ Methyl decanoate,110-42-9,not detected,,
 Ethyl decanoate,110-38-3,not detected,0.005,Author group values (van Gemert 2011)
 Methyl nonanoate,1731-84-6,not detected,,
 Methyl undecanoate,1731-86-8,not detected,,
-Isopropylamine,75-31-0,0.01,,
+2-Propanamine,75-31-0,0.01,,
 Dimethyl disulfide,624-92-0,1.67,0.0003,Author group values (van Gemert 2011)
 2-Pentylfuran,3777-69-3,0.69,0.0058,Author group values (van Gemert 2011)
 Styrene,100-42-5,not detected,,
