@@ -39,6 +39,13 @@ PRESETS_B = [{"id": "diacetyl", "smiles": "CC(=O)C(C)=O"}, {"id": "coumarin", "s
              {"id": "vanillin", "smiles": "COc1cc(C=O)ccc1O"}]
 
 
+# Names for excluded molecules whose PubChem title is only a number (odor map method page; checked on PubChem
+# 2026-11-21): CID 73689919 is Cr2O3, CID 524257 has no name in PubChem.
+EXCLUDED_NAMES = {
+    "CID 73689919": {"name": "Chromium(III) oxide (Cr2O3)", "name_zh": "三氧化二铬（Cr2O3）"},
+    "CID 524257": {"name": "CID 524257 (no common name)", "name_zh": "CID 524257（无通用名）"},
+}
+
 def canon(smi):
     from rdkit import Chem
     return Chem.MolToSmiles(Chem.MolFromSmiles(smi))
@@ -124,7 +131,7 @@ def main():
         "foods": [kb_foods[x]["name"] for x in food_ids],
         "foods_zh": {str(i): kb_foods[x]["zh"] for i, x in enumerate(food_ids) if kb_foods[x].get("zh")},
         "labels": [{"id": l["id"], "en": l["en"], "zh": l["zh"]} for l in labels_full],
-        "excluded": [{k: e[k] for k in ("name", "smiles", "category", "reason")} for e in
+        "excluded": [dict({k: e[k] for k in ("name", "smiles", "category", "reason")}, **EXCLUDED_NAMES.get(e["name"], {})) for e in
                      json.loads((DATA / "library.json").read_text(encoding="utf-8"))["excluded"]],
         "odor_threshold": ev["threshold"]["value"],
         "odor_threshold_rule": ev["threshold"]["rule"],

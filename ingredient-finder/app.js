@@ -514,7 +514,8 @@
     out.classList.toggle("hidden", !B.query);
     if (!B.query) return;
     const q = B.query, res = B.result;
-    const qName = q.name || I18N.t("b.query_new");
+    // library molecule: same name as in the result cards (Chinese name first on the Chinese page)
+    const qName = q.index >= 0 ? molName(q.index) : q.name || I18N.t("b.query_new");
     const top = F.topLabelsOf(q.vec, TOP_PRED);
     const qBadge = q.index < 0 ? "" : " " + trainNote(D.lib.molecules[q.index][2] === 0);
     $("b-query").innerHTML = '<h3 style="margin-top:0">' + esc(I18N.t("b.query")) + '</h3><div class="qsvg svg" data-smiles="' + esc(q.smiles) + '" data-big="1"></div>' +

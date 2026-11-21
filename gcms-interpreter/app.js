@@ -202,7 +202,7 @@
 
   /**
    * Sample name from instrument report lines above the header. Agilent MassHunter writes
-   * "label:value" in one cell ("样品名称:HM0031", "Sample Name:HM0031", "数据文件名称:D:\...\HM0031.D");
+   * "label:value" in one cell ("样品名称:HM_Test", "Sample Name:HM_Test", "数据文件名称:D:\...\HM_Test.D");
    * other software puts the value in the next cell. A sample-name label wins over a data-file
    * label (whose value is a path: its last part without extension is used). Empty cells and
    * pandas placeholders ("Unnamed: 1") are not names.

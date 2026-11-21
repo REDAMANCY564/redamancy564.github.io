@@ -1,5 +1,5 @@
 {
-  "_help": "Fill in your details here. Leave a field as \"\" to hide it on the page. cv_pdf (both languages merged, kept for old links) and cv_pdf_lang (one PDF per language) are a path relative to the site root, e.g. assets/cv.pdf. papers: doi without https://doi.org/. papers / patents / talks feed both the homepage and the CV page; keep them identical to assets/cv.pdf.",
+  "_help": "Fill in your details here. Leave a field as \"\" to hide it on the page. cv_pdf_lang (one PDF per language) holds paths relative to the site root, e.g. assets/cv-zh.pdf. papers: doi without https://doi.org/. papers / patents / talks feed both the homepage and the CV page; keep them identical to the CV PDFs.",
   "name": {
     "en": "Jingwei Cui",
     "zh": "崔京伟"
@@ -28,7 +28,6 @@
   "email": "e1719854@u.nus.edu",
   "github": "https://github.com/REDAMANCY564",
   "linkedin": "",
-  "cv_pdf": "assets/cv.pdf?v=20261116a",
   "cv_pdf_lang": {
     "zh": "assets/cv-zh.pdf?v=20261116a",
     "en": "assets/cv-en.pdf?v=20261116a"

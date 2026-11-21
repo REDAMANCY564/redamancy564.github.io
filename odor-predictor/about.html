@@ -22,8 +22,8 @@
   <meta name="twitter:title" content="方法与来源 | 3 气味预测 | 崔京伟">
   <meta name="twitter:description" content="Method, results, limitations and data sources of Molecular Odor Descriptor Prediction with Graph Neural Networks.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/odor-predictor.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261121d">
-  <script src="../assets/i18n.js?v=20261121d" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261121f">
+  <script src="../assets/i18n.js?v=20261121f" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -88,7 +88,7 @@
       </ol>
       <div class="method-text">
         <p data-i18n-html="method.data"><b>数据。</b>4,886 个带有专家气味描述的分子，来自两个香精香料数据库（The Good Scents Company 和 Leffingwell），由 OpenPOM 项目合并清洗。每个分子平均有 138 个描述词中的约 5 个。</p>
-        <p data-i18n-html="method.model"><b>模型。</b>每个原子先用几项简单性质来描述：元素、相邻原子数和氢原子数、电荷、是否芳香、是否在环上；每个化学键用键型（单键、双键、三键、芳香键）和是否在环上来描述。每一轮中，每个原子从与它成键的原子那里收集信息，收到的信息同时取决于相邻原子和连接它们的化学键，所以同一个相邻原子经单键还是双键相连，传来的信息不同。结构参考 Lee et al. 2023（<i>Science</i> 381, 999）的消息传递思路。最后把所有原子的信息汇总成整个分子的表示，再转换为 138 个概率。模型约有 94 万个参数，模型文件约 3.8 MB，可以在<span class="nobr"><span class="nobr">浏览器里运行</span></span>。</p>
+        <p data-i18n-html="method.model"><b>模型。</b>每个原子先用几项简单性质来描述：元素、连接的重原子数和氢原子数、电荷、是否芳香、是否在环上；每个化学键用键型（单键、双键、三键、芳香键）和是否在环上来描述。每一轮中，每个原子从与它成键的原子那里收集信息，收到的信息同时取决于相邻原子和连接它们的化学键，所以同一个相邻原子经单键还是双键相连，传来的信息不同。结构参考 Lee 等（2023，<i>Science</i> 381, 999）的消息传递思路。最后把所有原子的信息汇总成整个分子的表示，再转换为 138 个概率。模型约有 94 万个参数，模型文件约 3.8 MB，可以在<span class="nobr"><span class="nobr">浏览器里运行</span></span>。</p>
         <p data-i18n-html="method.eval"><b>数据划分。</b>含环分子按环系骨架划分为训练集（80%）、验证集（10%）和测试集（10%），因此测试集中的环系骨架都是模型没见过的。这比随机划分更难。</p>
         <p data-i18n-html="method.explain"><b>原子贡献。</b>工具页结构图上的着色用遮挡法计算：依次从分子中删去一个原子（连同它的化学键），重新运行模型，看该描述词的概率变化多少。删去后概率下降的原子（橙色）是模型判断的依据，删去后概率上升的原子（蓝色）在压低这一判断。这说明的是模型看重哪些结构，不等于这些结构在化学上确实<span class="nobr">决定了气味</span>。</p>
       </div>
@@ -105,7 +105,7 @@
         <p data-i18n-html="pa.s5"><b>输出。</b>两层全连接（512 到 512，经 ReLU，再到 138）加 sigmoid，得到 138 个描述词各自的概率。页面显示最高的 8 个，与工具页相同；全连接中间的 512 个数没有画出。</p>
         <p data-i18n-html="pa.field"><b>视野范围。</b>第 t 层后，一个原子的结果只受 t 个键以内的原子，以及这些原子之间化学键的影响；3 层后最远到 3 个键外，更远的结构只在汇总时合到一起。这一点在模型上做实验核实过：把癸烷链端的碳换成氮，第 1、2、3 层分别只有距它 1、2、3 个键以内的原子数值改变，其余原子的差值正好为 0；只把链中间的一个单键改成双键、原子性质不变，第 1 层只改变这条键两端的 2 个原子，第 2 层扩大到两侧各 1 个键，第 3 层到两侧各 2 个键。生成页面数据时每次都重做这个检查。</p>
         <p data-i18n-html="pa.display"><b>显示方式。</b>颜色只表示数值大小，按平方根映射。原子的四层结果共用一个刻度，以训练集（3,910 个分子、47,944 个原子）第 3 层全部数值的第 99 百分位 3.278 为最深色，因为残差更新只会让数值变大；消息之和、平均、最大各用自己的第 99 百分位（2.036、1.940、6.008）；键型的作用可正可负，用两种颜色。256 列的顺序按训练集原子第 3 层数值的相关距离（1 − r）做平均连接聚类并取最优叶序，相关的列挨在一起，四层用同一个顺序。这些只是显示方式，不改变任何数值；单个格子没有对应的化学含义。</p>
-        <p data-i18n-html="pa.values"><b>数值来源。</b>示例分子（工具页的 10 个预设分子和甲硫醇）事先用同一个模型文件算好，保留 4 位小数，打开页面不加载模型。其他分子从工具页结果下方的“看预测过程”进入：工具页只把模型输入（原子和化学键的编码、二维坐标、SMILES）存入浏览器的会话存储，预测过程页用与工具页同一个模型文件在浏览器里算出各层。模型文件同时输出各层的中间结果，工具页只取最后的概率，换用这个文件前后工具页的预测逐位相同。浏览器和 Python 的逐层结果在 50 个测试分子上一致（最大相对差 3e-6），预测过程页显示的 8 个描述词和概率与工具页相同。</p>
+        <p data-i18n-html="pa.values"><b>数值来源。</b>示例分子（工具页的 10 个预设分子和甲硫醇）事先用同一个模型文件算好，保留 4 位小数，打开页面不加载模型。其他分子从工具页结果下方的“查看……的预测过程 →”进入：工具页只把模型输入（原子和化学键的编码、二维坐标、SMILES）存入浏览器的会话存储，预测过程页用与工具页同一个模型文件在浏览器里算出各层。模型文件同时输出各层的中间结果，工具页只取最后的概率，换用这个文件前后工具页的预测逐位相同。浏览器和 Python 的逐层结果在 50 个测试分子上一致（最大相对差 3e-6），预测过程页显示的 8 个描述词和概率与工具页相同。</p>
       </div>
     </section>
 
@@ -142,7 +142,7 @@
           <tbody id="compare-body"></tbody>
         </table>
       </div>
-      <p style="margin-top:8px" data-i18n="results.compare.takeaway">测试集平均 AUROC 从 0.860 提高到 0.866（3 个种子均值）。对照实验中，去掉键特征后为 0.863，提升约一半来自键特征，在含环分子上更明显。</p>
+      <p style="margin-top:8px" data-i18n="results.compare.takeaway">测试集平均 AUROC 从 0.860 提高到 0.866（3 个种子均值）。在去掉键特征的对照实验中，含环分子的 AUROC 为 0.803，加入键特征后为 0.811。</p>
       <div class="label-lists">
         <div class="card"><h3 data-i18n="results.best">最容易预测</h3><ol id="best-labels"></ol></div>
         <div class="card"><h3 data-i18n="results.worst">最难预测</h3><ol id="worst-labels"></ol></div>
@@ -181,7 +181,7 @@
 
     <section id="data">
       <h2 data-sec="1" data-i18n="about.data" data-no="3.7">数据、许可与引用</h2>
-      <p data-i18n-html="footer.data"><b>数据与致谢：</b>模型用 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC 协议）的数据训练，由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅供非商业<span class="nobr">学术演示</span>。</b></p>
+      <p data-i18n-html="footer.data"><b>数据与致谢：</b>模型用 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling 等，2019，<a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC 协议）的数据训练，由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan 等，2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅供非商业<span class="nobr">学术演示</span>。</b></p>
       <p data-i18n-html="footer.thr"><b>气味阈值：</b>L.J. van Gemert, Odour Thresholds: Compilations of Odour Threshold Values in Air, Water and Other Media, 2nd ed., Oliemans Punter &amp; Partners, 2011。代表值优先取自其中收录的 Czerny et al., <i>Eur. Food Res. Technol.</i> 228, 265-273 (2008)。</p>
       <p data-i18n-html="footer.ref"><b>相关文献：</b>Lee et al., A principal odor map unifies diverse tasks in olfactory perception, <i>Science</i> 381, 999-1006 (2023). <a href="https://doi.org/10.1126/science.ade4401" target="_blank" rel="noopener">doi:10.1126/science.ade4401</a>；Liu et al., PharmaGNN: a model for odor prediction based on graph neural networks, <i>J Sci Food Agric</i> 106, 8114-8120 (2026). <a href="https://doi.org/10.1002/jsfa.70826" target="_blank" rel="noopener">doi:10.1002/jsfa.70826</a></p>
     </section>
@@ -193,7 +193,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261121d" defer></script>
-  <script src="about.js?v=20261121d" defer></script>
+  <script src="../assets/projects.js?v=20261121f" defer></script>
+  <script src="about.js?v=20261121f" defer></script>
 </body>
 </html>

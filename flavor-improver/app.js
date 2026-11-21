@@ -35,7 +35,10 @@
   const thrOverride = {};              // compound -> ug/kg (only modified ones)
   // Three modes, chosen with the buttons above the demo (?mode=ref / ?mode=user open the other two):
   // Bayesian optimization demo on a dairy base, example 5 (reference.js), the visitor's own data (userdata.js)
-  const startMode = new URLSearchParams(location.search).get("mode");
+  // ?example=case-cmf / ?example=case-pof (links from the case page /case/, step 9) open "my GC-MS data" with the
+  // case CSVs loaded (userdata.js CASE_EXAMPLES)
+  const startParams = new URLSearchParams(location.search);
+  const startMode = /^case-/.test(startParams.get("example") || "") ? "user" : startParams.get("mode");
   let preset = presets[0];
   let refMode = startMode === "ref";
   let userMode = startMode === "user";

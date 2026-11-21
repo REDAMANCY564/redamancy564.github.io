@@ -9,7 +9,6 @@ training/data/
 
 # Copyrighted reference PDFs (e.g. van Gemert odour threshold compilation): never publish
 *.pdf
-!assets/cv.pdf
 !assets/cv-zh.pdf
 !assets/cv-en.pdf
 

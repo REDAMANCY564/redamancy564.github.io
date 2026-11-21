@@ -265,7 +265,7 @@ git push
 
 **试用示例**：GC-MS 风味解读和乳品风味改良（贝叶斯优化模式）页面顶部有「试用示例」框，点一下就载入示例并跑出结果，然后滚动到结果处（GC-MS 停在风味轮廓，乳品风味改良可选「直接看结果」或「播放优化过程」）。原料与替代物检索点示例后滚到结果；气味地图搜索框下有「示例：高亮黄油中的关键风味物质」；风味知识库搜索只有一个匹配时直接打开卡片。上传自己数据的流程不变。
 
-**GC-MS 示例 4（2026-11-21）**：真实仪器导出报告，Cui 等 (2026, *Food Bioscience*, doi:10.1016/j.fbio.2026.110162) 50 份母乳中的样品 HM0031（Agilent MassHunter 谱库检索报告，经导师同意公开；只删去报告头和谱库列中的电脑路径以及方法文件名，峰不变），`gcms-interpreter/examples/example4_humanmilk_agilent_msrep.xlsx`。标准文件 `standard_example4_humanmilk.csv` 由该文 Table S1 的 75 个物质和保留时间生成（CAS 按本站名称表补齐；4 个迁移物在 Note 列注明）。Table S1 的保留时间比这次进样早约 0.1~0.3 min，所以示例用 ±0.3 min（±0.1 只找到 16/27，±0.2 找到 23/27，±0.3 找到 27/27，与作者程序的结果最大差 0.005 个百分点）。`examples.json` 的 `options` 让示例 4 按目标物质归一化并使用“作者课题组取值”，和保留时间范围一样不写入浏览器存储。链接 `gcms-interpreter/?example=example1`~`example4` 打开页面就运行该示例。
+**GC-MS 示例 4（2026-11-21）**：真实仪器导出报告，Cui 等 (2026, *Food Bioscience*, doi:10.1016/j.fbio.2026.110162) 50 份母乳中的样品 HM_Test（Agilent MassHunter 谱库检索报告，经导师同意公开；只删去报告头和谱库列中的电脑路径以及方法文件名，样品名改为 HM_Test，第一行 pandas 留下的“Unnamed: n”表头清空，峰不变），`gcms-interpreter/examples/example4_humanmilk_agilent_msrep.xlsx`。标准文件 `standard_example4_humanmilk.csv` 由该文 Table S1 的 75 个物质和保留时间生成（CAS 按本站名称表补齐；4 个迁移物在 Note 列注明）。Table S1 的保留时间比这次进样早约 0.1~0.3 min，所以示例用 ±0.3 min（±0.1 只找到 16/27，±0.2 找到 23/27，±0.3 找到 27/27，与作者程序的结果最大差 0.005 个百分点）。`examples.json` 的 `options` 让示例 4 按目标物质归一化并使用“作者课题组取值”，和保留时间范围一样不写入浏览器存储。链接 `gcms-interpreter/?example=example1`~`example4` 打开页面就运行该示例。
 
 **同一知识库 id 的立体异构体（2026-11-21）**：知识库把 (E,E)- 和 (E,Z)-2,4-癸二烯醛等立体异构体合并为一个物质。乳品风味改良“我的 GC-MS 数据”原来按知识库 id 合并两边，一个文件同时列出两个异构体时会合成一行（后一行覆盖前一行）；现在一个文件里同一 id 出现两个及以上不同 CAS 时，该 id 的物质按 CAS 分行（`userdata-core.js` 的 `splitIds`），气味向量仍共用。
 

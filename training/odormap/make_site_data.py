@@ -68,7 +68,7 @@ def regions(xy, on, labels):
             continue
         j = ok[np.argmax(share[ok])]
         found.append({"label": labels[j]["id"], "x": xy[idx, 0].mean(), "y": xy[idx, 1].mean(), "n": len(idx),
-                      "share": float(share[j]), "lift": float(lift[j])})
+                      "share": float(share[j]), "lift": float(lift[j]), "idx": idx})
     # merge neighbouring clusters with the same descriptor (single linkage)
     merged, used = [], set()
     for a in range(len(found)):
@@ -85,7 +85,11 @@ def regions(xy, on, labels):
                     group.append(b)
                     stack.append(b)
         n = sum(found[k]["n"] for k in group)
-        merged.append({"label": found[a]["label"],
+        # second descriptor of the merged region (highest share after its own label): the page names regions
+        # that share a label after both, e.g. "floral · fruity" (2026-11-21)
+        sh = on[np.concatenate([found[k]["idx"] for k in group])].mean(0)
+        sh[[i for i, l in enumerate(labels) if l["id"] == found[a]["label"]]] = -1
+        merged.append({"label": found[a]["label"], "second": labels[int(np.argmax(sh))]["id"],
                        "x": round(sum(found[k]["x"] * found[k]["n"] for k in group) / n, 4),
                        "y": round(sum(found[k]["y"] * found[k]["n"] for k in group) / n, 4),
                        "n": n, "clusters": len(group),

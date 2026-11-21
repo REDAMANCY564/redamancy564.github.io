@@ -122,7 +122,7 @@
  {
   "id": "gouda_4w",
   "name_en": "Young Gouda cheese, 4 weeks ripened (pasteurized milk)",
-  "name_zh": "年轻豪达奶酪（巴氏奶制，成熟 4 周）",
+  "name_zh": "年轻高达奶酪（巴氏奶制，成熟 4 周）",
   "sample": "PM-G, 4 weeks, batch 1",
   "unit": "ug/kg dry matter",
   "source": {
@@ -173,7 +173,7 @@
  {
   "id": "gouda_30w",
   "name_en": "Gouda cheese, 30 weeks ripened (pasteurized milk)",
-  "name_zh": "豪达奶酪（巴氏奶制，成熟 30 周）",
+  "name_zh": "高达奶酪（巴氏奶制，成熟 30 周）",
   "sample": "PM-G, 30 weeks, batch 1",
   "unit": "ug/kg dry matter",
   "source": {

@@ -25,8 +25,8 @@
   <meta name="twitter:title" content="方法与来源 | 1 GC-MS 风味解读 | 崔京伟">
   <meta name="twitter:description" content="Method, rules, limitations and data sources of the Automated GC-MS Data Analysis Across Instrument Formats.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/gcms-interpreter.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261121d">
-  <script src="../assets/i18n.js?v=20261121d" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261121f">
+  <script src="../assets/i18n.js?v=20261121f" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 </head>
@@ -74,20 +74,20 @@
     <section id="method">
       <h2 data-sec="1" data-i18n="about.method" data-no="1.2">方法</h2>
       <h3 data-sec="2" id="peak-table" data-i18n="import.peak_title" data-no="1.2.1"><span class="nobr">GC-MS</span> 峰表（一个样品）</h3>
-      <p data-i18n="about.peak_required">峰表请包含三列：① 化合物名称或 CAS 号；② 保留时间；③ 峰面积或相对含量（%）。样品已定量时可加浓度列，选择 OAV 时使用；保留指数、匹配度和峰号列可有可无。网页按列名关键词或仪器模板自动识别各列，识别结果可以在「确认表头和各列含义」一步修改。</p>
-      <p id="identification" data-i18n-html="about.ident"><b>物质识别：</b>峰表和标准文件中的名称与 CAS 号按以下顺序与风味知识库对应：CAS 号校验位正确、且在知识库中时，以 CAS 号为准，名称指向另一物质时只作提示（名称与 CAS 不一致）；CAS 号不在知识库中、校验位不对或被 Excel 转成了日期时，改按名称对应。名称包括英文名、中文名、NIST 谱库写法（如「Hexanal, 2-ethyl-」）和常见别名。</p>
-      <p id="rel-content" data-i18n-html="about.rel"><b>相对含量的两种算法</b>（峰表没有相对含量列时，在工具页「相对含量计算基准」中选择）：① 占全部峰面积（默认）：相对含量 = 该物质峰面积 ÷ 峰表中全部峰面积之和 × 100，找到的目标物质合计通常小于 100%，其余为非目标峰；② 按目标物质归一化：相对含量 = 该物质峰面积 ÷ 找到的目标物质峰面积之和 × 100，目标物质合计为 100%。按规则 1 相加的峰按相加后的面积计算。峰表自带相对含量列时直接用原值，选项不起作用。结果表下方显示目标物质相对含量合计。ROAV 按峰面积计算（见下文），两种算法只相差一个共同的比例，ROAV 和排序不受影响。</p>
+      <p data-i18n="about.peak_required">峰表请包含三列：① 化合物名称或 CAS 号；② 保留时间；③ 峰面积或相对含量（%）。样品已定量时可加浓度列，选择 OAV 时使用；保留指数、匹配度和峰号列可有可无。网页按列名关键词或仪器模板自动识别各列，识别结果可以在“确认表头和各列含义”一步修改。</p>
+      <p id="identification" data-i18n-html="about.ident"><b>物质识别：</b>峰表和标准文件中的名称与 CAS 号按以下顺序与风味知识库对应：CAS 号校验位正确、且在知识库中时，以 CAS 号为准，名称指向另一物质时只作提示（名称与 CAS 不一致）；CAS 号不在知识库中、校验位不对或被 Excel 转成了日期时，改按名称对应。名称包括英文名、中文名、NIST 谱库写法（如“Hexanal, 2-ethyl-”）和常见别名。</p>
+      <p id="rel-content" data-i18n-html="about.rel"><b>相对含量的两种算法</b>（峰表没有相对含量列时，在工具页“相对含量计算基准”中选择）：① 占全部峰面积（默认）：相对含量 = 该物质峰面积 ÷ 峰表中全部峰面积之和 × 100，找到的目标物质合计通常小于 100%，其余为非目标峰；② 按目标物质归一化：相对含量 = 该物质峰面积 ÷ 找到的目标物质峰面积之和 × 100，目标物质合计为 100%。按规则 1 相加的峰按相加后的面积计算。峰表自带相对含量列时直接用原值，选项不起作用。结果表下方显示目标物质相对含量合计。ROAV 按峰面积计算（见下文），两种算法只相差一个共同的比例，ROAV 和排序不受影响。</p>
       <h3 data-sec="2" id="standard-file" data-i18n="std.title" data-no="1.2.2">标准文件（目标物质清单）</h3>
       <p data-i18n="std.intro">网页在每个物质的参考保留时间附近查找鉴定结果一致的峰，判断是否检出。</p>
-      <p data-i18n="std.required">标准文件请包含三列：① 物质名称或 CAS 号；② 参考保留时间；③ 气味阈值（请在列名中写明单位，如「阈值 (µg/kg)」）。阈值用于计算 OAV/ROAV 和风味轮廓；网站只内置了部分物质的阈值（本站内置 53 个；作者课题组取值 90 个，可在 1.4「风味解读」一步切换），标准文件中没有阈值、也没有内置值的物质不参与风味计算。</p>
+      <p data-i18n="std.required">标准文件请包含三列：① 物质名称或 CAS 号；② 参考保留时间；③ 气味阈值（请在列名中写明单位，如“阈值 (µg/kg)”）。阈值用于计算 OAV/ROAV 和风味轮廓；网站只内置了部分物质的阈值（本站内置 53 个；作者课题组取值 90 个，可在 1.4“风味解读”一步切换），标准文件中没有阈值、也没有内置值的物质不参与风味计算。</p>
       <h3 data-sec="2" id="tolerances" data-i18n="about.tol_title" data-no="1.2.3">保留时间范围</h3>
       <p><b data-i18n="tol.window">保留时间范围（± min）</b>: <span data-i18n="tol.window_help">规则 1：以每个目标物质的参考保留时间为中心，在 ± 该值内查找被鉴定为该物质的峰，中间没有夹着其他物质的峰全部相加。范围越大，越不容易漏检，但越容易把误鉴定的峰也<span class="nobr">加进来</span>。</span></p>
       <h3 data-sec="2" id="oav-roav" data-i18n="about.oav_title" data-no="1.2.4">OAV 与 ROAV</h3>
-      <p data-i18n="fl.intro">只对上面找到的目标物质计算。有定量结果（浓度列）时计算 OAV = 浓度 ÷ 阈值，OAV ≥ 1 表示该物质在样品中可被闻到；只有峰面积或相对含量时计算 ROAV：贡献最大的物质记为 100，其余按「含量 ÷ 阈值」与它的比值换算。ROAV 只反映样品内各物质的相对贡献，不能说明能否被闻到。</p>
+      <p data-i18n="fl.intro">只对上面找到的目标物质计算。有定量结果（浓度列）时计算 OAV = 浓度 ÷ 阈值，OAV ≥ 1 表示该物质在样品中可被闻到；只有峰面积或相对含量时计算 ROAV：贡献最大的物质记为 100，其余按“含量 ÷ 阈值”与它的比值换算。ROAV 只反映样品内各物质的相对贡献，不能说明能否被闻到。</p>
       <p data-i18n="about.basis_area">按峰面积计算 ROAV，与按面积归一化的相对含量计算等价，且没有四舍五入误差。</p>
       <h3 data-sec="2" id="thresholds" data-i18n="thr.title" data-no="1.2.5">气味阈值</h3>
-      <p data-i18n="about.thr">找到的物质的气味阈值统一换算为 mg/kg。阈值优先取你在标准文件中提供的值；标准文件中没有的，使用网站内置值（本站乳品风味改良已采用的 53 个水中阈值，引自 L.J. van Gemert (2011) Odour Thresholds 第 II 部分）。你也可以在工具页直接修改或补充，修改只保存在本浏览器中。没有阈值的物质不做估计，不参与计算。</p>
-      <p data-i18n-html="about.thr_author"><b>内置阈值来源</b>可在工具页选择：本站内置（默认，即上面的 53 个值）或作者课题组取值。作者课题组取值：水中觉察阈值，取自 L.J. van Gemert (2011) 汇编中的数值，由作者课题组选定并用于母乳风味研究（相关工作见 Cui 等，<i>Food Bioscience</i>，2026，<a href="https://doi.org/10.1016/j.fbio.2026.110162" target="_blank" rel="noopener">doi:10.1016/j.fbio.2026.110162</a>）。汇编中未收录的物质，取值出自已发表的 <i>Food Chemistry</i> 文献，逐条注明年份和 DOI；2,3-辛二酮取自上述 Cui 等 (2026) 的 Table 1。作者课题组取值按 CAS 号对应（同一分子的不同立体异构体可各有取值）；物质没有 CAS 号时，只在该分子仅一个 CAS 号有取值时使用。每个值在阈值表中注明汇编页码和原始文献。</p>
+      <p data-i18n="about.thr">找到的物质的气味阈值统一换算为 mg/kg。阈值优先取你在标准文件中提供的值；标准文件中没有的，使用网站内置值（本站乳品风味改良已采用的 53 个水中阈值，引自 van Gemert，2011，Odour Thresholds 第 II 部分）。你也可以在工具页直接修改或补充，修改只保存在本浏览器中。没有阈值的物质不做估计，不参与计算。</p>
+      <p data-i18n-html="about.thr_author"><b>内置阈值来源</b>可在工具页选择：本站内置（默认，即上面的 53 个值）或作者课题组取值。作者课题组取值：水中觉察阈值，取自 van Gemert（2011）汇编中的数值，由作者课题组选定并用于母乳风味研究（相关工作见 Cui 等，2026，<i>Food Bioscience</i>，<a href="https://doi.org/10.1016/j.fbio.2026.110162" target="_blank" rel="noopener">doi:10.1016/j.fbio.2026.110162</a>）。汇编中未收录的物质，取值出自已发表的 <i>Food Chemistry</i> 文献，逐条注明年份和 DOI；2,3-辛二酮取自上述 Cui 等（2026）的 Table 1。作者课题组取值按 CAS 号对应（同一分子的不同立体异构体可各有取值）；物质没有 CAS 号时，只在该分子仅一个 CAS 号有取值时使用。每个值在阈值表中注明汇编页码和<span class="nobr">原始文献。</span></p>
       <p data-i18n="about.thr_choice">拿不准的阈值一般通过查阅同类样品的文献确定，例如母乳样品会对照多篇母乳风味文献，再结合样品的实际情况选择；文献看得足够多，取值通常比较明确。所以工具让用户在标准文件中填写自己核对过的阈值，内置阈值只在没有其他来源时作参考。</p>
       <h3 data-sec="2" id="profile" data-i18n="radar.title" data-no="1.2.6"><span class="nobr">风味轮廓</span></h3>
       <p data-i18n="about.radar">12 个乳品维度（默认），沿用乳品风味改良的计算规则：每个物质的强度 I = log10(OAV 或 ROAV)（大于 1 时，否则为 0），乘以 GNN 预测的气味标签概率除以该标签在训练数据中的出现频率（避免常见标签占优），各物质相加后，取 12 个乳品维度并归一化，数字为各维度所占百分比。适合乳品样品。排名表中的气味描述优先使用知识库数据，但轮廓需要统一的数值，所以全部使用模型预测。</p>
@@ -101,11 +101,11 @@
 
     <section id="data">
       <h2 data-sec="1" data-i18n="about.data" data-no="1.4">数据、许可与引用</h2>
-      <p data-i18n-html="footer.examples"><b>示例数据：</b>物质组成和浓度来自 Wang et al., <i>Food Chem X</i> 2025（酸奶，CC BY-NC）；Xu et al.（巴氏奶，CC BY-NC）；Duensing, Hinrichs &amp; Schieberle（高达奶酪，CC BY）。其余均为模拟。示例 4（母乳 HM0031）是 Cui 等，<i>Food Bioscience</i> 2026（doi:10.1016/j.fbio.2026.110162）的原始仪器导出报告，只删去了报告中的电脑路径和方法文件名；标准文件由该文 Table S1 的 75 个物质和保留时间生成，其中 2,4-二叔丁基苯酚、2-乙基-1-己醇、2-苯氧基乙醇和异佛尔酮是采样材料带入的<span class="nobr">迁移物（见 Table S1 注 A）</span>。</p>
+      <p data-i18n-html="footer.examples"><b>示例数据：</b>物质组成和浓度来自 Wang 等（2025，<i>Food Chem X</i>；酸奶，CC BY-NC）、Xu 等（2026，<i>Food Chem X</i>；巴氏奶，CC BY-NC）和 Duensing 等（2024，<i>J Agric Food Chem</i>；高达奶酪，CC BY），其余均为模拟。示例 4（母乳 HM_Test）是 Cui 等（2026，<i>Food Bioscience</i>，doi:10.1016/j.fbio.2026.110162）的原始仪器导出报告，只删去了电脑路径和方法文件名，样品名改为 HM_Test；标准文件由该文 Table S1 的 75 个物质和保留时间生成，其中 2,4-二叔丁基苯酚、2-乙基-1-己醇、2-苯氧基乙醇和异佛尔酮是采样材料带入的<span class="nobr">迁移物（见 Table S1 注 A）</span>。</p>
       <p data-i18n-html="footer.names"><b>物质名称与 CAS 对照：</b>风味知识库物质的同义词和 CAS 号来自 PubChem（NCBI），离线整理后随<span class="nobr">页面加载</span>。</p>
-      <p data-i18n-html="footer.flavor"><b>阈值与气味：</b>阈值优先使用你在标准文件中提供的值；内置值为本站乳品风味改良已采用的 53 个水中阈值，引自 L.J. van Gemert (2011) <i>Odour Thresholds</i> 第 II 部分，每个值注明原始文献；另可选作者课题组取值（见说明页）；气味描述来自 Dunkel et al., <i>Angew. Chem.</i> 2014 和 FlavorDB（Garg et al., <i>NAR</i> 2018，CC BY-NC-SA 3.0）；模型预测来自本站<a href="../odor-predictor/">气味预测</a>的 GNN，已离线算好随<span class="nobr">页面加载</span>。</p>
+      <p data-i18n-html="footer.flavor"><b>阈值与气味：</b>阈值优先使用你在标准文件中提供的值；内置值为本站乳品风味改良已采用的 53 个水中阈值，引自 van Gemert（2011）<i>Odour Thresholds</i> 第 II 部分，每个值注明原始文献；另可选作者课题组取值（见说明页）；气味描述来自 Dunkel 等（2014，<i>Angew. Chem.</i>）和 FlavorDB（Garg 等，2018，<i>NAR</i>，CC BY-NC-SA 3.0）；模型预测来自本站<a href="../odor-predictor/">气味预测</a>的 GNN，已离线算好随<span class="nobr">页面加载</span>。</p>
       <p data-i18n-html="footer.libs"><b>本站托管的第三方库：</b>SheetJS Community Edition 0.20.3（Apache-2.0），用于读取 Excel 文件。</p>
-      <p data-i18n-html="footer.odor_model"><b>气味模型：</b>本页的气味预测来自本站<a href="../odor-predictor/">气味预测</a>的图神经网络，训练数据来自 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC），由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅供非商业<span class="nobr">学术演示</span>。</b></p>
+      <p data-i18n-html="footer.odor_model"><b>气味模型：</b>本页的气味预测由本站“<a href="../odor-predictor/">气味预测</a>”工具的图神经网络给出，训练数据来自 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling 等，2019，<a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC），由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan 等，2023）整理合并；本站不转载原始数据和原始气味标签。<b>模型及预测结果仅供非商业<span class="nobr">学术演示</span>。</b></p>
     </section>
   </main>
 
@@ -115,7 +115,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261121d" defer></script>
-  <script src="about.js?v=20261121d" defer></script>
+  <script src="../assets/projects.js?v=20261121f" defer></script>
+  <script src="about.js?v=20261121f" defer></script>
 </body>
 </html>

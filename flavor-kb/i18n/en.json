@@ -91,7 +91,7 @@
   "rq.examples": "Examples:",
   "rq.count": "{n} substances found.",
   "rq.count_more": "{n} substances found; the first {k} are shown. Try a more specific query.",
-  "rq.none": "\"{q}\" was not found in either list. Different spellings may not match; try a CAS number, FEMA number or code. Not found does not mean not permitted.",
+  "rq.none": "\"{q}\" was not found in any of the three lists. Different spellings may not match; try a CAS number, FEMA number or code. Not found does not mean not permitted.",
   "rq.to_finder": "Find substitutes",
   "rq.to_odor": "Odor prediction",
   "rq.to_kb": "Knowledge base",

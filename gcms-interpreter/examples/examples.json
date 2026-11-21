@@ -65,13 +65,13 @@
     "citation": "Cui J, et al. Quantitative analysis of fatty acids and amino acids as precursors to human milk flavor through importance ranking modeling. Food Bioscience 2026.",
     "doi": "10.1016/j.fbio.2026.110162",
     "table": "Table S1 (compounds and reference retention times of the standard file)",
-    "method": "HS-SPME-GC-MS (Agilent 8890B, DVB/CAR/PDMS fibre); peak table = the original MassHunter library search report (LibRes sheet) of sample HM0031",
-    "sample": "HM0031 (HF31), one of the 50 human milk samples of the study, published with the supervisor's consent",
-    "redacted": "Only the computer paths of the data file and spectral library, and the method file name, were removed from the report header and library column; peaks are unchanged",
+    "method": "HS-SPME-GC-MS (Agilent 8890B, DVB/CAR/PDMS fibre); peak table = the original MassHunter library search report (LibRes sheet) of sample HM_Test",
+    "sample": "HM_Test, one of the 50 human milk samples of the study, published with the supervisor's consent",
+    "redacted": "Only the computer paths of the data file and spectral library, and the method file name, were removed from the report header and library column, and the sample name was changed to HM_Test; peaks are unchanged",
     "standard_note": "Standard file built from Table S1 (75 compounds); CAS numbers added from the site's name list. Table S1 retention times run about 0.1-0.3 min earlier than this run, hence the 0.3 min range. 2,4-di-tert-butylphenol, 2-ethyl-1-hexanol, 2-phenoxyethanol and isophorone are migrants from sampling materials (Table S1 footnote A)."
    },
    "samples": [
-    "HM0031"
+    "HM_Test"
    ]
   }
  },
