@@ -17,7 +17,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 ROOT = Path(__file__).resolve().parents[1]
 B = ROOT / "_inputs" / "case-build"
 OUT = ROOT / "case"
-V = "20261121j"
+V = "20261121k"
 # Source of the step 9 data (formula and 303 human milk samples). No paper citation yet: the data are
 # named as the author group's. When the paper is out, add the citation and DOI here only, e.g.
 # FC_WHO = ("作者课题组（Cui 等，期刊 年份，doi:…）", "the author group (Cui et al., Journal year, doi:…)").
