@@ -340,7 +340,7 @@ section("step8", "s8.h", "第 8 步　法规", "Step 8. Regulation", qa("s8",
       "1-Hepten-3-one (CAS 2918-13-0) was not found under any spelling of its name or its CAS number in the texts of GB 2760-2024 Tables B.2 and B.3 (only 4-hepten-3-one, S1262), the EU Union list (consolidated version of 2026-02-16), or US 21 CFR Parts 172, 182, 184 and 189 and the FDA list “Substances Added to Food” (as of the site's data date). As a control, 1-octen-3-one is found in China (S0219), the EU and the FDA list (FEMA 2677), so the search works. Even without Table B.1, it is not listed in any of the three lists."),
     p("s8.r2", "婴儿配方奶粉不得加香（GB 2760-2024 表 B.1，见第 5 步），前体物质则属于营养成分标准：", "Infant formula may not be flavored (GB 2760-2024 Table B.1, see step 5); the precursors fall under the nutrient standards:"),
     tbl8,
-    p("s8.r3", "GB 10765-2021 还要求亚油酸与 α-亚麻酸之比为 5:1~15:1。GB 10765-2021 的数值取自西班牙卫生部转载的英译本。", "GB 10765-2021 also requires a linoleic to α-linolenic acid ratio of 5:1 to 15:1. The GB 10765-2021 values are taken from the English translation published by the Spanish Ministry of Health."),
+    p("s8.r3", "GB 10765-2021 还要求亚油酸与 α-亚麻酸之比为 5:1~15:1。", "GB 10765-2021 also requires a linoleic to α-linolenic acid ratio of 5:1 to 15:1."),
     lim("s8", "网站的法规查询只覆盖香料名单，不含营养成分标准；法规以官方最新原文为准。", "The site's regulatory lookup covers only the flavoring lists, not nutrient standards; the latest official texts prevail."),
 ])
 
