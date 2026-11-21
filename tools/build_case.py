@@ -1,12 +1,12 @@
 """Build case/index.html and case/i18n/{zh,en}.json for the case page /case/ (branch case-page only).
 
-LOCAL BRANCH ONLY until the FC paper is accepted: this script contains values from that manuscript
-(Table 2) and reads its data; see _inputs/CASE-RELEASE-CHECKLIST.md.
+Step 9 uses the author group's data on infant formula and 303 human milk samples (mean relative
+contents, and the group's own ROAV values in AUTHOR_ROAV below).
 
 Inputs, all in _inputs/case-build/ (not committed): url_example4_zh.json (GC-MS example 4 result),
 fi_fc_sample_{CMF,POF}_n10.csv.json (flavor-improver comparisons), preds.json (odor and taste model
-outputs), and the three FC CSVs fc_target_HM_n303.csv, fc_sample_CMF_n10.csv, fc_sample_POF_n10.csv
-(made by build_fc.py from the FC supplementary Table S2; copies are published in case/data/).
+outputs), and the three group-mean CSVs fc_target_HM_n303.csv, fc_sample_CMF_n10.csv, fc_sample_POF_n10.csv
+(made by build_fc.py from the author group's data; copies are published in case/data/).
 Run from the repository root: python tools/build_case.py, then python tools/prerender.py.
 Edit the page text here, not in case/index.html or case/i18n/*.json.
 """
@@ -108,17 +108,17 @@ NAME2CAS = {"(E)-2-Nonenal": "18829-56-6", "Dimethyl trisulfide": "3658-80-8", "
             "1-Octen-3-ol": "3391-86-4", "(E)-2-Heptenal": "18829-55-5", "1-Penten-3-one": "1629-58-9"}
 N["1629-58-9"] = ("1-戊烯-3-酮", "1-penten-3-one")
 
-# HM ROAV: tool (mean contents) vs FC Table 2 (per-sample, then averaged)
+# HM ROAV: tool (mean contents) vs the author group's values (per-sample, then averaged)
 hm = {}
 for row in list(csv.reader(open(B / "fc_target_HM_n303.csv", encoding="utf-8-sig")))[1:]:
     if row[2] != "not detected" and row[3]:
         hm[row[1]] = float(row[2]) / float(row[3])
 mx = max(hm.values())
-FCT2 = {"5910-87-2": 51.94, "4312-99-6": 46.18, "2918-13-0": 37.99, "66-25-1": 33.05, "18829-56-6": 17.84, "124-19-6": 14.01,
+AUTHOR_ROAV = {"5910-87-2": 51.94, "4312-99-6": 46.18, "2918-13-0": 37.99, "66-25-1": 33.05, "18829-56-6": 17.84, "124-19-6": 14.01,
         "124-13-0": 5.42, "2548-87-0": 5.14, "25152-83-4": 4.64, "3913-81-3": 2.50, "111-71-7": 2.11, "25152-84-5": 0.85,
         "585-25-1": 0.84}
 hm_rows = sorted([(c, 100 * v / mx) for c, v in hm.items() if 100 * v / mx >= 1], key=lambda x: -x[1])
-fc_rank = {c: i + 1 for i, (c, _) in enumerate(sorted(FCT2.items(), key=lambda x: -x[1]))}
+fc_rank = {c: i + 1 for i, (c, _) in enumerate(sorted(AUTHOR_ROAV.items(), key=lambda x: -x[1]))}
 
 def f3(x):
     return f"{x:.3g}" if x < 100 else f"{x:.0f}"
@@ -350,10 +350,10 @@ section("step8", "s8.h", "第 8 步　法规", "Step 8. Regulation", qa("s8",
     lim("s8", "网站的法规查询只覆盖香料名单，不含营养成分标准；法规以官方最新原文为准。", "The site's regulatory lookup covers only the flavoring lists, not nutrient standards; the latest official texts prevail."),
 ])
 
-# 9 flavor improvement (FC)
+# 9 flavor improvement (author group data)
 rows9 = []
 for i, (c, v) in enumerate(hm_rows):
-    f = FCT2.get(c)
+    f = AUTHOR_ROAV.get(c)
     swap = c in ("2548-87-0", "124-13-0", "3913-81-3", "25152-83-4")
     dcls = ' class="cs-diff"' if swap or f is None or f < 1 else ""
     rows9.append(f'<tr{dcls}><td class="num">{i + 1}</td><td>{cn(c)}</td><td class="num">{f3(v)}</td>'
@@ -395,8 +395,8 @@ section("step9", "s9.h", "第 9 步　风味改良", "Step 9. Flavor improvement
       f"<b>Cow-milk-based formula (CMF):</b> {cmf_n} compounds compared. Higher contribution share in human milk: {cte} (percentage points, likewise below); higher in CMF: {cse}."),
     p("s9.r3", f"<b>植物油基配方奶粉（POF）：</b>{pof_n} 个物质参与比较。母乳中更高的：{ptz}；POF 中更高的：{psz}。",
       f"<b>Plant-oil-based formula (POF):</b> {pof_n} compounds compared. Higher in human milk: {pte}; higher in POF: {pse}."),
-    p("s9.i1", "<b>解读：</b>两类配方奶粉与母乳的差距方向相近：母乳中 (E)-2-壬烯醛、1-庚烯-3-酮、1-辛烯-3-酮和 (E,E)-2,4-壬二烯醛的贡献更大，与课题组的结论一致：课题组认为母乳的香气以不饱和醛酮为主，这些物质在 GC-O 中呈金属味；配方奶粉中二甲基二硫、二甲基三硫更高，课题组认为它们带来洋葱、大蒜样气味，通常由蛋氨酸的 Strecker 降解产生。工具对母乳更高的物质只给方向、不给添加量，并提示婴幼儿配方食品不得加香，只能从原料、工艺和前体调整；配方奶粉更高的物质需要从原料或工艺方向降低（如控制氧化、热处理和储存条件）。",
-      "<b>Interpretation:</b> both formula types differ from human milk in a similar direction: (E)-2-nonenal, 1-hepten-3-one, 1-octen-3-one and (E,E)-2,4-nonadienal contribute more in human milk, in line with the author group's conclusion that human milk aroma is dominated by unsaturated aldehydes and ketones, which showed metallic notes in GC-O; dimethyl disulfide and dimethyl trisulfide are higher in formula, which the group links to onion- and garlic-like notes, typically formed by Strecker degradation of methionine. For compounds higher in human milk the tool gives directions only, no amounts, and notes that infant formula may not be flavored, so only raw materials, processing and precursors can change; compounds higher in formula have to be lowered through raw materials or processing (for example oxidation control, heat treatment and storage)."),
+    p("s9.i1", "<b>解读：</b>两类配方奶粉与母乳的差距方向相近：母乳中 (E)-2-壬烯醛、1-庚烯-3-酮、1-辛烯-3-酮和 (E,E)-2,4-壬二烯醛的贡献更大，与课题组的结论一致（母乳的香气以不饱和醛酮为主，这些物质在 GC-O 中呈金属味）；配方奶粉中二甲基二硫、二甲基三硫更高，课题组认为它们带来洋葱、大蒜样气味，通常由蛋氨酸的 Strecker 降解产生。工具对母乳更高的物质只给方向、不给添加量，并提示婴幼儿配方食品不得加香，只能从原料、工艺和前体调整；配方奶粉更高的物质需要从原料或工艺方向降低（如控制氧化、热处理和储存条件）。",
+      "<b>Interpretation:</b> both formula types differ from human milk in a similar direction: (E)-2-nonenal, 1-hepten-3-one, 1-octen-3-one and (E,E)-2,4-nonadienal contribute more in human milk, in line with the author group's conclusion (human milk aroma is dominated by unsaturated aldehydes and ketones, which showed metallic notes in GC-O); dimethyl disulfide and dimethyl trisulfide are higher in formula, which the group links to onion- and garlic-like notes, typically formed by Strecker degradation of methionine. For compounds higher in human milk the tool gives directions only, no amounts, and notes that infant formula may not be flavored, so only raw materials, processing and precursors can change; compounds higher in formula have to be lowered through raw materials or processing (for example oxidation control, heat treatment and storage)."),
     p("s9.i2", "<b>脂质来源（课题组数据）：</b>10 个 CMF 都含生牛乳；OPO 见于 6 个 CMF 和 5 个 POF；POF 的脂质来源中没有生牛乳或稀奶油，主要是 OPO 和植物油（大豆油、葵花籽油、椰子油、菜籽油、棕榈油等），其中 2 个另加 DHA。课题组指出，CMF 和 POF 因组成不同而香气不同。",
       "<b>Lipid sources (author group data):</b> all 10 CMF contain raw cow's milk; OPO appears in 6 CMF and 5 POF; the lipid sources of POF include no raw cow's milk or cream and are mainly OPO and vegetable oils (soybean, sunflower, coconut, rapeseed, palm and others), 2 of them with added DHA. The author group notes that CMF and POF differ in aroma because their composition differs."),
     lim("s9", "输入是每类样品的平均值，丢失了样品间的差异，配方奶粉每类只有 10 个样品；ROAV 是半定量结果，两边的数值不能直接相比，只比较贡献占比；这一步只给方向，不给添加量。",
