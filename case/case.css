@@ -19,10 +19,14 @@
 .cs-fig figcaption { font-size: .875rem; color: var(--muted); margin-top: 6px; }
 .cs-src { padding-left: 1.2em; font-size: .9375rem; }
 .cs-src li { margin-bottom: 6px; overflow-wrap: anywhere; }
+.cs-br { display: none; }   /* line break used only on phones (see below) */
 @media (max-width: 600px) {
   /* headers of number columns may wrap here (the site default keeps them on one line), so that the step 9
      table fits a 375 px phone without sideways scrolling */
   .case .table-wrap .cs-table th.num { white-space: normal; }
+  /* step 9 headers: line breaks only between words (cs-br), never inside a word */
+  .case .table-wrap .cs-rank th { white-space: nowrap; }
+  .cs-br { display: inline; }
   /* step 9: the first column is the rank, not the row name: no sticky 7em column (assets/style.css) */
   .case .table-wrap .cs-rank tr > :first-child:not([colspan]) { position: static; min-width: 0; }
   .cs-narrow { width: 100%; }

@@ -963,6 +963,8 @@
   "theobromine": "Theobromine",
   "thiamine": "Thiamine",
   "toluene": "Toluene",
+  "trans-2-Decenal": "(E)-2-Decenal",
+  "trans-2-Dodecenal": "(E)-2-Dodecenal",
   "trans-2-Hexen-1-Ol": "trans-2-Hexen-1-ol",
   "trans-2-Octen-1-Ol": "trans-2-Octen-1-ol",
   "triacetin": "Triacetin",
@@ -1185,6 +1187,11 @@
    "zh": "2-辛基-1-癸醇",
    "cid": 3084890
   },
+  "JZRWCGZRTZMZEH": {
+   "zh": "硫胺素",
+   "kb": "c1130",
+   "src": "common name, added 2026-11-21"
+  },
   "KBPLFHHGFOOTCA": {
    "zh": "1-辛醇",
    "cid": 957
@@ -1212,6 +1219,11 @@
   "LEACJMVNYZDSKR": {
    "zh": "2-辛基-1-十二醇",
    "cid": 21414
+  },
+  "LFQSCWFLJHTTHZ": {
+   "zh": "乙醇",
+   "kb": "c702",
+   "src": "common name, added 2026-11-21"
   },
   "LGYNIFWIKSEESD": {
    "zh": "2-乙基己醛",
@@ -1324,6 +1336,11 @@
   "ROJKPKOYARNFNB": {
    "zh": "戊酸丙酯",
    "cid": 67328
+  },
+  "RYYVLZVUVIJVGH": {
+   "zh": "咖啡因",
+   "kb": "c2519",
+   "src": "common name, added 2026-11-21"
   },
   "SECPZKHBENQXJG": {
    "zh": "棕榈油酸",

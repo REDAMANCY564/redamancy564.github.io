@@ -266,7 +266,7 @@
   "curve.load_failed": "曲线数据加载失败，请检查网络后刷新页面。",
   "curve.pick_title": "选择物质",
   "curve.search_label": "按中文名、英文名或 CAS 号搜索（最多同时比较 4 个物质）",
-  "curve.search_ph": "如 柠檬烯、linalool、138-86-3",
+  "curve.search_ph": "如柠檬烯、linalool、138-86-3",
   "curve.chart_title": "强度曲线",
   "curve.chart_intro": "横轴为 log10 气相浓度（μg/L 空气），纵轴为气味强度（LMS 标尺，0 到 100），右侧文字为强度等级；空心圆为阈值点（强度 1.4，刚能察觉）。",
   "curve.chart_aria": "气味强度曲线：{list}",
