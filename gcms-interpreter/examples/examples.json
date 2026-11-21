@@ -1,5 +1,5 @@
 {
- "note": "Simulated data. Compound sets and concentrations follow the cited studies; retention times, areas, replicate noise and format problems are simulated.",
+ "note": "Examples 1-3 are simulated: compound sets and concentrations follow the cited studies; retention times, areas, replicate noise and format problems are simulated. Example 4 is a real instrument export.",
  "examples": {
   "example1": {
    "file": "example1_yogurt_agilent_style.csv",
@@ -51,11 +51,34 @@
    "samples": [
     "Gouda_30w_rep1"
    ]
+  },
+  "example4": {
+   "file": "example4_humanmilk_agilent_msrep.xlsx",
+   "tolerances": {
+    "range_min": 0.3
+   },
+   "options": {
+    "rel_basis": "targets",
+    "thr_source": "author"
+   },
+   "source": {
+    "citation": "Cui J, et al. Quantitative analysis of fatty acids and amino acids as precursors to human milk flavor through importance ranking modeling. Food Bioscience 2026.",
+    "doi": "10.1016/j.fbio.2026.110162",
+    "table": "Table S1 (compounds and reference retention times of the standard file)",
+    "method": "HS-SPME-GC-MS (Agilent 8890B, DVB/CAR/PDMS fibre); peak table = the original MassHunter library search report (LibRes sheet) of sample HM0031",
+    "sample": "HM0031 (HF31), one of the 50 human milk samples of the study, published with the supervisor's consent",
+    "redacted": "Only the computer paths of the data file and spectral library, and the method file name, were removed from the report header and library column; peaks are unchanged",
+    "standard_note": "Standard file built from Table S1 (75 compounds); CAS numbers added from the site's name list. Table S1 retention times run about 0.1-0.3 min earlier than this run, hence the 0.3 min range. 2,4-di-tert-butylphenol, 2-ethyl-1-hexanol, 2-phenoxyethanol and isophorone are migrants from sampling materials (Table S1 footnote A)."
+   },
+   "samples": [
+    "HM0031"
+   ]
   }
  },
  "standards": {
   "example1": "standard_example1_yogurt.csv",
   "example2": "standard_example2_milk.csv",
-  "example3": "standard_example3_gouda.csv"
+  "example3": "standard_example3_gouda.csv",
+  "example4": "standard_example4_humanmilk.csv"
  }
 }
