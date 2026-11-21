@@ -17,7 +17,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 ROOT = Path(__file__).resolve().parents[1]
 B = ROOT / "_inputs" / "case-build"
 OUT = ROOT / "case"
-V = "20261121h"
+V = "20261121i"
 # Source of the step 9 data (formula and 303 human milk samples). No paper citation yet: the data are
 # named as the author group's. When the paper is out, add the citation and DOI here only, e.g.
 # FC_WHO = ("作者课题组（Cui 等，期刊 年份，doi:…）", "the author group (Cui et al., Journal year, doi:…)").
@@ -112,7 +112,7 @@ NAME2CAS = {"(E)-2-Nonenal": "18829-56-6", "Dimethyl trisulfide": "3658-80-8", "
             "2-Heptanone": "110-43-0", "Pentanal": "110-62-3", "Hexanal": "66-25-1", "(E,Z)-2,4-Decadienal": "25152-83-4",
             "(E,E)-2,4-Nonadienal": "5910-87-2", "2,3-Octanedione": "585-25-1", "Heptanal": "111-71-7",
             "(E)-2-Decenal": "3913-81-3", "Nonanal": "124-19-6", "Octanal": "124-13-0", "(E)-2-Octenal": "2548-87-0",
-            "1-Octen-3-ol": "3391-86-4", "(E)-Hept-2-enal": "18829-55-5", "Ethyl vinyl ketone": "1629-58-9"}
+            "1-Octen-3-ol": "3391-86-4", "(E)-Hept-2-enal": "18829-55-5", "1-Penten-3-one": "1629-58-9"}
 N["1629-58-9"] = ("1-戊烯-3-酮", "1-penten-3-one")
 
 # HM ROAV: tool (mean contents) vs the author group's values (per-sample, then averaged)
