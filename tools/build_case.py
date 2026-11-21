@@ -17,7 +17,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 ROOT = Path(__file__).resolve().parents[1]
 B = ROOT / "_inputs" / "case-build"
 OUT = ROOT / "case"
-V = "20261121f"
+V = "20261121g"
 # Source of the step 9 data (formula and 303 human milk samples). No paper citation yet: the data are
 # named as the author group's. When the paper is out, add the citation and DOI here only, e.g.
 # FC_WHO = ("作者课题组（Cui 等，期刊 年份，doi:…）", "the author group (Cui et al., Journal year, doi:…)").
@@ -108,7 +108,7 @@ def fi(name):
 cmf_n, cmf_cos, cmf_gap = fi("fi_cmf_sample_n10.csv.json")
 pof_n, pof_cos, pof_gap = fi("fi_pof_sample_n10.csv.json")
 NAME2CAS = {"(E)-2-Nonenal": "18829-56-6", "Dimethyl trisulfide": "3658-80-8", "1-Octen-3-one": "4312-99-6",
-            "Dimethyl Disulfide": "624-92-0", "(E,E)-2,4-Decadienal": "25152-84-5", "1-Hepten-3-one": "2918-13-0",
+            "Dimethyl disulfide": "624-92-0", "(E,E)-2,4-Decadienal": "25152-84-5", "1-Hepten-3-one": "2918-13-0",
             "2-Heptanone": "110-43-0", "Pentanal": "110-62-3", "Hexanal": "66-25-1", "(E,Z)-2,4-Decadienal": "25152-83-4",
             "(E,E)-2,4-Nonadienal": "5910-87-2", "2,3-Octanedione": "585-25-1", "Heptanal": "111-71-7",
             "(E)-2-Decenal": "3913-81-3", "Nonanal": "124-19-6", "Octanal": "124-13-0", "(E)-2-Octenal": "2548-87-0",
@@ -412,7 +412,7 @@ section("step9", "s9.h", "第 9 步　风味改良", "Step 9. Flavor improvement
       f"<b>Cow-milk-based formula (CMF):</b> {cmf_n} compounds compared (values are differences in contribution share, in percentage points). Higher in human milk: {cte}; higher in CMF: {cse}."),
     p("s9.r3", f"<b>植物油基配方奶粉（POF）：</b>共 {pof_n} 个物质参与比较（数值为贡献占比之差，单位为百分点）。母乳中更高的：{ptz}；POF 中更高的：{psz}。",
       f"<b>Plant-oil-based formula (POF):</b> {pof_n} compounds compared (values are differences in contribution share, in percentage points). Higher in human milk: {pte}; higher in POF: {pse}."),
-    p("s9.i1", "<b>解读：</b>两类配方奶粉与母乳的差异方向相近：母乳中 (E)-2-壬烯醛、1-庚烯-3-酮、1-辛烯-3-酮和 (E,E)-2,4-壬二烯醛的贡献更大。这与课题组的结论一致：母乳以不饱和醛酮为主，其中 1-庚烯-3-酮和 1-辛烯-3-酮常被描述为金属味（1-辛烯-3-酮：mushroom, metal）。配方奶粉中二甲基二硫和二甲基三硫更高，课题组认为它们带来洋葱、大蒜样气味，通常由甲硫氨酸的 Strecker 降解产生。对母乳中更高的物质，工具只给方向、不给添加量，并提示婴幼儿配方食品不得加香，只能从原料、工艺和前体调整；配方奶粉中更高的物质需要从原料或工艺方向降低（如控制氧化、热处理和储存条件）。",
+    p("s9.i1", "<b>解读：</b>两类配方奶粉与母乳的差异方向相近：母乳中 (E)-2-壬烯醛、1-庚烯-3-酮、1-辛烯-3-酮和 (E,E)-2,4-壬二烯醛的贡献更大。这与课题组的结论一致：母乳以不饱和醛酮为主，其中 1-庚烯-3-酮和 1-辛烯-3-酮常被描述为金属味（1-辛烯-3-酮：蘑菇、金属）。配方奶粉中二甲基二硫和二甲基三硫更高，课题组认为它们带来洋葱、大蒜样气味，通常由甲硫氨酸的 Strecker 降解产生。对母乳中更高的物质，工具只给方向、不给添加量，并提示婴幼儿配方食品不得加香，只能从原料、工艺和前体调整；配方奶粉中更高的物质需要从原料或工艺方向降低（如控制氧化、热处理和储存条件）。",
       "<b>Interpretation:</b> both formula types differ from human milk in a similar direction: (E)-2-nonenal, 1-hepten-3-one, 1-octen-3-one and (E,E)-2,4-nonadienal contribute more in human milk. This agrees with the author group's conclusion: human milk is dominated by unsaturated aldehydes and ketones, and 1-hepten-3-one and 1-octen-3-one are often described as metallic (1-octen-3-one: mushroom, metal). Dimethyl disulfide and dimethyl trisulfide are higher in formula; the group links them to onion- and garlic-like notes, typically formed by Strecker degradation of methionine. For compounds higher in human milk the tool gives directions only, no amounts, and notes that infant formula may not be flavored, so only raw materials, processing and precursors can change; compounds higher in formula have to be lowered through raw materials or processing (for example oxidation control, heat treatment and storage)."),
     p("s9.i2", "<b>脂质来源（课题组数据）：</b>10 个 CMF 都含生牛乳；OPO 结构脂（1,3-二油酸-2-棕榈酸甘油三酯）见于 6 个 CMF 和 5 个 POF；POF 的脂质来源中没有生牛乳或稀奶油，主要是 OPO 和植物油（大豆油、葵花籽油、椰子油、菜籽油、棕榈油等），其中 2 个另加 DHA。课题组指出，CMF 和 POF 因组成不同而香气不同。",
       "<b>Lipid sources (author group data):</b> all 10 CMF contain raw cow's milk; OPO structured lipid (1,3-dioleoyl-2-palmitoyl glycerol) appears in 6 CMF and 5 POF; the lipid sources of POF include no raw cow's milk or cream and are mainly OPO and vegetable oils (soybean, sunflower, coconut, rapeseed, palm and others), 2 of them with added DHA. The author group notes that CMF and POF differ in aroma because their composition differs."),
