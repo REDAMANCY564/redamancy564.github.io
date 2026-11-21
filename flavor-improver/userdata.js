@@ -37,6 +37,8 @@ window.UserMode = (function () {
     area.addEventListener("change", onChange);
     area.addEventListener("click", onClick);
     window.addEventListener("storage", e => { if (e.key === FlavorHandoff.KEY) { readSlots(); render(); } });
+    const ex = new URLSearchParams(location.search).get("example");
+    if (CASE_EXAMPLES[ex]) loadExample(ex);
   }
 
   // ---------- data ----------
@@ -372,11 +374,21 @@ window.UserMode = (function () {
     if (id === "user-predict") { await predictMissing(); }
   }
 
-  async function loadExample() {
-    const files = { sample: "examples/userdata_sample_formula1.csv", target: "examples/userdata_target_humanmilk_A1.csv" };
+  // Case page /case/ step 9: group means of the author group, read from the published CSVs (relative paths, no
+  // outside request); the thresholds are the author group values given in the CSVs, so threshold edits kept in this
+  // browser are cleared for these examples.
+  const CASE_EXAMPLES = {
+    "case-cmf": { sample: "../case/data/cmf_sample_n10.csv", target: "../case/data/hm_target_n303.csv", label: "user.case_cmf" },
+    "case-pof": { sample: "../case/data/pof_sample_n10.csv", target: "../case/data/hm_target_n303.csv", label: "user.case_pof" },
+  };
+
+  async function loadExample(caseId) {
+    const ex = CASE_EXAMPLES[caseId];
+    const files = ex || { sample: "examples/userdata_sample_formula1.csv", target: "examples/userdata_target_humanmilk_A1.csv" };
+    if (ex) { state.thr = {}; store(THR_KEY, state.thr); }
     for (const slot of ["sample", "target"]) {
       const text = await fetch(files[slot]).then(r => r.text());
-      const { rec } = C.recordFromCsv(text, t("user.example_" + slot));
+      const { rec } = C.recordFromCsv(text, ex ? t(slot === "target" ? "user.case_target" : ex.label) : t("user.example_" + slot));
       rec.source = "example";
       await resolveIds(rec);
       if (!FlavorHandoff.save(slot, rec)) state.recs[slot] = Object.assign(rec, { _local: true });

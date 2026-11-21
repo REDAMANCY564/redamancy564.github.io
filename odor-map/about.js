@@ -30,6 +30,7 @@
     $("desc-structure").textContent = I18N.t("map.desc.structure", { n: meta.k });
     const fr = meta.top1_counts.fruity || 0;
     $("colour-note").textContent = I18N.t("colour.note", { k: nCat, fruity: labelName(labelIndex.fruity), p: pct(fr / nFit) });
+    I18N.nobr($("colour-note"));   // keep the last words together (tools/check_orphans.py)
     $("region-note").textContent = I18N.t("region.note", { o: meta.regions.odor.length, s: meta.regions.structure.length, k: meta.region_rule.k_clusters });
 
     const P = meta.params, V = meta.eval.valid;

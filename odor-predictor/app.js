@@ -528,7 +528,9 @@
   // presets need nothing, the page has them precomputed. If storing fails the page says so.
   document.querySelectorAll("a.to-process").forEach(a => a.addEventListener("click", ev => {
     if (current.source !== "search" || !current.handoff) return;
-    if (!ProcessHandoff.save(current.handoff)) {
+    // the searched name goes along (heading of the process page), unless it is the SMILES itself
+    const nm = current.title && current.title !== current.smiles && current.title.length <= 40 ? current.title : null;
+    if (!ProcessHandoff.save(nm ? Object.assign({}, current.handoff, { name: nm }) : current.handoff)) {
       ev.preventDefault();
       location.href = "process.html" + I18N.keepLang("q=" + encodeURIComponent(current.smiles) + "&handoff=failed");
     }

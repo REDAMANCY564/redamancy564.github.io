@@ -243,10 +243,15 @@
     ctx.textBaseline = "middle";
     ctx.lineJoin = "round";
     ctx.globalAlpha = alpha;
-    for (const reg of meta.regions[MAPS[m]]) {
+    // regions that share a descriptor are named after their second descriptor too ("花香·柑橘区", "花香·青香区")
+    const regs = meta.regions[MAPS[m]], count = {};
+    regs.forEach(r => { count[r.label] = (count[r.label] || 0) + 1; });
+    for (const reg of regs) {
       if (reg.n < minN) continue;
       const [x, y] = toScreen(b, reg.x, reg.y);
-      const text = I18N.t("region.name", { label: labelName(labelIndex[reg.label]) });
+      const text = count[reg.label] > 1 && reg.second
+        ? I18N.t("region.name2", { label: labelName(labelIndex[reg.label]), second: labelName(labelIndex[reg.second]) })
+        : I18N.t("region.name", { label: labelName(labelIndex[reg.label]) });
       const w = ctx.measureText(text).width + 8, hgt = 20;
       const box = [x - w / 2, y - hgt / 2, x + w / 2, y + hgt / 2];
       if (box[2] < 0 || box[3] < 0 || box[0] > W || box[1] > H) continue;

@@ -22,8 +22,8 @@
   <meta name="twitter:title" content="方法与来源 | 2 原料与替代物检索 | 崔京伟">
   <meta name="twitter:description" content="Method, evaluation, limitations and data sources of Flavor Ingredient Search and Substitute Screening from Predicted Odor Descriptors.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/ingredient-finder.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261121d">
-  <script src="../assets/i18n.js?v=20261121d" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261121e">
+  <script src="../assets/i18n.js?v=20261121e" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 </head>
@@ -62,16 +62,16 @@
 
     <section id="overview">
       <h2 data-sec="1" data-i18n="about.overview" data-no="2.1">概述</h2>
-      <p data-i18n="hero.intro">调味师需要从数千种原料中挑选合适的分子：接到客户需求时要找出符合目标风味的原料，原料受限或断供时又要找到气味相近的替代品。这个工具用气味预测模型给出的气味轮廓来做这两件事：按目标风味检索原料，或为一个分子寻找替代原料。</p>
+      <p data-i18n="hero.intro">调香师需要从数千种原料中挑选合适的分子：接到客户需求时要找出符合目标风味的原料，原料受限或断供时又要找到气味相近的替代品。这个工具用气味预测模型给出的气味轮廓来做这两件事：按目标风味检索原料，或为一个分子寻找替代原料。</p>
       <p data-i18n="b.intro">气味相近但结构不同的分子可能避开原分子的法规、专利或供应问题。</p>
-      <p data-i18n="about.practice">找某种风味的候选物质通常比较费时。偏天然的需求，一般以「食品名 + 风味物质」为关键词查文献；不限食品、只要某种风味的，就要大量阅读文献。也可以问 AI，但就我的体会，它给出的基本是常用的几十种，很难覆盖全面。这个工具按预测的气味描述词在 5000 多个分子中检索，先把候选范围铺开，再由人筛选。找替代物时，除了风味，最关心的往往是法规。本页显示每个分子在欧盟、中国和美国的法规状态；「未在清单中找到」不等于不允许，实际使用前仍以官方最新<span class="nobr">文件为准</span>。</p>
+      <p data-i18n="about.practice">找某种风味的候选物质通常比较费时。偏天然的需求，一般以“食品名 + 风味物质”为关键词查文献；不限食品、只要某种风味的，就要大量阅读文献。也可以问 AI，但就我的体会，它给出的基本是常用的几十种，很难覆盖全面。这个工具按预测的气味描述词在 5000 多个分子中检索，先把候选范围铺开，再由人筛选。找替代物时，除了风味，最关心的往往是法规。本页显示每个分子在欧盟、中国和美国的法规状态；“未在清单中找到”不等于不允许，实际使用前仍以官方最新<span class="nobr">文件为准</span>。</p>
     </section>
 
     <section id="method">
       <h2 data-sec="1" data-i18n="about.method" data-no="2.2">方法</h2>
       <h3 data-sec="2" data-i18n="tab.a" data-no="2.2.1">按需求找原料</h3>
-      <p data-i18n="a.score_note">评分 = 想要的描述词预测概率的加权几何平均 × 不想要的描述词（1 − 预测概率）的加权几何平均；没有选不想要的描述词时，后一项取 1。权重：高 = 1，中 = 0.5，低 = 0.25。评分范围 0 到 1，页面上显示为 0 到 100。预测概率的高低因描述词而异：奶香、奶油、黄油的预测概率最高只有 31%、61%、48%，两三个这类描述词时得分在 30 到 40 之间已属较好的匹配；果香、青香等常见描述词的得分可以高得多。分数用于比较，不是及格线。</p>
-      <p data-i18n="a.score_why">用几何平均而不是加和，原因有两个。一是要求同时具备：任何一个想要的描述词概率很低，或者任何一个不想要的描述词概率很高，评分都会被明显拉低，不能靠其他描述词补回来。二是分数可以在不同检索之间比较：评分与选了多少个描述词无关，不会因为多选描述词而变高；要求越多、越难同时满足，最高分反而越低。评分只用于排序和比较，不是严格意义上的概率：各描述词的预测概率并不相互独立，几何平均也不对应概率的运算规则，所以不能把评分理解为「该分子同时具备这些气味的概率」。只选一个想要的描述词时，评分就等于它的预测概率，排序与下文评估中按单个描述词的<span class="nobr">排序相同</span>。</p>
+      <p data-i18n="a.score_note">评分 = 想要的描述词预测概率的加权几何平均 × 不想要的描述词（1 − 预测概率）的加权几何平均；没有选不想要的描述词时，后一项取 1。权重：高 = 1，中 = 0.5，低 = 0.25。评分范围 0 到 1，页面上显示为 0 到 100。预测概率的高低因描述词而异：奶香、奶油、黄油的预测概率最高只有 31%、61%、48%，同时选两三个这类描述词时，得分在 30~40 之间就已是较好的匹配；果香、青香等常见描述词的得分可以高得多。分数用于比较，不是及格线。</p>
+      <p data-i18n="a.score_why">用几何平均而不是加和，原因有两个。一是要求同时具备：任何一个想要的描述词概率很低，或者任何一个不想要的描述词概率很高，评分都会被明显拉低，不能靠其他描述词补回来。二是分数可以在不同检索之间比较：评分与选了多少个描述词无关，不会因为多选描述词而变高；要求越多、越难同时满足，最高分反而越低。评分只用于排序和比较，不是严格意义上的概率：各描述词的预测概率并不相互独立，几何平均也不对应概率的运算规则，所以不能把评分理解为“该分子同时具备这些气味的概率”。只选一个想要的描述词时，评分就等于它的预测概率，排序与下文评估中按单个描述词的<span class="nobr">排序相同</span>。</p>
       <p id="unseen-note"></p>
       <h3 data-sec="2" data-i18n="tab.b" data-no="2.2.2">找替代原料</h3>
       <p data-i18n-html="about.b_method">气味相似度是两个分子 138 个描述词预测概率向量的余弦相似度（在验证集上，概率向量与模型倒数第二层的表示几乎一样好：0.2287 对 0.2288，取更简单、可以直接解释的概率向量）；结构相似度是两者 Morgan 指纹（半径 2，2048 位）的 Tanimoto 系数。散点图展示库中每个分子与查询分子在<span class="nobr">这两方面的相似度</span>。</p>
@@ -85,7 +85,7 @@
       <div class="table-wrap"><table id="res-a"></table></div>
       <p data-i18n="results.a_take" style="margin-top:8px">模型排在前面的分子比随机排序准确得多，但和简单的分子指纹 + 逻辑回归相比只高约 0.01，基本持平，看不出明显优势。可能的原因：单个描述词的排序主要取决于少数典型结构片段（如内酯环、硫原子），分子指纹也能抓住这些片段。</p>
       <h3 data-sec="2" data-i18n="results.b_title" style="margin-top:20px" data-no="2.3.2">找替代物：最相近分子的真实气味重合度</h3>
-      <p class="small" data-i18n="results.b_text">对每个测试集分子，找出最相近的 10 个分子，计算它们与该分子真实气味标签的平均重合度（Jaccard，0 到 1，越高越像）。比较三种找法：按预测气味轮廓（本页的「气味相似度」）、按分子结构（Tanimoto）和随机挑选。</p>
+      <p class="small" data-i18n="results.b_text">对每个测试集分子，找出最相近的 10 个分子，计算它们与该分子真实气味标签的平均重合度（Jaccard，0 到 1，越高越像）。比较三种找法：按预测气味轮廓（本页的“气味相似度”）、按分子结构（Tanimoto）和随机挑选。</p>
       <div class="table-wrap"><table id="res-b"></table></div>
       <p id="res-b-take" style="margin-top:8px"></p>
     </section>
@@ -95,8 +95,8 @@
       <ul class="plain">
         <li data-i18n="limits.1">基于模型预测的气味类别，不代表气味强度、阈值和实际感官表现。</li>
         <li data-i18n="limits.2">未考虑稳定性、溶解性、成本和可获得性。</li>
-        <li data-i18n="limits.3">页面显示欧盟、中国和美国的食品香料法规状态。状态按 CAS 号对应（中国经 FEMA 号），可能漏配或误配；「未在清单中找到」不等于不允许。美国的 FEMA GRAS 标注是行业自我认定，不是 FDA 批准。替代原料的安全性和合规性仍以官方最新<span class="nobr">文件为准</span>。</li>
-        <li data-i18n="limits.4">检索结果是候选清单，需要调味师判断和感官验证。</li>
+        <li data-i18n="limits.3">页面显示欧盟、中国和美国的食品香料法规状态。状态按 CAS 号对应（中国经 FEMA 号），可能漏配或误配；“未在清单中找到”不等于不允许。美国的 FEMA GRAS 标注是行业自我认定，不是 FDA 批准。替代原料的安全性和合规性仍以官方最新<span class="nobr">文件为准</span>。</li>
+        <li data-i18n="limits.4">检索结果是候选清单，需要调香师判断和感官验证。</li>
       </ul>
     </section>
 
@@ -107,9 +107,9 @@
         <summary data-i18n="excluded.summary">查看移除的分子及原因</summary>
         <ul id="excluded-list" style="margin-top:6px"></ul>
       </details>
-      <p data-i18n-html="footer.data"><b>数据与致谢：</b>气味模型用 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling et al., 2019, <a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC）的数据训练，由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan et al., 2023）整理合并；本站不转载原始气味标签，页面只展示模型预测。<b>模型及预测结果仅供非商业<span class="nobr">学术演示</span>。</b></p>
-      <p data-i18n-html="footer.kb"><b>天然存在食品：</b>来自本站<a href="../flavor-kb/">风味知识库</a>，源自 FlavorDB2（Garg et al., <i>NAR</i> 2018，CC BY-NC-SA 3.0）、FooDB（www.foodb.ca，2020-04-07 版，CC BY-NC 4.0，只用有出处的条目）和作者已发表数据（Cui et al., <i>Food Bioscience</i> 2026，母乳）。食品后的上标表示来源：F = FlavorDB2，Fo = FooDB，A = 作者已发表数据，K = 该食品的关键风味物质（母乳：作者已发表数据 Table 1），悬停可见出处。<b>分子名称：</b>风味知识库或 PubChem。</p>
-      <p data-i18n-html="footer.reg"><b><span class="nobr">法规状态</span>：</b>欧盟 Union list（Regulation (EC) No 1334/2008 附件 I，EUR-Lex 合并版 2026-02-16，CC BY 4.0）、中国 GB 2760-2024 表 B.2、B.3（未包含修改单）和美国 21 CFR（eCFR 2026-10-20）及 FDA「Substances Added to Food」清单（2026-09-08），按 CAS 号与本站分子对应。数据来源、对应方法和局限见<a href="../flavor-kb/about.html#regulatory">风味知识库「<span class="nobr">法规查询</span>」</a>。</p>
+      <p data-i18n-html="footer.data"><b>数据与致谢：</b>气味模型用 The Good Scents Company 与 Leffingwell &amp; Associates（Sanchez-Lengeling 等，2019，<a href="https://arxiv.org/abs/1910.10685" target="_blank" rel="noopener">arXiv:1910.10685</a>，CC BY-NC）的数据训练，由 <a href="https://github.com/BioMachineLearning/openpom" target="_blank" rel="noopener">OpenPOM</a>（Barsainyan 等，2023）整理合并；本站不转载原始气味标签，页面只展示模型预测。<b>模型及预测结果仅供非商业<span class="nobr">学术演示</span>。</b></p>
+      <p data-i18n-html="footer.kb"><b>天然存在食品：</b>来自本站<a href="../flavor-kb/">风味知识库</a>，源自 FlavorDB2（Garg 等，2018，<i>NAR</i>，CC BY-NC-SA 3.0）、FooDB（www.foodb.ca，2020-04-07 版，CC BY-NC 4.0，只用有出处的条目）和作者已发表数据（Cui 等，2026，<i>Food Bioscience</i>，母乳）。食品后的上标表示来源：F = FlavorDB2，Fo = FooDB，A = 作者已发表数据，K = 该食品的关键风味物质（母乳：作者已发表数据 Table 1），悬停可见出处。<b>分子名称：</b>风味知识库或 PubChem。</p>
+      <p data-i18n-html="footer.reg"><b><span class="nobr">法规状态</span>：</b>欧盟 Union list（Regulation (EC) No 1334/2008 附件 I，EUR-Lex 合并版 2026-02-16，CC BY 4.0）、中国 GB 2760-2024 表 B.2、B.3（未包含修改单）和美国 21 CFR（eCFR 2026-10-20）及 FDA“Substances Added to Food”清单（2026-09-08），按 CAS 号与本站分子对应。数据来源、对应方法和局限见<a href="../flavor-kb/about.html#regulatory">风味知识库“<span class="nobr">法规查询</span>”</a>。</p>
     </section>
   </main>
 
@@ -119,7 +119,7 @@
     </div>
   </footer>
 
-  <script src="../assets/projects.js?v=20261121d" defer></script>
-  <script src="about.js?v=20261121d" defer></script>
+  <script src="../assets/projects.js?v=20261121e" defer></script>
+  <script src="about.js?v=20261121e" defer></script>
 </body>
 </html>

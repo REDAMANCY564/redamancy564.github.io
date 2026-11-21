@@ -1,0 +1,351 @@
+{
+ "source": "curated by hand 2026-11-21 (machine-format names and the 10 key flavor compounds of human milk); see apply_stereo_names.py and _inputs/NAMES-29-REVIEW.md",
+ "names": {
+  "TYQCGQRIZGCHNB": {
+   "en": "Ascorbic acid",
+   "zh": "抗坏血酸",
+   "cas": "50-81-7（L 型）",
+   "old": [
+    "CID 644104"
+   ]
+  },
+  "ROHFNLRQFUQHCH": {
+   "en": "Leucine",
+   "zh": "亮氨酸",
+   "cas": "61-90-5（L 型）",
+   "old": [
+    "2-Azaniumyl-4-methylpentanoate"
+   ]
+  },
+  "LEVWYRKDKASIDU": {
+   "en": "Cystine",
+   "zh": "胱氨酸",
+   "cas": "56-89-3（L 型）",
+   "old": [
+    "3,3'-Dithiobis(2-ammoniopropanoate)"
+   ]
+  },
+  "DHMQDGOQFOQNFH": {
+   "en": "Glycine",
+   "zh": "甘氨酸",
+   "cas": "56-40-6",
+   "old": [
+    "alpha-Glycine"
+   ]
+  },
+  "DCXYFEDJOCDNAF": {
+   "en": "Asparagine",
+   "zh": "天冬酰胺",
+   "cas": "70-47-3（L 型）",
+   "old": [
+    "CID 5247114"
+   ]
+  },
+  "ZDXPYRJPNDTMRX": {
+   "en": "Glutamine",
+   "zh": "谷氨酰胺",
+   "cas": "56-85-9（L 型）",
+   "old": [
+    "CID 25244553"
+   ]
+  },
+  "ONIBWKKTOPOVIA": {
+   "en": "Proline",
+   "zh": "脯氨酸",
+   "cas": "147-85-3（L 型）",
+   "old": [
+    "CID 25246272"
+   ]
+  },
+  "WTDRDQBEARUVNC": {
+   "en": "DOPA",
+   "zh": "多巴",
+   "cas": "63-84-3（DL）",
+   "old": [
+    "CID 58663891"
+   ]
+  },
+  "CQOVPNPJLQNMDC": {
+   "en": "Carnosine",
+   "zh": "肌肽",
+   "cas": "305-84-0（L 型）",
+   "old": [
+    "2-(3-azaniumylpropanoylamino)-3-(1H-imidazol-5-yl)propanoate"
+   ]
+  },
+  "BTCSSZJGUNDROE": {
+   "en": "gamma-Aminobutyric acid",
+   "zh": "γ-氨基丁酸",
+   "cas": "56-12-2",
+   "old": [
+    "4-Ammoniobutanoate"
+   ]
+  },
+  "KPGXRSRHYNQIFN": {
+   "en": "2-Oxoglutaric acid",
+   "zh": "α-酮戊二酸",
+   "cas": "328-50-7",
+   "old": [
+    "CID 156274072"
+   ]
+  },
+  "BDJRBEYXGGNYIS": {
+   "en": "Azelaic acid",
+   "zh": "壬二酸",
+   "cas": "123-99-9",
+   "old": [
+    "CID 19347555"
+   ]
+  },
+  "AEMRFAOFKBGASW": {
+   "en": "Glycolic acid",
+   "zh": "羟基乙酸",
+   "cas": "79-14-1",
+   "old": [
+    "CID 3698251"
+   ]
+  },
+  "XNGIFLGASWRNHJ": {
+   "en": "Phthalic acid",
+   "zh": "邻苯二甲酸",
+   "cas": "88-99-3",
+   "old": [
+    "2-Carboxybenzoate;hydron"
+   ]
+  },
+  "CERQOIWHTDAKMF": {
+   "en": "Methacrylic acid",
+   "zh": "甲基丙烯酸",
+   "cas": "79-41-4",
+   "old": [
+    "Hydron;2-methylprop-2-enoate"
+   ]
+  },
+  "KCXVZYZYPLLWCC": {
+   "en": "EDTA",
+   "zh": "乙二胺四乙酸",
+   "cas": "60-00-4",
+   "old": [
+    "2-[2-[Bis(carboxylatomethyl)amino]ethyl-(carboxylatomethyl)amino]acetate;hydron"
+   ]
+  },
+  "MOTZDAYCYVMXPC": {
+   "en": "Lauryl sulfate",
+   "zh": "十二烷基硫酸",
+   "cas": "151-41-7",
+   "old": [
+    "Dodecyl sulfate;hydron"
+   ]
+  },
+  "CVHZOJJKTDOEJC": {
+   "en": "Saccharin",
+   "zh": "糖精",
+   "cas": "81-07-2",
+   "old": [
+    "1,1-Dioxo-1,2-benzothiazol-3-olate;hydron"
+   ]
+  },
+  "WZRCQWQRFZITDX": {
+   "en": "Higenamine",
+   "zh": "去甲乌药碱",
+   "cas": "5843-65-2",
+   "old": [
+    "(RS)-norcoclaurinium"
+   ]
+  },
+  "ZNOVTXRBGFNYRX": {
+   "en": "5-Methyltetrahydrofolic acid",
+   "zh": "5-甲基四氢叶酸",
+   "cas": "134-35-0",
+   "old": [
+    "(3H)N5-methylfolate"
+   ]
+  },
+  "DFRXMRZQBMFKMI": {
+   "en": "6-Nonenyl acetate",
+   "zh": "乙酸 6-壬烯酯",
+   "cas": "—",
+   "old": [
+    "Non-6-enium acetate"
+   ]
+  },
+  "NBFKNCBRFJKDDR": {
+   "en": "5-Octen-2-one",
+   "zh": "5-辛烯-2-酮",
+   "cas": "22610-86-2（Z）",
+   "old": [
+    "CID 87927"
+   ]
+  },
+  "WGDUEFYADBRNKG": {
+   "en": "2-Octen-4-ol",
+   "zh": "2-辛烯-4-醇",
+   "cas": "20125-81-9（E）",
+   "old": [
+    "CID 89274"
+   ]
+  },
+  "CYLQPOIZDBIXFP": {
+   "en": "Ethyl 2-heptenoate",
+   "zh": "2-庚烯酸乙酯",
+   "cas": "54340-72-6（E）",
+   "old": [
+    "CID 316636"
+   ]
+  },
+  "JRPDANVNRUIUAB": {
+   "en": "3-Decen-2-one",
+   "zh": "3-癸烯-2-酮",
+   "cas": "10519-33-2",
+   "old": [
+    "CID 61522"
+   ]
+  },
+  "GCORITRBZMICMI": {
+   "en": "4-Dodecenoic acid",
+   "zh": "4-十二碳烯酸",
+   "cas": "7089-43-2（Z）",
+   "old": [
+    "CID 44135502"
+   ]
+  },
+  "MKIFOPBVDBXRTO": {
+   "en": "16-Hydroxy-7-hexadecenoic acid",
+   "zh": "16-羟基-7-十六碳烯酸",
+   "cas": "88785-31-3",
+   "old": [
+    "CID 54076879"
+   ]
+  },
+  "AGZBJJSLDGWKSU": {
+   "en": "Oxacyclohexadec-13-en-2-one",
+   "zh": "氧杂环十六碳-13-烯-2-酮",
+   "cas": "99219-32-6（E）",
+   "old": [
+    "CID 78653"
+   ]
+  },
+  "VPDZRSSKICPUEY": {
+   "en": "Bicyclogermacrene",
+   "zh": "双环大根香叶烯",
+   "cas": "24703-35-3",
+   "old": [
+    "CID 21159022"
+   ]
+  },
+  "GBKILRGXNOCUTQ": {
+   "en": "2-(2,6-Dimethyl-1,5-heptadienyl)-4,4,6-trimethyl-1,3-dioxane",
+   "zh": "2-(2,6-二甲基-1,5-庚二烯基)-4,4,6-三甲基-1,3-二氧六环",
+   "cas": "—",
+   "old": [
+    "CID 109256"
+   ]
+  },
+  "RZXAQFGBENAOAJ": {
+   "en": "2-Methyl-1-(2-methylbicyclo[2.2.1]hept-5-en-2-yl)-1-penten-3-ol",
+   "zh": "2-甲基-1-(2-甲基双环[2.2.1]庚-5-烯-2-基)-1-戊烯-3-醇",
+   "cas": "67739-11-1",
+   "old": [
+    "CID 106775"
+   ]
+  },
+  "ZSPIIBJQRZLFHP": {
+   "en": "1-(2,6,6,8-Tetramethyltricyclo[5.3.1.0^1,5]undec-8-yl)ethanone",
+   "zh": "1-(2,6,6,8-四甲基三环[5.3.1.0^1,5]十一烷-8-基)乙酮",
+   "cas": "73398-84-2",
+   "old": [
+    "CID 11694472"
+   ]
+  },
+  "JARKCYVAAOWBJS": {
+   "en": "Hexanal",
+   "zh": "己醛",
+   "cas": "66-25-1",
+   "old": [
+    "Hexanal"
+   ],
+   "keep_old": true
+  },
+  "FXHGMKSSBGDXIY": {
+   "en": "Heptanal",
+   "zh": "庚醛",
+   "cas": "111-71-7",
+   "old": [
+    "Heptanal"
+   ],
+   "keep_old": true
+  },
+  "NUJGJRNETVAIRJ": {
+   "en": "Octanal",
+   "zh": "辛醛",
+   "cas": "124-13-0",
+   "old": [
+    "Octanal"
+   ],
+   "keep_old": true
+  },
+  "GYHFUZHODSMOHU": {
+   "en": "Nonanal",
+   "zh": "壬醛",
+   "cas": "124-19-6",
+   "old": [
+    "Nonanal"
+   ],
+   "keep_old": true
+  },
+  "LVBXEMGDVWVTGY": {
+   "en": "(E)-2-Octenal",
+   "zh": "(E)-2-辛烯醛",
+   "cas": "2548-87-0",
+   "old": [
+    "trans-2-Octenal"
+   ],
+   "keep_old": true
+  },
+  "BSAIUMLZVGUGKX": {
+   "en": "(E)-2-Nonenal",
+   "zh": "(E)-2-壬烯醛",
+   "cas": "18829-56-6",
+   "old": [
+    "2-Nonenal"
+   ],
+   "keep_old": true
+  },
+  "ZHHYXNZJDGDGPJ": {
+   "en": "(E,E)-2,4-Nonadienal",
+   "zh": "(E,E)-2,4-壬二烯醛",
+   "cas": "5910-87-2",
+   "old": [
+    "2,4-Nonadienal"
+   ],
+   "keep_old": true
+  },
+  "XCBBNTFYSLADTO": {
+   "en": "2,3-Octanedione",
+   "zh": "2,3-辛二酮",
+   "cas": "585-25-1",
+   "old": [
+    "Octane-2,3-dione"
+   ],
+   "keep_old": true
+  },
+  "OYLCUJRJCUXQBQ": {
+   "en": "1-Hepten-3-one",
+   "zh": "1-庚烯-3-酮",
+   "cas": "2918-13-0",
+   "old": [
+    "1-Hepten-3-one"
+   ],
+   "keep_old": true
+  },
+  "KLTVSWGXIAYTHO": {
+   "en": "1-Octen-3-one",
+   "zh": "1-辛烯-3-酮",
+   "cas": "4312-99-6",
+   "old": [
+    "1-Octen-3-One"
+   ],
+   "keep_old": true
+  }
+ }
+}

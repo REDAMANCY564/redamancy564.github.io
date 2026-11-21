@@ -675,7 +675,7 @@
     renderPicker();
     const name = $("pp-name");
     name.textContent = I18N.pick(mol.name);
-    name.classList.toggle("mono", !!mol.handed);
+    name.classList.toggle("mono", !!mol.handed && !mol.named);
     toolTab.href = toolUrl(mol.smiles);   // back to the tool with the same molecule
     $("pp-handed").hidden = !mol.handed;
     if (mol.handed) $("pp-handed").textContent = t("proc.handed");
@@ -705,10 +705,13 @@
     const bonds = obj.bonds.map(([i, j, v]) => Object.assign({ i, j }, bondInfo(v)));
     const cut = a => Float32Array.from(a.subarray(0, n * H));
     const probs = o.probs;
+    const handedName = typeof obj.name === "string" && obj.name.trim() ? obj.name.trim().slice(0, 60) : null;
     // same ranking as the tool page (app.js)
     const order = Array.from(probs.keys()).sort((a, b) => probs[b] - probs[a]).slice(0, 8);
     return {
-      id: null, handed: true, smiles: obj.smiles, name: { en: obj.smiles, zh: obj.smiles }, n, X,
+      // name handed over by the tool page (a searched name); the SMILES only when there is none
+      id: null, handed: true, smiles: obj.smiles, named: !!handedName,
+      name: handedName ? { en: handedName, zh: handedName } : { en: obj.smiles, zh: obj.smiles }, n, X,
       atoms: X.map(decodeAtom), bonds, coords: obj.coords,
       h: ["h0", "h1", "h2", "h3"].map(k => cut(o[k])), m: [null, cut(o.m1), cut(o.m2), cut(o.m3)],
       poolMean: Float32Array.from(o.pool_mean), poolMax: Float32Array.from(o.pool_max),
