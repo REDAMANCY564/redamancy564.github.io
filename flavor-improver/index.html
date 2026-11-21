@@ -23,8 +23,8 @@
   <meta name="twitter:title" content="4 乳品风味改良 | 崔京伟">
   <meta name="twitter:description" content="Shows how Bayesian optimization adjusts a dairy flavor, or compares your sample with a target.">
   <meta name="twitter:image" content="https://redamancy564.github.io/assets/og/flavor-improver.jpg">
-  <link rel="stylesheet" href="../assets/style.css?v=20261121i">
-  <script src="../assets/i18n.js?v=20261121i" data-page-dict="i18n/"></script>
+  <link rel="stylesheet" href="../assets/style.css?v=20261121j">
+  <script src="../assets/i18n.js?v=20261121j" data-page-dict="i18n/"></script>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
@@ -113,6 +113,7 @@
   </header>
 
   <main class="container">
+    <p class="note warn temp-note" id="user-temp" hidden><span data-i18n="user.temp_note">正在查看案例数据（未保存）</span> <button type="button" class="btn-sm" id="user-temp-back" data-i18n="user.temp_back">返回我的数据</button></p>
     <section class="hero">
       <h1 data-i18n="hero.short" data-no="4">乳品风味改良</h1>
       <p class="hero-full" data-i18n="hero.title">基于贝叶斯优化的乳品风味改良与<span class="nobr">差距分析</span></p>
@@ -433,7 +434,7 @@
 
       <!-- Use my own data (PLAN-userdata.md): sample vs target from gcms-interpreter -->
       <div data-sec-scope id="user-area" hidden>
-        <p style="margin-top:12px" data-i18n-html="user.intro"><b>用自己的数据：</b>先在 <a href="../gcms-interpreter/"><span class="nobr">GC-MS</span> 风味解读</a> 中分别处理当前样品（如自己的奶粉）和目标样品（如母乳），在“风味解读”一步点“作为当前样品发送”或“作为目标发送”；也可以把那里导出的排名 CSV 上传到下面。两份数据可以用不同的标准文件处理，本页按化合物合并。</p>
+        <p style="margin-top:12px" data-i18n-html="user.intro"><b>用自己的数据：</b>先在 <a href="../gcms-interpreter/"><span class="nobr">GC-MS</span> 风味解读</a>中分别处理当前样品（如自己的奶粉）和目标样品（如母乳），在“风味解读”一步点“作为当前样品发送”或“作为目标发送”；也可以把那里导出的排名 CSV 上传到下面。两份数据可以用不同的标准文件处理，本页按化合物合并。</p>
         <p class="small" data-i18n-html="user.privacy">数据只在你的浏览器中处理和保存，不会上传。只有当你在下面点击“从 PubChem 查结构”时，页面才会把缺少结构的物质的 CAS 号或名称发给 PubChem（不发送含量等数据）。</p>
         <details class="card user-req">
           <summary><b data-i18n="user.req_title">上传 CSV 的要求</b></summary>
@@ -511,15 +512,15 @@
   </footer>
 
   <script src="../assets/vendor/chartjs/chart.umd.min.js" defer></script>
-  <script src="../assets/libs.js?v=20261121i" defer></script>
-  <script src="../assets/projects.js?v=20261121i" defer></script>
-  <script src="../assets/intensity.js?v=20261121i" defer></script>
-  <script src="../assets/flavor-handoff.js?v=20261121i" defer></script>
-  <script src="mixture.js?v=20261121i" defer></script>
-  <script src="bo.js?v=20261121i" defer></script>
-  <script src="reference.js?v=20261121i" defer></script>
-  <script src="userdata-core.js?v=20261121i" defer></script>
-  <script src="userdata.js?v=20261121i" defer></script>
-  <script src="app.js?v=20261121i" defer></script>
+  <script src="../assets/libs.js?v=20261121j" defer></script>
+  <script src="../assets/projects.js?v=20261121j" defer></script>
+  <script src="../assets/intensity.js?v=20261121j" defer></script>
+  <script src="../assets/flavor-handoff.js?v=20261121j" defer></script>
+  <script src="mixture.js?v=20261121j" defer></script>
+  <script src="bo.js?v=20261121j" defer></script>
+  <script src="reference.js?v=20261121j" defer></script>
+  <script src="userdata-core.js?v=20261121j" defer></script>
+  <script src="userdata.js?v=20261121j" defer></script>
+  <script src="app.js?v=20261121j" defer></script>
 </body>
 </html>

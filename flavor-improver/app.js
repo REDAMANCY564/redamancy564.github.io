@@ -149,7 +149,8 @@
   document.addEventListener("change", e => {
     const el = e.target;
     // example 5 inputs carry data-side; they are handled (and may already be re-rendered) by reference.js
-    if (!el.matches || !el.matches("input.thr") || el.dataset.side !== undefined) return;
+    // "my GC-MS data" inputs carry data-uthr and are handled by userdata.js
+    if (!el.matches || !el.matches("input.thr") || el.dataset.side !== undefined || el.dataset.uthr !== undefined) return;
     const n = el.dataset.c;
     const v = Number(el.value);
     if (!(v > 0) || !isFinite(v)) {

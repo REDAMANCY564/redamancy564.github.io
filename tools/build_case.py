@@ -17,14 +17,14 @@ sys.stdout.reconfigure(encoding="utf-8")
 ROOT = Path(__file__).resolve().parents[1]
 B = ROOT / "_inputs" / "case-build"
 OUT = ROOT / "case"
-V = "20261121i"
+V = "20261121j"
 # Source of the step 9 data (formula and 303 human milk samples). No paper citation yet: the data are
 # named as the author group's. When the paper is out, add the citation and DOI here only, e.g.
 # FC_WHO = ("作者课题组（Cui 等，期刊 年份，doi:…）", "the author group (Cui et al., Journal year, doi:…)").
 FC_WHO = ("作者课题组", "the author group")                       # "第 9 步用{FC_WHO} 303 份母乳……"
 FC_DATA = ("作者课题组数据", "data of the author group")         # source line in the data list
-FC_COL = ("课题组计算值", "Group values")           # header of the ROAV column in step 9
-FC_RANK = ("课题组排序", "Group rank")                            # header of the rank column in step 9
+FC_COL = ("课题组<br class=\"cs-br\">计算值", "Group<br class=\"cs-br\"> values")           # header of the ROAV column in step 9
+FC_RANK = ("课题组<br class=\"cs-br\">排序", "Group<br class=\"cs-br\"> rank")                            # header of the rank column in step 9
 
 # ---------------------------------------------------------------- names (CAS -> zh, en)
 N = {
@@ -355,7 +355,7 @@ tbl8 = ('<div class="table-wrap"><table class="cs-table"><thead><tr>' + th("s8.c
         + th("s8.c3", "欧盟 (EU) 2016/127 附件 I", "EU Regulation (EU) 2016/127, Annex I") + "</tr></thead><tbody>" + "".join(r8) + "</tbody></table></div>")
 section("step8", "s8.h", "第 8 步　法规", "Step 8. Regulation", qa("s8",
     "1-庚烯-3-酮能作为香料使用吗？前体物质有哪些法规要求？", "Can 1-hepten-3-one be used as a flavoring? What do the rules say about the precursors?",
-    f'法规查询（{a("../flavor-kb/regulatory.html?q=2918-13-0", "1-庚烯-3-酮")}，以 {a("../flavor-kb/regulatory.html?q=4312-99-6", "1-辛烯-3-酮")} 作对照）。',
+    f'法规查询（{a("../flavor-kb/regulatory.html?q=2918-13-0", "1-庚烯-3-酮")}，以 {a("../flavor-kb/regulatory.html?q=4312-99-6", "1-辛烯-3-酮")}作对照）。',
     f'Regulatory lookup ({a("../flavor-kb/regulatory.html?q=2918-13-0", "1-hepten-3-one")}, with {a("../flavor-kb/regulatory.html?q=4312-99-6", "1-octen-3-one")} as a control).') + [
     p("s8.r1", "按名称的各种写法和 CAS 号（2918-13-0）检索中国 GB 2760-2024 表 B.2 和 B.3、欧盟 Union list（2026-02-16 合并版）、美国 21 CFR 172/182/184/189 和 FDA 清单（Substances Added to Food）的原文，均未查到 1-庚烯-3-酮（截至网站数据日期）；GB 2760 中只有它的异构体 4-庚烯-3-酮（S1262）。也就是说，即使不考虑表 B.1，它也没有列入这三地的香料名单。作为对照，用同样方法可以在中国（S0219）、欧盟和 FDA 清单（FEMA 2677）中查到 1-辛烯-3-酮，说明检索方法有效。",
       "Searching the texts of GB 2760-2024 Tables B.2 and B.3 (China), the EU Union list (consolidated version of 2026-02-16) and US 21 CFR Parts 172, 182, 184 and 189 with the FDA list “Substances Added to Food” under every spelling of the name and the CAS number (2918-13-0) finds no 1-hepten-3-one (as of the site's data date); GB 2760 has only its isomer 4-hepten-3-one (S1262). So even leaving Table B.1 aside, it is not on the flavoring lists of any of the three. As a control, the same search finds 1-octen-3-one in China (S0219), the EU and the FDA list (FEMA 2677), so the search works."),
@@ -373,8 +373,8 @@ for i, (c, v) in enumerate(hm_rows):
     dcls = ' class="cs-diff"' if swap or f is None or f < 1 else ""
     rows9.append(f'<tr{dcls}><td class="num">{i + 1}</td><td class="nm">{cn(c)}</td><td class="num">{f3(v)}</td>'
                  f'<td class="num">{"-" if f is None else f"{f:.2f}"}</td><td class="num">{fc_rank.get(c, "-")}</td></tr>')
-tbl9 = ('<div class="table-wrap"><table class="cs-table cs-rank"><thead><tr>' + th("s9.c0", "工具排序", "Tool rank", True) + th("s9.c1", "物质", "Compound")
-        + th("s9.c2", "工具计算值", "Tool values", True) + th("s9.c3", FC_COL[0], FC_COL[1], True)
+tbl9 = ('<div class="table-wrap"><table class="cs-table cs-rank"><thead><tr>' + th("s9.c0", '工具<br class="cs-br">排序', 'Tool<br class="cs-br"> rank', True) + th("s9.c1", "物质", "Compound")
+        + th("s9.c2", '工具<br class="cs-br">计算值', 'Tool<br class="cs-br"> values', True) + th("s9.c3", FC_COL[0], FC_COL[1], True)
         + th("s9.c4", FC_RANK[0], FC_RANK[1], True) + "</tr></thead><tbody>" + "".join(rows9) + "</tbody></table></div>")
 def gaps(rows, n):
     hi_t, hi_s = [], []
@@ -412,8 +412,8 @@ section("step9", "s9.h", "第 9 步　风味改良", "Step 9. Flavor improvement
       f"<b>Cow-milk-based formula (CMF):</b> {cmf_n} compounds compared (values are differences in contribution share, in percentage points). Higher in human milk: {cte}; higher in CMF: {cse}."),
     p("s9.r3", f"<b>植物油基配方奶粉（POF）：</b>共 {pof_n} 个物质参与比较（数值为贡献占比之差，单位为百分点）。母乳中更高的：{ptz}；POF 中更高的：{psz}。",
       f"<b>Plant-oil-based formula (POF):</b> {pof_n} compounds compared (values are differences in contribution share, in percentage points). Higher in human milk: {pte}; higher in POF: {pse}."),
-    p("s9.i1", "<b>解读：</b>两类配方奶粉与母乳的差异方向相近：母乳中 (E)-2-壬烯醛、1-庚烯-3-酮、1-辛烯-3-酮和 (E,E)-2,4-壬二烯醛的贡献更大。这与课题组的结论一致：母乳以不饱和醛酮为主，其中 1-庚烯-3-酮和 1-辛烯-3-酮常被描述为金属味（1-辛烯-3-酮：蘑菇、金属）。配方奶粉中二甲基二硫和二甲基三硫更高，课题组认为它们带来洋葱、大蒜样气味，通常由甲硫氨酸的 Strecker 降解产生。对母乳中更高的物质，工具只给方向、不给添加量，并提示婴幼儿配方食品不得加香，只能从原料、工艺和前体调整；配方奶粉中更高的物质需要从原料或工艺方向降低（如控制氧化、热处理和储存条件）。",
-      "<b>Interpretation:</b> both formula types differ from human milk in a similar direction: (E)-2-nonenal, 1-hepten-3-one, 1-octen-3-one and (E,E)-2,4-nonadienal contribute more in human milk. This agrees with the author group's conclusion: human milk is dominated by unsaturated aldehydes and ketones, and 1-hepten-3-one and 1-octen-3-one are often described as metallic (1-octen-3-one: mushroom, metal). Dimethyl disulfide and dimethyl trisulfide are higher in formula; the group links them to onion- and garlic-like notes, typically formed by Strecker degradation of methionine. For compounds higher in human milk the tool gives directions only, no amounts, and notes that infant formula may not be flavored, so only raw materials, processing and precursors can change; compounds higher in formula have to be lowered through raw materials or processing (for example oxidation control, heat treatment and storage)."),
+    p("s9.i1", "<b>解读：</b>两类配方奶粉与母乳的差异方向相近：母乳中 (E)-2-壬烯醛、1-庚烯-3-酮、1-辛烯-3-酮和 (E,E)-2,4-壬二烯醛的贡献更大。这与课题组的结论一致：母乳的风味物质以不饱和醛、酮为主，其中 1-庚烯-3-酮和 1-辛烯-3-酮常被描述为金属味（1-辛烯-3-酮：蘑菇、金属）。配方奶粉中二甲基二硫和二甲基三硫更高，课题组认为它们带来洋葱、大蒜样气味，通常由甲硫氨酸的 Strecker 降解产生。对母乳中更高的物质，工具只给方向、不给添加量，并提示婴幼儿配方食品不得加香，只能从原料、工艺和前体调整；配方奶粉中更高的物质需要从原料或工艺方向降低（如控制氧化、热处理和储存条件）。",
+      "<b>Interpretation:</b> both formula types differ from human milk in a similar direction: (E)-2-nonenal, 1-hepten-3-one, 1-octen-3-one and (E,E)-2,4-nonadienal contribute more in human milk. This agrees with the author group's conclusion: the flavor compounds of human milk are dominated by unsaturated aldehydes and ketones, and 1-hepten-3-one and 1-octen-3-one are often described as metallic (1-octen-3-one: mushroom, metal). Dimethyl disulfide and dimethyl trisulfide are higher in formula; the group links them to onion- and garlic-like notes, typically formed by Strecker degradation of methionine. For compounds higher in human milk the tool gives directions only, no amounts, and notes that infant formula may not be flavored, so only raw materials, processing and precursors can change; compounds higher in formula have to be lowered through raw materials or processing (for example oxidation control, heat treatment and storage)."),
     p("s9.i2", "<b>脂质来源（课题组数据）：</b>10 个 CMF 都含生牛乳；OPO 结构脂（1,3-二油酸-2-棕榈酸甘油三酯）见于 6 个 CMF 和 5 个 POF；POF 的脂质来源中没有生牛乳或稀奶油，主要是 OPO 和植物油（大豆油、葵花籽油、椰子油、菜籽油、棕榈油等），其中 2 个另加 DHA。课题组指出，CMF 和 POF 因组成不同而香气不同。",
       "<b>Lipid sources (author group data):</b> all 10 CMF contain raw cow's milk; OPO structured lipid (1,3-dioleoyl-2-palmitoyl glycerol) appears in 6 CMF and 5 POF; the lipid sources of POF include no raw cow's milk or cream and are mainly OPO and vegetable oils (soybean, sunflower, coconut, rapeseed, palm and others), 2 of them with added DHA. The author group notes that CMF and POF differ in aroma because their composition differs."),
     lim("s9", "输入是每类样品的平均值，丢失了样品间的差异，配方奶粉每类只有 10 个样品；ROAV 是半定量结果，两边的数值不能直接相比，只比较贡献占比；这一步只给方向，不给添加量。",

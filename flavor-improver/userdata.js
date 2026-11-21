@@ -16,6 +16,11 @@ window.UserMode = (function () {
   let t, esc, fmt, pick, $;
   let FL = null, flPromise = null, namesIndex = null;
   const state = { recs: { sample: null, target: null }, thr: {}, pred: {}, predOpen: false, busy: false, msg: {}, view: "ref", rules: { fold: UserCore.FOLD, pp: 100 * UserCore.SHARE_PP } };
+  // Temporary view (?example=... links, e.g. from the case page): the example pair lives in memory only. Nothing is
+  // written to browser storage while it is shown: the visitor's saved sample and target, threshold edits, view and
+  // judgement rules stay as they are and come back with "Back to my data". Threshold edits made in the temporary view
+  // apply to it only (temp.thr); the example's own thresholds (the CSV values) are used otherwise.
+  let temp = null;   // {recs: {sample, target}, thr: {}}
   const ACCENT = "#0f6e6e", ACCENT_FILL = "rgba(15, 110, 110, .12)", INK = "#1f2328", GRID = "#e4e1da";
   let radar = null;
 
@@ -25,11 +30,8 @@ window.UserMode = (function () {
   function init(opts) {
     ({ t, esc, fmt, pick } = opts);
     $ = id => document.getElementById(id);
-    state.thr = load(THR_KEY, {});
     state.pred = load(PRED_KEY, {});
-    try { const v = localStorage.getItem("flavor-userdata-view"); if (v && (v === "all" || UserCore.VIEWS[v])) state.view = v; } catch (e) { /* storage off */ }
-    const rules = load("flavor-userdata-rules", null);
-    if (rules && rules.fold > 1 && rules.pp > 0) state.rules = rules;
+    loadSettings();
     $("user-rules-apply").addEventListener("click", applyRules);
     $("user-rules-reset").addEventListener("click", () => { setRuleInputs({ fold: C.FOLD, pp: 100 * C.SHARE_PP }); });
     $("user-rules-close").addEventListener("click", () => $("user-rules").close());
@@ -37,8 +39,35 @@ window.UserMode = (function () {
     area.addEventListener("change", onChange);
     area.addEventListener("click", onClick);
     window.addEventListener("storage", e => { if (e.key === FlavorHandoff.KEY) { readSlots(); render(); } });
+    $("user-temp-back").addEventListener("click", leaveTemp);
     const ex = new URLSearchParams(location.search).get("example");
     if (CASE_EXAMPLES[ex]) loadExample(ex);
+  }
+
+  /** The visitor's saved settings: threshold edits, profile view, judgement rules. */
+  function loadSettings() {
+    state.thr = load(THR_KEY, {});
+    state.view = "ref";
+    try { const v = localStorage.getItem("flavor-userdata-view"); if (v && (v === "all" || UserCore.VIEWS[v])) state.view = v; } catch (e) { /* storage off */ }
+    const rules = load("flavor-userdata-rules", null);
+    state.rules = rules && rules.fold > 1 && rules.pp > 0 ? rules : { fold: UserCore.FOLD, pp: 100 * UserCore.SHARE_PP };
+  }
+
+  /** "Back to my data": drop the temporary example, show the saved slots and settings again, remove ?example=. */
+  function leaveTemp() {
+    if (!temp) return;
+    state.recs = temp.saved || { sample: null, target: null };
+    temp = null;
+    state.msg = {};
+    loadSettings();
+    $("user-temp").hidden = true;
+    try {
+      const u = new URL(location.href);
+      u.searchParams.delete("example");
+      u.searchParams.set("mode", "user");
+      history.replaceState(null, "", u.pathname + u.search + u.hash);
+    } catch (e) { /* URL unchanged */ }
+    render();
   }
 
   // ---------- data ----------
@@ -84,6 +113,7 @@ window.UserMode = (function () {
   }
 
   function readSlots() {
+    if (temp) { state.recs = Object.assign({}, temp.recs); return; }
     // records kept in memory only (local storage unavailable) are marked _local
     FlavorHandoff.SLOTS.forEach(s => {
       const r = state.recs[s];
@@ -122,7 +152,8 @@ window.UserMode = (function () {
   }
 
   function thresholdOf(row) {
-    if (state.thr[row.key] > 0) return { v: state.thr[row.key], from: "user" };
+    const edits = temp ? temp.thr : state.thr;
+    if (edits[row.key] > 0) return { v: edits[row.key], from: "user" };
     if (row.thr) return { v: row.thr, from: row.thrFrom };
     const b = row.kbId && FL.thresholds[row.kbId];
     return b ? { v: b.mg_kg, from: "builtin" } : { v: null, from: null };
@@ -348,7 +379,7 @@ window.UserMode = (function () {
     const fold = Number($("user-rule-fold").value), pp = Number($("user-rule-pp").value);
     if (!(fold > 1 && fold <= 100) || !(pp > 0 && pp <= 50)) { $("user-rules-msg").textContent = t("user.rules_invalid"); return; }
     state.rules = { fold, pp };
-    store("flavor-userdata-rules", state.rules);
+    if (!temp) store("flavor-userdata-rules", state.rules);
     $("user-rules").close();
     renderMerge();
   }
@@ -360,6 +391,7 @@ window.UserMode = (function () {
     const up = e.target.closest("[data-upload]");
     if (up && up.files && up.files[0]) {
       const slot = up.dataset.upload, file = up.files[0];
+      if (temp) leaveTemp();   // an upload is the visitor's own data: back to the saved slots first
       const { rec, error } = C.recordFromCsv(await file.text(), file.name.replace(/\.[^.]+$/, ""));
       if (error) { state.msg[slot] = { text: t("user.csv_" + error), err: true }; renderSlots(); return; }
       try { await resolveIds(rec); } catch (err) { /* names index unavailable: keep names / CAS only */ }
@@ -371,15 +403,16 @@ window.UserMode = (function () {
     }
     if (e.target.id === "user-view") {
       state.view = e.target.value;
-      try { localStorage.setItem("flavor-userdata-view", state.view); } catch (err) { /* storage off */ }
+      if (!temp) try { localStorage.setItem("flavor-userdata-view", state.view); } catch (err) { /* storage off */ }
       renderMerge();
       return;
     }
     const th = e.target.closest("[data-uthr]");
     if (th) {
       const v = th.value.trim() === "" ? null : Number(th.value);
-      if (v > 0) state.thr[th.dataset.uthr] = v; else delete state.thr[th.dataset.uthr];
-      store(THR_KEY, state.thr);
+      const edits = temp ? temp.thr : state.thr;
+      if (v > 0) edits[th.dataset.uthr] = v; else delete edits[th.dataset.uthr];
+      if (!temp) store(THR_KEY, state.thr);
       renderMerge();
     }
   }
@@ -387,7 +420,10 @@ window.UserMode = (function () {
   async function onClick(e) {
     const id = e.target.id;
     const cl = e.target.closest("[data-clear]");
-    if (cl) { FlavorHandoff.clear(cl.dataset.clear); state.recs[cl.dataset.clear] = null; state.msg = {}; render(); return; }
+    if (cl) {
+      if (temp) { leaveTemp(); return; }   // "Clear" in the temporary view leaves it; the saved data are not touched
+      FlavorHandoff.clear(cl.dataset.clear); state.recs[cl.dataset.clear] = null; state.msg = {}; render(); return;
+    }
     if (id === "user-example") { await loadExample(); return; }
     if (id === "user-pred-open") { state.predOpen = true; renderMerge(); return; }
     if (id === "user-rules-open") { openRules(); return; }
@@ -397,8 +433,8 @@ window.UserMode = (function () {
   }
 
   // Case page /case/ step 9: group means of the author group, read from the published CSVs (relative paths, no
-  // outside request); the thresholds are the author group values given in the CSVs, so threshold edits kept in this
-  // browser are cleared for these examples.
+  // outside request); the thresholds are the author group values given in the CSVs. Opened by ?example=, shown as a
+  // temporary view (see temp above).
   const CASE_EXAMPLES = {
     "case-cmf": { sample: "../case/data/cmf_sample_n10.csv", target: "../case/data/hm_target_n303.csv", label: "user.case_cmf" },
     "case-pof": { sample: "../case/data/pof_sample_n10.csv", target: "../case/data/hm_target_n303.csv", label: "user.case_pof" },
@@ -407,13 +443,21 @@ window.UserMode = (function () {
   async function loadExample(caseId) {
     const ex = CASE_EXAMPLES[caseId];
     const files = ex || { sample: "examples/userdata_sample_formula1.csv", target: "examples/userdata_target_humanmilk_A1.csv" };
-    if (ex) { state.thr = {}; store(THR_KEY, state.thr); }
+    const recs = {};
     for (const slot of ["sample", "target"]) {
       const text = await fetch(files[slot]).then(r => r.text());
       const { rec } = C.recordFromCsv(text, ex ? t(slot === "target" ? "user.case_target" : ex.label) : t("user.example_" + slot));
       rec.source = "example";
       await resolveIds(rec);
-      if (!FlavorHandoff.save(slot, rec)) state.recs[slot] = Object.assign(rec, { _local: true });
+      recs[slot] = rec;
+    }
+    if (ex) {
+      temp = { recs, thr: {}, saved: temp ? temp.saved : state.recs };   // saved: in-memory records (storage off) to restore
+      $("user-temp").hidden = false;
+    } else {
+      if (temp) leaveTemp();
+      for (const slot of ["sample", "target"])
+        if (!FlavorHandoff.save(slot, recs[slot])) state.recs[slot] = Object.assign(recs[slot], { _local: true });
     }
     state.msg = {};
     render();
